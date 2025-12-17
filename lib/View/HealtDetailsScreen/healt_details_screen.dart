@@ -40,17 +40,32 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
               CustomContiner(
                 isEnabled: true,
                 onTap: () {
-                  healtDetailsViewModel.showCustomBottomSheet(context);
+                  healtDetailsViewModel.showSelectionBottomSheet(
+                    context: context,
+                    title: 'Diet Type',
+                    list: healtDetailsViewModel.dietTypButtonName,
+                    isDiet: true,
+                  );
                 },
                 title1: 'Diet Type',
-                title2: 'Balance Diet',
+                title2: healtDetailsViewModel.selectedDiet,
                 title2Color: AppColors.pimaryColor,
               ),
+
               SizedBox(height: context.h(24)),
+
               CustomContiner(
-                isEnabled: false,
+                isEnabled: true,
+                onTap: () {
+                  healtDetailsViewModel.showSelectionBottomSheet(
+                    context: context,
+                    title: 'Workout Frequency',
+                    list: healtDetailsViewModel.workOutFreButtonName,
+                    isDiet: false,
+                  );
+                },
                 title1: 'Workout Frequency',
-                title2: 'Never',
+                title2: healtDetailsViewModel.selectedWorkout,
                 title2Color: AppColors.pimaryColor,
               ),
 
