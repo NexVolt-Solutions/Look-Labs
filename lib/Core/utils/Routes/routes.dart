@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/View/CardDetails/card_details_screen.dart';
 import 'package:looklabs/View/GoalScreen/gaol_screen.dart';
+import 'package:looklabs/View/OnBoard/on_board_screen.dart';
 import 'package:looklabs/View/ProfileScreen/profile_screen.dart';
 import 'package:looklabs/View/HealtDetailsScreen/healt_details_screen.dart';
+import 'package:looklabs/View/Purchase/purchase_screen.dart';
 import 'package:looklabs/View/SplahScreen/splash_screen.dart';
+import 'package:looklabs/View/Subscription%20Plan/subscription_plan_screen.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -29,6 +33,26 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => GaolScreen(),
+        );
+      case RoutesName.OnBoardScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => OnBoardScreen(),
+        );
+      case RoutesName.SubscriptionPlanScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => SubscriptionPlanScreen(),
+        );
+      case RoutesName.CardDetailsScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => CardDetailsScreen(),
+        );
+      case RoutesName.PurchaseScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => PurchaseScreen(),
         );
 
       default:

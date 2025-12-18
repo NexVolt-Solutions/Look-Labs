@@ -32,6 +32,7 @@ class HealtDetailsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 🔥 REUSABLE BOTTOM SHEET
   void showSelectionBottomSheet({
     required BuildContext context,
     required String title,

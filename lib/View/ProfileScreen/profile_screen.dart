@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               NeuTextField(
                 label: 'Enter Age',
                 obscure: true,
-                validatorType: 'name',
+                validatorType: 'phone',
                 hintText: 'Enter Age',
                 keyboard: TextInputType.name,
               ),
@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               NeuTextField(
                 label: 'Enter Hight (cm)',
                 obscure: true,
-                validatorType: 'name',
+                validatorType: 'phone',
                 hintText: 'Enter Hight (cm)',
                 keyboard: TextInputType.name,
               ),
@@ -64,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               NeuTextField(
                 label: 'Enter Weight (kg)',
                 obscure: true,
-                validatorType: 'name',
+                validatorType: 'phone',
                 hintText: 'Enter Weight (kg)',
                 keyboard: TextInputType.name,
               ),

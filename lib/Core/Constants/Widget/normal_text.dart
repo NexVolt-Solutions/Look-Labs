@@ -42,6 +42,8 @@ class NormalText extends StatelessWidget {
         if (titleText != null)
           Text(
             titleText!,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: titleColor ?? AppColors.headingColor,
               fontSize: titleSize ?? context.text(16),
@@ -54,6 +56,8 @@ class NormalText extends StatelessWidget {
         if (subText != null)
           Text(
             subText!,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: subColor ?? AppColors.headingColor,
               fontSize: subSize ?? context.text(14),

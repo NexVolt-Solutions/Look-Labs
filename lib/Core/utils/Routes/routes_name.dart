@@ -5,4 +5,8 @@ class RoutesName {
   static const String ProfileScreen = 'profile_screen';
   static const String HealtDetailsScreen = 'healt_details_screen';
   static const String GaolScreen = 'gaol_screen';
+  static const String OnBoardScreen = 'on_boarding_screen';
+  static const String SubscriptionPlanScreen = 'subscription_plan_screen';
+  static const String CardDetailsScreen = 'card_Details_screen';
+  static const String PurchaseScreen = 'purchase_screen';
 }
