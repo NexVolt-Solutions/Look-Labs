@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
-import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
@@ -27,7 +26,7 @@ class RowIconAndText extends StatelessWidget {
       onTap: isEnabled ? onTap : null,
 
       child: Padding(
-        padding: context.padSym(h: 3, v: 14),
+        padding: context.padSym(v: 14),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -65,6 +64,8 @@ class RowIconAndText extends StatelessWidget {
                     style: TextStyle(
                       fontSize: context.text(14),
                       fontWeight: FontWeight.w600,
+                      fontFamily: 'Raleway',
+
                       color: AppColors.headingColor,
                     ),
                   ),
@@ -74,19 +75,11 @@ class RowIconAndText extends StatelessWidget {
                     style: TextStyle(
                       fontSize: context.text(12),
                       fontWeight: FontWeight.w400,
+                      fontFamily: 'Raleway',
+
                       color: AppColors.headingColor,
                     ),
                   ),
-                  // NormalText(
-                  //   titleText: titleText!,
-                  //   titleSize: context.text(14),
-                  //   titleWeight: FontWeight.w600,
-                  //   titleColor: AppColors.headingColor,
-                  //   subText: subText!,
-                  //   subSize: context.text(12),
-                  //   subWeight: FontWeight.w400,
-                  //   subColor: AppColors.seconderyColor,
-                  // ),
                 ],
               ),
             ),

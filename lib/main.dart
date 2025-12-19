@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/ViewModel/auth_view_model.dart';
+import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
 import 'package:looklabs/ViewModel/gaol_screen_view_model.dart';
 import 'package:looklabs/ViewModel/healt_details_view_model.dart';
+import 'package:looklabs/ViewModel/payment_details_vie_model.dart';
 import 'package:looklabs/ViewModel/profile_view_model.dart';
 import 'package:looklabs/ViewModel/purchase_view_model.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
@@ -23,6 +26,9 @@ void main() {
         ),
         ChangeNotifierProvider(create: (context) => CardDetailsViewModel()),
         ChangeNotifierProvider(create: (context) => PurchaseViewModel()),
+        ChangeNotifierProvider(create: (context) => PaymentDetailsVieModel()),
+        ChangeNotifierProvider(create: (context) => AuthViewModel()),
+        ChangeNotifierProvider(create: (context) => BottomSheetViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

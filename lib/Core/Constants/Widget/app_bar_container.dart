@@ -4,9 +4,9 @@ import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
-class BarContainer extends StatelessWidget {
+class AppBarContainer extends StatelessWidget {
   final String? title;
-  const BarContainer({super.key, this.title});
+  const AppBarContainer({super.key, this.title});
 
   @override
   Widget build(BuildContext context) {

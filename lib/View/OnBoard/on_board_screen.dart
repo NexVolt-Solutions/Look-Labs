@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/Widget/bar_container.dart';
+import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
@@ -24,7 +24,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
             clipBehavior: Clip.hardEdge,
             children: [
               SizedBox(height: context.h(7.11)),
-              BarContainer(title: 'OnBoard'),
+              AppBarContainer(title: 'OnBoard'),
               SizedBox(height: context.h(44.89)),
               Container(
                 height: context.h(594),

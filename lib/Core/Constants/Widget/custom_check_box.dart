@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 
-class CheckBox extends StatelessWidget {
+class CustomCheckBox extends StatelessWidget {
   final String? genderName;
 
-  const CheckBox({super.key, this.genderName});
+  const CustomCheckBox({super.key, this.genderName});
 
   @override
   Widget build(BuildContext context) {

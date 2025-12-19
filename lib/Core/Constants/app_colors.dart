@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 class AppColors {
   //Primary Colors
   static const Color headingColor = Color(0xFF1F2937);
-  static const Color subHeadingColor = Color(0xFF1F2937);
+  static const Color subHeadingColor = Color(0xFF1E1A24);
   static const Color seconderyColor = Color(0xFF433C4E);
   static const Color backGroundColor = Color(0xFFF0F0F3);
+  static const Color notSelectedColor = Color(0xFF6D6D6D);
 
   //Used for BoxShawdow blur colors
   static const Color blurTopColor = Color(0xFFFAFBFF);
@@ -16,7 +17,7 @@ class AppColors {
 
   //Button Color
   static const Color pimaryColor = Color(0xFF9D2CF5);
-  static const Color buttonColor = Color(0xFF7729E4);
+  static const Color buttonColor = Color(0xFF9D2CF5);
 
   static const Color black = Color(0x1A000000);
   static const Color black2 = Color(0xFF000000);

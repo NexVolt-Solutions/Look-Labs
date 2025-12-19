@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/Widget/bar_container.dart';
+import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/neu_text_fied.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
@@ -25,7 +25,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
           child: ListView(
             clipBehavior: Clip.hardEdge,
             children: [
-              BarContainer(title: 'Card Details'),
+              AppBarContainer(title: 'Card Details'),
               SizedBox(height: context.h(30.89)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,

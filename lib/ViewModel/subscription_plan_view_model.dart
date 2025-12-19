@@ -38,7 +38,12 @@ class SubscriptionPlanViewModel extends ChangeNotifier {
     },
   ];
   List<Map<String, dynamic>> subscriptionPlan = [
-    {'planName': 'Weekly', 'price': '\$7.99', 'planRate': '0%'},
+    {
+      'planName': 'Weekly',
+      'price': '\$7.99',
+      'planDuration': '/Weekly',
+      'planRate': '0%',
+    },
     {
       'planName': 'Monthly',
       'price': '\$19.99',

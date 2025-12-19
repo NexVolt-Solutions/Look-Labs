@@ -9,4 +9,7 @@ class RoutesName {
   static const String SubscriptionPlanScreen = 'subscription_plan_screen';
   static const String CardDetailsScreen = 'card_Details_screen';
   static const String PurchaseScreen = 'purchase_screen';
+  static const String PaymentDetailsScreen = 'payment_details_screen';
+  static const String AuthScreen = 'auth_screen';
+  static const String BottomSheetBarScreen = 'bottom_sheet_bar_screen';
 }

@@ -1,4 +1,4 @@
-import 'package:looklabs/Core/Constants/Widget/check_box.dart';
+import 'package:looklabs/Core/Constants/Widget/custom_check_box.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/neu_text_fied.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
@@ -81,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
                   profileViewModel.checkBoxName.length,
-                  (index) => CheckBox(
+                  (index) => CustomCheckBox(
                     genderName: profileViewModel.checkBoxName[index],
                   ),
                 ),

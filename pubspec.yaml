@@ -13,8 +13,7 @@ dependencies:
   provider: ^6.1.5+1
   easy_stepper: ^0.9.1
   flutter_steps: ^1.0.5
-  flutter_inset_box_shadow: ^1.0.8
-  flutter_inset_shadow: ^2.0.3
+  flutter_inset_shadow: ^2.0.3  # keep only this
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +25,13 @@ flutter:
 
   assets:
     - assets/subscription/
+    - assets/
+
+  fonts:
+    - family: Raleway
+      fonts:
+        - asset: assets/Raleway/static/Raleway-Bold.ttf
+        - asset: assets/Raleway/static/Raleway-Light.ttf
+        - asset: assets/Raleway/static/Raleway-Medium.ttf
+        - asset: assets/Raleway/static/Raleway-Regular.ttf
+        - asset: assets/Raleway/static/Raleway-SemiBold.ttf

@@ -8,6 +8,7 @@ class NormalText extends StatelessWidget {
 
   final double? titleSize;
   final double? subSize;
+  final double? sizeBoxheight;
 
   final FontWeight? titleWeight;
   final FontWeight? subWeight;
@@ -32,6 +33,7 @@ class NormalText extends StatelessWidget {
     this.titleAlign,
     this.subAlign,
     this.crossAxisAlignment,
+    this.sizeBoxheight,
   });
 
   @override
@@ -52,7 +54,7 @@ class NormalText extends StatelessWidget {
             ),
             textAlign: titleAlign ?? TextAlign.start,
           ),
-
+        SizedBox(height: sizeBoxheight),
         if (subText != null)
           Text(
             subText!,
