@@ -18,36 +18,34 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: context.padSym(h: 20),
-          child: ListView(
-            clipBehavior: Clip.hardEdge,
-            children: [
-              SizedBox(height: context.h(7.11)),
-              AppBarContainer(title: 'OnBoard'),
-              SizedBox(height: context.h(44.89)),
-              Container(
-                height: context.h(594),
-                width: context.w(335),
-                decoration: BoxDecoration(
-                  color: AppColors.blurBottomColor,
-                  borderRadius: BorderRadius.circular(context.radius(12)),
-                  shape: BoxShape.rectangle,
-                ),
+          clipBehavior: Clip.hardEdge,
+          children: [
+            SizedBox(height: context.h(7.11)),
+            AppBarContainer(title: 'OnBoard'),
+            SizedBox(height: context.h(44.89)),
+            Container(
+              height: context.h(594),
+              width: context.w(335),
+              decoration: BoxDecoration(
+                color: AppColors.blurBottomColor,
+                borderRadius: BorderRadius.circular(context.radius(12)),
+                shape: BoxShape.rectangle,
               ),
-              SizedBox(height: context.h(22)),
-              CustomButton(
-                isEnabled: true,
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  RoutesName.SubscriptionPlanScreen,
-                ),
-                text: 'Next',
-                color: AppColors.buttonColor,
-                padding: context.padSym(h: 145, v: 17),
+            ),
+            SizedBox(height: context.h(22)),
+            CustomButton(
+              isEnabled: true,
+              onTap: () => Navigator.pushNamed(
+                context,
+                RoutesName.SubscriptionPlanScreen,
               ),
-            ],
-          ),
+              text: 'Next',
+              color: AppColors.buttonColor,
+              padding: context.padSym(v: 17),
+            ),
+          ],
         ),
       ),
     );

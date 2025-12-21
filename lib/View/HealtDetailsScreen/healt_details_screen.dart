@@ -22,64 +22,58 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: context.padSym(h: 20),
-          child: ListView(
-            clipBehavior: Clip.hardEdge,
-            children: [
-              SizedBox(height: context.h(32)),
-              NormalText(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                titleText: 'Healt Details',
-                titleSize: context.text(20),
-                titleWeight: FontWeight.w600,
-                titleColor: AppColors.headingColor,
-              ),
-              SizedBox(height: context.h(24)),
-              CustomContiner(
-                isEnabled: true,
-                onTap: () {
-                  healtDetailsViewModel.showSelectionBottomSheet(
-                    context: context,
-                    title: 'Diet Type',
-                    list: healtDetailsViewModel.dietTypButtonName,
-                    isDiet: true,
-                  );
-                },
-                title1: 'Diet Type',
-                title2: healtDetailsViewModel.selectedDiet,
-                title2Color: AppColors.pimaryColor,
-              ),
+          clipBehavior: Clip.hardEdge,
+          children: [
+            SizedBox(height: context.h(32)),
+            NormalText(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              titleText: 'Healt Details',
+              titleSize: context.text(20),
+              titleWeight: FontWeight.w600,
+              titleColor: AppColors.headingColor,
+            ),
+            SizedBox(height: context.h(24)),
+            CustomContiner(
+              isEnabled: true,
+              onTap: () {
+                healtDetailsViewModel.showSelectionBottomSheet(
+                  context: context,
+                  title: 'Diet Type',
+                  list: healtDetailsViewModel.dietTypButtonName,
+                  isDiet: true,
+                );
+              },
+              title1: 'Diet Type',
+              title2: healtDetailsViewModel.selectedDiet,
+              title2Color: AppColors.pimaryColor,
+            ),
 
-              SizedBox(height: context.h(24)),
-              CustomContiner(
-                isEnabled: true,
-                onTap: () {
-                  healtDetailsViewModel.showSelectionBottomSheet(
-                    context: context,
-                    title: 'Workout Frequency',
-                    list: healtDetailsViewModel.workOutFreButtonName,
-                    isDiet: false,
-                  );
-                },
-                title1: 'Workout Frequency',
-                title2: healtDetailsViewModel.selectedWorkout,
-                title2Color: AppColors.pimaryColor,
-              ),
-
-              SizedBox(height: context.h(24)),
-
-              SizedBox(height: context.h(305)),
-              CustomButton(
-                isEnabled: true,
-                onTap: () =>
-                    Navigator.pushNamed(context, RoutesName.GaolScreen),
-                text: 'Next',
-                color: AppColors.buttonColor,
-                padding: context.padSym(h: 145, v: 17),
-              ),
-            ],
-          ),
+            SizedBox(height: context.h(24)),
+            CustomContiner(
+              isEnabled: true,
+              onTap: () {
+                healtDetailsViewModel.showSelectionBottomSheet(
+                  context: context,
+                  title: 'Workout Frequency',
+                  list: healtDetailsViewModel.workOutFreButtonName,
+                  isDiet: false,
+                );
+              },
+              title1: 'Workout Frequency',
+              title2: healtDetailsViewModel.selectedWorkout,
+              title2Color: AppColors.pimaryColor,
+            ),
+            SizedBox(height: context.h(305)),
+            CustomButton(
+              isEnabled: true,
+              onTap: () => Navigator.pushNamed(context, RoutesName.GaolScreen),
+              text: 'Next',
+              color: AppColors.buttonColor,
+              padding: context.padSym(v: 17),
+            ),
+          ],
         ),
       ),
     );

@@ -23,80 +23,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: context.padSym(h: 20),
-          child: ListView(
-            clipBehavior: Clip.hardEdge,
-            children: [
-              SizedBox(height: context.h(20)),
-              NormalText(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                titleText: 'Build Your Profile',
-                titleSize: context.text(20),
-                titleWeight: FontWeight.w600,
-                titleColor: AppColors.headingColor,
-              ),
-              SizedBox(height: context.h(20)),
-              NeuTextField(
-                label: 'Enter Name',
-                obscure: true,
-                validatorType: 'name',
-                hintText: 'Enter Name',
-                keyboard: TextInputType.name,
-              ),
-              SizedBox(height: context.h(16)),
-              NeuTextField(
-                label: 'Enter Age',
-                obscure: true,
-                validatorType: 'phone',
-                hintText: 'Enter Age',
-                keyboard: TextInputType.name,
-              ),
-              SizedBox(height: context.h(16)),
-              NeuTextField(
-                label: 'Enter Hight (cm)',
-                obscure: true,
-                validatorType: 'phone',
-                hintText: 'Enter Hight (cm)',
-                keyboard: TextInputType.name,
-              ),
-              SizedBox(height: context.h(16)),
-              NeuTextField(
-                label: 'Enter Weight (kg)',
-                obscure: true,
-                validatorType: 'phone',
-                hintText: 'Enter Weight (kg)',
-                keyboard: TextInputType.name,
-              ),
-              SizedBox(height: context.h(20)),
-              NormalText(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'Select gender',
-                titleSize: context.text(20),
-                titleWeight: FontWeight.w600,
-                titleColor: AppColors.headingColor,
-              ),
-              SizedBox(height: context.h(20)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(
-                  profileViewModel.checkBoxName.length,
-                  (index) => CustomCheckBox(
-                    genderName: profileViewModel.checkBoxName[index],
-                  ),
+
+          clipBehavior: Clip.hardEdge,
+          children: [
+            SizedBox(height: context.h(20)),
+            NormalText(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              titleText: 'Build Your Profile',
+              titleSize: context.text(20),
+              titleWeight: FontWeight.w600,
+              titleColor: AppColors.headingColor,
+            ),
+            SizedBox(height: context.h(20)),
+            NeuTextField(
+              label: 'Enter Name',
+              obscure: true,
+              validatorType: 'name',
+              hintText: 'Enter Name',
+              keyboard: TextInputType.name,
+            ),
+            SizedBox(height: context.h(16)),
+            NeuTextField(
+              label: 'Enter Age',
+              obscure: true,
+              validatorType: 'phone',
+              hintText: 'Enter Age',
+              keyboard: TextInputType.name,
+            ),
+            SizedBox(height: context.h(16)),
+            NeuTextField(
+              label: 'Enter Hight (cm)',
+              obscure: true,
+              validatorType: 'phone',
+              hintText: 'Enter Hight (cm)',
+              keyboard: TextInputType.name,
+            ),
+            SizedBox(height: context.h(16)),
+            NeuTextField(
+              label: 'Enter Weight (kg)',
+              obscure: true,
+              validatorType: 'phone',
+              hintText: 'Enter Weight (kg)',
+              keyboard: TextInputType.name,
+            ),
+            SizedBox(height: context.h(20)),
+            NormalText(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              titleText: 'Select gender',
+              titleSize: context.text(20),
+              titleWeight: FontWeight.w600,
+              titleColor: AppColors.headingColor,
+            ),
+            SizedBox(height: context.h(20)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(
+                profileViewModel.checkBoxName.length,
+                (index) => CustomCheckBox(
+                  genderName: profileViewModel.checkBoxName[index],
                 ),
               ),
-              SizedBox(height: context.h(142)),
-              CustomButton(
-                isEnabled: true,
-                onTap: () =>
-                    Navigator.pushNamed(context, RoutesName.HealtDetailsScreen),
-                text: 'Next',
-                color: AppColors.buttonColor,
-                padding: context.padSym(h: 145, v: 17),
-              ),
-            ],
-          ),
+            ),
+            SizedBox(height: context.h(142)),
+            CustomButton(
+              isEnabled: true,
+              onTap: () =>
+                  Navigator.pushNamed(context, RoutesName.HealtDetailsScreen),
+              text: 'Next',
+              color: AppColors.buttonColor,
+              padding: context.padSym(h: 145, v: 17),
+            ),
+          ],
         ),
       ),
     );

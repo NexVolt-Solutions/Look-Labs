@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
+import 'package:looklabs/View/Home/home_screen.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
 import 'package:looklabs/ViewModel/gaol_screen_view_model.dart';
 import 'package:looklabs/ViewModel/healt_details_view_model.dart';
+import 'package:looklabs/ViewModel/home_view_model.dart';
 import 'package:looklabs/ViewModel/payment_details_vie_model.dart';
 import 'package:looklabs/ViewModel/profile_view_model.dart';
+import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:looklabs/ViewModel/purchase_view_model.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
 import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
@@ -28,10 +32,16 @@ void main() {
         ChangeNotifierProvider(create: (context) => PurchaseViewModel()),
         ChangeNotifierProvider(create: (context) => PaymentDetailsVieModel()),
         ChangeNotifierProvider(create: (context) => AuthViewModel()),
-        ChangeNotifierProvider(create: (context) => BottomSheetViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => BottomSheetViewModel(),
+          child: const BottomSheetBarScreen(),
+        ),
+        ChangeNotifierProvider(create: (context) => HomeViewModel()),
+        ChangeNotifierProvider(create: (context) => ProgressViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        // home: HomeScreen(),
         initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),

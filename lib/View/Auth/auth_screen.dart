@@ -25,99 +25,95 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
-        child: Padding(
+        child: ListView(
+          clipBehavior: Clip.hardEdge,
           padding: context.padSym(h: 20),
-          child: ListView(
-            clipBehavior: Clip.hardEdge,
-            children: [
-              AppBarContainer(title: 'Sign In'),
-              SizedBox(height: context.h(265)),
-              NormalText(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                titleText: 'Welcome',
-                titleSize: context.text(18),
-                titleWeight: FontWeight.w500,
-                titleColor: AppColors.subHeadingColor,
-                sizeBoxheight: context.h(12),
-                subText: 'Your Transformation begins now',
-                subSize: context.text(14),
-                subWeight: FontWeight.w400,
-                subColor: AppColors.notSelectedColor,
-              ),
-              SizedBox(height: context.h(12)),
-              PlanContainer(
-                height: context.h(50),
-                width: context.w(double.infinity),
-                isSelected: false,
-                onTap: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(AppAssets.gmailIcon),
-                    SizedBox(width: context.w(8)),
-                    Text(
-                      'Continue with Google ',
-                      style: TextStyle(
-                        fontSize: context.text(16),
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.subHeadingColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              PlanContainer(
-                height: context.h(50),
-                width: context.w(double.infinity),
-                isSelected: false,
-                onTap: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(AppAssets.appaleIcon),
-                    SizedBox(width: context.w(8)),
-                    Text(
-                      'Continue with Apple ',
-                      style: TextStyle(
-                        fontSize: context.text(16),
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.subHeadingColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
+          children: [
+            AppBarContainer(title: 'Sign In'),
+            SizedBox(height: context.h(265)),
+            NormalText(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              titleText: 'Welcome',
+              titleSize: context.text(18),
+              titleWeight: FontWeight.w500,
+              titleColor: AppColors.subHeadingColor,
+              sizeBoxheight: context.h(12),
+              subText: 'Your Transformation begins now',
+              subSize: context.text(14),
+              subWeight: FontWeight.w400,
+              subColor: AppColors.notSelectedColor,
+            ),
+            SizedBox(height: context.h(12)),
+            PlanContainer(
+              height: context.h(50),
+              width: context.w(double.infinity),
+              isSelected: false,
+              onTap: () {},
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SimpleCheckBox(
-                    isSelected: authScreenViewMdel.isSelected,
-                    onTap: () {},
-                  ),
+                  Image.asset(AppAssets.gmailIcon),
                   SizedBox(width: context.w(8)),
                   Text(
-                    'Subscription activated',
+                    'Continue with Google ',
                     style: TextStyle(
-                      fontSize: context.text(14),
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.notSelectedColor,
+                      fontSize: context.text(16),
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.subHeadingColor,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: context.h(201)),
-              CustomButton(
-                isEnabled: true,
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  RoutesName.BottomSheetBarScreen,
-                ),
-                text: 'Sign In',
-                color: AppColors.buttonColor,
-                padding: context.padSym(v: 17),
+            ),
+            PlanContainer(
+              height: context.h(50),
+              width: context.w(double.infinity),
+              isSelected: false,
+              onTap: () {},
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(AppAssets.appaleIcon),
+                  SizedBox(width: context.w(8)),
+                  Text(
+                    'Continue with Apple ',
+                    style: TextStyle(
+                      fontSize: context.text(16),
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.subHeadingColor,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SimpleCheckBox(
+                  isSelected: authScreenViewMdel.isSelected,
+                  onTap: () {},
+                ),
+                SizedBox(width: context.w(8)),
+                Text(
+                  'Subscription activated',
+                  style: TextStyle(
+                    fontSize: context.text(14),
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.notSelectedColor,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: context.h(201)),
+            CustomButton(
+              isEnabled: true,
+              onTap: () =>
+                  Navigator.pushNamed(context, RoutesName.BottomSheetBarScreen),
+              text: 'Sign In',
+              color: AppColors.buttonColor,
+              padding: context.padSym(v: 17),
+            ),
+          ],
         ),
       ),
     );

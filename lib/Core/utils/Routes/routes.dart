@@ -10,6 +10,7 @@ import 'package:looklabs/View/OnBoard/on_board_screen.dart';
 import 'package:looklabs/View/Payment%20Details/payment_details_screen.dart';
 import 'package:looklabs/View/ProfileScreen/profile_screen.dart';
 import 'package:looklabs/View/HealtDetailsScreen/healt_details_screen.dart';
+import 'package:looklabs/View/Progress/progress_screen.dart';
 import 'package:looklabs/View/Purchase/purchase_screen.dart';
 import 'package:looklabs/View/SplahScreen/splash_screen.dart';
 import 'package:looklabs/View/Subscription%20Plan/subscription_plan_screen.dart';
@@ -71,6 +72,11 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => BottomSheetBarScreen(),
+        );
+      case RoutesName.ProgressScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => ProgressScreen(),
         );
 
       default:

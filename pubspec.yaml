@@ -14,6 +14,8 @@ dependencies:
   easy_stepper: ^0.9.1
   flutter_steps: ^1.0.5
   flutter_inset_shadow: ^2.0.3  # keep only this
+  flutter_svg: ^2.2.3
+  syncfusion_flutter_charts: ^32.1.19
 
 dev_dependencies:
   flutter_test:
@@ -26,6 +28,8 @@ flutter:
   assets:
     - assets/subscription/
     - assets/
+    - assets/bottomIcon/
+    - assets/Icon/
 
   fonts:
     - family: Raleway

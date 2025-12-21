@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
-import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
+import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
@@ -12,64 +11,6 @@ import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
 import 'package:provider/provider.dart';
 
-// class SubscriptionPlanScreen extends StatefulWidget {
-//   const SubscriptionPlanScreen({super.key});
-
-//   @override
-//   State<SubscriptionPlanScreen> createState() => _SubscriptionPlanScreenState();
-// }
-
-// class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     final subPlanViewModel = Provider.of<SubscriptionPlanViewModel>(context);
-
-//     return Scaffold(
-//       backgroundColor: AppColors.backGroundColor,
-//       body: SafeArea(
-//         child: Padding(
-//           padding: context.padSym(h: 20),
-//           child: ListView(
-//             clipBehavior: Clip.hardEdge,
-//             children: [
-//               AppBarContainer(title: 'Subscription Plan'),
-//               SizedBox(height: context.h(30.89)),
-//               NormalText(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 titleText: 'What you will get',
-//                 titleSize: context.text(18),
-//                 titleWeight: FontWeight.w600,
-//                 titleColor: AppColors.headingColor,
-//               ),
-
-//               ...List.generate(
-//                 subPlanViewModel.subscriptionData.length,
-//                 (index) => RowIconAndText(
-//                   isEnabled: false,
-//                   titleText: subPlanViewModel.subscriptionData[index]['title']!,
-//                   subText:
-//                       subPlanViewModel.subscriptionData[index]['subtitle']!,
-//                   image: subPlanViewModel.subscriptionData[index]['image']!,
-//                 ),
-//               ),
-
-//               SizedBox(height: context.h(42)),
-
-//               CustomButton(
-//                 isEnabled: true,
-//                 onTap: () =>
-//                     Navigator.pushNamed(context, RoutesName.CardDetailsScreen),
-//                 text: 'Continue & Subscribe ',
-//                 color: AppColors.buttonColor,
-//                 padding: context.padSym(v: 17),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 class SubscriptionPlanScreen extends StatefulWidget {
   const SubscriptionPlanScreen({super.key});
 

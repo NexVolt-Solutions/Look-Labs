@@ -8,6 +8,10 @@ class AppColors {
   static const Color backGroundColor = Color(0xFFF0F0F3);
   static const Color notSelectedColor = Color(0xFF6D6D6D);
 
+  //Icon Color
+  static const Color iconColor = Color(0xFF798499);
+  static const Color fireColor = Color(0xFFEDAF29);
+
   //Used for BoxShawdow blur colors
   static const Color blurTopColor = Color(0xFFFAFBFF);
   static const Color blurBottomColor = Color(0xFFA6ABBD);
