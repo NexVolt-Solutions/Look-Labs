@@ -32,12 +32,20 @@ class CustomContainer extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: height ?? context.h(30),
-        width: width ?? context.w(60),
+        // 🔥 IMPORTANT: height & width directly use karo
+        height: height,
+        width: width,
+
         margin: margin ?? EdgeInsets.zero,
-        padding: padding ?? EdgeInsets.zero,
+        padding:
+            padding ??
+            EdgeInsets.symmetric(
+              horizontal: context.w(12),
+              vertical: context.h(8),
+            ),
+
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radius ?? context.radius(28)),
+          borderRadius: BorderRadius.circular(radius ?? context.radius(12)),
           border: border,
           color: color ?? AppColors.backGroundColor,
           boxShadow: [

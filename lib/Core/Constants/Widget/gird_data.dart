@@ -33,7 +33,6 @@ class GridData extends StatelessWidget {
       ),
       child: Row(
         children: [
-          /// 🔥 ICON
           Container(
             height: context.h(44),
             width: context.w(44),

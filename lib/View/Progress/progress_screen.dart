@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_container.dart';
+import 'package:looklabs/Core/Constants/Widget/line_chart_widget.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
@@ -50,7 +51,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                     SizedBox(width: context.w(12)),
                     NormalText(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      titleText: 'hi Amana',
+                      titleText: 'hi Shehzad',
                       titleSize: context.text(16),
                       titleWeight: FontWeight.w600,
                       titleColor: AppColors.subHeadingColor,
@@ -63,34 +64,11 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 ),
                 Row(
                   children: [
-                    Container(
-                      height: context.h(27),
-                      width: context.w(61),
-                      // margin: context.padSym(v: 14),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(context.radius(32)),
-                        border: Border.all(
-                          color: AppColors.backGroundColor,
-                          width: context.w(1.5),
-                        ),
-                        color: AppColors.backGroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.customContainerColorUp.withOpacity(
-                              0.4,
-                            ),
-                            offset: const Offset(5, 5),
-                            blurRadius: 5,
-                          ),
-                          BoxShadow(
-                            color: AppColors.customContinerColorDown
-                                .withOpacity(0.4),
-                            offset: const Offset(-5, -5),
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
+                    CustomContainer(
+                      radius: context.radius(32),
+                      color: AppColors.backGroundColor,
+                      padding: context.padSym(h: 11, v: 3),
+                      margin: context.padSym(h: 0, v: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -117,39 +95,19 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       ),
                     ),
                     SizedBox(width: context.w(10)),
-                    Container(
-                      height: context.h(36),
-                      width: context.w(36),
-                      // margin: context.padSym(v: 14),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.backGroundColor,
-                          width: context.w(1.5),
+                    CustomContainer(
+                      radius: context.radius(33),
+                      color: AppColors.backGroundColor,
+                      padding: context.padSym(h: 6, v: 3),
+                      margin: context.padSym(h: 0, v: 20),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          AppAssets.notificationIcon,
+                          height: context.h(24),
+                          width: context.w(24),
+                          color: AppColors.notSelectedColor,
+                          fit: BoxFit.fill,
                         ),
-                        color: AppColors.backGroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.customContainerColorUp.withOpacity(
-                              0.4,
-                            ),
-                            offset: const Offset(5, 5),
-                            blurRadius: 5,
-                          ),
-                          BoxShadow(
-                            color: AppColors.customContinerColorDown
-                                .withOpacity(0.4),
-                            offset: const Offset(-5, -5),
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: SvgPicture.asset(
-                        AppAssets.notificationIcon,
-                        height: context.h(24),
-                        width: context.w(24),
-                        color: AppColors.notSelectedColor,
-                        fit: BoxFit.fill,
                       ),
                     ),
                   ],
@@ -158,6 +116,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
             ),
             SizedBox(height: context.h(11)),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(progressViewModel.buttonName.length, (
                 index,
               ) {
@@ -166,6 +125,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                     progressViewModel.buttonName[index];
                 return CustomContainer(
                   radius: context.radius(10),
+
                   onTap: () {
                     progressViewModel.selectIndex(index);
                   },
@@ -175,9 +135,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   border: isSelected
                       ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                       : null,
-                  height: context.h(40),
-                  width: context.w(90),
-                  margin: context.padSym(h: 10, v: 20),
+                  padding: context.padSym(h: 27, v: 12),
                   child: Center(
                     child: Text(
                       progressViewModel.buttonName[index],
@@ -204,9 +162,11 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 CustomContainer(
                   radius: context.radius(10),
                   color: AppColors.backGroundColor,
-                  height: context.h(42),
-                  width: context.w(42),
-                  margin: context.padSym(h: 1, v: 20),
+                  padding: context.padSym(h: 9, v: 9),
+                  margin: EdgeInsets.only(
+                    top: context.h(20),
+                    bottom: context.h(12),
+                  ),
                   child: Center(
                     child: SvgPicture.asset(
                       AppAssets.upLoadIcon,
@@ -221,18 +181,64 @@ class _ProgressScreenState extends State<ProgressScreen> {
             CustomContainer(
               radius: context.radius(10),
               color: AppColors.backGroundColor,
-              height: context.h(215),
-              width: context.w(335),
-              margin: context.padSym(h: 1, v: 1),
-              // child: Center(
-              //   child: SvgPicture.asset(
-              //     AppAssets.upLoadIcon,
-              //     height: context.h(24),
-              //     width: context.w(24),
-              //     fit: BoxFit.contain,
-              //   ),
-              // ),
+              padding: context.padSym(h: 10, v: 10),
+              margin: EdgeInsets.only(bottom: context.h(20)),
+              child: Center(child: LineChartWidget()),
             ),
+            NormalText(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              titleText: 'After Progress',
+              titleSize: context.text(18),
+              titleWeight: FontWeight.w600,
+              titleColor: AppColors.subHeadingColor,
+            ),
+            CustomContainer(
+              radius: context.radius(10),
+              color: AppColors.backGroundColor,
+              padding: context.padSym(h: 10, v: 10),
+              margin: EdgeInsets.only(
+                bottom: context.h(20),
+                top: context.h(12),
+              ),
+              child: Center(child: LineChartWidget()),
+            ),
+            CustomContainer(
+              radius: context.radius(10),
+              color: AppColors.backGroundColor,
+              padding: context.padSym(h: 12, v: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: CustomContainer(
+                      radius: context.radius(10),
+                      color: AppColors.backGroundColor,
+                      child: SvgPicture.asset(
+                        AppAssets.graphIcon,
+                        height: context.h(24),
+                        width: context.w(24),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: context.h(12)),
+                  NormalText(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    titleText: 'Great Progress!',
+                    titleSize: context.text(16),
+                    titleWeight: FontWeight.w500,
+                    titleColor: AppColors.subHeadingColor,
+                    subText:
+                        'Consistency improves posture & height appearance over time. Keep up with your daily routines!',
+                    subSize: context.text(12),
+                    subWeight: FontWeight.w600,
+                    subColor: AppColors.subHeadingColor,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: context.h(100)),
           ],
         ),
       ),

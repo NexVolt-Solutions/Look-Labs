@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/View/AgeDetails/age_details_screen.dart';
 import 'package:looklabs/View/Auth/auth_screen.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
 import 'package:looklabs/View/CardDetails/card_details_screen.dart';
 import 'package:looklabs/View/GoalScreen/gaol_screen.dart';
+import 'package:looklabs/View/MyAlbum/my_album_screen.dart';
 import 'package:looklabs/View/OnBoard/on_board_screen.dart';
 import 'package:looklabs/View/Payment%20Details/payment_details_screen.dart';
 import 'package:looklabs/View/ProfileScreen/profile_screen.dart';
@@ -77,6 +79,16 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ProgressScreen(),
+        );
+      case RoutesName.MyAlbumScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => MyAlbumScreen(),
+        );
+      case RoutesName.AgeDetailsScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => AgeDetailsScreen(),
         );
 
       default:

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class GaolScreenViewModel extends ChangeNotifier {
-  int currentStep = 0;
-
   List<String> buttonName = [
     'Skincare',
     'Hair care',
@@ -17,6 +15,7 @@ class GaolScreenViewModel extends ChangeNotifier {
   ];
 
   String selectedIndex = '';
+  int currentStep = 0;
 
   void selectIndex(int index) {
     if (selectedIndex == buttonName[index]) {

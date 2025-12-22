@@ -17,6 +17,9 @@ class AppAssets {
   static const String waterIcon = "assets/Icon/waterIcon.svg";
   static const String homeConIcon = "assets/Icon/keep.png";
   static const String upLoadIcon = "assets/Icon/uploadIcon.svg";
+  static const String graphIcon = "assets/Icon/proiconsGraphIcon.svg";
+  static const String backIcon = "assets/Icon/backIcon.svg";
+  static const String image = "assets/Icon/image.jpg";
 
   //Bottom AppBar Icon
   static const String homeIcon = "assets/bottomIcon/homeIcon.svg";

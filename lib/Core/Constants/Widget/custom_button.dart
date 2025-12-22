@@ -7,6 +7,7 @@ class CustomButton extends StatelessWidget {
   final String? text;
   final EdgeInsetsGeometry? padding;
   final Color? color;
+  final Color? colorText;
   final VoidCallback? onTap;
   final bool isEnabled;
   const CustomButton({
@@ -16,6 +17,7 @@ class CustomButton extends StatelessWidget {
     this.color,
     this.onTap,
     required this.isEnabled,
+    this.colorText,
   });
 
   @override
@@ -45,7 +47,7 @@ class CustomButton extends StatelessWidget {
         child: Text(
           text!,
           style: TextStyle(
-            color: AppColors.blurTopColor,
+            color: colorText ?? AppColors.blurTopColor,
             fontSize: context.text(20),
             fontWeight: FontWeight.w700,
             fontFamily: 'Raleway',
