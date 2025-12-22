@@ -7,6 +7,7 @@ class CustomButton extends StatelessWidget {
   final String? text;
   final EdgeInsetsGeometry? padding;
   final Color? color;
+  final Color? shadowColor;
   final Color? colorText;
   final VoidCallback? onTap;
   final bool isEnabled;
@@ -18,6 +19,7 @@ class CustomButton extends StatelessWidget {
     this.onTap,
     required this.isEnabled,
     this.colorText,
+    this.shadowColor,
   });
 
   @override
@@ -31,17 +33,29 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(context.radius(16)),
           boxShadow: [
             BoxShadow(
-              color: AppColors.buttonColor.withOpacity(0.3),
+              color: (shadowColor ?? Colors.white).withOpacity(0.3),
               offset: const Offset(5, 5),
               blurRadius: 20,
               inset: false,
             ),
             BoxShadow(
-              color: AppColors.buttonColor.withOpacity(0.1),
+              color: (shadowColor ?? Colors.white).withOpacity(0.1),
               offset: const Offset(-5, -5),
               blurRadius: 20,
               inset: false,
             ),
+            // BoxShadow(
+            //   color: AppColors.buttonColor.withOpacity(0.3),
+            //   offset: const Offset(5, 5),
+            //   blurRadius: 20,
+            //   inset: false,
+            // ),
+            // BoxShadow(
+            //   color: AppColors.buttonColor.withOpacity(0.1),
+            //   offset: const Offset(-5, -5),
+            //   blurRadius: 20,
+            //   inset: false,
+            // ),
           ],
         ),
         child: Text(
