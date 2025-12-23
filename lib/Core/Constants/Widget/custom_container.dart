@@ -40,7 +40,7 @@ class CustomContainer extends StatelessWidget {
         padding:
             padding ??
             EdgeInsets.symmetric(
-              horizontal: context.w(12),
+              horizontal: context.w(8),
               vertical: context.h(8),
             ),
 

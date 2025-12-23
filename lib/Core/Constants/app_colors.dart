@@ -7,6 +7,7 @@ class AppColors {
   static const Color seconderyColor = Color(0xFF433C4E);
   static const Color backGroundColor = Color(0xFFF0F0F3);
   static const Color notSelectedColor = Color(0xFF6D6D6D);
+  static const Color blackColor = Colors.black;
 
   //Icon Color
   static const Color iconColor = Color(0xFF798499);

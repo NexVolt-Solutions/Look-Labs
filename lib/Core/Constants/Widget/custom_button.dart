@@ -7,10 +7,11 @@ class CustomButton extends StatelessWidget {
   final String? text;
   final EdgeInsetsGeometry? padding;
   final Color? color;
-  final Color? shadowColor;
   final Color? colorText;
   final VoidCallback? onTap;
   final bool isEnabled;
+  final List<BoxShadow>? boxShadows;
+
   const CustomButton({
     super.key,
     this.text,
@@ -19,7 +20,7 @@ class CustomButton extends StatelessWidget {
     this.onTap,
     required this.isEnabled,
     this.colorText,
-    this.shadowColor,
+    this.boxShadows,
   });
 
   @override
@@ -31,32 +32,22 @@ class CustomButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(context.radius(16)),
-          boxShadow: [
-            BoxShadow(
-              color: (shadowColor ?? Colors.white).withOpacity(0.3),
-              offset: const Offset(5, 5),
-              blurRadius: 20,
-              inset: false,
-            ),
-            BoxShadow(
-              color: (shadowColor ?? Colors.white).withOpacity(0.1),
-              offset: const Offset(-5, -5),
-              blurRadius: 20,
-              inset: false,
-            ),
-            // BoxShadow(
-            //   color: AppColors.buttonColor.withOpacity(0.3),
-            //   offset: const Offset(5, 5),
-            //   blurRadius: 20,
-            //   inset: false,
-            // ),
-            // BoxShadow(
-            //   color: AppColors.buttonColor.withOpacity(0.1),
-            //   offset: const Offset(-5, -5),
-            //   blurRadius: 20,
-            //   inset: false,
-            // ),
-          ],
+          boxShadow:
+              boxShadows ??
+              [
+                BoxShadow(
+                  offset: Offset(-2.5, -2.5),
+                  blurRadius: 5,
+                  color: AppColors.blurTopColor,
+                  inset: false,
+                ),
+                BoxShadow(
+                  offset: Offset(2.5, 2.5),
+                  blurRadius: 5,
+                  color: AppColors.blurBottomColor,
+                  inset: false,
+                ),
+              ],
         ),
         child: Text(
           text!,

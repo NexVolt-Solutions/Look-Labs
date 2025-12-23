@@ -6,6 +6,7 @@ import 'package:looklabs/View/AgeDetails/age_details_screen.dart';
 import 'package:looklabs/View/Auth/auth_screen.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
 import 'package:looklabs/View/CardDetails/card_details_screen.dart';
+import 'package:looklabs/View/GenderScreen/gender_screen.dart';
 import 'package:looklabs/View/GoalScreen/gaol_screen.dart';
 import 'package:looklabs/View/MyAlbum/my_album_screen.dart';
 import 'package:looklabs/View/OnBoard/on_board_screen.dart';
@@ -89,6 +90,11 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => AgeDetailsScreen(),
+        );
+      case RoutesName.GenderScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => GenderScreen(),
         );
 
       default:

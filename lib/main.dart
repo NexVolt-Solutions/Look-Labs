@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/AgeDetails/age_details_screen.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
-import 'package:looklabs/View/Home/home_screen.dart';
-import 'package:looklabs/View/MyAlbum/my_album_screen.dart';
 import 'package:looklabs/ViewModel/age_details_view_model.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
 import 'package:looklabs/ViewModel/chart_view_model.dart';
 import 'package:looklabs/ViewModel/gaol_screen_view_model.dart';
+import 'package:looklabs/ViewModel/gender_view_model.dart';
 import 'package:looklabs/ViewModel/healt_details_view_model.dart';
 import 'package:looklabs/ViewModel/home_view_model.dart';
 import 'package:looklabs/ViewModel/my_album_view_model.dart';
@@ -46,6 +44,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => ChartViewModel()),
         ChangeNotifierProvider(create: (context) => MyAlbumViewModel()),
         ChangeNotifierProvider(create: (context) => AgeDetailsViewModel()),
+        ChangeNotifierProvider(create: (context) => GenderViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
