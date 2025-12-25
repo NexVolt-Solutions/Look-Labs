@@ -20,6 +20,7 @@ class AppAssets {
   static const String graphIcon = "assets/Icon/proiconsGraphIcon.svg";
   static const String backIcon = "assets/Icon/backIcon.svg";
   static const String image = "assets/Icon/image.jpg";
+  static const String cameraIcon = "assets/Icon/cameraIcon.svg";
 
   //Bottom AppBar Icon
   static const String homeIcon = "assets/bottomIcon/homeIcon.svg";
