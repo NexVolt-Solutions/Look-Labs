@@ -18,6 +18,7 @@ dependencies:
   syncfusion_flutter_charts: ^32.1.19
   percent_indicator: ^4.2.5
   flutter_spinkit: ^5.2.2
+  google_fonts: ^6.3.3
 
 dev_dependencies:
   flutter_test:
@@ -32,6 +33,7 @@ flutter:
     - assets/
     - assets/bottomIcon/
     - assets/Icon/
+    - assets/splash/
 
   fonts:
     - family: Raleway
