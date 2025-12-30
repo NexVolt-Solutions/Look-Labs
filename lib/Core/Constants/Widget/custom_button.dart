@@ -53,7 +53,7 @@ class CustomButton extends StatelessWidget {
           text!,
           style: TextStyle(
             color: colorText ?? AppColors.blurTopColor,
-            fontSize: context.text(20),
+            fontSize: context.text(16),
             fontWeight: FontWeight.w700,
             fontFamily: 'Raleway',
           ),

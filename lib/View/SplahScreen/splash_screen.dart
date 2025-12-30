@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
@@ -22,15 +24,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.buttonColor,
+      backgroundColor: AppColors.pimaryColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
+            child: SizedBox(
+              height: context.h(120),
+              width: context.w(120),
+              child: SvgPicture.asset(AppAssets.splashIcon, fit: BoxFit.fill),
+            ),
+          ),
+          SizedBox(height: context.h(12)),
+          Center(
             child: Text(
               'Looks Lab',
               style: TextStyle(
-                color: AppColors.blurTopColor,
+                color: AppColors.white,
                 fontSize: context.text(24),
                 fontFamily: 'Raleway',
                 fontWeight: FontWeight.w800,

@@ -34,7 +34,7 @@ class NeuTextField extends StatelessWidget {
             style: TextStyle(
               color: AppColors.headingColor,
               fontSize: context.text(14),
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
         SizedBox(height: context.h(8)),
@@ -114,7 +114,11 @@ class NeuTextField extends StatelessWidget {
                 ),
               ),
               hintText: hintText,
-              hintStyle: TextStyle(color: Colors.grey.shade600),
+              hintStyle: TextStyle(
+                fontSize: context.text(14),
+                fontWeight: FontWeight.w400,
+                color: AppColors.iconColor,
+              ),
             ),
           ),
         ),
