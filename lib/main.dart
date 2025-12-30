@@ -3,7 +3,7 @@ import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/AgeDetails/age_details_screen.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
-import 'package:looklabs/View/Home/home_screen.dart';
+import 'package:looklabs/View/SplahScreen/splash_screen.dart';
 import 'package:looklabs/ViewModel/age_details_view_model.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
@@ -19,6 +19,7 @@ import 'package:looklabs/ViewModel/profile_view_model.dart';
 import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:looklabs/ViewModel/purchase_view_model.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
+import 'package:looklabs/ViewModel/start_screen_view_model.dart';
 import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -47,12 +48,12 @@ void main() {
         ChangeNotifierProvider(create: (context) => MyAlbumViewModel()),
         ChangeNotifierProvider(create: (context) => AgeDetailsViewModel()),
         ChangeNotifierProvider(create: (context) => GenderViewModel()),
+        ChangeNotifierProvider(create: (context) => StartScreenViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-
-        // home: AgeDetailsScreen(),
-        initialRoute: RoutesName.SplashScreen,
+        home: AgeDetailsScreen(),
+        // initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     ),

@@ -26,4 +26,8 @@ class AppAssets {
   static const String homeIcon = "assets/bottomIcon/homeIcon.svg";
   static const String processingIcon = "assets/bottomIcon/progressIcon.svg";
   static const String settingIcon = "assets/bottomIcon/settingIcon.svg";
+
+  //Main Logo
+  static const String splashIcon = "assets/splash/splashLogo.svg";
+  static const String splashImage = "assets/splash/splashImage.png";
 }

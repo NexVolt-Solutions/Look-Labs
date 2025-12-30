@@ -40,6 +40,7 @@ class NormalText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (titleText != null)
           Text(
@@ -61,7 +62,7 @@ class NormalText extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: subColor ?? AppColors.headingColor,
+              color: subColor ?? AppColors.subHeadingColor,
               fontSize: subSize ?? context.text(14),
               fontWeight: subWeight ?? FontWeight.w400,
               fontFamily: 'Raleway',

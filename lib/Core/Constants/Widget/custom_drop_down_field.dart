@@ -91,60 +91,96 @@ class CustomDropdownFieldState extends State<CustomDropdownField> {
             /// Dropdown list (appears inside same styled container)
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              height: _isExpanded ? MediaQuery.sizeOf(context).height * 0.2 : 0,
-              child: Container(
-                padding: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  color: AppColors.backGroundColor,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(context.radius(16)),
-                  ),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.4),
-                    width: context.w(0.5),
-                  ),
-                  boxShadow: const [
-                    BoxShadow(
-                      offset: Offset(-2.5, -2.5),
-                      blurRadius: 5,
-                      color: AppColors.blurTopColor,
-                      inset: true,
-                    ),
-                    BoxShadow(
-                      offset: Offset(2.5, 2.5),
-                      blurRadius: 5,
-                      color: AppColors.blurBottomColor,
-                      inset: true,
-                    ),
-                  ],
+              height: _isExpanded
+                  ? context.h(54) + MediaQuery.sizeOf(context).height * 0.2
+                  : context.h(54),
+              decoration: BoxDecoration(
+                color: AppColors.backGroundColor,
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
                 ),
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: widget.items.length,
-                  itemBuilder: (context, index) {
-                    final value = widget.items[index];
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedValue = value;
-                          _isExpanded = false;
-                        });
-                        field.didChange(value);
-                        field.validate();
-                        widget.onSelected(value);
-                      },
-                      child: Padding(
-                        padding: context.padSym(h: 17, v: 12),
-                        child: NormalText(
-                          titleText: value,
-                          titleSize: context.text(16),
-                          titleWeight: FontWeight.w400,
-                          titleColor: AppColors.headingColor,
-                        ),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.4),
+                  width: context.w(0.5),
+                ),
+                boxShadow: const [
+                  BoxShadow(
+                    offset: Offset(-2.5, -2.5),
+                    blurRadius: 5,
+                    color: AppColors.blurTopColor,
+                    inset: true,
+                  ),
+                  BoxShadow(
+                    offset: Offset(2.5, 2.5),
+                    blurRadius: 5,
+                    color: AppColors.blurBottomColor,
+                    inset: true,
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  /// Header row
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _isExpanded = !_isExpanded;
+                      });
+                    },
+                    child: Container(
+                      height: context.h(54),
+                      padding: context.padSym(h: 17),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          NormalText(
+                            titleText: _selectedValue ?? widget.hintText ?? "",
+                            titleSize: context.text(16),
+                            titleWeight: FontWeight.w400,
+                            titleColor: _selectedValue == null
+                                ? AppColors.notSelectedColor
+                                : AppColors.headingColor,
+                          ),
+                          Icon(
+                            _isExpanded
+                                ? Icons.keyboard_arrow_up
+                                : Icons.keyboard_arrow_down,
+                            color: AppColors.headingColor,
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  if (_isExpanded)
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: widget.items.length,
+                        itemBuilder: (context, index) {
+                          final value = widget.items[index];
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedValue = value;
+                                _isExpanded = false;
+                              });
+                              widget.onSelected(value);
+                            },
+                            child: Padding(
+                              padding: context.padSym(h: 17, v: 12),
+                              child: NormalText(
+                                titleText: value,
+                                titleSize: context.text(16),
+                                titleWeight: FontWeight.w400,
+                                titleColor: AppColors.headingColor,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                ],
               ),
             ),
 

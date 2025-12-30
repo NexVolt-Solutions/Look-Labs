@@ -16,4 +16,5 @@ class RoutesName {
   static const String MyAlbumScreen = 'my_album_screen';
   static const String AgeDetailsScreen = 'age_details_screen';
   static const String GenderScreen = 'gender_screen';
+  static const String StartScreen = 'start_screen';
 }

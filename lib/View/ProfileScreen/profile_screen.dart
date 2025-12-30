@@ -1,3 +1,4 @@
+import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_check_box.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_drop_down_field.dart';
@@ -26,41 +27,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
-
           clipBehavior: Clip.hardEdge,
           children: [
-            SizedBox(height: context.h(20)),
-            NormalText(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Build Your Profile',
-              titleSize: context.text(20),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.headingColor,
-            ),
+            AppBarContainer(title: 'Profile Setup'),
             SizedBox(height: context.h(20)),
             NeuTextField(
-              label: 'Enter Name',
-              obscure: true,
+              label: 'What is your name?',
+              obscure: false,
               validatorType: 'name',
               hintText: 'Enter Name',
               keyboard: TextInputType.name,
             ),
             SizedBox(height: context.h(16)),
-            NeuTextField(
-              label: 'Enter Age',
-              obscure: true,
-              validatorType: 'phone',
-              hintText: 'Enter Age',
-              keyboard: TextInputType.name,
-            ),
-            SizedBox(height: context.h(16)),
-            CustomDropdownField(
-              hintText: "Select Age",
-              items: List.generate(100, (i) => "${i + 1} years"),
-              onSelected: (value) {
-                print("Selected Age: $value");
-              },
-            ),
 
             SizedBox(height: context.h(20)),
             NormalText(
