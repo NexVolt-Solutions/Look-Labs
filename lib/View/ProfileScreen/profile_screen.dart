@@ -1,5 +1,6 @@
 import 'package:looklabs/Core/Constants/Widget/custom_check_box.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
+import 'package:looklabs/Core/Constants/Widget/custom_drop_down_field.dart';
 import 'package:looklabs/Core/Constants/Widget/neu_text_fied.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
@@ -53,21 +54,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               keyboard: TextInputType.name,
             ),
             SizedBox(height: context.h(16)),
-            NeuTextField(
-              label: 'Enter Hight (cm)',
-              obscure: true,
-              validatorType: 'phone',
-              hintText: 'Enter Hight (cm)',
-              keyboard: TextInputType.name,
+            CustomDropdownField(
+              hintText: "Select Age",
+              items: List.generate(100, (i) => "${i + 1} years"),
+              onSelected: (value) {
+                print("Selected Age: $value");
+              },
             ),
-            SizedBox(height: context.h(16)),
-            NeuTextField(
-              label: 'Enter Weight (kg)',
-              obscure: true,
-              validatorType: 'phone',
-              hintText: 'Enter Weight (kg)',
-              keyboard: TextInputType.name,
-            ),
+
             SizedBox(height: context.h(20)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,46 +95,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-// class SteperContainer extends StatelessWidget {
-//   const SteperContainer({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Container(
-//           padding: context.padSym(h: 16, v: 16),
-//           decoration: BoxDecoration(
-//             color: AppColors.backGroundColor,
-//             shape: BoxShape.circle,
-//             border: Border.all(
-//               color: AppColors.pimaryColor,
-//               width: context.w(1.1),
-//             ),
-//             boxShadow: [
-//               BoxShadow(
-//                 offset: const Offset(1.1, 1.1),
-//                 color: AppColors.blurbottomColor,
-//                 blurRadius: 2.1,
-//               ),
-//               BoxShadow(
-//                 offset: const Offset(-1.1, -1.1),
-//                 color: AppColors.textColor,
-//                 blurRadius: 2.1,
-//               ),
-//             ],
-//           ),
-//           child: Container(
-//             padding: context.padSym(h: 4, v: 4),
-//             decoration: BoxDecoration(
-//               color: AppColors.pimaryColor,
-//               shape: BoxShape.circle,
-//             ),
-//           ),
-//         ),
-//         SizedBox(height: context.h(2)),
-//       ],
-//     );
-//   }
-// }

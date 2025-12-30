@@ -50,9 +50,9 @@ void main() {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: AgeDetailsScreen(),
 
-        // initialRoute: RoutesName.SplashScreen,
+        // home: AgeDetailsScreen(),
+        initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     ),
