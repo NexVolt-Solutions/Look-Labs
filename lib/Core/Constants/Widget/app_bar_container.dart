@@ -8,7 +8,9 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 
 class AppBarContainer extends StatelessWidget {
   final String? title;
-  const AppBarContainer({super.key, this.title});
+  final VoidCallback? onTap;
+
+  const AppBarContainer({super.key, this.title, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +22,7 @@ class AppBarContainer extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
+            onTap: onTap,
             child: Container(
               height: context.h(40),
               width: context.w(40),

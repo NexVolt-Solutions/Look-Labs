@@ -47,7 +47,7 @@ class _StartScreenState extends State<StartScreen> {
               child: CustomButton(
                 isEnabled: true,
                 onTap: () =>
-                    Navigator.pushNamed(context, RoutesName.ProfileScreen),
+                    Navigator.pushNamed(context, RoutesName.QuestionScreen),
                 text: 'Get Started',
                 colorText: AppColors.headingColor,
                 color: AppColors.white,

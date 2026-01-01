@@ -52,8 +52,7 @@ void main() {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: AgeDetailsScreen(),
-        // initialRoute: RoutesName.SplashScreen,
+        initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     ),
