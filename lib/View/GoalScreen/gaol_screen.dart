@@ -21,6 +21,14 @@ class _GaolScreenState extends State<GaolScreen> {
     final gaolScreenViewModel = Provider.of<GaolScreenViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
+
+      bottomNavigationBar: CustomButton(
+        isEnabled: true,
+        onTap: () => Navigator.pushNamed(context, RoutesName.OnBoardScreen),
+        text: 'Get Started',
+        color: AppColors.pimaryColor,
+        padding: context.padSym(v: 17),
+      ),
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
@@ -111,14 +119,6 @@ class _GaolScreenState extends State<GaolScreen> {
               },
             ),
             SizedBox(height: context.h(223)),
-            CustomButton(
-              isEnabled: true,
-              onTap: () =>
-                  Navigator.pushNamed(context, RoutesName.OnBoardScreen),
-              text: 'Get Started',
-              color: AppColors.pimaryColor,
-              padding: context.padSym(v: 17),
-            ),
           ],
         ),
       ),

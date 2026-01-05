@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/View/AgeDetails/age_details_screen.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
-import 'package:looklabs/View/SplahScreen/splash_screen.dart';
 import 'package:looklabs/ViewModel/age_details_view_model.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
@@ -52,7 +50,8 @@ void main() {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: RoutesName.SplashScreen,
+        home: BottomSheetBarScreen(),
+        // initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     ),

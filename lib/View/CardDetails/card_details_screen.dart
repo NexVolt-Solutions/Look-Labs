@@ -19,12 +19,22 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
+      bottomNavigationBar: CustomButton(
+        isEnabled: true,
+        onTap: () => Navigator.pushNamed(context, RoutesName.PurchaseScreen),
+        text: 'Proceed to Pay',
+        color: AppColors.buttonColor,
+        padding: context.padSym(v: 17),
+      ),
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
           clipBehavior: Clip.hardEdge,
           children: [
-            AppBarContainer(title: 'Card Details'),
+            AppBarContainer(
+              title: 'Card Details',
+              onTap: () => Navigator.pop(context),
+            ),
             SizedBox(height: context.h(30.89)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,16 +74,6 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
               validatorType: 'phone',
               hintText: 'Enter expiry date',
               keyboard: TextInputType.name,
-            ),
-
-            SizedBox(height: context.h(241)),
-            CustomButton(
-              isEnabled: true,
-              onTap: () =>
-                  Navigator.pushNamed(context, RoutesName.PurchaseScreen),
-              text: 'Proceed to Pay',
-              color: AppColors.buttonColor,
-              padding: context.padSym(v: 17),
             ),
           ],
         ),

@@ -17,13 +17,24 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
+      bottomNavigationBar: CustomButton(
+        isEnabled: true,
+        onTap: () =>
+            Navigator.pushNamed(context, RoutesName.SubscriptionPlanScreen),
+        text: 'Next',
+        color: AppColors.buttonColor,
+        padding: context.padSym(v: 17),
+      ),
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
           clipBehavior: Clip.hardEdge,
           children: [
             SizedBox(height: context.h(7.11)),
-            AppBarContainer(title: 'OnBoard'),
+            AppBarContainer(
+              title: 'OnBoard',
+              onTap: () => Navigator.pop(context),
+            ),
             SizedBox(height: context.h(44.89)),
             Container(
               height: context.h(594),
@@ -33,17 +44,6 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                 borderRadius: BorderRadius.circular(context.radius(12)),
                 shape: BoxShape.rectangle,
               ),
-            ),
-            SizedBox(height: context.h(22)),
-            CustomButton(
-              isEnabled: true,
-              onTap: () => Navigator.pushNamed(
-                context,
-                RoutesName.SubscriptionPlanScreen,
-              ),
-              text: 'Next',
-              color: AppColors.buttonColor,
-              padding: context.padSym(v: 17),
             ),
           ],
         ),

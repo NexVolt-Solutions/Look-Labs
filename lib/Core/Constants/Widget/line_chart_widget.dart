@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/chart_constants.dart';
 import 'package:looklabs/Core/Model/sales_data.dart';
 import 'package:looklabs/ViewModel/chart_view_model.dart';
@@ -24,7 +25,13 @@ class LineChartWidget extends StatelessWidget {
           dataSource: chartVM.chartData,
           xValueMapper: (data, _) => data.month,
           yValueMapper: (data, _) => data.sales,
+          markerSettings: MarkerSettings(
+            isVisible: true,
+
+            image: AssetImage(AppAssets.image),
+          ),
           dataLabelSettings: const DataLabelSettings(isVisible: true),
+          enableTooltip: true,
         ),
       ],
     );

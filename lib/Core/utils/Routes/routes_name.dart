@@ -18,4 +18,12 @@ class RoutesName {
   static const String GenderScreen = 'gender_screen';
   static const String StartScreen = 'start_screen';
   static const String QuestionScreen = 'question_screen';
+  static const String SkinCareScreen = 'skin_care_screen';
+  static const String HairCareScreen = 'hair_care_screen';
+  static const String WorkOutScreen = 'work_out_screen';
+  static const String DietScreen = 'diet_screen';
+  static const String FacialScreen = 'facial_screen';
+  static const String FashionScreen = 'fashion_screen';
+  static const String HeightScreen = 'height_screen';
+  static const String QuitPornScreen = 'quit_porn_screen';
 }

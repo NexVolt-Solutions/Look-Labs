@@ -8,6 +8,12 @@ import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
 import 'package:looklabs/View/CardDetails/card_details_screen.dart';
 import 'package:looklabs/View/GenderScreen/gender_screen.dart';
 import 'package:looklabs/View/GoalScreen/gaol_screen.dart';
+import 'package:looklabs/View/Home/Widget/Facial/facial.dart';
+import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/hair_care.dart';
+import 'package:looklabs/View/Home/Widget/Height/height.dart';
+import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn.dart';
+import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
 import 'package:looklabs/View/MyAlbum/my_album_screen.dart';
 import 'package:looklabs/View/OnBoard/on_board_screen.dart';
 import 'package:looklabs/View/Payment%20Details/payment_details_screen.dart';
@@ -96,6 +102,27 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => QuestionScreen(),
+        );
+      case RoutesName.SkinCareScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => SkinCare(),
+        );
+      case RoutesName.HairCareScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HairCare(),
+        );
+      case RoutesName.FacialScreen:
+        return MaterialPageRoute(settings: settings, builder: (_) => Facial());
+      case RoutesName.FashionScreen:
+        return MaterialPageRoute(settings: settings, builder: (_) => Fashion());
+      case RoutesName.HeightScreen:
+        return MaterialPageRoute(settings: settings, builder: (_) => Height());
+      case RoutesName.QuitPornScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => QuitPorn(),
         );
 
       default:

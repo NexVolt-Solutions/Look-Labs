@@ -1,52 +1,9 @@
-// import 'package:flutter/material.dart';
-
-// class ProfileViewModel extends ChangeNotifier {
-//   int currentStep = 0;
-//   int selectedIndex = -1;
-//   void selectPlan(int index) {
-//     selectedIndex = index;
-//     notifyListeners();
-//   }
-
-//   bool isPlanSelected(int index) {
-//     return selectedIndex == index;
-//   }
-
-//   List<String> genderName = ['Male', 'Female', 'Other'];
-
-//   final List<Map<String, dynamic>> questionData = [
-//     {
-//       "step": "Profile setup",
-//       'question': 'What is your gender?',
-//       'options': ['Male', 'Female', 'Other'],
-//     },
-//     {
-//       "step": "daily_lifestyle",
-//       "question": "How do you usually feel during the day?",
-//       "options": ["Low / tired", "Average", "Energetic"],
-//     },
-//   ];
-
-//   String selectedGender = '';
-//   void selectGender(String gender) {
-//     if (selectedGender == gender) {
-//       selectedGender = '';
-//     } else {
-//       selectedGender = gender;
-//     }
-//     notifyListeners();
-//   }
-// }
-
 import 'package:flutter/material.dart';
 
 class ProfileViewModel extends ChangeNotifier {
   final PageController pageController = PageController();
 
   int currentStep = 0;
-
-  /// 🔹 Har screen ke answers
-  /// screenIndex -> questionIndex -> selectedOptionIndex
   final Map<int, Map<int, int>> answers = {};
 
   void selectOption(int screen, int question, int option) {

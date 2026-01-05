@@ -66,6 +66,7 @@ class QuestionPage extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: context.h(18)),
               NormalText(
                 titleText: q['question'],
                 titleSize: context.text(14),
