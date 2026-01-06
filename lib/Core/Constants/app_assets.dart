@@ -21,11 +21,35 @@ class AppAssets {
   static const String backIcon = "assets/Icon/backIcon.svg";
   static const String image = "assets/Icon/image.jpg";
   static const String cameraIcon = "assets/Icon/cameraIcon.svg";
+  static const String editIcon = "assets/Icon/eiditIcon.svg";
 
   //Bottom AppBar Icon
   static const String homeIcon = "assets/bottomIcon/homeIcon.svg";
   static const String processingIcon = "assets/bottomIcon/progressIcon.svg";
   static const String settingIcon = "assets/bottomIcon/settingIcon.svg";
+
+  //Setting Icons
+  static const String nameIcon = "assets/settingIcon/nameIcon.svg";
+  static const String emailIcon = "assets/settingIcon/emailIcon.svg";
+  static const String ageIcon = "assets/settingIcon/ageIcon.svg";
+  static const String genderIcon = "assets/settingIcon/genderIcon.svg";
+  static const String paymentIcon = "assets/settingIcon/pymentIcon.svg";
+  static const String settingNotifIcon =
+      "assets/settingIcon/settingNotIcon.svg";
+  static const String settingPrivacyIcon = "assets/settingIcon/privacyIcon.svg";
+  static const String settingTermIcon = "assets/settingIcon/termIcon.svg";
+  static const String signOutIcon = "assets/settingIcon/signOut.svg";
+  static const String farwordIcon = "assets/settingIcon/farwordIcon.svg";
+
+  //Home Grid Images
+  static const String skinCare = "assets/home/SkinCare.jpg";
+  static const String hair = "assets/home/Hair.png";
+  static const String workOut = "assets/home/Workout.jpg";
+  static const String diet = "assets/home/Diet.jpg";
+  static const String facial = "assets/home/Facial.jpg";
+  static const String fashion = "assets/home/Fashion.png";
+  static const String height = "assets/home/Height.jpg";
+  static const String quitPorn = "assets/home/QuitPorn.jpg";
 
   //Main Logo
   static const String splashIcon = "assets/splash/splashLogo.svg";

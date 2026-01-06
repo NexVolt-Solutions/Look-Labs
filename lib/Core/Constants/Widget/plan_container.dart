@@ -5,35 +5,41 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 
 class PlanContainer extends StatelessWidget {
   /// Controls
-  final double height;
+  final double? height;
   final double? width;
 
   final bool? isSelected;
   final VoidCallback onTap;
+  final EdgeInsetsGeometry? padding;
+  final BorderRadius? radius;
 
   final Widget child;
 
   const PlanContainer({
     super.key,
-    required this.height,
+    this.height,
     this.width,
     required this.isSelected,
     required this.onTap,
     required this.child,
+    this.padding,
+    this.radius,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      behavior: HitTestBehavior.translucent,
       child: Container(
-        height: height,
-        width: width ?? double.infinity,
-        padding: context.padSym(h: 12),
+        padding:
+            padding ??
+            EdgeInsets.symmetric(
+              horizontal: context.w(20),
+              vertical: context.h(14),
+            ),
         margin: context.padSym(v: 10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(context.radius(10)),
+          borderRadius: radius ?? BorderRadius.circular(context.radius(10)),
           border: Border.all(
             color: isSelected!
                 ? AppColors.pimaryColor

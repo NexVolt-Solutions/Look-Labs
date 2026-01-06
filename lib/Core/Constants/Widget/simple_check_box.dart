@@ -6,11 +6,15 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 class SimpleCheckBox extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
 
   const SimpleCheckBox({
     super.key,
     required this.isSelected,
     required this.onTap,
+    this.padding,
+    this.margin,
   });
 
   @override
@@ -21,7 +25,7 @@ class SimpleCheckBox extends StatelessWidget {
       child: Container(
         height: context.h(26),
         width: context.w(26),
-        margin: context.padSym(v: 12),
+        // margin: margin ?? context.padSym(v: 12),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.white, width: context.w(0.5)),

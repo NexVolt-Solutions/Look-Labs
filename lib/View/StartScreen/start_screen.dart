@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
@@ -20,6 +19,14 @@ class _StartScreenState extends State<StartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pimaryColor,
+      bottomNavigationBar: CustomButton(
+        isEnabled: true,
+        onTap: () => Navigator.pushNamed(context, RoutesName.QuestionScreen),
+        text: 'Get Started',
+        colorText: AppColors.headingColor,
+        color: AppColors.white,
+        padding: context.padSym(v: 18.5, h: 124),
+      ),
       body: SafeArea(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -41,20 +48,7 @@ class _StartScreenState extends State<StartScreen> {
               subColor: AppColors.white,
               subAlign: TextAlign.center,
             ),
-            SizedBox(height: context.h(28)),
-            Padding(
-              padding: context.padSym(h: 20),
-              child: CustomButton(
-                isEnabled: true,
-                onTap: () =>
-                    Navigator.pushNamed(context, RoutesName.ProfileScreen),
-                text: 'Get Started',
-                colorText: AppColors.headingColor,
-                color: AppColors.white,
-                padding: context.padSym(v: 18.5, h: 124),
-              ),
-            ),
-            SizedBox(height: context.h(32)),
+            SizedBox(height: context.h(40)),
           ],
         ),
       ),

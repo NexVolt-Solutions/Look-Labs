@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/View/Home/home_screen.dart';
 import 'package:looklabs/View/Progress/progress_screen.dart';
+import 'package:looklabs/View/Setting/setting_screen.dart';
 
 class BottomSheetViewModel extends ChangeNotifier {
   int selectedIndex = 0;
@@ -11,11 +12,7 @@ class BottomSheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  final List<Widget> screen = [
-    HomeScreen(),
-    ProgressScreen(),
-    Center(child: Text("Setting Screen")),
-  ];
+  final List<Widget> screen = [HomeScreen(), ProgressScreen(), SettingScreen()];
 
   List<Map<String, dynamic>> bottomAppBarData = [
     {'name': 'Home', 'image': AppAssets.homeIcon},

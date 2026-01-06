@@ -24,6 +24,14 @@ class _AuthScreenState extends State<AuthScreen> {
     final authScreenViewMdel = Provider.of<AuthViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
+      bottomNavigationBar: CustomButton(
+        isEnabled: true,
+        onTap: () =>
+            Navigator.pushNamed(context, RoutesName.BottomSheetBarScreen),
+        text: 'Sign In',
+        color: AppColors.buttonColor,
+        padding: context.padSym(v: 17),
+      ),
       body: SafeArea(
         child: ListView(
           clipBehavior: Clip.hardEdge,
@@ -103,15 +111,6 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
               ],
-            ),
-            SizedBox(height: context.h(201)),
-            CustomButton(
-              isEnabled: true,
-              onTap: () =>
-                  Navigator.pushNamed(context, RoutesName.BottomSheetBarScreen),
-              text: 'Sign In',
-              color: AppColors.buttonColor,
-              padding: context.padSym(v: 17),
             ),
           ],
         ),

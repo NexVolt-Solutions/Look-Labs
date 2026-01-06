@@ -34,6 +34,8 @@ flutter:
     - assets/bottomIcon/
     - assets/Icon/
     - assets/splash/
+    - assets/home/
+    - assets/settingIcon/
 
   fonts:
     - family: Raleway

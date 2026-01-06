@@ -8,13 +8,19 @@ import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
 import 'package:looklabs/View/CardDetails/card_details_screen.dart';
 import 'package:looklabs/View/GenderScreen/gender_screen.dart';
 import 'package:looklabs/View/GoalScreen/gaol_screen.dart';
+import 'package:looklabs/View/Home/Widget/Facial/facial.dart';
+import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/hair_care.dart';
+import 'package:looklabs/View/Home/Widget/Height/height.dart';
+import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn.dart';
+import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
 import 'package:looklabs/View/MyAlbum/my_album_screen.dart';
 import 'package:looklabs/View/OnBoard/on_board_screen.dart';
 import 'package:looklabs/View/Payment%20Details/payment_details_screen.dart';
-import 'package:looklabs/View/ProfileScreen/profile_screen.dart';
 import 'package:looklabs/View/HealtDetailsScreen/healt_details_screen.dart';
 import 'package:looklabs/View/Progress/progress_screen.dart';
 import 'package:looklabs/View/Purchase/purchase_screen.dart';
+import 'package:looklabs/View/QuestionScreen/question_screen.dart';
 import 'package:looklabs/View/SplahScreen/splash_screen.dart';
 import 'package:looklabs/View/StartScreen/start_screen.dart';
 import 'package:looklabs/View/Subscription%20Plan/subscription_plan_screen.dart';
@@ -26,11 +32,6 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => SplashScreen(),
-        );
-      case RoutesName.ProfileScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => ProfileScreen(),
         );
       case RoutesName.HealtDetailsScreen:
         return MaterialPageRoute(
@@ -87,11 +88,6 @@ class Routes {
           settings: settings,
           builder: (_) => MyAlbumScreen(),
         );
-      // case RoutesName.AgeDetailsScreen:
-      //   return MaterialPageRoute(
-      //     settings: settings,
-      //     builder: (_) => AgeDetailsScreen(),
-      //   );
       case RoutesName.GenderScreen:
         return MaterialPageRoute(
           settings: settings,
@@ -101,6 +97,32 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => StartScreen(),
+        );
+      case RoutesName.QuestionScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => QuestionScreen(),
+        );
+      case RoutesName.SkinCareScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => SkinCare(),
+        );
+      case RoutesName.HairCareScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HairCare(),
+        );
+      case RoutesName.FacialScreen:
+        return MaterialPageRoute(settings: settings, builder: (_) => Facial());
+      case RoutesName.FashionScreen:
+        return MaterialPageRoute(settings: settings, builder: (_) => Fashion());
+      case RoutesName.HeightScreen:
+        return MaterialPageRoute(settings: settings, builder: (_) => Height());
+      case RoutesName.QuitPornScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => QuitPorn(),
         );
 
       default:

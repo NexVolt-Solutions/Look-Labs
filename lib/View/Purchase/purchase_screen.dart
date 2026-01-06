@@ -26,6 +26,13 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
+      bottomNavigationBar: CustomButton(
+        isEnabled: true,
+        onTap: () => Navigator.pushNamed(context, RoutesName.AuthScreen),
+        text: 'Next',
+        color: AppColors.buttonColor,
+        padding: context.padSym(v: 17),
+      ),
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
@@ -63,8 +70,8 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
               final plan = purchaseViewModel.purchaseCardData[index];
               final isSelected = plan['isSelected'] as bool;
               return PlanContainer(
-                height: context.h(50),
                 isSelected: isSelected,
+                // padding: context.padSym(h: 24, v: 12),
                 onTap: () => purchaseViewModel.selectPayment(index),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,14 +100,6 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                 ),
               );
             }),
-            SizedBox(height: context.h(309)),
-            CustomButton(
-              isEnabled: true,
-              onTap: () => Navigator.pushNamed(context, RoutesName.AuthScreen),
-              text: 'Next',
-              color: AppColors.buttonColor,
-              padding: context.padSym(v: 17),
-            ),
           ],
         ),
       ),

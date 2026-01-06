@@ -25,11 +25,21 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
+      bottomNavigationBar: CustomButton(
+        isEnabled: true,
+        onTap: () => Navigator.pushNamed(context, RoutesName.CardDetailsScreen),
+        text: 'Continue & Subscribe',
+        color: AppColors.buttonColor,
+        padding: context.padSym(v: 17),
+      ),
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
           children: [
-            AppBarContainer(title: 'Subscription Plan'),
+            AppBarContainer(
+              title: 'Subscription Plan',
+              onTap: () => Navigator.pop(context),
+            ),
             SizedBox(height: context.h(30.89)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,15 +131,6 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                 ),
               );
             }),
-            SizedBox(height: context.h(42)),
-            CustomButton(
-              isEnabled: true,
-              onTap: () =>
-                  Navigator.pushNamed(context, RoutesName.CardDetailsScreen),
-              text: 'Continue & Subscribe',
-              color: AppColors.buttonColor,
-              padding: context.padSym(v: 17),
-            ),
           ],
         ),
       ),
