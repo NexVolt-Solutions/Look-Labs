@@ -21,39 +21,45 @@ class AppBarContainer extends StatelessWidget {
       ),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: onTap,
-            child: Container(
-              height: context.h(40),
-              width: context.w(40),
-              decoration: BoxDecoration(
-                color: AppColors.backGroundColor,
-                borderRadius: BorderRadius.circular(context.radius(16)),
-                border: Border.all(
-                  color: AppColors.white.withOpacity(0.2),
-                  width: 1.5,
+          Row(
+            children: [
+              GestureDetector(
+                onTap: onTap,
+                child: Container(
+                  height: context.h(40),
+                  width: context.w(40),
+                  decoration: BoxDecoration(
+                    color: AppColors.backGroundColor,
+                    borderRadius: BorderRadius.circular(context.radius(16)),
+                    border: Border.all(
+                      color: AppColors.white.withOpacity(0.2),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.arrowBlurColor,
+                        offset: const Offset(5, 5),
+                        blurRadius: 5,
+                      ),
+                      BoxShadow(
+                        color: AppColors.customContinerColorDown,
+                        offset: const Offset(-5, -5),
+                        blurRadius: 30,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      AppAssets.backIcon,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.arrowBlurColor,
-                    offset: const Offset(5, 5),
-                    blurRadius: 5,
-                  ),
-                  BoxShadow(
-                    color: AppColors.customContinerColorDown,
-                    offset: const Offset(-5, -5),
-                    blurRadius: 30,
-                  ),
-                ],
               ),
-              child: Center(
-                child: SvgPicture.asset(AppAssets.backIcon, fit: BoxFit.fill),
-              ),
-            ),
+            ],
           ),
-          SizedBox(width: context.w(86)),
+          // SizedBox(width: context.w(86)),
           NormalText(
-            crossAxisAlignment: CrossAxisAlignment.center,
             titleText: title!,
             titleSize: context.text(20),
             titleWeight: FontWeight.w600,

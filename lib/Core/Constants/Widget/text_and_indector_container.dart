@@ -10,10 +10,10 @@ class TextAndIndectorContiner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: context.h(132),
-      width: context.w(158),
+      padding: context.padSym(h: 25, v: 13),
+      margin: context.padSym(h: 10, v: 10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.radius(10)),
+        borderRadius: BorderRadius.circular(context.radius(21)),
         color: AppColors.backGroundColor,
         boxShadow: [
           BoxShadow(
@@ -54,41 +54,43 @@ class TextAndIndectorContiner extends StatelessWidget {
           SizedBox(height: context.h(10)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-
             children: [
-              Container(
-                height: context.h(10),
-                width: context.w(92),
-                padding: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(context.radius(20)),
-                  color: AppColors.backGroundColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.customContainerColorUp.withOpacity(0.4),
-                      offset: const Offset(5, 5),
-                      blurRadius: 5,
-                      inset: true,
+              Expanded(
+                child: Container(
+                  height: context.h(10),
+                  // padding: context.padSym(h: 15.3),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(context.radius(20)),
+                    color: AppColors.backGroundColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.customContainerColorUp.withOpacity(
+                          0.4,
+                        ),
+                        offset: const Offset(5, 5),
+                        blurRadius: 5,
+                        inset: true,
+                      ),
+                      BoxShadow(
+                        color: AppColors.customContinerColorDown.withOpacity(
+                          0.4,
+                        ),
+                        offset: const Offset(-5, -5),
+                        blurRadius: 5,
+                        inset: true,
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(context.radius(20)),
+                    child: LinearPercentIndicator(
+                      padding: EdgeInsets.zero,
+                      lineHeight: context.h(8),
+                      percent: 0.5,
+                      backgroundColor: AppColors.backGroundColor,
+                      progressColor: AppColors.pimaryColor,
+                      barRadius: Radius.circular(context.radius(20)),
                     ),
-                    BoxShadow(
-                      color: AppColors.customContinerColorDown.withOpacity(0.4),
-                      offset: const Offset(-5, -5),
-                      blurRadius: 5,
-                      inset: true,
-                    ),
-                  ],
-                ),
-
-                /// 🔹 Progress inside 40 height
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(context.radius(20)),
-                  child: LinearPercentIndicator(
-                    padding: EdgeInsets.zero,
-                    lineHeight: context.h(8),
-                    percent: 0.5,
-                    backgroundColor: AppColors.backGroundColor,
-                    progressColor: AppColors.pimaryColor,
-                    barRadius: Radius.circular(context.radius(20)),
                   ),
                 ),
               ),

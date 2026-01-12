@@ -22,6 +22,7 @@ class AppAssets {
   static const String image = "assets/Icon/image.jpg";
   static const String cameraIcon = "assets/Icon/cameraIcon.svg";
   static const String editIcon = "assets/Icon/eiditIcon.svg";
+  static const String starIcon = "assets/Icon/star.svg";
 
   //Bottom AppBar Icon
   static const String homeIcon = "assets/bottomIcon/homeIcon.svg";
@@ -40,6 +41,10 @@ class AppAssets {
   static const String settingTermIcon = "assets/settingIcon/termIcon.svg";
   static const String signOutIcon = "assets/settingIcon/signOut.svg";
   static const String farwordIcon = "assets/settingIcon/farwordIcon.svg";
+  static const String nightIcon = "assets/Icon/nightIcon.svg";
+  static const String Icon = "assets/Icon/star.svg";
+  static const String dropIcon = "assets/Icon/dropIcon.svg";
+  static const String sunIcon = "assets/Icon/sunIcon.svg";
 
   //Home Grid Images
   static const String skinCare = "assets/home/SkinCare.jpg";
@@ -50,6 +55,9 @@ class AppAssets {
   static const String fashion = "assets/home/Fashion.png";
   static const String height = "assets/home/Height.jpg";
   static const String quitPorn = "assets/home/QuitPorn.jpg";
+  static const String serum = "assets/Icon/serum.png";
+  static const String shampoo = "assets/Icon/shampoo.png";
+  static const String foam = "assets/Icon/foam.png";
 
   //Main Logo
   static const String splashIcon = "assets/splash/splashLogo.svg";

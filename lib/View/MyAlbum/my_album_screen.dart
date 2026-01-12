@@ -21,7 +21,12 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
           clipBehavior: Clip.hardEdge,
           padding: context.padSym(h: 20),
           children: [
-            AppBarContainer(title: 'My Album'),
+            AppBarContainer(
+              title: 'My Album',
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
             SizedBox(height: context.h(25)),
             SizedBox(
               child: GridView.builder(
