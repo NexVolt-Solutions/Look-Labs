@@ -36,224 +36,179 @@ class TopProduct extends StatelessWidget {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(20)),
-            PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
-              isSelected: false,
-              onTap: () {},
-              child: ProductDetailWidget(
-                topProductViewModel: topProductViewModel,
+            SizedBox(height: context.h(8)),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.w(12),
+                vertical: context.h(12),
+              ),
+              margin: context.padSym(v: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(context.radius(10)),
+                border: Border.all(
+                  color: AppColors.backGroundColor,
+                  width: context.w(1.5),
+                ),
+                color: AppColors.backGroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.customContainerColorUp.withOpacity(0.4),
+                    offset: const Offset(5, 5),
+                    blurRadius: 5,
+                  ),
+                  BoxShadow(
+                    color: AppColors.customContinerColorDown.withOpacity(0.4),
+                    offset: const Offset(-5, -5),
+                    blurRadius: 5,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: context.padSym(h: 4, v: 4),
+                        // height: context.h(40),
+                        // width: context.w(40),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            context.radius(10),
+                          ),
+                          border: Border.all(
+                            color: AppColors.backGroundColor,
+                            width: context.w(1.5),
+                          ),
+                          color: AppColors.backGroundColor,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.customContainerColorUp
+                                  .withOpacity(0.4),
+                              offset: const Offset(5, 5),
+                              blurRadius: 5,
+                            ),
+                            BoxShadow(
+                              color: AppColors.customContinerColorDown
+                                  .withOpacity(0.4),
+                              offset: const Offset(-5, -5),
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            AppAssets.dropIcon,
+                            height: context.h(24),
+                            width: context.w(24),
+                            fit: BoxFit.scaleDown,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: context.padSym(h: 6, v: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            context.radius(10),
+                          ),
+                          border: Border.all(
+                            color: AppColors.backGroundColor,
+                            width: context.w(1.5),
+                          ),
+                          color: AppColors.backGroundColor,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.customContainerColorUp
+                                  .withOpacity(0.4),
+                              offset: const Offset(5, 5),
+                              blurRadius: 5,
+                            ),
+                            BoxShadow(
+                              color: AppColors.customContinerColorDown
+                                  .withOpacity(0.4),
+                              offset: const Offset(-5, -5),
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              AppAssets.nightIcon,
+                              height: context.h(24),
+                              width: context.w(24),
+                              color: AppColors.iconColor,
+                              fit: BoxFit.scaleDown,
+                            ),
+                            NormalText(
+                              titleText: 'PM',
+                              titleColor: AppColors.iconColor,
+                              titleSize: context.text(10),
+                              titleWeight: FontWeight.w500,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: context.h(12)),
+                  NormalText(
+                    titleText: 'title',
+                    titleColor: AppColors.subHeadingColor,
+                    titleSize: context.text(16),
+                    titleWeight: FontWeight.w600,
+                    sizeBoxheight: context.h(12),
+                    subText: 'hhhhhhhhhhhhhhh',
+                    subColor: AppColors.subHeadingColor,
+                    subSize: context.text(12),
+                    subWeight: FontWeight.w500,
+                  ),
+                  SizedBox(height: context.h(12)),
+                  Row(
+                    children: List.generate(
+                      topProductViewModel.scalpTags.length,
+                      (index) {
+                        return PlanContainer(
+                          isSelected: false,
+                          onTap: () {},
+                          child: NormalText(
+                            titleText: topProductViewModel.scalpTags[index],
+                            titleColor: AppColors.subHeadingColor,
+                            titleSize: context.text(10),
+                            titleWeight: FontWeight.w600,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: context.h(12)),
+                  PlanContainer(
+                    isSelected: false,
+                    onTap: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        NormalText(
+                          titleText: 'View Details',
+                          titleColor: AppColors.subHeadingColor,
+                          titleSize: context.text(14),
+                          titleWeight: FontWeight.w500,
+                        ),
+                        SizedBox(width: context.w(4)),
+                        Icon(Icons.arrow_forward_ios, size: 20),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: context.h(16)),
-            NormalText(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'Saftey Tips:',
-              titleSize: context.text(18),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.headingColor,
-            ),
+
             SizedBox(height: context.h(12)),
           ],
         ),
       ),
-    );
-  }
-}
-
-class ProductDetailWidget extends StatelessWidget {
-  const ProductDetailWidget({super.key, required this.topProductViewModel});
-
-  final TopProductViewModel topProductViewModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                padding: context.padSym(h: 4, v: 4),
-                // height: context.h(40),
-                // width: context.w(40),
-                decoration: BoxDecoration(
-                  color: AppColors.backGroundColor,
-                  borderRadius: BorderRadius.circular(context.radius(10)),
-                  border: Border.all(
-                    color: AppColors.white.withOpacity(0.2),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.arrowBlurColor,
-                      offset: const Offset(5, 5),
-                      blurRadius: 5,
-                    ),
-                    BoxShadow(
-                      color: AppColors.customContinerColorDown,
-                      offset: const Offset(-5, -5),
-                      blurRadius: 30,
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    AppAssets.dropIcon,
-                    height: context.h(24),
-                    width: context.w(24),
-                    fit: BoxFit.scaleDown,
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                padding: context.padSym(h: 6, v: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.backGroundColor,
-                  borderRadius: BorderRadius.circular(context.radius(10)),
-                  border: Border.all(
-                    color: AppColors.white.withOpacity(0.2),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.arrowBlurColor,
-                      offset: const Offset(5, 5),
-                      blurRadius: 5,
-                    ),
-                    BoxShadow(
-                      color: AppColors.customContinerColorDown,
-                      offset: const Offset(-5, -5),
-                      blurRadius: 30,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      AppAssets.nightIcon,
-                      height: context.h(24),
-                      width: context.w(24),
-                      color: AppColors.iconColor,
-                      fit: BoxFit.scaleDown,
-                    ),
-                    NormalText(
-                      titleText: 'PM',
-                      titleColor: AppColors.iconColor,
-                      titleSize: context.text(10),
-                      titleWeight: FontWeight.w500,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: context.h(12)),
-        NormalText(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          titleText: 'Oil-Control Shampoo',
-          titleColor: AppColors.subHeadingColor,
-          titleSize: context.text(16),
-          titleWeight: FontWeight.w500,
-          sizeBoxheight: context.h(12),
-          subText: 'Controls excess oil while keeping scalp healthy',
-          subColor: AppColors.subHeadingColor,
-          subSize: context.text(12),
-          subWeight: FontWeight.w600,
-        ),
-        SizedBox(height: context.h(12)),
-        Row(
-          children: List.generate(topProductViewModel.scalpTags.length, (
-            index,
-          ) {
-            return Padding(
-              padding: EdgeInsets.only(
-                right: index == topProductViewModel.scalpTags.length - 1
-                    ? 0
-                    : context.w(8),
-              ),
-              child: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  padding: context.padSym(h: 8, v: 6),
-                  decoration: BoxDecoration(
-                    color: AppColors.backGroundColor,
-                    borderRadius: BorderRadius.circular(context.radius(10)),
-                    border: Border.all(
-                      color: AppColors.white.withOpacity(0.2),
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.arrowBlurColor,
-                        offset: const Offset(5, 5),
-                        blurRadius: 5,
-                      ),
-                      BoxShadow(
-                        color: AppColors.customContinerColorDown,
-                        offset: const Offset(-5, -5),
-                        blurRadius: 30,
-                      ),
-                    ],
-                  ),
-                  child: NormalText(
-                    titleText: topProductViewModel.scalpTags[index],
-                    titleColor: AppColors.subHeadingColor,
-                    titleSize: context.text(10),
-                    titleWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            );
-          }),
-        ),
-        SizedBox(height: context.h(12)),
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            padding: context.padSym(h: 103, v: 10),
-            decoration: BoxDecoration(
-              color: AppColors.backGroundColor,
-              borderRadius: BorderRadius.circular(context.radius(10)),
-              border: Border.all(
-                color: AppColors.white.withOpacity(0.2),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.arrowBlurColor,
-                  offset: const Offset(5, 5),
-                  blurRadius: 5,
-                ),
-                BoxShadow(
-                  color: AppColors.customContinerColorDown,
-                  offset: const Offset(-5, -5),
-                  blurRadius: 30,
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                NormalText(
-                  titleText: 'View Details',
-                  titleColor: AppColors.subHeadingColor,
-                  titleSize: context.text(14),
-                  titleWeight: FontWeight.w500,
-                ),
-                SizedBox(width: context.w(4)),
-                Icon(Icons.arrow_forward_ios, size: 20),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
