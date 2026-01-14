@@ -19,9 +19,9 @@ class TextAndIndectorContiner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: context.padSym(h: 25, v: 13),
-      margin: context.padSym(h: 10, v: 10),
+      margin: context.padSym(h: 8, v: 8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.radius(21)),
+        borderRadius: BorderRadius.circular(context.radius(16)),
         color: AppColors.backGroundColor,
         boxShadow: [
           BoxShadow(
@@ -50,7 +50,6 @@ class TextAndIndectorContiner extends StatelessWidget {
               color: AppColors.notSelectedColor,
             ),
           ),
-          SizedBox(height: context.h(10)),
           Text(
             subTitle ?? '',
             style: TextStyle(
@@ -59,7 +58,6 @@ class TextAndIndectorContiner extends StatelessWidget {
               color: AppColors.subHeadingColor,
             ),
           ),
-          SizedBox(height: context.h(10)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

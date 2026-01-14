@@ -29,7 +29,6 @@ class _SkinCareState extends State<SkinCare> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.ReviewScansScreen);
           } else {
             vm.next();
           }
