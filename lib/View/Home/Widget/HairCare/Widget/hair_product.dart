@@ -79,14 +79,14 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/ViewModel/recommended_product_view_model.dart';
 import 'package:provider/provider.dart';
 
-class Product extends StatefulWidget {
-  const Product({super.key});
+class HairProduct extends StatefulWidget {
+  const HairProduct({super.key});
 
   @override
-  State<Product> createState() => _ProductState();
+  State<HairProduct> createState() => _HairProductState();
 }
 
-class _ProductState extends State<Product> {
+class _HairProductState extends State<HairProduct> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<RecommendedProductViewModel>(context);

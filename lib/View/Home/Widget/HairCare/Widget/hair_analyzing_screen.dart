@@ -8,14 +8,14 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 
-class AnalyzingScreen extends StatefulWidget {
-  const AnalyzingScreen({super.key});
+class HairAnalyzingScreen extends StatefulWidget {
+  const HairAnalyzingScreen({super.key});
 
   @override
-  State<AnalyzingScreen> createState() => _AnalyzingScreenState();
+  State<HairAnalyzingScreen> createState() => _HairAnalyzingScreenState();
 }
 
-class _AnalyzingScreenState extends State<AnalyzingScreen> {
+class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

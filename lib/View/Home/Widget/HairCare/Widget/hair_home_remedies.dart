@@ -6,8 +6,8 @@ import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
-class HomeRemedies extends StatelessWidget {
-  const HomeRemedies({super.key});
+class HairHomeRemedies extends StatelessWidget {
+  const HairHomeRemedies({super.key});
 
   @override
   Widget build(BuildContext context) {

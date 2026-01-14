@@ -13,11 +13,11 @@ import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/hair_care.dart';
 import 'package:looklabs/View/Home/Widget/Height/height.dart';
 import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn.dart';
-import 'package:looklabs/View/Home/Widget/HairCare/Widget/analyzing_screen.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_analyzing_screen.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/daily_hair_care_routine.dart';
-import 'package:looklabs/View/Home/Widget/HairCare/Widget/home_remedies.dart';
-import 'package:looklabs/View/Home/Widget/HairCare/Widget/product.dart';
-import 'package:looklabs/View/Home/Widget/HairCare/Widget/review_scans.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_home_remedies.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_product.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_review_scans.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/top_product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
 import 'package:looklabs/View/Home/Widget/WorkOut/work_out.dart';
@@ -138,12 +138,12 @@ class Routes {
       case RoutesName.ReviewScansScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => ReviewScans(),
+          builder: (_) => HairReviewScans(),
         );
       case RoutesName.AnalyzingScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => AnalyzingScreen(),
+          builder: (_) => HairAnalyzingScreen(),
         );
       case RoutesName.DailyHairCareRoutineScreen:
         return MaterialPageRoute(
@@ -153,7 +153,7 @@ class Routes {
       case RoutesName.HomeRemediesScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => HomeRemedies(),
+          builder: (_) => HairHomeRemedies(),
         );
       case RoutesName.TopProductScreen:
         return MaterialPageRoute(
@@ -161,7 +161,10 @@ class Routes {
           builder: (_) => TopProduct(),
         );
       case RoutesName.ProductScreen:
-        return MaterialPageRoute(settings: settings, builder: (_) => Product());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HairProduct(),
+        );
 
       default:
         return MaterialPageRoute(

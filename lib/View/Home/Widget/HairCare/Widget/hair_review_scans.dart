@@ -7,14 +7,14 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 
-class ReviewScans extends StatefulWidget {
-  const ReviewScans({super.key});
+class HairReviewScans extends StatefulWidget {
+  const HairReviewScans({super.key});
 
   @override
-  State<ReviewScans> createState() => _ReviewScansState();
+  State<HairReviewScans> createState() => _HairReviewScansState();
 }
 
-class _ReviewScansState extends State<ReviewScans> {
+class _HairReviewScansState extends State<HairReviewScans> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
