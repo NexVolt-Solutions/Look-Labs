@@ -5,7 +5,15 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class TextAndIndectorContiner extends StatelessWidget {
-  const TextAndIndectorContiner({super.key});
+  final String? title;
+  final String? subTitle;
+  final String? pers;
+  const TextAndIndectorContiner({
+    super.key,
+    this.title,
+    this.subTitle,
+    this.pers,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +43,7 @@ class TextAndIndectorContiner extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Density',
+            title ?? '',
             style: TextStyle(
               fontSize: context.text(16.32),
               fontWeight: FontWeight.w600,
@@ -44,7 +52,7 @@ class TextAndIndectorContiner extends StatelessWidget {
           ),
           SizedBox(height: context.h(10)),
           Text(
-            'Height',
+            subTitle ?? '',
             style: TextStyle(
               fontSize: context.text(16.32),
               fontWeight: FontWeight.w600,
@@ -96,7 +104,7 @@ class TextAndIndectorContiner extends StatelessWidget {
               ),
               SizedBox(width: context.w(8)),
               Text(
-                '5%',
+                '${pers}%',
                 style: TextStyle(
                   fontSize: context.text(12),
                   fontWeight: FontWeight.w600,

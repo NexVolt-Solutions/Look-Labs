@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/View/AgeDetails/age_details_screen.dart';
 import 'package:looklabs/View/Auth/auth_screen.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
 import 'package:looklabs/View/CardDetails/card_details_screen.dart';
@@ -17,6 +16,7 @@ import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/analyzing_screen.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/daily_hair_care_routine.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/home_remedies.dart';
+import 'package:looklabs/View/Home/Widget/SkinCare/Widget/product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/review_scans.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/top_product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
@@ -160,6 +160,8 @@ class Routes {
           settings: settings,
           builder: (_) => TopProduct(),
         );
+      case RoutesName.ProductScreen:
+        return MaterialPageRoute(settings: settings, builder: (_) => Product());
 
       default:
         return MaterialPageRoute(

@@ -58,9 +58,10 @@ class NormalText extends StatelessWidget {
         SizedBox(height: sizeBoxheight),
         if (subText != null)
           Text(
-            subText!,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+            subText ?? '',
+            softWrap: true,
+            overflow: TextOverflow.visible,
+            maxLines: null,
             style: TextStyle(
               color: subColor ?? AppColors.subHeadingColor,
               fontSize: subSize ?? context.text(14),

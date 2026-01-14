@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
-import 'package:looklabs/ViewModel/age_details_view_model.dart';
+import 'package:looklabs/View/Home/Widget/SkinCare/Widget/product.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
@@ -23,6 +23,7 @@ import 'package:looklabs/ViewModel/profile_view_model.dart';
 import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:looklabs/ViewModel/purchase_view_model.dart';
 import 'package:looklabs/ViewModel/quit_porn_view_model.dart';
+import 'package:looklabs/ViewModel/recommended_product_view_model.dart';
 import 'package:looklabs/ViewModel/skin_care_view_model.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
 import 'package:looklabs/ViewModel/start_screen_view_model.dart';
@@ -54,7 +55,6 @@ void main() {
         ChangeNotifierProvider(create: (context) => ProgressViewModel()),
         ChangeNotifierProvider(create: (context) => ChartViewModel()),
         ChangeNotifierProvider(create: (context) => MyAlbumViewModel()),
-        ChangeNotifierProvider(create: (context) => AgeDetailsViewModel()),
         ChangeNotifierProvider(create: (context) => GenderViewModel()),
         ChangeNotifierProvider(create: (context) => StartScreenViewModel()),
         ChangeNotifierProvider(create: (context) => SkinCareViewModel()),
@@ -69,11 +69,14 @@ void main() {
           create: (context) => DailyHairCareRoutineViewModel(),
         ),
         ChangeNotifierProvider(create: (context) => TopProductViewModel()),
+        ChangeNotifierProvider(
+          create: (context) => RecommendedProductViewModel(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: BottomSheetBarScreen(),
-        // initialRoute: RoutesName.SplashScreen,
+        // home: Product(),
+        initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     ),

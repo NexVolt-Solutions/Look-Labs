@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/Widget/simple_check_box.dart';
@@ -47,46 +46,64 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
               },
             ),
             SizedBox(height: context.h(24)),
-            Row(
-              children: [
-                SvgPicture.asset(
-                  AppAssets.starIcon,
-                  height: context.h(24),
-                  width: context.w(24),
-                  color: AppColors.pimaryColor,
-                  fit: BoxFit.scaleDown,
-                ),
-                SizedBox(width: context.w(8)),
-                NormalText(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  titleText: 'Analyzing your hair ',
-                  titleSize: context.text(18),
-                  titleWeight: FontWeight.w600,
-                  titleColor: AppColors.headingColor,
-                ),
-              ],
-            ),
             SizedBox(
-              height: context.h(290),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  // mainAxisSpacing: 16,
-                  // crossAxisSpacing: 16,
-                  // mainAxisExtent: 2,
-                  childAspectRatio: 4 / 3,
-                ),
-                itemCount: 4,
-                // homeViewModel.gridData.length,
-                itemBuilder: (context, index) {
-                  // final item = homeViewModel.gridData[index];
-                  return TextAndIndectorContiner();
+              height: context.h(350),
+              child: PageView.builder(
+                itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
+                itemBuilder: (context, pageIndex) {
+                  final pageData =
+                      dailyHairCareRoutineViewModel.indicatorPages[pageIndex];
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            AppAssets.starIcon,
+                            height: context.h(24),
+                            width: context.w(24),
+                            color: AppColors.pimaryColor,
+                          ),
+                          SizedBox(width: context.w(8)),
+                          NormalText(
+                            titleText: pageIndex == 0
+                                ? 'Hair Attributes'
+                                : pageIndex == 1
+                                ? 'Hair Health'
+                                : 'Concerns Analysis',
+                            titleSize: context.text(18),
+                            titleWeight: FontWeight.w600,
+                            titleColor: AppColors.headingColor,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: context.h(12)),
+
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 4 / 3,
+                            ),
+                        itemCount: pageData.length,
+                        itemBuilder: (context, index) {
+                          final item = pageData[index];
+                          return TextAndIndectorContiner(
+                            title: item['title'],
+                            subTitle: item['subTitle'],
+                            pers: item['pers'],
+                          );
+                        },
+                      ),
+                    ],
+                  );
                 },
               ),
             ),
+
             SizedBox(height: context.h(12)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,

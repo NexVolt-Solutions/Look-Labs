@@ -97,25 +97,29 @@ class HomeRemedies extends StatelessWidget {
               titleColor: AppColors.headingColor,
             ),
             SizedBox(height: context.h(12)),
-            ...List.generate(3, (index) {
+            ...List.generate(2, (index) {
               return Padding(
-                padding: context.padSym(v: 10),
+                padding: EdgeInsets.only(bottom: context.h(6)),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: context.h(4),
-                      width: context.w(4),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.pimaryColor,
+                    Text(
+                      '• ', // Dot bullet
+                      style: TextStyle(
+                        fontSize: context.text(12),
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.subHeadingColor,
                       ),
                     ),
-                    SizedBox(width: context.w(10)),
-                    NormalText(
-                      titleText: 'Dry and flaky scalp patches',
-                      titleSize: context.text(16),
-                      titleWeight: FontWeight.w400,
-                      titleColor: AppColors.subHeadingColor,
+                    Expanded(
+                      child: Text(
+                        'AM or PM (during hair wash)',
+                        style: TextStyle(
+                          fontSize: context.text(12),
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.subHeadingColor,
+                        ),
+                      ),
                     ),
                   ],
                 ),

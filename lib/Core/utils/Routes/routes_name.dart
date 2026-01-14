@@ -31,4 +31,5 @@ class RoutesName {
   static const String DailyHairCareRoutineScreen = 'daily_hair_routine_screen';
   static const String HomeRemediesScreen = 'home_remedies_screen';
   static const String TopProductScreen = 'top_product_screen';
+  static const String ProductScreen = 'product_screen';
 }

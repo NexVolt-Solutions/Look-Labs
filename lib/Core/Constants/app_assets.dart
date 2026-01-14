@@ -45,6 +45,7 @@ class AppAssets {
   static const String Icon = "assets/Icon/star.svg";
   static const String dropIcon = "assets/Icon/dropIcon.svg";
   static const String sunIcon = "assets/Icon/sunIcon.svg";
+  static const String sugIcon = "assets/Icon/sug.svg";
 
   //Home Grid Images
   static const String skinCare = "assets/home/SkinCare.jpg";
