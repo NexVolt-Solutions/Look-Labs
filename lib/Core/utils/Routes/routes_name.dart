@@ -38,4 +38,5 @@ class RoutesName {
   static const String SkinHomeRemediesScreen = 'skin_home_remedies_screen';
   static const String SkinTopProductScreen = 'skin_top_product_screen';
   static const String SkinProductScreen = 'skin_product_screen';
+  static const String DailyHeightRoutineScreen = 'daily_height_routine_screen';
 }

@@ -11,6 +11,7 @@ import 'package:looklabs/View/Home/Widget/Diet/diet.dart';
 import 'package:looklabs/View/Home/Widget/Facial/facial.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/hair_care.dart';
+import 'package:looklabs/View/Home/Widget/Height/Widget/daily_height_routine_screen.dart';
 import 'package:looklabs/View/Home/Widget/Height/height.dart';
 import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_analyzing_screen.dart';
@@ -182,6 +183,11 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => DailySkinCareRoutine(),
+        );
+      case RoutesName.DailyHeightRoutineScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => DailyHeightRoutineScreen(),
         );
 
       default:
