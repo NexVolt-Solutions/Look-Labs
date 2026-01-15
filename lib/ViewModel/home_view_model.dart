@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
-import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 
 class HomeViewModel extends ChangeNotifier {

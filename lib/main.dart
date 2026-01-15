@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
-import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_product.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
