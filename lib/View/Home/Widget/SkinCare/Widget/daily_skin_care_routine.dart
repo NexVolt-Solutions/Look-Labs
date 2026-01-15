@@ -75,8 +75,64 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                 },
               ),
             ),
+            // SizedBox(
+            //   height: context.h(600),
+            //   child: PageView.builder(
+            //     itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
+            //     itemBuilder: (context, pageIndex) {
+            //       final pageData =
+            //           dailyHairCareRoutineViewModel.indicatorPages[pageIndex];
+
+            //       return Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: [
+            //           // 🔹 Page Title Row
+            //           Row(
+            //             children: [
+            //               SvgPicture.asset(
+            //                 AppAssets.starIcon,
+            //                 height: context.h(24),
+            //                 width: context.w(24),
+            //                 color: AppColors.pimaryColor,
+            //               ),
+            //               SizedBox(width: context.w(8)),
+            //               NormalText(
+            //                 titleText: pageIndex == 0
+            //                     ? 'Hair Attributes'
+            //                     : pageIndex == 1
+            //                     ? 'Hair Health'
+            //                     : 'Concerns Analysis',
+            //                 titleSize: context.text(18),
+            //                 titleWeight: FontWeight.w600,
+            //                 titleColor: AppColors.headingColor,
+            //               ),
+            //             ],
+            //           ),
+            //           GridView.builder(
+            //             shrinkWrap: true,
+            //             physics: const NeverScrollableScrollPhysics(),
+            //             gridDelegate:
+            //                 const SliverGridDelegateWithFixedCrossAxisCount(
+            //                   crossAxisCount: 2,
+            //                   childAspectRatio: 4 / 3,
+            //                 ),
+            //             itemCount: pageData.length,
+            //             itemBuilder: (context, index) {
+            //               final item = pageData[index];
+            //               return TextAndIndectorContiner(
+            //                 title: item['title'],
+            //                 subTitle: item['subTitle'],
+            //                 pers: item['pers'],
+            //               );
+            //             },
+            //           ),
+            //         ],
+            //       );
+            //     },
+            //   ),
+            // ),
             SizedBox(
-              height: context.h(400),
+              height: context.h(400), // PageView height
               child: PageView.builder(
                 itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
                 itemBuilder: (context, pageIndex) {
@@ -86,7 +142,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 🔹 Page Title Row
+                      // 🔹 Title (FIXED - NOT SCROLLING)
                       Row(
                         children: [
                           SvgPicture.asset(
@@ -109,24 +165,26 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                         ],
                       ),
 
-                      // SizedBox(height: context.h(12)),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 4 / 3,
-                            ),
-                        itemCount: pageData.length,
-                        itemBuilder: (context, index) {
-                          final item = pageData[index];
-                          return TextAndIndectorContiner(
-                            title: item['title'],
-                            subTitle: item['subTitle'],
-                            pers: item['pers'],
-                          );
-                        },
+                      SizedBox(height: context.h(12)),
+                      Expanded(
+                        child: GridView.builder(
+                          scrollDirection: Axis.vertical,
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 4 / 3,
+                              ),
+                          itemCount: pageData.length,
+                          itemBuilder: (context, index) {
+                            final item = pageData[index];
+                            return TextAndIndectorContiner(
+                              title: item['title'],
+                              subTitle: item['subTitle'],
+                              pers: item['pers'],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   );
@@ -134,7 +192,6 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
               ),
             ),
 
-            // SizedBox(height: context.h(12)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Today’s Routine',
@@ -265,12 +322,12 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                         if (index == 0) {
                           Navigator.pushNamed(
                             context,
-                            RoutesName.HairHomeRemediesScreen,
+                            RoutesName.SkinHomeRemediesScreen,
                           );
                         } else if (index == 1) {
                           Navigator.pushNamed(
                             context,
-                            RoutesName.HairTopProductScreen,
+                            RoutesName.SkinTopProductScreen,
                           );
                         }
                       },

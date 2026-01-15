@@ -5,15 +5,22 @@ import 'package:looklabs/Core/Constants/Widget/product_widget.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/ViewModel/hair_top_product_view_model.dart';
+import 'package:looklabs/ViewModel/skin_top_product_view_model.dart';
 import 'package:provider/provider.dart';
 
-class TopProduct extends StatelessWidget {
-  const TopProduct({super.key});
+class SkinTopProduct extends StatefulWidget {
+  const SkinTopProduct({super.key});
 
   @override
+  State<SkinTopProduct> createState() => _SkinTopProductState();
+}
+
+class _SkinTopProductState extends State<SkinTopProduct> {
+  @override
   Widget build(BuildContext context) {
-    final topProductViewModel = Provider.of<HairTopProductViewModel>(context);
+    final skinTopProductViewModel = Provider.of<SkinTopProductViewModel>(
+      context,
+    );
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
 
@@ -46,9 +53,9 @@ class TopProduct extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 padding: context.padSym(h: 20),
-                itemCount: topProductViewModel.HairproductData.length,
+                itemCount: skinTopProductViewModel.productData.length,
                 itemBuilder: (context, index) {
-                  final product = topProductViewModel.HairproductData[index];
+                  final product = skinTopProductViewModel.productData[index];
 
                   return ProductWidget(
                     icon1: product['rightIcon'],
@@ -58,13 +65,13 @@ class TopProduct extends StatelessWidget {
                     onTap: () {
                       Navigator.pushNamed(
                         context,
-                        RoutesName.HairProductScreen,
+                        RoutesName.SkinProductScreen,
                         arguments: product['title'], // ✅ pass title
                       );
                     },
 
-                    viewmodel: topProductViewModel,
-                    index: index,
+                    viewmodel: skinTopProductViewModel,
+                    index: index, // ✅ FIXED
                   );
                 },
               ),

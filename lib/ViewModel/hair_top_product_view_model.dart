@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 
-class TopProductViewModel extends ChangeNotifier {
+class HairTopProductViewModel extends ChangeNotifier {
   PageController pageController = PageController();
   int currentIndex = 0;
 
   void next() {
-    if (currentIndex < productData.length - 1) {
+    if (currentIndex < HairproductData.length - 1) {
       currentIndex++;
       pageController.animateToPage(
         currentIndex,
@@ -34,7 +34,7 @@ class TopProductViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  final List<Map<String, dynamic>> productData = [
+  final List<Map<String, dynamic>> HairproductData = [
     {
       'rightIcon': AppAssets.nightIcon,
       'rightText': 'PM',

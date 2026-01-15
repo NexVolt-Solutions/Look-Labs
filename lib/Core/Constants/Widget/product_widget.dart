@@ -1,37 +1,37 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/ViewModel/top_product_view_model.dart';
 
 class ProductWidget extends StatelessWidget {
-  final title;
-  final disc;
-  final onTap;
-  final icon1;
-  final icon2;
-  final text;
-  final index;
+  final String? title;
+  final String? disc;
+  final VoidCallback? onTap;
+  final String? icon1;
+  final String? text;
+  final int index;
+
+  final dynamic viewmodel;
 
   const ProductWidget({
     super.key,
-    required this.topProductViewModel,
+    required this.index,
     this.title,
     this.disc,
     this.onTap,
     this.icon1,
-    this.icon2,
     this.text,
-    this.index,
+    this.viewmodel,
   });
-
-  final TopProductViewModel topProductViewModel;
 
   @override
   Widget build(BuildContext context) {
+    /// ✅ Active ViewModel (Hair ya Skin)
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: context.w(12),
@@ -40,10 +40,6 @@ class ProductWidget extends StatelessWidget {
       margin: context.padSym(v: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(context.radius(10)),
-        border: Border.all(
-          color: AppColors.backGroundColor,
-          width: context.w(1.5),
-        ),
         color: AppColors.backGroundColor,
         boxShadow: [
           BoxShadow(
@@ -61,135 +57,124 @@ class ProductWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /// 🔹 HEADER
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
                 padding: context.padSym(h: 4, v: 4),
-                // height: context.h(40),
-                // width: context.w(40),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(context.radius(10)),
-                  border: Border.all(
-                    color: AppColors.backGroundColor,
-                    width: context.w(1.5),
-                  ),
                   color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.customContainerColorUp.withOpacity(0.4),
                       offset: const Offset(5, 5),
                       blurRadius: 5,
+                      inset: false,
                     ),
                     BoxShadow(
                       color: AppColors.customContinerColorDown.withOpacity(0.4),
                       offset: const Offset(-5, -5),
                       blurRadius: 5,
+                      inset: false,
                     ),
                   ],
                 ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    AppAssets.dropIcon,
-                    height: context.h(24),
-                    width: context.w(24),
-                    fit: BoxFit.scaleDown,
-                  ),
+                child: SvgPicture.asset(
+                  AppAssets.dropIcon,
+                  height: context.h(24),
+                  width: context.w(24),
                 ),
               ),
               Container(
                 padding: context.padSym(h: 6, v: 6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(context.radius(10)),
-                  border: Border.all(
-                    color: AppColors.backGroundColor,
-                    width: context.w(1.5),
-                  ),
                   color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.customContainerColorUp.withOpacity(0.4),
                       offset: const Offset(5, 5),
                       blurRadius: 5,
+                      inset: false,
                     ),
                     BoxShadow(
                       color: AppColors.customContinerColorDown.withOpacity(0.4),
                       offset: const Offset(-5, -5),
                       blurRadius: 5,
+                      inset: false,
                     ),
                   ],
                 ),
                 child: Row(
                   children: [
                     SvgPicture.asset(
-                      icon1,
-                      height: context.h(24),
-                      width: context.w(24),
-                      color: AppColors.iconColor,
-                      fit: BoxFit.scaleDown,
+                      icon1 ?? '',
+                      height: context.h(20),
+                      width: context.w(20),
                     ),
+                    SizedBox(width: context.w(4)),
                     NormalText(
                       titleText: text,
-                      titleColor: AppColors.iconColor,
                       titleSize: context.text(10),
-                      titleWeight: FontWeight.w500,
+                      titleColor: AppColors.iconColor,
                     ),
                   ],
                 ),
               ),
             ],
           ),
+
           SizedBox(height: context.h(12)),
+
+          /// 🔹 TITLE + DESC
           NormalText(
             titleText: title,
-            titleColor: AppColors.subHeadingColor,
-            titleSize: context.text(16),
-            titleWeight: FontWeight.w600,
-            sizeBoxheight: context.h(12),
             subText: disc,
-            subColor: AppColors.subHeadingColor,
+            titleSize: context.text(16),
             subSize: context.text(12),
+            titleWeight: FontWeight.w600,
             subWeight: FontWeight.w500,
           ),
+
           SizedBox(height: context.h(12)),
+
+          /// 🔹 BUTTON TAGS
           Wrap(
             spacing: context.w(6),
             runSpacing: context.h(6),
-            children: List.generate(
-              topProductViewModel.productData[index]['buttonText'].length,
-              (btnIndex) {
-                return PlanContainer(
-                  isSelected: false,
-                  onTap: () {},
-                  child: NormalText(
-                    titleText: topProductViewModel
-                        .productData[index]['buttonText'][btnIndex],
-                    titleColor: AppColors.subHeadingColor,
-                    titleSize: context.text(10),
-                    titleWeight: FontWeight.w600,
-                  ),
-                );
-              },
-            ),
+            children: List.generate(viewmodel.productData.length.toInt(), (
+              btnIndex,
+            ) {
+              return PlanContainer(
+                isSelected: false,
+                onTap: () {},
+                child: NormalText(
+                  titleText:
+                      viewmodel!.productData[index]['buttonText'][btnIndex],
+                  titleSize: context.text(10),
+                  titleWeight: FontWeight.w600,
+                ),
+              );
+            }),
           ),
 
+          SizedBox(height: context.h(12)),
+
+          /// 🔹 VIEW DETAILS
           PlanContainer(
-            isSelected: topProductViewModel.selectedIndex == index,
+            isSelected: viewmodel?.selectedIndex == index,
             onTap: () {
-              topProductViewModel.selectProduct(index);
+              viewmodel?.selectProduct(index);
               onTap?.call();
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                NormalText(
-                  titleText: 'View Details',
-                  titleColor: AppColors.subHeadingColor,
-                  titleSize: context.text(14),
-                  titleWeight: FontWeight.w500,
-                ),
-                SizedBox(width: context.w(4)),
-                Icon(Icons.arrow_forward_ios, size: 20),
+              children: const [
+                Text('View Details'),
+                SizedBox(width: 4),
+                Icon(Icons.arrow_forward_ios, size: 18),
               ],
             ),
           ),

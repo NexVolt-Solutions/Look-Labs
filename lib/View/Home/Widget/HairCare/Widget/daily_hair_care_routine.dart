@@ -393,12 +393,12 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                         if (index == 0) {
                           Navigator.pushNamed(
                             context,
-                            RoutesName.HairHomeRemediesScreen,
+                            RoutesName.SkinHomeRemediesScreen,
                           );
                         } else if (index == 1) {
                           Navigator.pushNamed(
                             context,
-                            RoutesName.HairTopProductScreen,
+                            RoutesName.SkinTopProductScreen,
                           );
                         }
                       },
