@@ -2,23 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
-import 'package:looklabs/ViewModel/age_details_view_model.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_product.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
 import 'package:looklabs/ViewModel/chart_view_model.dart';
+import 'package:looklabs/ViewModel/daily_hair_care_routine_view_model.dart';
+import 'package:looklabs/ViewModel/diet_view_model.dart';
+import 'package:looklabs/ViewModel/facial_view_model.dart';
+import 'package:looklabs/ViewModel/fashion_view_model.dart';
 import 'package:looklabs/ViewModel/gaol_screen_view_model.dart';
 import 'package:looklabs/ViewModel/gender_view_model.dart';
+import 'package:looklabs/ViewModel/hair_care_view_model.dart';
 import 'package:looklabs/ViewModel/healt_details_view_model.dart';
+import 'package:looklabs/ViewModel/height_view_model.dart';
 import 'package:looklabs/ViewModel/home_view_model.dart';
 import 'package:looklabs/ViewModel/my_album_view_model.dart';
 import 'package:looklabs/ViewModel/payment_details_vie_model.dart';
 import 'package:looklabs/ViewModel/profile_view_model.dart';
 import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:looklabs/ViewModel/purchase_view_model.dart';
+import 'package:looklabs/ViewModel/quit_porn_view_model.dart';
+import 'package:looklabs/ViewModel/recommended_product_view_model.dart';
+import 'package:looklabs/ViewModel/skin_care_view_model.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
 import 'package:looklabs/ViewModel/start_screen_view_model.dart';
 import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
+import 'package:looklabs/ViewModel/top_product_view_model.dart';
+import 'package:looklabs/ViewModel/work_out_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -44,14 +55,28 @@ void main() {
         ChangeNotifierProvider(create: (context) => ProgressViewModel()),
         ChangeNotifierProvider(create: (context) => ChartViewModel()),
         ChangeNotifierProvider(create: (context) => MyAlbumViewModel()),
-        ChangeNotifierProvider(create: (context) => AgeDetailsViewModel()),
         ChangeNotifierProvider(create: (context) => GenderViewModel()),
         ChangeNotifierProvider(create: (context) => StartScreenViewModel()),
+        ChangeNotifierProvider(create: (context) => SkinCareViewModel()),
+        ChangeNotifierProvider(create: (context) => HairCareViewModel()),
+        ChangeNotifierProvider(create: (context) => HeightViewModel()),
+        ChangeNotifierProvider(create: (context) => WorkoutViewModel()),
+        ChangeNotifierProvider(create: (context) => DietViewModel()),
+        ChangeNotifierProvider(create: (context) => FacialViewModel()),
+        ChangeNotifierProvider(create: (context) => FashionViewModel()),
+        ChangeNotifierProvider(create: (context) => QuitPornViewModel()),
+        ChangeNotifierProvider(
+          create: (context) => DailyHairCareRoutineViewModel(),
+        ),
+        ChangeNotifierProvider(create: (context) => TopProductViewModel()),
+        ChangeNotifierProvider(
+          create: (context) => RecommendedProductViewModel(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: BottomSheetBarScreen(),
-        // initialRoute: RoutesName.SplashScreen,
+        // home: Product(),
+        initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     ),

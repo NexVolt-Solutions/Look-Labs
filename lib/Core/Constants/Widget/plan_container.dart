@@ -11,6 +11,7 @@ class PlanContainer extends StatelessWidget {
   final bool? isSelected;
   final VoidCallback onTap;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
   final BorderRadius? radius;
 
   final Widget child;
@@ -24,6 +25,7 @@ class PlanContainer extends StatelessWidget {
     required this.child,
     this.padding,
     this.radius,
+    this.margin,
   });
 
   @override
@@ -37,7 +39,7 @@ class PlanContainer extends StatelessWidget {
               horizontal: context.w(20),
               vertical: context.h(14),
             ),
-        margin: context.padSym(v: 10),
+        margin: margin ?? context.padSym(v: 10),
         decoration: BoxDecoration(
           borderRadius: radius ?? BorderRadius.circular(context.radius(10)),
           border: Border.all(

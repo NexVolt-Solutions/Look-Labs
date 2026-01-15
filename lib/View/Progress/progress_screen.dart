@@ -7,6 +7,7 @@ import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -73,6 +74,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   titleColor: AppColors.subHeadingColor,
                 ),
                 CustomContainer(
+                  onTap: () {
+                    Navigator.pushNamed(context, RoutesName.MyAlbumScreen);
+                  },
                   radius: context.radius(10),
                   color: AppColors.backGroundColor,
                   padding: context.padSym(h: 9, v: 9),
@@ -109,6 +113,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   titleColor: AppColors.subHeadingColor,
                 ),
                 CustomContainer(
+                  onTap: () {
+                    Navigator.pushNamed(context, RoutesName.MyAlbumScreen);
+                  },
                   radius: context.radius(10),
                   color: AppColors.backGroundColor,
                   padding: context.padSym(h: 9, v: 9),
@@ -171,7 +178,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 ],
               ),
             ),
-
             SizedBox(height: context.h(100)),
           ],
         ),

@@ -2,18 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/View/AgeDetails/age_details_screen.dart';
 import 'package:looklabs/View/Auth/auth_screen.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
 import 'package:looklabs/View/CardDetails/card_details_screen.dart';
 import 'package:looklabs/View/GenderScreen/gender_screen.dart';
 import 'package:looklabs/View/GoalScreen/gaol_screen.dart';
+import 'package:looklabs/View/Home/Widget/Diet/diet.dart';
 import 'package:looklabs/View/Home/Widget/Facial/facial.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/hair_care.dart';
 import 'package:looklabs/View/Home/Widget/Height/height.dart';
 import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_analyzing_screen.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/daily_hair_care_routine.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_home_remedies.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_product.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_review_scans.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/top_product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
+import 'package:looklabs/View/Home/Widget/WorkOut/work_out.dart';
 import 'package:looklabs/View/MyAlbum/my_album_screen.dart';
 import 'package:looklabs/View/OnBoard/on_board_screen.dart';
 import 'package:looklabs/View/Payment%20Details/payment_details_screen.dart';
@@ -123,6 +130,40 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => QuitPorn(),
+        );
+      case RoutesName.WorkOutScreen:
+        return MaterialPageRoute(settings: settings, builder: (_) => WorkOut());
+      case RoutesName.DietScreen:
+        return MaterialPageRoute(settings: settings, builder: (_) => Diet());
+      case RoutesName.ReviewScansScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HairReviewScans(),
+        );
+      case RoutesName.AnalyzingScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HairAnalyzingScreen(),
+        );
+      case RoutesName.DailyHairCareRoutineScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => DailyHairCareRoutine(),
+        );
+      case RoutesName.HomeRemediesScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HairHomeRemedies(),
+        );
+      case RoutesName.TopProductScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => TopProduct(),
+        );
+      case RoutesName.ProductScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HairProduct(),
         );
 
       default:

@@ -88,9 +88,9 @@ class HomeViewModel extends ChangeNotifier {
       Navigator.pushNamed(context, RoutesName.FacialScreen);
     } else if (index == 5) {
       Navigator.pushNamed(context, RoutesName.FashionScreen);
-    } else if (index == 5) {
-      Navigator.pushNamed(context, RoutesName.HeightScreen);
     } else if (index == 6) {
+      Navigator.pushNamed(context, RoutesName.HeightScreen);
+    } else if (index == 7) {
       Navigator.pushNamed(context, RoutesName.QuitPornScreen);
     }
   }
