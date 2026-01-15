@@ -4,7 +4,6 @@ import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/Widget/simple_check_box.dart';
-import 'package:looklabs/Core/Constants/Widget/speed_meter_widget.dart';
 import 'package:looklabs/Core/Constants/Widget/text_and_indector_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
