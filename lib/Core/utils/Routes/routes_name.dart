@@ -26,10 +26,16 @@ class RoutesName {
   static const String FashionScreen = 'fashion_screen';
   static const String HeightScreen = 'height_screen';
   static const String QuitPornScreen = 'quit_porn_screen';
-  static const String ReviewScansScreen = 'review_scans_screen';
-  static const String AnalyzingScreen = 'analyzing_screen';
+  static const String HairReviewScansScreen = 'hair_review_scans_screen';
+  static const String HairAnalyzingScreen = 'hair_analyzing_screen';
   static const String DailyHairCareRoutineScreen = 'daily_hair_routine_screen';
-  static const String HomeRemediesScreen = 'home_remedies_screen';
-  static const String TopProductScreen = 'top_product_screen';
-  static const String ProductScreen = 'product_screen';
+  static const String HairHomeRemediesScreen = 'hair_home_remedies_screen';
+  static const String HairTopProductScreen = 'hair_top_product_screen';
+  static const String HairProductScreen = 'hair_product_screen';
+  static const String SkinReviewScansScreen = 'skin_review_scans_screen';
+  static const String SkinAnalyzingScreen = 'skin_analyzing_screen';
+  static const String DailySkinCareRoutineScreen = 'daily_skin_routine_screen';
+  static const String SkinHomeRemediesScreen = 'skin_home_remedies_screen';
+  static const String SkinTopProductScreen = 'skin_top_product_screen';
+  static const String SkinProductScreen = 'skin_product_screen';
 }

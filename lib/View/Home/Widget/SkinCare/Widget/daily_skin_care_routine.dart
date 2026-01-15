@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
-import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
@@ -11,193 +10,79 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/ViewModel/daily_hair_care_routine_view_model.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:looklabs/ViewModel/daily_skin_care_routine_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-class DailyHairCareRoutine extends StatefulWidget {
-  const DailyHairCareRoutine({super.key});
+class DailySkinCareRoutine extends StatefulWidget {
+  const DailySkinCareRoutine({super.key});
 
   @override
-  State<DailyHairCareRoutine> createState() => _DailyHairCareRoutineState();
+  State<DailySkinCareRoutine> createState() => _DailySkinCareRoutineState();
 }
 
-class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
+class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
   @override
   Widget build(BuildContext context) {
     final dailyHairCareRoutineViewModel =
-        Provider.of<DailyHairCareRoutineViewModel>(context);
+        Provider.of<DailySkinCareRoutineViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      // bottomNavigationBar: CustomButton(
-      //   text: 'next',
-      //   color: AppColors.pimaryColor,
-      //   isEnabled: true,
-      //   onTap: () {
-      //     Navigator.pushNamed(context, RoutesName.HomeRemediesScreen);
-      //   },
-      //   padding: context.padSym(h: 145, v: 17),
-      // ),
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
           children: [
             AppBarContainer(
-              title: 'Daily Hair Routine',
+              title: 'Daily Skin Routine',
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             SizedBox(height: context.h(24)),
-
-            // SizedBox(
-            //   height: context.h(350),
-            //   child: PageView.builder(
-            //     itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
-            //     itemBuilder: (context, pageIndex) {
-            //       final pageData =
-            //           dailyHairCareRoutineViewModel.indicatorPages[pageIndex];
-
-            //       return Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           Row(
-            //             children: [
-            //               SvgPicture.asset(
-            //                 AppAssets.starIcon,
-            //                 height: context.h(24),
-            //                 width: context.w(24),
-            //                 color: AppColors.pimaryColor,
-            //               ),
-            //               SizedBox(width: context.w(8)),
-            //               NormalText(
-            //                 titleText: pageIndex == 0
-            //                     ? 'Hair Attributes'
-            //                     : pageIndex == 1
-            //                     ? 'Hair Health'
-            //                     : 'Concerns Analysis',
-            //                 titleSize: context.text(18),
-            //                 titleWeight: FontWeight.w600,
-            //                 titleColor: AppColors.headingColor,
-            //               ),
-            //             ],
-            //           ),
-            //           SizedBox(height: context.h(12)),
-
-            //           GridView.builder(
-            //             shrinkWrap: true,
-            //             physics: const NeverScrollableScrollPhysics(),
-            //             gridDelegate:
-            //                 const SliverGridDelegateWithFixedCrossAxisCount(
-            //                   crossAxisCount: 2,
-            //                   childAspectRatio: 4 / 3,
-            //                 ),
-            //             itemCount: pageData.length,
-            //             itemBuilder: (context, index) {
-            //               final item = pageData[index];
-            //               return TextAndIndectorContiner(
-            //                 title: item['title'],
-            //                 subTitle: item['subTitle'],
-            //                 pers: item['pers'],
-            //               );
-            //             },
-            //           ),
-            //         ],
-            //       );
-            //     },
-            //   ),
-            // ),
-            // Column(
-            //   children: [
-            //     // 🔹 TOP ROW (2 containers)
-            //     Row(
-            //       children: [
-            //         Expanded(
-            //           child: TextAndIndectorContiner(
-            //             title: 'Hairloss',
-            //             subTitle: 'None',
-            //             pers: '10',
-            //           ),
-            //         ),
-            //         SizedBox(width: context.w(12)),
-            //         Expanded(
-            //           child: TextAndIndectorContiner(
-            //             title: 'Hairloss',
-            //             subTitle: 'None',
-            //             pers: '10',
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //     SizedBox(height: context.h(16)),
-            //     Container(
-            //       padding: context.padSym(h: 20, v: 12),
-            //       decoration: BoxDecoration(
-            //         borderRadius: BorderRadius.circular(context.radius(16)),
-            //         color: AppColors.backGroundColor,
-            //         boxShadow: [
-            //           BoxShadow(
-            //             color: AppColors.customContainerColorUp.withOpacity(
-            //               0.4,
-            //             ),
-            //             offset: const Offset(5, 5),
-            //             blurRadius: 5,
-            //             inset: false,
-            //           ),
-            //           BoxShadow(
-            //             color: AppColors.customContinerColorDown.withOpacity(
-            //               0.4,
-            //             ),
-            //             offset: const Offset(-5, -5),
-            //             blurRadius: 5,
-            //             inset: false,
-            //           ),
-            //         ],
-            //       ),
-            //       child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         // crossAxisAlignment: CrossAxisAlignment.center,
-            //         mainAxisSize: MainAxisSize.max,
-            //         children: [
-            //           Column(
-            //             crossAxisAlignment: CrossAxisAlignment.start,
-            //             children: [
-            //               NormalText(
-            //                 titleText: 'Hairloss Stage',
-            //                 titleSize: context.text(16),
-            //                 titleWeight: FontWeight.w500,
-            //                 titleColor: AppColors.subHeadingColor,
-            //               ),
-            //               Divider(thickness: 1, indent: 0, endIndent: 10),
-            //               NormalText(
-            //                 titleText: 'Hairloss',
-            //                 titleSize: context.text(12),
-            //                 titleWeight: FontWeight.w500,
-            //                 titleColor: AppColors.subHeadingColor,
-            //                 subText: 'None',
-            //                 subSize: context.text(14),
-            //                 subWeight: FontWeight.w600,
-            //                 subColor: AppColors.subHeadingColor,
-            //               ),
-            //             ],
-            //           ),
-            //           Center(child: _getRadialGauge()),
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
             SizedBox(
-              height: context.h(310),
+              height: context.h(190),
+              child: ListView.builder(
+                itemCount: 3,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: context.w(158), // ✅ FIXED WIDTH
+                        padding: context.padSym(h: 1, v: 1),
+                        margin: EdgeInsets.only(right: context.w(12)),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.pimaryColor),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            'assets/Picsart_25-12-27_23-56-38-946.jpg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: context.h(8)),
+                      NormalText(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        titleText: 'LeftSide',
+                        titleSize: context.text(14),
+                        titleColor: AppColors.subHeadingColor,
+                        titleWeight: FontWeight.w600,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              height: context.h(400),
               child: PageView.builder(
                 itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
                 itemBuilder: (context, pageIndex) {
                   final pageData =
                       dailyHairCareRoutineViewModel.indicatorPages[pageIndex];
-                  final isLastPage =
-                      pageIndex ==
-                      dailyHairCareRoutineViewModel.indicatorPages.length - 1;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,41 +109,26 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                           ),
                         ],
                       ),
+
                       // SizedBox(height: context.h(12)),
-
-                      // 🔹 Show GridView only if NOT last page
-                      if (!isLastPage)
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: 4 / 3,
-                              ),
-                          itemCount: pageData.length,
-                          itemBuilder: (context, index) {
-                            final item = pageData[index];
-                            return TextAndIndectorContiner(
-                              title: item['title'],
-                              subTitle: item['subTitle'],
-                              pers: item['pers'],
-                            );
-                          },
-                        ),
-
-                      if (isLastPage)
-                        SpeedMeterWidget(
-                          box1Title: 'HairLoss',
-                          box1subTitle: 'None',
-                          box1per: '10%',
-                          box2Title: 'HairLoss',
-                          box2subTitle: 'None',
-                          box2per: '10%',
-                          smHTitle: 'Hair Loss',
-                          smTitle: 'Hair loss',
-                          smsSubTitle: 'None',
-                        ),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 4 / 3,
+                            ),
+                        itemCount: pageData.length,
+                        itemBuilder: (context, index) {
+                          final item = pageData[index];
+                          return TextAndIndectorContiner(
+                            title: item['title'],
+                            subTitle: item['subTitle'],
+                            pers: item['pers'],
+                          );
+                        },
+                      ),
                     ],
                   );
                 },

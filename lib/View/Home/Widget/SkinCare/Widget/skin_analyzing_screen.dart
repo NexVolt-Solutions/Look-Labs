@@ -8,24 +8,19 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 
-class HairAnalyzingScreen extends StatefulWidget {
-  const HairAnalyzingScreen({super.key});
+class SkinAnalyzingScreen extends StatelessWidget {
+  const SkinAnalyzingScreen({super.key});
 
-  @override
-  State<HairAnalyzingScreen> createState() => _HairAnalyzingScreenState();
-}
-
-class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: CustomButton(
-        text: 'next',
+        text: 'Next',
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
-          Navigator.pushNamed(context, RoutesName.DailyHairCareRoutineScreen);
+          Navigator.pushNamed(context, RoutesName.SkinHomeRemediesScreen);
         },
         padding: context.padSym(h: 145, v: 17),
       ),
@@ -50,7 +45,7 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
             ),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Analyzing your hair ',
+              titleText: 'Analyzing your Skin',
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
@@ -83,7 +78,7 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        'Dry and flaky scalp patches',
+                        'Dark circles under eyes',
                         style: TextStyle(
                           fontSize: context.text(12),
                           fontWeight: FontWeight.w400,
