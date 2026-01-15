@@ -10,6 +10,8 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
       {'title': 'Thickness', 'subTitle': 'Medium', 'pers': '15'},
       {'title': 'Texture', 'subTitle': 'Wavy', 'pers': '10'},
       {'title': 'Porosity', 'subTitle': 'Normal', 'pers': '18'},
+      {'title': 'Porosity', 'subTitle': 'Normal', 'pers': '18'},
+      {'title': 'Porosity', 'subTitle': 'Normal', 'pers': '18'},
     ],
 
     // 🔹 Hair Health

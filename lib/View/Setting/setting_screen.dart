@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_container.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/setting_continer.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';

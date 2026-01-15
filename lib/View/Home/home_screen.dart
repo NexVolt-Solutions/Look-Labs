@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_container.dart';
 import 'package:looklabs/Core/Constants/Widget/gird_data.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
