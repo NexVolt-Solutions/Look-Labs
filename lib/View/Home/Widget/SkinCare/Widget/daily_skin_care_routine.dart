@@ -4,7 +4,6 @@ import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/Widget/simple_check_box.dart';
-import 'package:looklabs/Core/Constants/Widget/speed_meter_widget.dart';
 import 'package:looklabs/Core/Constants/Widget/text_and_indector_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
@@ -133,7 +132,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
             //   ),
             // ),
             SizedBox(
-              height: context.h(330),
+              height: context.h(400), // PageView height
               child: PageView.builder(
                 itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
                 itemBuilder: (context, pageIndex) {
@@ -143,7 +142,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 🔹 Title
+                      // 🔹 Title (FIXED - NOT SCROLLING)
                       Row(
                         children: [
                           SvgPicture.asset(
@@ -167,24 +166,25 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                       ),
 
                       SizedBox(height: context.h(12)),
-                      // 🔹 Grid (NO SCROLL)
-                      GridView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 4 / 3,
-                            ),
-                        itemCount: pageData.length,
-                        itemBuilder: (context, index) {
-                          final item = pageData[index];
-                          return TextAndIndectorContiner(
-                            title: item['title'],
-                            subTitle: item['subTitle'],
-                            pers: item['pers'],
-                          );
-                        },
+                      Expanded(
+                        child: GridView.builder(
+                          scrollDirection: Axis.vertical,
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 4 / 3,
+                              ),
+                          itemCount: pageData.length,
+                          itemBuilder: (context, index) {
+                            final item = pageData[index];
+                            return TextAndIndectorContiner(
+                              title: item['title'],
+                              subTitle: item['subTitle'],
+                              pers: item['pers'],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   );
@@ -322,12 +322,12 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                         if (index == 0) {
                           Navigator.pushNamed(
                             context,
-                            RoutesName.HairHomeRemediesScreen,
+                            RoutesName.SkinHomeRemediesScreen,
                           );
                         } else if (index == 1) {
                           Navigator.pushNamed(
                             context,
-                            RoutesName.HairTopProductScreen,
+                            RoutesName.SkinTopProductScreen,
                           );
                         }
                       },

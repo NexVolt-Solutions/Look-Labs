@@ -20,7 +20,7 @@ class SkinAnalyzingScreen extends StatelessWidget {
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
-          Navigator.pushNamed(context, RoutesName.SkinHomeRemediesScreen);
+          Navigator.pushNamed(context, RoutesName.DailySkinCareRoutineScreen);
         },
         padding: context.padSym(h: 145, v: 17),
       ),

@@ -21,6 +21,9 @@ import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_review_scans.dart
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/top_product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/daily_skin_care_routine.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_analyzing_screen.dart';
+import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_home_remedies.dart';
+import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_product_screen.dart';
+import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_top_product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_review_scans.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
 import 'package:looklabs/View/Home/Widget/WorkOut/work_out.dart';
@@ -181,7 +184,22 @@ class Routes {
       case RoutesName.SkinHomeRemediesScreen:
         return MaterialPageRoute(
           settings: settings,
+          builder: (_) => SkinHomeRemedies(),
+        );
+      case RoutesName.SkinTopProductScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => SkinTopProduct(),
+        );
+      case RoutesName.DailySkinCareRoutineScreen:
+        return MaterialPageRoute(
+          settings: settings,
           builder: (_) => DailySkinCareRoutine(),
+        );
+      case RoutesName.SkinProductScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => SkinProductScreen(),
         );
 
       default:

@@ -25,10 +25,11 @@ import 'package:looklabs/ViewModel/purchase_view_model.dart';
 import 'package:looklabs/ViewModel/quit_porn_view_model.dart';
 import 'package:looklabs/ViewModel/recommended_product_view_model.dart';
 import 'package:looklabs/ViewModel/skin_care_view_model.dart';
+import 'package:looklabs/ViewModel/skin_top_product_view_model.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
 import 'package:looklabs/ViewModel/start_screen_view_model.dart';
 import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
-import 'package:looklabs/ViewModel/top_product_view_model.dart';
+import 'package:looklabs/ViewModel/hair_top_product_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -68,13 +69,14 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => DailyHairCareRoutineViewModel(),
         ),
-        ChangeNotifierProvider(create: (context) => TopProductViewModel()),
+        ChangeNotifierProvider(create: (context) => HairTopProductViewModel()),
         ChangeNotifierProvider(
           create: (context) => RecommendedProductViewModel(),
         ),
         ChangeNotifierProvider(
           create: (context) => DailySkinCareRoutineViewModel(),
         ),
+        ChangeNotifierProvider(create: (context) => SkinTopProductViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
