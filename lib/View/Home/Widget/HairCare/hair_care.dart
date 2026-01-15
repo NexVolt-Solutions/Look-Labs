@@ -29,7 +29,7 @@ class _HairCareState extends State<HairCare> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.ReviewScansScreen);
+            Navigator.pushNamed(context, RoutesName.HairReviewScansScreen);
           } else {
             vm.next();
           }

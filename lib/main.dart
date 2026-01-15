@@ -8,6 +8,7 @@ import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
 import 'package:looklabs/ViewModel/chart_view_model.dart';
 import 'package:looklabs/ViewModel/daily_hair_care_routine_view_model.dart';
+import 'package:looklabs/ViewModel/daily_skin_care_routine_view_model.dart';
 import 'package:looklabs/ViewModel/diet_view_model.dart';
 import 'package:looklabs/ViewModel/facial_view_model.dart';
 import 'package:looklabs/ViewModel/fashion_view_model.dart';
@@ -71,6 +72,9 @@ void main() {
         ChangeNotifierProvider(create: (context) => TopProductViewModel()),
         ChangeNotifierProvider(
           create: (context) => RecommendedProductViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DailySkinCareRoutineViewModel(),
         ),
       ],
       child: MaterialApp(

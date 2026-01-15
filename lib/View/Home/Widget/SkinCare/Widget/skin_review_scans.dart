@@ -7,14 +7,14 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 
-class HairReviewScans extends StatefulWidget {
-  const HairReviewScans({super.key});
+class SkinReviewScans extends StatefulWidget {
+  const SkinReviewScans({super.key});
 
   @override
-  State<HairReviewScans> createState() => _HairReviewScansState();
+  State<SkinReviewScans> createState() => _SkinReviewScansState();
 }
 
-class _HairReviewScansState extends State<HairReviewScans> {
+class _SkinReviewScansState extends State<SkinReviewScans> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +24,7 @@ class _HairReviewScansState extends State<HairReviewScans> {
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
-          Navigator.pushNamed(context, RoutesName.HairAnalyzingScreen);
+          Navigator.pushNamed(context, RoutesName.SkinAnalyzingScreen);
         },
         padding: context.padSym(h: 145, v: 17),
       ),
@@ -42,7 +42,7 @@ class _HairReviewScansState extends State<HairReviewScans> {
             SizedBox(height: context.h(20)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Capture Your Hair',
+              titleText: 'Capture Your Skin',
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,

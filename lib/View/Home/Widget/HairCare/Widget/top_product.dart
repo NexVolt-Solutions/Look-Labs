@@ -61,7 +61,7 @@ class TopProduct extends StatelessWidget {
                     onTap: () {
                       Navigator.pushNamed(
                         context,
-                        RoutesName.ProductScreen,
+                        RoutesName.HairProductScreen,
                         arguments: product['title'], // ✅ pass title
                       );
                     },
