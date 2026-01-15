@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_container.dart';
 import 'package:looklabs/Core/Constants/Widget/line_chart_widget.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
-import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
