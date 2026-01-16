@@ -46,6 +46,9 @@ class AppAssets {
   static const String dropIcon = "assets/Icon/dropIcon.svg";
   static const String sunIcon = "assets/Icon/sunIcon.svg";
   static const String sugIcon = "assets/Icon/sug.svg";
+  static const String heightIncreaseIcon = "assets/Icon/heightIncreaseIcon.svg";
+  static const String liftingUpIcon = "assets/Icon/liftingUpWidget.svg";
+  static const String lightBulbIcon = "assets/Icon/lightBulb.svg";
 
   //Home Grid Images
   static const String skinCare = "assets/home/SkinCare.jpg";
