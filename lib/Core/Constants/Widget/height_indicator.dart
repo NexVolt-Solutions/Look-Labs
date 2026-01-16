@@ -4,13 +4,13 @@ import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
-class HeightSlider extends StatelessWidget {
+class HeightIndicater extends StatelessWidget {
   final String? title;
   final String? per;
   final onChanged;
   //  ValueChanged<double>
 
-  const HeightSlider({
+  const HeightIndicater({
     super.key,
     this.onChanged,
     required this.title,
@@ -88,7 +88,7 @@ class HeightSlider extends StatelessWidget {
                               color: AppColors.customContainerColorUp
                                   .withOpacity(0.4),
                               offset: const Offset(2.5, 2.5),
-                              blurRadius: 10,
+                              blurRadius: 0,
                             ),
                             BoxShadow(
                               color: AppColors.customContinerColorDown
