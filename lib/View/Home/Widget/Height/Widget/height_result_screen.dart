@@ -2,27 +2,39 @@ import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
+import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/height_widget_cont.dart';
-import 'package:looklabs/Core/Constants/Widget/linear_custom_indicator.dart';
+import 'package:looklabs/Core/Constants/Widget/linear_slider_widget.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/ViewModel/height_screen_view_model.dart';
+import 'package:provider/provider.dart';
 
-class DailyHeightRoutineScreen extends StatefulWidget {
-  const DailyHeightRoutineScreen({super.key});
+class HeightResultScreen extends StatefulWidget {
+  const HeightResultScreen({super.key});
 
   @override
-  State<DailyHeightRoutineScreen> createState() =>
-      _DailyHeightRoutineScreenState();
+  State<HeightResultScreen> createState() => _HeightResultScreenState();
 }
 
-class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
-  @override
+class _HeightResultScreenState extends State<HeightResultScreen> {
   Widget build(BuildContext context) {
+    final heightViewModel = Provider.of<HeightScreenViewModel>(context);
+    double progress = 30;
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
+      bottomNavigationBar: CustomButton(
+        isEnabled: true,
+        onTap: () =>
+            Navigator.pushNamed(context, RoutesName.DailyHeightRoutineScreen),
+        text: 'Get Started',
+        color: AppColors.pimaryColor,
+        padding: context.padSym(v: 17),
+      ),
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
@@ -46,14 +58,16 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(2, (index) {
                 return HeightWidgetCont(
+                  // padding: context.padSym(h: 11.5, v: 14.5),
                   title: '19 cm',
                   subTitle: 'Current Height',
                   imgPath: AppAssets.heightIcon,
                 );
               }),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.h(10)),
             PlanContainer(
+              padding: context.padSym(h: 12, v: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -96,8 +110,8 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                         ],
                       ),
                       Container(
-                        height: context.h(44),
-                        width: context.w(44),
+                        height: context.h(44.16),
+                        width: context.w(46),
                         decoration: BoxDecoration(
                           color: AppColors.backGroundColor,
                           borderRadius: BorderRadius.circular(
@@ -173,113 +187,154 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                     ],
                   ),
                   NormalText(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     titleText: 'Progress',
                     titleSize: context.text(14),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.subHeadingColor,
                   ),
-                  Row(
-                    children: [
-                      // 🔹 Slider takes remaining width
-                      Expanded(
-                        child: Container(
-                          height: context.h(20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              context.radius(10),
-                            ),
-                            border: Border.all(
-                              color: AppColors.backGroundColor,
-                              width: context.w(1.5),
-                            ),
-                            color: AppColors.backGroundColor,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.customContainerColorUp
-                                    .withOpacity(0.4),
-                                offset: const Offset(5, 5),
-                                blurRadius: 5,
-                                inset: true,
-                              ),
-                              BoxShadow(
-                                color: AppColors.customContinerColorDown
-                                    .withOpacity(0.4),
-                                offset: const Offset(-5, -5),
-                                blurRadius: 5,
-                                inset: true,
-                              ),
-                            ],
+                  SizedBox(height: context.h(16)),
+                  LinearSliderWidget(progress: progress),
+                  SizedBox(height: context.h(12)),
+                ],
+              ),
+            ),
+            PlanContainer(
+              padding: context.padSym(h: 12, v: 12),
+              isSelected: false,
+              onTap: () {},
+              child: Row(
+                children: [
+                  Container(
+                    height: context.h(28),
+                    width: context.w(28),
+                    decoration: BoxDecoration(
+                      color: AppColors.backGroundColor,
+                      borderRadius: BorderRadius.circular(context.radius(10)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.customContainerColorUp.withOpacity(
+                            0.4,
                           ),
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              // Active bar
-                              Container(
-                                height: context.h(20),
-                                width: context.w(200), // later dynamic
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                    context.radius(10),
-                                  ),
-                                  color: AppColors.pimaryColor,
-                                ),
-                              ),
+                          offset: const Offset(3, 3),
+                          blurRadius: 4,
+                        ),
+                        BoxShadow(
+                          color: AppColors.customContinerColorDown.withOpacity(
+                            0.4,
+                          ),
+                          offset: const Offset(-3, -3),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: SizedBox(
+                        height: context.h(32),
+                        width: context.w(32),
+                        child: SvgPicture.asset(
+                          AppAssets.lightBulbIcon,
+                          fit: BoxFit.scaleDown,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: context.w(11)),
+                  Expanded(
+                    child: NormalText(
+                      titleText:
+                          'Good posture can instantly improve your height appearance by up to 2–3 cm',
+                      titleSize: context.text(12),
+                      titleWeight: FontWeight.w600,
+                      titleColor: AppColors.subHeadingColor,
+                      maxLines: 3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            PlanContainer(
+              padding: context.padSym(h: 12, v: 12),
+              isSelected: false,
+              onTap: () {},
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  NormalText(
+                    titleText: 'Today\'s Focus',
+                    titleSize: context.text(16),
+                    titleWeight: FontWeight.w600,
+                    titleColor: AppColors.subHeadingColor,
+                    maxLines: 3,
+                  ),
+                  SizedBox(height: context.h(10)),
+                  Column(
+                    children: List.generate(
+                      heightViewModel.heightRoutineList.length,
+                      (index) {
+                        final item = heightViewModel.heightRoutineList[index];
 
-                              // Thumb
-                              Positioned(
-                                left: context.w(180),
-                                top: -context.h(4),
-                                child: Container(
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: context.h(8)),
+                          child: PlanContainer(
+                            isSelected: heightViewModel.isPlanSelected(index),
+                            onTap: () {
+                              heightViewModel.selectPlan(index);
+                            },
+                            child: Row(
+                              children: [
+                                /// Number Circle
+                                Container(
                                   height: context.h(28),
-                                  width: context.w(44),
+                                  width: context.w(28),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      context.radius(76),
-                                    ),
                                     color: AppColors.backGroundColor,
+                                    shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
                                         color: AppColors.customContainerColorUp
                                             .withOpacity(0.4),
-                                        offset: const Offset(2.5, 2.5),
-                                        blurRadius: 0,
+                                        offset: const Offset(3, 3),
+                                        blurRadius: 4,
+                                        inset: true,
                                       ),
                                       BoxShadow(
                                         color: AppColors.customContinerColorDown
                                             .withOpacity(0.4),
-                                        offset: const Offset(-2.5, -2.5),
-                                        blurRadius: 10,
+                                        offset: const Offset(-3, -3),
+                                        blurRadius: 4,
+                                        inset: true,
                                       ),
                                     ],
                                   ),
                                   child: Center(
-                                    child: Text(
-                                      '|||',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                        color: AppColors.pimaryColor,
-                                        fontSize: context.text(15),
-                                      ),
+                                    child: NormalText(
+                                      titleText: '${index + 1}',
+                                      titleSize: context.text(14),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.subHeadingColor,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+
+                                SizedBox(width: context.w(9)),
+
+                                /// Text
+                                NormalText(
+                                  titleText: item['time'],
+                                  titleSize: context.text(14),
+                                  titleWeight: FontWeight.w500,
+                                  titleColor: AppColors.subHeadingColor,
+                                  subText: item['activity'],
+                                  subSize: context.text(10),
+                                  subWeight: FontWeight.w400,
+                                  subColor: AppColors.subHeadingColor,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-
-                      SizedBox(width: context.w(8)),
-
-                      // 🔹 Percentage text
-                      NormalText(
-                        titleText: '105',
-                        titleSize: context.text(12),
-                        titleWeight: FontWeight.w600,
-                        titleColor: AppColors.subHeadingColor,
-                      ),
-                    ],
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

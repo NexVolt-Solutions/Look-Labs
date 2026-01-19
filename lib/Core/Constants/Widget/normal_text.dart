@@ -20,6 +20,10 @@ class NormalText extends StatelessWidget {
   final TextAlign? subAlign;
   final CrossAxisAlignment? crossAxisAlignment;
 
+  /// 🔥 OPTIONAL CONTROL
+  final int? maxLines;
+  final TextOverflow? overflow;
+
   const NormalText({
     super.key,
     this.titleText,
@@ -34,6 +38,8 @@ class NormalText extends StatelessWidget {
     this.subAlign,
     this.crossAxisAlignment,
     this.sizeBoxheight,
+    this.maxLines,
+    this.overflow,
   });
 
   @override
@@ -45,8 +51,9 @@ class NormalText extends StatelessWidget {
         if (titleText != null)
           Text(
             titleText!,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+            softWrap: true,
+            maxLines: maxLines, // ✅ default = unlimited
+            overflow: overflow ?? TextOverflow.visible,
             style: TextStyle(
               color: titleColor ?? AppColors.headingColor,
               fontSize: titleSize ?? context.text(16),
@@ -55,13 +62,15 @@ class NormalText extends StatelessWidget {
             ),
             textAlign: titleAlign ?? TextAlign.start,
           ),
-        SizedBox(height: sizeBoxheight),
+
+        if (sizeBoxheight != null) SizedBox(height: sizeBoxheight),
+
         if (subText != null)
           Text(
-            subText ?? '',
+            subText!,
             softWrap: true,
-            overflow: TextOverflow.visible,
             maxLines: null,
+            overflow: TextOverflow.visible,
             style: TextStyle(
               color: subColor ?? AppColors.subHeadingColor,
               fontSize: subSize ?? context.text(14),

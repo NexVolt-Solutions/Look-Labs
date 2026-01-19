@@ -7,14 +7,14 @@ import 'package:looklabs/View/Home/Widget/Height/height_question_screen.dart';
 import 'package:looklabs/ViewModel/height_view_model.dart';
 import 'package:provider/provider.dart';
 
-class Height extends StatefulWidget {
-  const Height({super.key});
+class HeightScreen extends StatefulWidget {
+  const HeightScreen({super.key});
 
   @override
-  State<Height> createState() => _HeightState();
+  State<HeightScreen> createState() => _HeightScreenState();
 }
 
-class _HeightState extends State<Height> {
+class _HeightScreenState extends State<HeightScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<HeightViewModel>(context);
@@ -24,12 +24,12 @@ class _HeightState extends State<Height> {
       backgroundColor: AppColors.backGroundColor,
 
       bottomNavigationBar: CustomButton(
-        text: isLast ? 'Complete' : 'Next',
+        text: isLast ? 'Start Analysis' : 'Next',
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.DailyHeightRoutineScreen);
+            Navigator.pushNamed(context, RoutesName.HeightResultScreen);
           } else {
             vm.next();
           }
