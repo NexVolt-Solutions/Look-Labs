@@ -11,8 +11,9 @@ import 'package:looklabs/View/Home/Widget/Diet/diet.dart';
 import 'package:looklabs/View/Home/Widget/Facial/facial.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/hair_care.dart';
-import 'package:looklabs/View/Home/Widget/Height/Widget/daily_height_routine_screen.dart';
-import 'package:looklabs/View/Home/Widget/Height/height.dart';
+import 'package:looklabs/View/Home/Widget/Height/Widget/daily_height_routine.dart';
+import 'package:looklabs/View/Home/Widget/Height/Widget/height_result_screen.dart';
+import 'package:looklabs/View/Home/Widget/Height/height_screen.dart';
 import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_analyzing_screen.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/daily_hair_care_routine.dart';
@@ -27,6 +28,7 @@ import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_product_screen.da
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_top_product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_review_scans.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
+import 'package:looklabs/View/Home/Widget/WorkOut/Widget/work_out_result_screen.dart';
 import 'package:looklabs/View/Home/Widget/WorkOut/work_out.dart';
 import 'package:looklabs/View/MyAlbum/my_album_screen.dart';
 import 'package:looklabs/View/OnBoard/on_board_screen.dart';
@@ -132,7 +134,10 @@ class Routes {
       case RoutesName.FashionScreen:
         return MaterialPageRoute(settings: settings, builder: (_) => Fashion());
       case RoutesName.HeightScreen:
-        return MaterialPageRoute(settings: settings, builder: (_) => Height());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HeightScreen(),
+        );
       case RoutesName.QuitPornScreen:
         return MaterialPageRoute(
           settings: settings,
@@ -201,6 +206,16 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => DailyHeightRoutineScreen(),
+        );
+      case RoutesName.HeightResultScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HeightResultScreen(),
+        );
+      case RoutesName.WorkOutResultScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => WorkOutResultScreen(),
         );
 
       default:

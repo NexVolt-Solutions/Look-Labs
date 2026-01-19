@@ -21,22 +21,29 @@ class RoutesName {
   static const String SkinCareScreen = 'skin_care_screen';
   static const String HairCareScreen = 'hair_care_screen';
   static const String WorkOutScreen = 'work_out_screen';
+  static const String WorkOutResultScreen = 'work_out_result_screen';
+  
+
   static const String DietScreen = 'diet_screen';
   static const String FacialScreen = 'facial_screen';
   static const String FashionScreen = 'fashion_screen';
-  static const String HeightScreen = 'height_screen';
   static const String QuitPornScreen = 'quit_porn_screen';
+
   static const String HairReviewScansScreen = 'hair_review_scans_screen';
   static const String HairAnalyzingScreen = 'hair_analyzing_screen';
   static const String DailyHairCareRoutineScreen = 'daily_hair_routine_screen';
   static const String HairHomeRemediesScreen = 'hair_home_remedies_screen';
   static const String HairTopProductScreen = 'hair_top_product_screen';
   static const String HairProductScreen = 'hair_product_screen';
+
   static const String SkinReviewScansScreen = 'skin_review_scans_screen';
   static const String SkinAnalyzingScreen = 'skin_analyzing_screen';
   static const String DailySkinCareRoutineScreen = 'daily_skin_routine_screen';
   static const String SkinHomeRemediesScreen = 'skin_home_remedies_screen';
   static const String SkinTopProductScreen = 'skin_top_product_screen';
   static const String SkinProductScreen = 'skin_product_screen';
+
+  static const String HeightScreen = 'height_screen';
+  static const String HeightResultScreen = 'height_result_screen';
   static const String DailyHeightRoutineScreen = 'daily_height_routine_screen';
 }

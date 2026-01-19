@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
+import 'package:looklabs/View/Home/home_screen.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
 import 'package:looklabs/ViewModel/chart_view_model.dart';
 import 'package:looklabs/ViewModel/daily_hair_care_routine_view_model.dart';
+import 'package:looklabs/ViewModel/daily_height_routine_view_model.dart';
 import 'package:looklabs/ViewModel/daily_skin_care_routine_view_model.dart';
 import 'package:looklabs/ViewModel/diet_view_model.dart';
 import 'package:looklabs/ViewModel/facial_view_model.dart';
@@ -15,6 +17,7 @@ import 'package:looklabs/ViewModel/gaol_screen_view_model.dart';
 import 'package:looklabs/ViewModel/gender_view_model.dart';
 import 'package:looklabs/ViewModel/hair_care_view_model.dart';
 import 'package:looklabs/ViewModel/healt_details_view_model.dart';
+import 'package:looklabs/ViewModel/height_screen_view_model.dart';
 import 'package:looklabs/ViewModel/height_view_model.dart';
 import 'package:looklabs/ViewModel/home_view_model.dart';
 import 'package:looklabs/ViewModel/my_album_view_model.dart';
@@ -77,11 +80,15 @@ void main() {
           create: (context) => DailySkinCareRoutineViewModel(),
         ),
         ChangeNotifierProvider(create: (context) => SkinTopProductViewModel()),
+        ChangeNotifierProvider(create: (context) => HeightScreenViewModel()),
+        ChangeNotifierProvider(
+          create: (context) => DailyHeightRoutineViewModel(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        // home: Product(),
-        initialRoute: RoutesName.SplashScreen,
+        home: HomeScreen(),
+        // initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     ),
