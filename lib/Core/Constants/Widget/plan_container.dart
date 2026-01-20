@@ -33,7 +33,12 @@ class PlanContainer extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: padding ?? context.padSym(h: 12, v: 12),
+        padding:
+            padding ??
+            EdgeInsets.symmetric(
+              horizontal: context.w(20),
+              vertical: context.h(14),
+            ),
         margin: margin ?? context.padSym(v: 10),
         decoration: BoxDecoration(
           borderRadius: radius ?? BorderRadius.circular(context.radius(10)),
