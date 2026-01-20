@@ -37,6 +37,7 @@ import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
 import 'package:looklabs/ViewModel/hair_top_product_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_result_screen_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_view_model.dart';
+import 'package:looklabs/ViewModel/your_progress_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -92,6 +93,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (context) => DailyWorkoutRoutineViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => YourProgressScreenViewModel(),
         ),
       ],
       child: MaterialApp(
