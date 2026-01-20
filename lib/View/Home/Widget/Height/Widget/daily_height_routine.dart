@@ -267,10 +267,7 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                                         ),
                                       ),
                                     ),
-
                                     SizedBox(width: context.w(9)),
-
-                                    /// Text
                                     NormalText(
                                       titleText: item['time'],
                                       titleSize: context.text(14),
@@ -283,20 +280,6 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                                     ),
                                   ],
                                 ),
-
-                                // GestureDetector(
-                                //   onTap: () {
-                                //     dailyHeightViewModel.toggleExpand(
-                                //       index,
-                                //     ); // ⬇️ ONLY
-                                //   },
-                                //   child: Icon(
-                                //     dailyHeightViewModel.isPlanSelected(index)
-                                //         ? Icons.keyboard_arrow_up
-                                //         : Icons.keyboard_arrow_down,
-                                //     size: context.h(24),
-                                //   ),
-                                // ),
                                 GestureDetector(
                                   onTap: () {
                                     dailyHeightViewModel.toggleExpand(index);

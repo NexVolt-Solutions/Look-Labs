@@ -5,7 +5,14 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
 class LinearSliderWidget extends StatelessWidget {
-  const LinearSliderWidget({super.key, required this.progress});
+  final double? height;
+  final double? animatedConHeight;
+  const LinearSliderWidget({
+    super.key,
+    required this.progress,
+    this.height,
+    this.animatedConHeight,
+  });
 
   final double progress;
 
@@ -15,7 +22,7 @@ class LinearSliderWidget extends StatelessWidget {
       children: [
         Expanded(
           child: Container(
-            height: context.h(20),
+            height: height ?? context.h(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(context.radius(10)),
               border: Border.all(
@@ -44,7 +51,7 @@ class LinearSliderWidget extends StatelessWidget {
                   children: [
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 400),
-                      height: context.h(20),
+                      height: animatedConHeight ?? context.h(20),
                       width: constraints.maxWidth * (progress / 100),
                       decoration: BoxDecoration(
                         boxShadow: [

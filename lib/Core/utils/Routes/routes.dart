@@ -28,7 +28,9 @@ import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_product_screen.da
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_top_product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_review_scans.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
+import 'package:looklabs/View/Home/Widget/WorkOut/Widget/daily_workout_routine.dart';
 import 'package:looklabs/View/Home/Widget/WorkOut/Widget/work_out_result_screen.dart';
+import 'package:looklabs/View/Home/Widget/WorkOut/Widget/your_progress_screen.dart';
 import 'package:looklabs/View/Home/Widget/WorkOut/work_out.dart';
 import 'package:looklabs/View/MyAlbum/my_album_screen.dart';
 import 'package:looklabs/View/OnBoard/on_board_screen.dart';
@@ -216,6 +218,16 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => WorkOutResultScreen(),
+        );
+      case RoutesName.DailyWorkoutRoutineScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => DailyWorkoutRoutine(),
+        );
+      case RoutesName.YourProgressScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => YourProgressScreen(),
         );
 
       default:

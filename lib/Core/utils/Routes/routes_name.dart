@@ -20,9 +20,12 @@ class RoutesName {
   static const String QuestionScreen = 'question_screen';
   static const String SkinCareScreen = 'skin_care_screen';
   static const String HairCareScreen = 'hair_care_screen';
+
   static const String WorkOutScreen = 'work_out_screen';
   static const String WorkOutResultScreen = 'work_out_result_screen';
-  
+  static const String DailyWorkoutRoutineScreen =
+      'daily_work_out_routine_screen';
+  static const String YourProgressScreen = 'your_progress_screen';
 
   static const String DietScreen = 'diet_screen';
   static const String FacialScreen = 'facial_screen';

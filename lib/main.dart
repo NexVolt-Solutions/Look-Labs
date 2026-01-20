@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
+import 'package:looklabs/View/Home/Widget/WorkOut/Widget/daily_workout_routine.dart';
 import 'package:looklabs/View/Home/home_screen.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
@@ -10,6 +11,7 @@ import 'package:looklabs/ViewModel/chart_view_model.dart';
 import 'package:looklabs/ViewModel/daily_hair_care_routine_view_model.dart';
 import 'package:looklabs/ViewModel/daily_height_routine_view_model.dart';
 import 'package:looklabs/ViewModel/daily_skin_care_routine_view_model.dart';
+import 'package:looklabs/ViewModel/daily_workout_routine_view_model.dart';
 import 'package:looklabs/ViewModel/diet_view_model.dart';
 import 'package:looklabs/ViewModel/facial_view_model.dart';
 import 'package:looklabs/ViewModel/fashion_view_model.dart';
@@ -33,6 +35,7 @@ import 'package:looklabs/ViewModel/splash_view_model.dart';
 import 'package:looklabs/ViewModel/start_screen_view_model.dart';
 import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
 import 'package:looklabs/ViewModel/hair_top_product_view_model.dart';
+import 'package:looklabs/ViewModel/work_out_result_screen_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -84,10 +87,16 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => DailyHeightRoutineViewModel(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => WorkOutResultScreenViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DailyWorkoutRoutineViewModel(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomeScreen(),
+        home: DailyWorkoutRoutine(),
         // initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
