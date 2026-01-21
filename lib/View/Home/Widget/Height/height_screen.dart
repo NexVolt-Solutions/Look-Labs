@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/Home/Widget/Height/height_question_screen.dart';
 import 'package:looklabs/ViewModel/height_view_model.dart';
 import 'package:provider/provider.dart';
 
-class Height extends StatefulWidget {
-  const Height({super.key});
+class HeightScreen extends StatefulWidget {
+  const HeightScreen({super.key});
 
   @override
-  State<Height> createState() => _HeightState();
+  State<HeightScreen> createState() => _HeightScreenState();
 }
 
-class _HeightState extends State<Height> {
+class _HeightScreenState extends State<HeightScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<HeightViewModel>(context);
@@ -23,12 +24,12 @@ class _HeightState extends State<Height> {
       backgroundColor: AppColors.backGroundColor,
 
       bottomNavigationBar: CustomButton(
-        text: isLast ? 'Complete' : 'Next',
+        text: isLast ? 'Start Analysis' : 'Next',
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            // Navigate to result screen
+            Navigator.pushNamed(context, RoutesName.HeightResultScreen);
           } else {
             vm.next();
           }
