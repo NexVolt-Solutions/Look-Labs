@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/app_assets.dart';
 
-class DailyHeightRoutineViewModel extends ChangeNotifier {
+class WorkOutResultScreenViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> heightRoutineList = [
     {
       'time': 'Neck Stretches',
@@ -31,4 +32,33 @@ class DailyHeightRoutineViewModel extends ChangeNotifier {
 
   bool isPlanSelected(int index) => selectedIndex == index;
   bool isExpanded(int index) => expandedIndex == index;
+
+  List<Map<String, dynamic>> gridData = [
+    {
+      'title': 'Intensity',
+      'subtitle': 'Moderate',
+      'image': AppAssets.electricLightIcon,
+    },
+    {
+      'title': 'Activity',
+      'subtitle': 'Moderate',
+      'image': AppAssets.oirActivityIcon,
+    },
+  ];
+
+  List<Map<String, dynamic>> exData = [
+    {'title': 'Flexibility', 'image': AppAssets.flexibilityIcon},
+    {'title': 'Build Muscle', 'image': AppAssets.muscleBodyIcon},
+    {'title': 'Fatloss', 'image': AppAssets.fatLossIcon},
+    {'title': 'Strength', 'image': AppAssets.actionWorkOutIcon},
+  ];
+
+  /// ✔ selected item index
+
+  void selectExercise(int index) {
+    selectedIndex = selectedIndex == index ? -1 : index;
+    notifyListeners();
+  }
+
+  bool isSelected(int index) => selectedIndex == index;
 }

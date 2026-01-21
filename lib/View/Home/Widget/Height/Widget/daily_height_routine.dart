@@ -2,14 +2,12 @@ import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/height_widget_cont.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/ViewModel/daily_height_routine_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +20,8 @@ class DailyHeightRoutineScreen extends StatefulWidget {
 }
 
 class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
+  bool isExpanded = false; // ✅ yahan rakho
+
   @override
   Widget build(BuildContext context) {
     final dailyHeightViewModel = Provider.of<DailyHeightRoutineViewModel>(
@@ -121,191 +121,206 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                       ),
                     ],
                   ),
-                  ...List.generate(
-                    dailyHeightViewModel.heightRoutineList.length,
-                    (index) {
-                      final item =
-                          dailyHeightViewModel.heightRoutineList[index];
-                      return PlanContainer(
-                        isSelected: dailyHeightViewModel.isPlanSelected(index),
-                        onTap: () {
-                          dailyHeightViewModel.selectPlan(index);
-                        },
-                        child: Row(
-                          children: [
-                            Container(
-                              height: context.h(28),
-                              width: context.w(28),
-                              decoration: BoxDecoration(
-                                color: AppColors.backGroundColor,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.customContainerColorUp
-                                        .withOpacity(0.4),
-                                    offset: const Offset(3, 3),
-                                    blurRadius: 4,
-                                    inset: true,
-                                  ),
-                                  BoxShadow(
-                                    color: AppColors.customContinerColorDown
-                                        .withOpacity(0.4),
-                                    offset: const Offset(-3, -3),
-                                    blurRadius: 4,
-                                    inset: true,
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: NormalText(
-                                  titleText: '${index + 1}',
-                                  titleSize: context.text(14),
-                                  titleWeight: FontWeight.w600,
-                                  titleColor: AppColors.subHeadingColor,
-                                ),
-                              ),
-                            ),
+                  ...List.generate(dailyHeightViewModel.heightRoutineList.length, (
+                    index,
+                  ) {
+                    final item = dailyHeightViewModel.heightRoutineList[index];
+                    final bool isSelected = dailyHeightViewModel.isPlanSelected(
+                      index,
+                    );
 
-                            SizedBox(width: context.w(9)),
-
-                            /// Text
-                            NormalText(
-                              titleText: item['time'],
-                              titleSize: context.text(14),
-                              titleWeight: FontWeight.w500,
-                              titleColor: AppColors.subHeadingColor,
-                              subText: item['activity'],
-                              subSize: context.text(10),
-                              subWeight: FontWeight.w400,
-                              subColor: AppColors.subHeadingColor,
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
-              isSelected: false,
-              onTap: () {},
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: context.h(28),
-                        width: context.w(28),
+                    return Center(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        width: double.infinity,
+                        padding: context.padSym(v: 8, h: 20),
+                        margin: context.padSym(v: 11),
                         decoration: BoxDecoration(
-                          color: AppColors.backGroundColor,
-                          borderRadius: BorderRadius.circular(
-                            context.radius(10),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: isSelected
+                                ? AppColors.pimaryColor
+                                : AppColors.backGroundColor,
+                            width: context.w(1.5),
                           ),
+                          color: isSelected
+                              ? AppColors.pimaryColor.withOpacity(0.15)
+                              : AppColors.backGroundColor,
+
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.customContainerColorUp
                                   .withOpacity(0.4),
-                              offset: const Offset(3, 3),
-                              blurRadius: 4,
+                              offset: const Offset(5, 5),
+                              blurRadius: 5,
                             ),
                             BoxShadow(
                               color: AppColors.customContinerColorDown
                                   .withOpacity(0.4),
-                              offset: const Offset(-3, -3),
-                              blurRadius: 4,
+                              offset: const Offset(-5, -5),
+                              blurRadius: 5,
                             ),
                           ],
                         ),
-                        child: Center(
-                          child: SizedBox(
-                            height: context.h(32),
-                            width: context.w(32),
-                            child: SvgPicture.asset(
-                              AppAssets.nightIcon,
-                              fit: BoxFit.scaleDown,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: context.w(11)),
-                      Expanded(
-                        child: NormalText(
-                          titleText: 'Morning Routine',
-                          titleSize: context.text(12),
-                          titleWeight: FontWeight.w600,
-                          titleColor: AppColors.subHeadingColor,
-                          subText: 'Best done after waking up',
-                          subSize: context.text(10),
-                          subWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  ...List.generate(
-                    dailyHeightViewModel.heightRoutineList.length,
-                    (index) {
-                      final item =
-                          dailyHeightViewModel.heightRoutineList[index];
-                      return PlanContainer(
-                        isSelected: dailyHeightViewModel.isPlanSelected(index),
-                        onTap: () {
-                          dailyHeightViewModel.selectPlan(index);
-                        },
-                        child: Row(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Container(
-                              height: context.h(28),
-                              width: context.w(28),
-                              decoration: BoxDecoration(
-                                color: AppColors.backGroundColor,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.customContainerColorUp
-                                        .withOpacity(0.4),
-                                    offset: const Offset(3, 3),
-                                    blurRadius: 4,
-                                    inset: true,
+                            /// Header
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     dailyHeightViewModel.selectPlan(
+                                    //       index,
+                                    //     ); // ✔ ONLY
+                                    //   },
+                                    //   child: Container(
+                                    //     height: context.h(28),
+                                    //     width: context.w(28),
+                                    //     decoration: BoxDecoration(
+                                    //       color: AppColors.backGroundColor,
+                                    //       shape: BoxShape.circle,
+                                    //       boxShadow: [
+                                    //         BoxShadow(
+                                    //           color: AppColors
+                                    //               .customContainerColorUp
+                                    //               .withOpacity(0.4),
+                                    //           offset: const Offset(3, 3),
+                                    //           blurRadius: 4,
+                                    //           inset: true,
+                                    //         ),
+                                    //         BoxShadow(
+                                    //           color: AppColors
+                                    //               .customContinerColorDown
+                                    //               .withOpacity(0.4),
+                                    //           offset: const Offset(-3, -3),
+                                    //           blurRadius: 4,
+                                    //           inset: true,
+                                    //         ),
+                                    //       ],
+                                    //     ),
+                                    //     child: Center(
+                                    //       child:
+                                    //           dailyHeightViewModel
+                                    //               .isPlanSelected(index)
+                                    //           ? Icon(
+                                    //               Icons.check,
+                                    //               size: context.h(16),
+                                    //               color:
+                                    //                   AppColors.pimaryColor,
+                                    //             )
+                                    //           : NormalText(
+                                    //               titleText: '${index + 1}',
+                                    //               titleSize: context.text(14),
+                                    //               titleWeight:
+                                    //                   FontWeight.w600,
+                                    //             ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        dailyHeightViewModel.selectPlan(index);
+                                      },
+                                      child: Container(
+                                        height: context.h(28),
+                                        width: context.w(28),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.backGroundColor,
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: AppColors
+                                                  .customContainerColorUp
+                                                  .withOpacity(0.4),
+                                              offset: const Offset(3, 3),
+                                              blurRadius: 4,
+                                              inset: true,
+                                            ),
+                                            BoxShadow(
+                                              color: AppColors
+                                                  .customContinerColorDown
+                                                  .withOpacity(0.4),
+                                              offset: const Offset(-3, -3),
+                                              blurRadius: 4,
+                                              inset: true,
+                                            ),
+                                          ],
+                                        ),
+                                        child: Center(
+                                          child:
+                                              dailyHeightViewModel
+                                                  .isPlanSelected(index)
+                                              ? Icon(
+                                                  Icons.check,
+                                                  size: context.h(16),
+                                                  color: AppColors.pimaryColor,
+                                                )
+                                              : NormalText(
+                                                  titleText: '${index + 1}',
+                                                ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: context.w(9)),
+                                    NormalText(
+                                      titleText: item['time'],
+                                      titleSize: context.text(14),
+                                      titleWeight: FontWeight.w500,
+                                      titleColor: AppColors.subHeadingColor,
+                                      subText: item['activity'],
+                                      subSize: context.text(10),
+                                      subWeight: FontWeight.w400,
+                                      subColor: AppColors.subHeadingColor,
+                                    ),
+                                  ],
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    dailyHeightViewModel.toggleExpand(index);
+                                  },
+                                  child: Icon(
+                                    dailyHeightViewModel.isExpanded(index)
+                                        ? Icons.keyboard_arrow_up
+                                        : Icons.keyboard_arrow_down,
+                                    size: context.h(24),
                                   ),
-                                  BoxShadow(
-                                    color: AppColors.customContinerColorDown
-                                        .withOpacity(0.4),
-                                    offset: const Offset(-3, -3),
-                                    blurRadius: 4,
-                                    inset: true,
+                                ),
+                              ],
+                            ),
+
+                            /// Expand Section
+                            AnimatedCrossFade(
+                              firstChild: const SizedBox(),
+                              secondChild: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: context.h(12)),
+                                  NormalText(titleText: item['details']),
+                                  SizedBox(height: context.h(6)),
+                                  NormalText(
+                                    titleText: "• Do exercises slowly",
+                                  ),
+                                  SizedBox(height: context.h(6)),
+                                  NormalText(
+                                    titleText: "• Maintain proper breathing",
                                   ),
                                 ],
                               ),
-                              child: Center(
-                                child: NormalText(
-                                  titleText: '${index + 1}',
-                                  titleSize: context.text(14),
-                                  titleWeight: FontWeight.w600,
-                                  titleColor: AppColors.subHeadingColor,
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(width: context.w(9)),
-
-                            /// Text
-                            NormalText(
-                              titleText: item['time'],
-                              titleSize: context.text(14),
-                              titleWeight: FontWeight.w500,
-                              titleColor: AppColors.subHeadingColor,
-                              subText: item['activity'],
-                              subSize: context.text(10),
-                              subWeight: FontWeight.w400,
-                              subColor: AppColors.subHeadingColor,
+                              crossFadeState:
+                                  dailyHeightViewModel.isExpanded(index)
+                                  ? CrossFadeState.showSecond
+                                  : CrossFadeState.showFirst,
+                              duration: const Duration(milliseconds: 300),
                             ),
                           ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),

@@ -49,6 +49,14 @@ class AppAssets {
   static const String heightIncreaseIcon = "assets/Icon/heightIncreaseIcon.svg";
   static const String liftingUpIcon = "assets/Icon/liftingUpWidget.svg";
   static const String lightBulbIcon = "assets/Icon/lightBulb.svg";
+  static const String electricLightIcon =
+      "assets/Icon/LightElectricBoltIcon.svg";
+  static const String actionWorkOutIcon =
+      "assets/Icon/ArcticonsWorkoutIcon.svg";
+  static const String fatLossIcon = "assets/Icon/FatLossIcon.svg";
+  static const String flexibilityIcon = "assets/Icon/FlexibilityIcon.svg";
+  static const String muscleBodyIcon = "assets/Icon/MuscleBodyIcon.svg";
+  static const String oirActivityIcon = "assets/Icon/OirActivityIcon.svg";
 
   //Home Grid Images
   static const String skinCare = "assets/home/SkinCare.jpg";
