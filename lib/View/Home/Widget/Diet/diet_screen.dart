@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/Home/Widget/Diet/diet_question_screen.dart';
 import 'package:looklabs/ViewModel/diet_view_model.dart';
 import 'package:provider/provider.dart';
 
-class Diet extends StatefulWidget {
-  const Diet({super.key});
+class DietScreen extends StatefulWidget {
+  const DietScreen({super.key});
 
   @override
-  State<Diet> createState() => _DietState();
+  State<DietScreen> createState() => _DietScreenState();
 }
 
-class _DietState extends State<Diet> {
+class _DietScreenState extends State<DietScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<DietViewModel>(context);
@@ -27,7 +28,7 @@ class _DietState extends State<Diet> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            // Navigate to result screen
+            Navigator.pushNamed(context, RoutesName.DietResultScreen);
           } else {
             vm.next();
           }

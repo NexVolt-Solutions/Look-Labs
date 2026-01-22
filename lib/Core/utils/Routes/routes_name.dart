@@ -28,6 +28,8 @@ class RoutesName {
   static const String YourProgressScreen = 'your_progress_screen';
 
   static const String DietScreen = 'diet_screen';
+  static const String DietResultScreen = 'diet_result_screen';
+
   static const String FacialScreen = 'facial_screen';
   static const String FashionScreen = 'fashion_screen';
   static const String QuitPornScreen = 'quit_porn_screen';
