@@ -23,7 +23,7 @@ class HeightResultScreen extends StatefulWidget {
 
 class _HeightResultScreenState extends State<HeightResultScreen> {
   Widget build(BuildContext context) {
-    final heightViewModel = Provider.of<HeightScreenViewModel>(context);
+    final heightResultViewModel = Provider.of<HeightScreenViewModel>(context);
     double progress = 30;
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
@@ -33,7 +33,6 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
             Navigator.pushNamed(context, RoutesName.DailyHeightRoutineScreen),
         text: 'Get Started',
         color: AppColors.pimaryColor,
-        padding: context.padSym(v: 17),
       ),
       body: SafeArea(
         child: ListView(
@@ -257,7 +256,7 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
               isSelected: false,
               onTap: () {},
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   NormalText(
                     titleText: 'Today\'s Focus',
@@ -266,79 +265,252 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                     titleColor: AppColors.subHeadingColor,
                     maxLines: 3,
                   ),
-                  SizedBox(height: context.h(10)),
-                  Column(
-                    children: List.generate(
-                      heightViewModel.heightRoutineList.length,
-                      (index) {
-                        final item = heightViewModel.heightRoutineList[index];
+                  // SizedBox(height: context.h(10)),
+                  ...List.generate(
+                    heightResultViewModel.heightRoutineList.length,
+                    (index) {
+                      final item =
+                          heightResultViewModel.heightRoutineList[index];
+                      final bool isSelected = heightResultViewModel
+                          .isPlanSelected(index);
 
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: context.h(8)),
-                          child: PlanContainer(
-                            isSelected: heightViewModel.isPlanSelected(index),
-                            onTap: () {
-                              heightViewModel.selectPlan(index);
-                            },
-                            child: Row(
-                              children: [
-                                /// Number Circle
-                                Container(
-                                  height: context.h(28),
-                                  width: context.w(28),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.backGroundColor,
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.customContainerColorUp
-                                            .withOpacity(0.4),
-                                        offset: const Offset(3, 3),
-                                        blurRadius: 4,
-                                        inset: true,
+                      return Center(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          width: double.infinity,
+                          padding: context.padSym(v: 8, h: 20),
+                          margin: context.padSym(v: 11),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.pimaryColor
+                                  : AppColors.backGroundColor,
+                              width: context.w(1.5),
+                            ),
+                            color: isSelected
+                                ? AppColors.pimaryColor.withOpacity(0.15)
+                                : AppColors.backGroundColor,
+
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.customContainerColorUp
+                                    .withOpacity(0.4),
+                                offset: const Offset(5, 5),
+                                blurRadius: 5,
+                              ),
+                              BoxShadow(
+                                color: AppColors.customContinerColorDown
+                                    .withOpacity(0.4),
+                                offset: const Offset(-5, -5),
+                                blurRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              /// Header
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          heightResultViewModel.selectPlan(
+                                            index,
+                                          );
+                                        },
+                                        child: Container(
+                                          height: context.h(28),
+                                          width: context.w(28),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.backGroundColor,
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: AppColors
+                                                    .customContainerColorUp
+                                                    .withOpacity(0.4),
+                                                offset: const Offset(3, 3),
+                                                blurRadius: 4,
+                                                inset: true,
+                                              ),
+                                              BoxShadow(
+                                                color: AppColors
+                                                    .customContinerColorDown
+                                                    .withOpacity(0.4),
+                                                offset: const Offset(-3, -3),
+                                                blurRadius: 4,
+                                                inset: true,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Center(
+                                            child:
+                                                heightResultViewModel
+                                                    .isPlanSelected(index)
+                                                ? Icon(
+                                                    Icons.check,
+                                                    size: context.h(16),
+                                                    color:
+                                                        AppColors.pimaryColor,
+                                                  )
+                                                : NormalText(
+                                                    titleText: '${index + 1}',
+                                                  ),
+                                          ),
+                                        ),
                                       ),
-                                      BoxShadow(
-                                        color: AppColors.customContinerColorDown
-                                            .withOpacity(0.4),
-                                        offset: const Offset(-3, -3),
-                                        blurRadius: 4,
-                                        inset: true,
+                                      SizedBox(width: context.w(9)),
+                                      NormalText(
+                                        titleText: item['time'],
+                                        titleSize: context.text(14),
+                                        titleWeight: FontWeight.w500,
+                                        titleColor: AppColors.subHeadingColor,
+                                        subText: item['activity'],
+                                        subSize: context.text(10),
+                                        subWeight: FontWeight.w400,
+                                        subColor: AppColors.subHeadingColor,
                                       ),
                                     ],
                                   ),
-                                  child: Center(
-                                    child: NormalText(
-                                      titleText: '${index + 1}',
-                                      titleSize: context.text(14),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.subHeadingColor,
+                                  GestureDetector(
+                                    onTap: () {
+                                      heightResultViewModel.toggleExpand(index);
+                                    },
+                                    child: Icon(
+                                      heightResultViewModel.isExpanded(index)
+                                          ? Icons.keyboard_arrow_up
+                                          : Icons.keyboard_arrow_down,
+                                      size: context.h(24),
                                     ),
                                   ),
-                                ),
+                                ],
+                              ),
 
-                                SizedBox(width: context.w(9)),
-
-                                /// Text
-                                NormalText(
-                                  titleText: item['time'],
-                                  titleSize: context.text(14),
-                                  titleWeight: FontWeight.w500,
-                                  titleColor: AppColors.subHeadingColor,
-                                  subText: item['activity'],
-                                  subSize: context.text(10),
-                                  subWeight: FontWeight.w400,
-                                  subColor: AppColors.subHeadingColor,
+                              /// Expand Section
+                              AnimatedCrossFade(
+                                firstChild: const SizedBox(),
+                                secondChild: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: context.h(12)),
+                                    NormalText(titleText: item['details']),
+                                    SizedBox(height: context.h(6)),
+                                    NormalText(
+                                      titleText: "• Do exercises slowly",
+                                    ),
+                                    SizedBox(height: context.h(6)),
+                                    NormalText(
+                                      titleText: "• Maintain proper breathing",
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                                crossFadeState:
+                                    heightResultViewModel.isExpanded(index)
+                                    ? CrossFadeState.showSecond
+                                    : CrossFadeState.showFirst,
+                                duration: const Duration(milliseconds: 300),
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
+            // PlanContainer(
+            //   padding: context.padSym(h: 12, v: 12),
+            //   isSelected: false,
+            //   onTap: () {},
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       NormalText(
+            //         titleText: 'Today\'s Focus',
+            //         titleSize: context.text(16),
+            //         titleWeight: FontWeight.w600,
+            //         titleColor: AppColors.subHeadingColor,
+            //         maxLines: 3,
+            //       ),
+            //       SizedBox(height: context.h(10)),
+            //       Column(
+            //         children: List.generate(
+            //           heightViewModel.heightRoutineList.length,
+            //           (index) {
+            //             final item = heightViewModel.heightRoutineList[index];
+
+            //             return Padding(
+            //               padding: EdgeInsets.only(bottom: context.h(8)),
+            //               child: PlanContainer(
+            //                 isSelected: heightViewModel.isPlanSelected(index),
+            //                 onTap: () {
+            //                   heightViewModel.selectPlan(index);
+            //                 },
+            //                 child: Row(
+            //                   children: [
+            //                     /// Number Circle
+            //                     Container(
+            //                       height: context.h(28),
+            //                       width: context.w(28),
+            //                       decoration: BoxDecoration(
+            //                         color: AppColors.backGroundColor,
+            //                         shape: BoxShape.circle,
+            //                         boxShadow: [
+            //                           BoxShadow(
+            //                             color: AppColors.customContainerColorUp
+            //                                 .withOpacity(0.4),
+            //                             offset: const Offset(3, 3),
+            //                             blurRadius: 4,
+            //                             inset: true,
+            //                           ),
+            //                           BoxShadow(
+            //                             color: AppColors.customContinerColorDown
+            //                                 .withOpacity(0.4),
+            //                             offset: const Offset(-3, -3),
+            //                             blurRadius: 4,
+            //                             inset: true,
+            //                           ),
+            //                         ],
+            //                       ),
+            //                       child: Center(
+            //                         child: NormalText(
+            //                           titleText: '${index + 1}',
+            //                           titleSize: context.text(14),
+            //                           titleWeight: FontWeight.w600,
+            //                           titleColor: AppColors.subHeadingColor,
+            //                         ),
+            //                       ),
+            //                     ),
+
+            //                     SizedBox(width: context.w(9)),
+
+            //                     /// Text
+            //                     NormalText(
+            //                       titleText: item['time'],
+            //                       titleSize: context.text(14),
+            //                       titleWeight: FontWeight.w500,
+            //                       titleColor: AppColors.subHeadingColor,
+            //                       subText: item['activity'],
+            //                       subSize: context.text(10),
+            //                       subWeight: FontWeight.w400,
+            //                       subColor: AppColors.subHeadingColor,
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ),
+            //             );
+            //           },
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),

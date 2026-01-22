@@ -33,7 +33,6 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
         onTap: () {
           Navigator.pushNamed(context, RoutesName.YourProgressScreen);
         },
-        padding: context.padSym(v: 17),
       ),
       body: SafeArea(
         child: ListView(
@@ -589,6 +588,61 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                         ),
                       );
                     },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: context.h(8)),
+
+            PlanContainer(
+              padding: context.padSym(h: 12, v: 12),
+              isSelected: false,
+              onTap: () {},
+              child: Row(
+                children: [
+                  Container(
+                    height: context.h(28),
+                    width: context.w(28),
+                    decoration: BoxDecoration(
+                      color: AppColors.backGroundColor,
+                      borderRadius: BorderRadius.circular(context.radius(10)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.customContainerColorUp.withOpacity(
+                            0.4,
+                          ),
+                          offset: const Offset(3, 3),
+                          blurRadius: 4,
+                        ),
+                        BoxShadow(
+                          color: AppColors.customContinerColorDown.withOpacity(
+                            0.4,
+                          ),
+                          offset: const Offset(-3, -3),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: SizedBox(
+                        height: context.h(32),
+                        width: context.w(32),
+                        child: SvgPicture.asset(
+                          AppAssets.lightBulbIcon,
+                          fit: BoxFit.scaleDown,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: context.w(11)),
+                  Expanded(
+                    child: NormalText(
+                      subText:
+                          'Consistency improves stamina, strength & posture over time.',
+                      subSize: context.text(12),
+                      subWeight: FontWeight.w600,
+                      subColor: AppColors.iconColor,
+                    ),
                   ),
                 ],
               ),

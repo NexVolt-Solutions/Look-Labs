@@ -42,7 +42,7 @@ class AppAssets {
   static const String signOutIcon = "assets/settingIcon/signOut.svg";
   static const String farwordIcon = "assets/settingIcon/farwordIcon.svg";
   static const String nightIcon = "assets/Icon/nightIcon.svg";
-  static const String Icon = "assets/Icon/star.svg";
+  static const String icon = "assets/Icon/star.svg";
   static const String dropIcon = "assets/Icon/dropIcon.svg";
   static const String sunIcon = "assets/Icon/sunIcon.svg";
   static const String sugIcon = "assets/Icon/sug.svg";
@@ -57,6 +57,8 @@ class AppAssets {
   static const String flexibilityIcon = "assets/Icon/FlexibilityIcon.svg";
   static const String muscleBodyIcon = "assets/Icon/MuscleBodyIcon.svg";
   static const String oirActivityIcon = "assets/Icon/OirActivityIcon.svg";
+  static const String caloriesIcon = "assets/Icon/caloriesIcon.svg";
+  static const String consisIcon = "assets/Icon/consIcon.svg";
 
   //Home Grid Images
   static const String skinCare = "assets/home/SkinCare.jpg";

@@ -26,7 +26,6 @@ class _HairReviewScansState extends State<HairReviewScans> {
         onTap: () {
           Navigator.pushNamed(context, RoutesName.HairAnalyzingScreen);
         },
-        padding: context.padSym(h: 145, v: 17),
       ),
       body: SafeArea(
         child: ListView(

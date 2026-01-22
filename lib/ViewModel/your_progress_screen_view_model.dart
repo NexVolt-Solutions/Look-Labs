@@ -5,6 +5,7 @@ class YourProgressScreenViewModel extends ChangeNotifier {
   String selectedIndex = '';
 
   List<String> buttonName = ['Week', 'Month', 'Year'];
+
   List<String> checkBoxName = [
     'Got 7+ hours of sleep',
     'Drank 8+ glasses of water',

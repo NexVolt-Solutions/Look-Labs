@@ -23,7 +23,6 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
             Navigator.pushNamed(context, RoutesName.SubscriptionPlanScreen),
         text: 'Next',
         color: AppColors.buttonColor,
-        padding: context.padSym(v: 17),
       ),
       body: SafeArea(
         child: ListView(

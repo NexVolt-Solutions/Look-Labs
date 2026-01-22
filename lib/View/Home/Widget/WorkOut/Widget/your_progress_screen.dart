@@ -213,8 +213,8 @@ class _YourProgressScreenState extends State<YourProgressScreen> {
                   SizedBox(height: context.h(16)),
                   LinearSliderWidget(
                     progress: 10,
-                    height: context.h(10),
-                    animatedConHeight: context.h(10),
+                    height: context.h(20),
+                    animatedConHeight: context.h(20),
                   ),
                   SizedBox(height: context.h(12)),
                 ],

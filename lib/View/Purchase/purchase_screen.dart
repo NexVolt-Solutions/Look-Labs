@@ -31,7 +31,6 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
         onTap: () => Navigator.pushNamed(context, RoutesName.AuthScreen),
         text: 'Next',
         color: AppColors.buttonColor,
-        padding: context.padSym(v: 17),
       ),
       body: SafeArea(
         child: ListView(

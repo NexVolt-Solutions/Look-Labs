@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
-import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care_question_screen.dart';
 import 'package:looklabs/ViewModel/skin_care_view_model.dart';
@@ -34,7 +33,6 @@ class _SkinCareState extends State<SkinCare> {
             vm.next();
           }
         },
-        padding: context.padSym(v: 17),
       ),
 
       body: SafeArea(

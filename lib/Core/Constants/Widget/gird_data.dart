@@ -16,7 +16,7 @@ class GridData extends StatelessWidget {
     return Container(
       padding: context.padSym(h: 12, v: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.radius(28)),
+        borderRadius: BorderRadius.circular(context.radius(16)),
         color: AppColors.backGroundColor,
         boxShadow: [
           BoxShadow(
@@ -34,11 +34,12 @@ class GridData extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            height: context.h(44),
-            width: context.w(44),
+            padding: context.padSym(h: 4, v: 4),
+            // height: context.h(44),
+            // width: context.w(44),
             decoration: BoxDecoration(
               color: AppColors.backGroundColor,
-              borderRadius: BorderRadius.circular(context.radius(14)),
+              borderRadius: BorderRadius.circular(context.radius(10)),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.customContainerColorUp.withOpacity(0.4),
@@ -52,19 +53,13 @@ class GridData extends StatelessWidget {
                 ),
               ],
             ),
-            child: Center(
-              child: SizedBox(
-                height: context.h(20),
-                width: context.w(20),
-                child: SvgPicture.asset(
-                  image ?? AppAssets.heightIcon,
-                  fit: BoxFit.fill,
-                ),
-              ),
+            child: SvgPicture.asset(
+              image ?? AppAssets.heightIcon,
+              fit: BoxFit.scaleDown,
             ),
           ),
 
-          SizedBox(width: context.w(10)),
+          SizedBox(width: context.w(6)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -77,7 +72,7 @@ class GridData extends StatelessWidget {
                   color: AppColors.subHeadingColor,
                 ),
               ),
-              SizedBox(height: context.h(4)),
+              SizedBox(height: context.h(8)),
               Text(
                 subTitle ?? '',
                 style: TextStyle(

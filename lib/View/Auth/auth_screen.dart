@@ -30,7 +30,6 @@ class _AuthScreenState extends State<AuthScreen> {
             Navigator.pushNamed(context, RoutesName.BottomSheetBarScreen),
         text: 'Sign In',
         color: AppColors.buttonColor,
-        padding: context.padSym(v: 17),
       ),
       body: SafeArea(
         child: ListView(

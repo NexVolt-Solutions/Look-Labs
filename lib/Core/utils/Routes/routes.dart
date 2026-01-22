@@ -18,13 +18,13 @@ import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_analyzing_screen.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/daily_hair_care_routine.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_home_remedies.dart';
-import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_product.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_product_detail_screen.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_review_scans.dart';
-import 'package:looklabs/View/Home/Widget/HairCare/Widget/top_product.dart';
+import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_top_product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/daily_skin_care_routine.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_analyzing_screen.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_home_remedies.dart';
-import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_product_screen.dart';
+import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_product_Detail_screen.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_top_product.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_review_scans.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
@@ -148,7 +148,10 @@ class Routes {
       case RoutesName.WorkOutScreen:
         return MaterialPageRoute(settings: settings, builder: (_) => WorkOut());
       case RoutesName.DietScreen:
-        return MaterialPageRoute(settings: settings, builder: (_) => Diet());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => DietScreen(),
+        );
       case RoutesName.HairReviewScansScreen:
         return MaterialPageRoute(
           settings: settings,
@@ -172,12 +175,12 @@ class Routes {
       case RoutesName.HairTopProductScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => TopProduct(),
+          builder: (_) => HairTopProduct(),
         );
-      case RoutesName.HairProductScreen:
+      case RoutesName.HairProductDetailScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => HairProduct(),
+          builder: (_) => HairProductDetailScreen(),
         );
       case RoutesName.SkinAnalyzingScreen:
         return MaterialPageRoute(
@@ -203,6 +206,11 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => DailySkinCareRoutine(),
+        );
+      case RoutesName.SkinProductDetailScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => SkinProductDetailScreen(),
         );
       case RoutesName.DailyHeightRoutineScreen:
         return MaterialPageRoute(

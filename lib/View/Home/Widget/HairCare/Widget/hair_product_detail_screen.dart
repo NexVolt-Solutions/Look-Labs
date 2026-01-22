@@ -79,14 +79,15 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/ViewModel/recommended_product_view_model.dart';
 import 'package:provider/provider.dart';
 
-class HairProduct extends StatefulWidget {
-  const HairProduct({super.key});
+class HairProductDetailScreen extends StatefulWidget {
+  const HairProductDetailScreen({super.key});
 
   @override
-  State<HairProduct> createState() => _HairProductState();
+  State<HairProductDetailScreen> createState() =>
+      _HairProductDetailScreenState();
 }
 
-class _HairProductState extends State<HairProduct> {
+class _HairProductDetailScreenState extends State<HairProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<RecommendedProductViewModel>(context);
@@ -102,7 +103,6 @@ class _HairProductState extends State<HairProduct> {
         onTap: () {
           // Navigator.pushNamed(context, RoutesName.ReviewScansScreen);
         },
-        padding: context.padSym(v: 17),
       ),
 
       body: SafeArea(
@@ -110,7 +110,7 @@ class _HairProductState extends State<HairProduct> {
           padding: context.padSym(h: 20),
           children: [
             AppBarContainer(
-              title: 'Recommended Product',
+              title: 'Recommendedssss Product',
               onTap: () {
                 Navigator.pop(context);
               },

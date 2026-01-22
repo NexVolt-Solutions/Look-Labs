@@ -37,14 +37,14 @@ class RoutesName {
   static const String DailyHairCareRoutineScreen = 'daily_hair_routine_screen';
   static const String HairHomeRemediesScreen = 'hair_home_remedies_screen';
   static const String HairTopProductScreen = 'hair_top_product_screen';
-  static const String HairProductScreen = 'hair_product_screen';
+  static const String HairProductDetailScreen = 'hair_product_screen';
 
   static const String SkinReviewScansScreen = 'skin_review_scans_screen';
   static const String SkinAnalyzingScreen = 'skin_analyzing_screen';
   static const String DailySkinCareRoutineScreen = 'daily_skin_routine_screen';
   static const String SkinHomeRemediesScreen = 'skin_home_remedies_screen';
   static const String SkinTopProductScreen = 'skin_top_product_screen';
-  static const String SkinProductScreen = 'skin_product_screen';
+  static const String SkinProductDetailScreen = 'skin_product_screen';
 
   static const String HeightScreen = 'height_screen';
   static const String HeightResultScreen = 'height_result_screen';

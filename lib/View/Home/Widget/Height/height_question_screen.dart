@@ -23,10 +23,7 @@ class HeightQuestion extends StatelessWidget {
     return ListView(
       padding: context.padSym(h: 20),
       children: [
-        AppBarContainer(
-          title: isLastScreen ? 'Daily Activity Level' : data['title'],
-          onTap: vm.back,
-        ),
+        if (index != 0) AppBarContainer(title: data['title'], onTap: vm.back),
 
         SizedBox(height: context.h(20)),
         if (!isLastScreen) ...[
@@ -87,9 +84,21 @@ class HeightQuestion extends StatelessWidget {
           ),
 
           SizedBox(height: context.h(18)),
-          HeightIndicater(title: 'Current Height', per: '149 cm'),
+          HeightIndicater(
+            title: 'Current Height',
+            initialValue: 0.6,
+            onChanged: (value) {
+              debugPrint('Current value: ${(value * 100).round()}%');
+            },
+          ),
           SizedBox(height: context.h(18)),
-          HeightIndicater(title: 'Desired Height', per: '150 cm'),
+          HeightIndicater(
+            title: 'Desired Height',
+            initialValue: 0.6,
+            onChanged: (value) {
+              debugPrint('Current value: ${(value * 100).round()}%');
+            },
+          ),
         ],
       ],
     );

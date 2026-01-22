@@ -121,206 +121,161 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                       ),
                     ],
                   ),
-                  ...List.generate(dailyHeightViewModel.heightRoutineList.length, (
-                    index,
-                  ) {
-                    final item = dailyHeightViewModel.heightRoutineList[index];
-                    final bool isSelected = dailyHeightViewModel.isPlanSelected(
-                      index,
-                    );
+                  ...List.generate(
+                    dailyHeightViewModel.heightRoutineList.length,
+                    (index) {
+                      final item =
+                          dailyHeightViewModel.heightRoutineList[index];
+                      final bool isSelected = dailyHeightViewModel
+                          .isPlanSelected(index);
 
-                    return Center(
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        width: double.infinity,
-                        padding: context.padSym(v: 8, h: 20),
-                        margin: context.padSym(v: 11),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
+                      return Center(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          width: double.infinity,
+                          padding: context.padSym(v: 8, h: 20),
+                          margin: context.padSym(v: 11),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.pimaryColor
+                                  : AppColors.backGroundColor,
+                              width: context.w(1.5),
+                            ),
                             color: isSelected
-                                ? AppColors.pimaryColor
+                                ? AppColors.pimaryColor.withOpacity(0.15)
                                 : AppColors.backGroundColor,
-                            width: context.w(1.5),
-                          ),
-                          color: isSelected
-                              ? AppColors.pimaryColor.withOpacity(0.15)
-                              : AppColors.backGroundColor,
 
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.customContainerColorUp
-                                  .withOpacity(0.4),
-                              offset: const Offset(5, 5),
-                              blurRadius: 5,
-                            ),
-                            BoxShadow(
-                              color: AppColors.customContinerColorDown
-                                  .withOpacity(0.4),
-                              offset: const Offset(-5, -5),
-                              blurRadius: 5,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            /// Header
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    // GestureDetector(
-                                    //   onTap: () {
-                                    //     dailyHeightViewModel.selectPlan(
-                                    //       index,
-                                    //     ); // ✔ ONLY
-                                    //   },
-                                    //   child: Container(
-                                    //     height: context.h(28),
-                                    //     width: context.w(28),
-                                    //     decoration: BoxDecoration(
-                                    //       color: AppColors.backGroundColor,
-                                    //       shape: BoxShape.circle,
-                                    //       boxShadow: [
-                                    //         BoxShadow(
-                                    //           color: AppColors
-                                    //               .customContainerColorUp
-                                    //               .withOpacity(0.4),
-                                    //           offset: const Offset(3, 3),
-                                    //           blurRadius: 4,
-                                    //           inset: true,
-                                    //         ),
-                                    //         BoxShadow(
-                                    //           color: AppColors
-                                    //               .customContinerColorDown
-                                    //               .withOpacity(0.4),
-                                    //           offset: const Offset(-3, -3),
-                                    //           blurRadius: 4,
-                                    //           inset: true,
-                                    //         ),
-                                    //       ],
-                                    //     ),
-                                    //     child: Center(
-                                    //       child:
-                                    //           dailyHeightViewModel
-                                    //               .isPlanSelected(index)
-                                    //           ? Icon(
-                                    //               Icons.check,
-                                    //               size: context.h(16),
-                                    //               color:
-                                    //                   AppColors.pimaryColor,
-                                    //             )
-                                    //           : NormalText(
-                                    //               titleText: '${index + 1}',
-                                    //               titleSize: context.text(14),
-                                    //               titleWeight:
-                                    //                   FontWeight.w600,
-                                    //             ),
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        dailyHeightViewModel.selectPlan(index);
-                                      },
-                                      child: Container(
-                                        height: context.h(28),
-                                        width: context.w(28),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.backGroundColor,
-                                          shape: BoxShape.circle,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: AppColors
-                                                  .customContainerColorUp
-                                                  .withOpacity(0.4),
-                                              offset: const Offset(3, 3),
-                                              blurRadius: 4,
-                                              inset: true,
-                                            ),
-                                            BoxShadow(
-                                              color: AppColors
-                                                  .customContinerColorDown
-                                                  .withOpacity(0.4),
-                                              offset: const Offset(-3, -3),
-                                              blurRadius: 4,
-                                              inset: true,
-                                            ),
-                                          ],
-                                        ),
-                                        child: Center(
-                                          child:
-                                              dailyHeightViewModel
-                                                  .isPlanSelected(index)
-                                              ? Icon(
-                                                  Icons.check,
-                                                  size: context.h(16),
-                                                  color: AppColors.pimaryColor,
-                                                )
-                                              : NormalText(
-                                                  titleText: '${index + 1}',
-                                                ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.customContainerColorUp
+                                    .withOpacity(0.4),
+                                offset: const Offset(5, 5),
+                                blurRadius: 5,
+                              ),
+                              BoxShadow(
+                                color: AppColors.customContinerColorDown
+                                    .withOpacity(0.4),
+                                offset: const Offset(-5, -5),
+                                blurRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              /// Header
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          dailyHeightViewModel.selectPlan(
+                                            index,
+                                          );
+                                        },
+                                        child: Container(
+                                          height: context.h(28),
+                                          width: context.w(28),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.backGroundColor,
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: AppColors
+                                                    .customContainerColorUp
+                                                    .withOpacity(0.4),
+                                                offset: const Offset(3, 3),
+                                                blurRadius: 4,
+                                                inset: true,
+                                              ),
+                                              BoxShadow(
+                                                color: AppColors
+                                                    .customContinerColorDown
+                                                    .withOpacity(0.4),
+                                                offset: const Offset(-3, -3),
+                                                blurRadius: 4,
+                                                inset: true,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Center(
+                                            child:
+                                                dailyHeightViewModel
+                                                    .isPlanSelected(index)
+                                                ? Icon(
+                                                    Icons.check,
+                                                    size: context.h(16),
+                                                    color:
+                                                        AppColors.pimaryColor,
+                                                  )
+                                                : NormalText(
+                                                    titleText: '${index + 1}',
+                                                  ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(width: context.w(9)),
-                                    NormalText(
-                                      titleText: item['time'],
-                                      titleSize: context.text(14),
-                                      titleWeight: FontWeight.w500,
-                                      titleColor: AppColors.subHeadingColor,
-                                      subText: item['activity'],
-                                      subSize: context.text(10),
-                                      subWeight: FontWeight.w400,
-                                      subColor: AppColors.subHeadingColor,
-                                    ),
-                                  ],
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    dailyHeightViewModel.toggleExpand(index);
-                                  },
-                                  child: Icon(
-                                    dailyHeightViewModel.isExpanded(index)
-                                        ? Icons.keyboard_arrow_up
-                                        : Icons.keyboard_arrow_down,
-                                    size: context.h(24),
+                                      SizedBox(width: context.w(9)),
+                                      NormalText(
+                                        titleText: item['time'],
+                                        titleSize: context.text(14),
+                                        titleWeight: FontWeight.w500,
+                                        titleColor: AppColors.subHeadingColor,
+                                        subText: item['activity'],
+                                        subSize: context.text(10),
+                                        subWeight: FontWeight.w400,
+                                        subColor: AppColors.subHeadingColor,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-
-                            /// Expand Section
-                            AnimatedCrossFade(
-                              firstChild: const SizedBox(),
-                              secondChild: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: context.h(12)),
-                                  NormalText(titleText: item['details']),
-                                  SizedBox(height: context.h(6)),
-                                  NormalText(
-                                    titleText: "• Do exercises slowly",
-                                  ),
-                                  SizedBox(height: context.h(6)),
-                                  NormalText(
-                                    titleText: "• Maintain proper breathing",
+                                  GestureDetector(
+                                    onTap: () {
+                                      dailyHeightViewModel.toggleExpand(index);
+                                    },
+                                    child: Icon(
+                                      dailyHeightViewModel.isExpanded(index)
+                                          ? Icons.keyboard_arrow_up
+                                          : Icons.keyboard_arrow_down,
+                                      size: context.h(24),
+                                    ),
                                   ),
                                 ],
                               ),
-                              crossFadeState:
-                                  dailyHeightViewModel.isExpanded(index)
-                                  ? CrossFadeState.showSecond
-                                  : CrossFadeState.showFirst,
-                              duration: const Duration(milliseconds: 300),
-                            ),
-                          ],
+
+                              /// Expand Section
+                              AnimatedCrossFade(
+                                firstChild: const SizedBox(),
+                                secondChild: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: context.h(12)),
+                                    NormalText(titleText: item['details']),
+                                    SizedBox(height: context.h(6)),
+                                    NormalText(
+                                      titleText: "• Do exercises slowly",
+                                    ),
+                                    SizedBox(height: context.h(6)),
+                                    NormalText(
+                                      titleText: "• Maintain proper breathing",
+                                    ),
+                                  ],
+                                ),
+                                crossFadeState:
+                                    dailyHeightViewModel.isExpanded(index)
+                                    ? CrossFadeState.showSecond
+                                    : CrossFadeState.showFirst,
+                                duration: const Duration(milliseconds: 300),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
-import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn_question_screen.dart';
 import 'package:looklabs/ViewModel/quit_porn_view_model.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +32,6 @@ class _QuitPornState extends State<QuitPorn> {
             vm.next();
           }
         },
-        padding: context.padSym(h: 145, v: 17),
       ),
 
       body: SafeArea(

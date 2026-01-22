@@ -97,94 +97,6 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
             //                 title: item['title'],
             //                 subTitle: item['subTitle'],
             //                 pers: item['pers'],
-            //               );
-            //             },
-            //           ),
-            //         ],
-            //       );
-            //     },
-            //   ),
-            // ),
-            // Column(
-            //   children: [
-            //     // 🔹 TOP ROW (2 containers)
-            //     Row(
-            //       children: [
-            //         Expanded(
-            //           child: TextAndIndectorContiner(
-            //             title: 'Hairloss',
-            //             subTitle: 'None',
-            //             pers: '10',
-            //           ),
-            //         ),
-            //         SizedBox(width: context.w(12)),
-            //         Expanded(
-            //           child: TextAndIndectorContiner(
-            //             title: 'Hairloss',
-            //             subTitle: 'None',
-            //             pers: '10',
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //     SizedBox(height: context.h(16)),
-            //     Container(
-            //       padding: context.padSym(h: 20, v: 12),
-            //       decoration: BoxDecoration(
-            //         borderRadius: BorderRadius.circular(context.radius(16)),
-            //         color: AppColors.backGroundColor,
-            //         boxShadow: [
-            //           BoxShadow(
-            //             color: AppColors.customContainerColorUp.withOpacity(
-            //               0.4,
-            //             ),
-            //             offset: const Offset(5, 5),
-            //             blurRadius: 5,
-            //             inset: false,
-            //           ),
-            //           BoxShadow(
-            //             color: AppColors.customContinerColorDown.withOpacity(
-            //               0.4,
-            //             ),
-            //             offset: const Offset(-5, -5),
-            //             blurRadius: 5,
-            //             inset: false,
-            //           ),
-            //         ],
-            //       ),
-            //       child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         // crossAxisAlignment: CrossAxisAlignment.center,
-            //         mainAxisSize: MainAxisSize.max,
-            //         children: [
-            //           Column(
-            //             crossAxisAlignment: CrossAxisAlignment.start,
-            //             children: [
-            //               NormalText(
-            //                 titleText: 'Hairloss Stage',
-            //                 titleSize: context.text(16),
-            //                 titleWeight: FontWeight.w500,
-            //                 titleColor: AppColors.subHeadingColor,
-            //               ),
-            //               Divider(thickness: 1, indent: 0, endIndent: 10),
-            //               NormalText(
-            //                 titleText: 'Hairloss',
-            //                 titleSize: context.text(12),
-            //                 titleWeight: FontWeight.w500,
-            //                 titleColor: AppColors.subHeadingColor,
-            //                 subText: 'None',
-            //                 subSize: context.text(14),
-            //                 subWeight: FontWeight.w600,
-            //                 subColor: AppColors.subHeadingColor,
-            //               ),
-            //             ],
-            //           ),
-            //           Center(child: _getRadialGauge()),
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
             SizedBox(
               height: context.h(310),
               child: PageView.builder(
@@ -261,8 +173,7 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                 },
               ),
             ),
-
-            // SizedBox(height: context.h(12)),
+            SizedBox(height: context.h(2)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Today’s Routine',
@@ -270,7 +181,7 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.h(2)),
             PlanContainer(
               isSelected: false,
               onTap: () {},
@@ -281,7 +192,16 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SimpleCheckBox(isSelected: false, onTap: () {}),
+                        SimpleCheckBox(
+                          isSelected: dailyHairCareRoutineViewModel.isSelected,
+                          onTap: () {
+                            setState(() {
+                              dailyHairCareRoutineViewModel.isSelected =
+                                  !dailyHairCareRoutineViewModel
+                                      .isSelected; // toggle the checkbox
+                            });
+                          },
+                        ),
                         SizedBox(width: context.w(12)),
                         Expanded(
                           child: Column(
@@ -314,7 +234,7 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                 }),
               ),
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.h(2)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Night’s Routine',
@@ -333,7 +253,16 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SimpleCheckBox(isSelected: false, onTap: () {}),
+                        SimpleCheckBox(
+                          isSelected: dailyHairCareRoutineViewModel.isSelected,
+                          onTap: () {
+                            setState(() {
+                              dailyHairCareRoutineViewModel.isSelected =
+                                  !dailyHairCareRoutineViewModel
+                                      .isSelected; // toggle the checkbox
+                            });
+                          },
+                        ),
                         SizedBox(width: context.w(12)),
                         Expanded(
                           child: Column(
@@ -393,12 +322,13 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                         if (index == 0) {
                           Navigator.pushNamed(
                             context,
-                            RoutesName.SkinHomeRemediesScreen,
+                            RoutesName.HairHomeRemediesScreen,
                           );
                         } else if (index == 1) {
                           Navigator.pushNamed(
                             context,
-                            RoutesName.SkinTopProductScreen,
+
+                            RoutesName.HairTopProductScreen,
                           );
                         }
                       },

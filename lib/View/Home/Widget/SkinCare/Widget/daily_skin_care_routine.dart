@@ -22,7 +22,7 @@ class DailySkinCareRoutine extends StatefulWidget {
 class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
   @override
   Widget build(BuildContext context) {
-    final dailyHairCareRoutineViewModel =
+    final dailySkinCareRoutineViewModel =
         Provider.of<DailySkinCareRoutineViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
@@ -75,69 +75,14 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                 },
               ),
             ),
-            // SizedBox(
-            //   height: context.h(600),
-            //   child: PageView.builder(
-            //     itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
-            //     itemBuilder: (context, pageIndex) {
-            //       final pageData =
-            //           dailyHairCareRoutineViewModel.indicatorPages[pageIndex];
 
-            //       return Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           // 🔹 Page Title Row
-            //           Row(
-            //             children: [
-            //               SvgPicture.asset(
-            //                 AppAssets.starIcon,
-            //                 height: context.h(24),
-            //                 width: context.w(24),
-            //                 color: AppColors.pimaryColor,
-            //               ),
-            //               SizedBox(width: context.w(8)),
-            //               NormalText(
-            //                 titleText: pageIndex == 0
-            //                     ? 'Hair Attributes'
-            //                     : pageIndex == 1
-            //                     ? 'Hair Health'
-            //                     : 'Concerns Analysis',
-            //                 titleSize: context.text(18),
-            //                 titleWeight: FontWeight.w600,
-            //                 titleColor: AppColors.headingColor,
-            //               ),
-            //             ],
-            //           ),
-            //           GridView.builder(
-            //             shrinkWrap: true,
-            //             physics: const NeverScrollableScrollPhysics(),
-            //             gridDelegate:
-            //                 const SliverGridDelegateWithFixedCrossAxisCount(
-            //                   crossAxisCount: 2,
-            //                   childAspectRatio: 4 / 3,
-            //                 ),
-            //             itemCount: pageData.length,
-            //             itemBuilder: (context, index) {
-            //               final item = pageData[index];
-            //               return TextAndIndectorContiner(
-            //                 title: item['title'],
-            //                 subTitle: item['subTitle'],
-            //                 pers: item['pers'],
-            //               );
-            //             },
-            //           ),
-            //         ],
-            //       );
-            //     },
-            //   ),
-            // ),
             SizedBox(
               height: context.h(400), // PageView height
               child: PageView.builder(
-                itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
+                itemCount: dailySkinCareRoutineViewModel.indicatorPages.length,
                 itemBuilder: (context, pageIndex) {
                   final pageData =
-                      dailyHairCareRoutineViewModel.indicatorPages[pageIndex];
+                      dailySkinCareRoutineViewModel.indicatorPages[pageIndex];
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,6 +127,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                               title: item['title'],
                               subTitle: item['subTitle'],
                               pers: item['pers'],
+                              progress: 80,
                             );
                           },
                         ),
@@ -191,7 +137,15 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                 },
               ),
             ),
-
+            SizedBox(height: context.h(18)),
+            NormalText(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              titleText: 'Review Scans',
+              titleSize: context.text(18),
+              titleWeight: FontWeight.w600,
+              titleColor: AppColors.headingColor,
+            ),
+            SizedBox(height: context.h(18)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Today’s Routine',
@@ -199,7 +153,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.h(2)),
             PlanContainer(
               isSelected: false,
               onTap: () {},
@@ -210,7 +164,16 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SimpleCheckBox(isSelected: false, onTap: () {}),
+                        SimpleCheckBox(
+                          isSelected: dailySkinCareRoutineViewModel.isSelected,
+                          onTap: () {
+                            setState(() {
+                              dailySkinCareRoutineViewModel.isSelected =
+                                  !dailySkinCareRoutineViewModel
+                                      .isSelected; // toggle the checkbox
+                            });
+                          },
+                        ),
                         SizedBox(width: context.w(12)),
                         Expanded(
                           child: Column(
@@ -262,7 +225,16 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SimpleCheckBox(isSelected: false, onTap: () {}),
+                        SimpleCheckBox(
+                          isSelected: dailySkinCareRoutineViewModel.isSelected,
+                          onTap: () {
+                            setState(() {
+                              dailySkinCareRoutineViewModel.isSelected =
+                                  !dailySkinCareRoutineViewModel
+                                      .isSelected; // toggle the checkbox
+                            });
+                          },
+                        ),
                         SizedBox(width: context.w(12)),
                         Expanded(
                           child: Column(
@@ -296,12 +268,11 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
               ),
             ),
             SizedBox(height: context.h(20)),
-
             ...List.generate(
-              dailyHairCareRoutineViewModel.remediesData.length,
+              dailySkinCareRoutineViewModel.remediesData.length,
               (index) {
                 final remedies =
-                    dailyHairCareRoutineViewModel.remediesData[index];
+                    dailySkinCareRoutineViewModel.remediesData[index];
                 final isSelected = remedies['isSelected'] as bool;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,7 +288,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                       isSelected: isSelected,
                       padding: context.padSym(h: 19, v: 23.5),
                       onTap: () {
-                        dailyHairCareRoutineViewModel.selectDemedies(index);
+                        dailySkinCareRoutineViewModel.selectDemedies(index);
 
                         if (index == 0) {
                           Navigator.pushNamed(
@@ -344,7 +315,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                                   fontSize: context.text(16),
                                   fontWeight: FontWeight.w600,
                                   color:
-                                      dailyHairCareRoutineViewModel.isSelected
+                                      dailySkinCareRoutineViewModel.isSelected
                                       ? AppColors.subHeadingColor
                                       : AppColors.subHeadingColor,
                                 ),
@@ -363,6 +334,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                 );
               },
             ),
+
             SizedBox(height: context.h(30)),
           ],
         ),

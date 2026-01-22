@@ -6,7 +6,7 @@ class HairTopProductViewModel extends ChangeNotifier {
   int currentIndex = 0;
 
   void next() {
-    if (currentIndex < HairproductData.length - 1) {
+    if (currentIndex < productData.length - 1) {
       currentIndex++;
       pageController.animateToPage(
         currentIndex,
@@ -34,7 +34,7 @@ class HairTopProductViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  final List<Map<String, dynamic>> HairproductData = [
+  final List<Map<String, dynamic>> productData = [
     {
       'rightIcon': AppAssets.nightIcon,
       'rightText': 'PM',
@@ -56,8 +56,4 @@ class HairTopProductViewModel extends ChangeNotifier {
       'buttonText': ['Hair Thinning', 'Hair Fall', 'Low Density Areas'],
     },
   ];
-
-  final bool isSelected = false;
-
-  get usageSteps => null;
 }

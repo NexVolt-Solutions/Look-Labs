@@ -24,7 +24,6 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
         onTap: () => Navigator.pushNamed(context, RoutesName.PurchaseScreen),
         text: 'Proceed to Pay',
         color: AppColors.buttonColor,
-        padding: context.padSym(v: 17),
       ),
       body: SafeArea(
         child: ListView(

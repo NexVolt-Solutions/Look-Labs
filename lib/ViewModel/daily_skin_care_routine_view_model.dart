@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 class DailySkinCareRoutineViewModel extends ChangeNotifier {
-  final bool isSelected = false;
+  bool isSelected = false;
+
+  void toggleRemediesSelection(int index) {
+    remediesData[index]['isSelected'] =
+        !(remediesData[index]['isSelected'] as bool);
+    notifyListeners();
+  }
 
   final List<List<Map<String, dynamic>>> indicatorPages = [
     // 🔹 Hair Attributes

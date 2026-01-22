@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
-import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/QuestionScreen/question_page.dart';
 import 'package:looklabs/ViewModel/profile_view_model.dart';
@@ -28,7 +27,6 @@ class QuestionScreen extends StatelessWidget {
             vm.next();
           }
         },
-        padding: context.padSym(h: 145, v: 17),
       ),
 
       body: SafeArea(

@@ -17,6 +17,7 @@ class BottomIconContainer extends StatelessWidget {
       height: context.h(76),
       width: context.w(double.infinity),
       margin: context.padSym(v: 14),
+
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.white),
         color: AppColors.backGroundColor,

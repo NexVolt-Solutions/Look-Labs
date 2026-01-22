@@ -30,7 +30,6 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
         onTap: () => Navigator.pushNamed(context, RoutesName.CardDetailsScreen),
         text: 'Continue & Subscribe',
         color: AppColors.buttonColor,
-        padding: context.padSym(v: 17),
       ),
       body: SafeArea(
         child: ListView(

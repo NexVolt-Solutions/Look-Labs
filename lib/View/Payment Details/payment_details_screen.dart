@@ -70,7 +70,6 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                 ),
                 text: 'Play',
                 color: AppColors.buttonColor,
-                padding: context.padSym(v: 17),
               ),
             ],
           ),

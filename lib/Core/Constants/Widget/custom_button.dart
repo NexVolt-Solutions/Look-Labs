@@ -5,7 +5,7 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 
 class CustomButton extends StatelessWidget {
   final String? text;
-  final EdgeInsetsGeometry? padding;
+  // final EdgeInsetsGeometry? padding;
   final Color? color;
   final Color? colorText;
   final VoidCallback? onTap;
@@ -15,7 +15,7 @@ class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
     this.text,
-    this.padding,
+    // this.padding,
     this.color,
     this.onTap,
     required this.isEnabled,
@@ -28,7 +28,7 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
       onTap: isEnabled ? onTap : null,
       child: Container(
-        padding: padding,
+        padding: context.padSym(v: 18),
         margin: EdgeInsets.only(
           left: context.w(20),
           right: context.w(20),

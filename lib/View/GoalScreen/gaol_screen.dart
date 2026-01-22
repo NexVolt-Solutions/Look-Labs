@@ -27,7 +27,6 @@ class _GaolScreenState extends State<GaolScreen> {
         onTap: () => Navigator.pushNamed(context, RoutesName.OnBoardScreen),
         text: 'Get Started',
         color: AppColors.pimaryColor,
-        padding: context.padSym(v: 17),
       ),
       body: SafeArea(
         child: ListView(

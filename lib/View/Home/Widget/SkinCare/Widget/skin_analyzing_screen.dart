@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
-import 'package:looklabs/Core/Constants/Widget/linear_custom_indicator.dart';
+import 'package:looklabs/Core/Constants/Widget/linear_slider_widget.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
@@ -22,7 +22,6 @@ class SkinAnalyzingScreen extends StatelessWidget {
         onTap: () {
           Navigator.pushNamed(context, RoutesName.DailySkinCareRoutineScreen);
         },
-        padding: context.padSym(h: 145, v: 17),
       ),
       body: SafeArea(
         child: ListView(
@@ -34,7 +33,7 @@ class SkinAnalyzingScreen extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.h(32)),
             SizedBox(
               // width: context.w(60),
               // height: context.h(60),
@@ -43,6 +42,7 @@ class SkinAnalyzingScreen extends StatelessWidget {
                 color: AppColors.pimaryColor,
               ),
             ),
+            SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
               titleText: 'Analyzing your Skin',
@@ -54,25 +54,33 @@ class SkinAnalyzingScreen extends StatelessWidget {
               subSize: context.text(14),
               subWeight: FontWeight.w400,
               subColor: AppColors.subHeadingColor,
-              sizeBoxheight: context.h(8),
+              sizeBoxheight: context.h(4),
               subAlign: TextAlign.center,
             ),
-            SizedBox(height: context.h(12)),
-            LinearCustomIndicator(
-              percent: 0.2, // 50%
+            SizedBox(height: context.h(24)),
+            Padding(
+              padding: context.padSym(h: 56),
+              child: LinearSliderWidget(
+                showTopIcon: true,
+                progress: 20,
+                inset: false,
+                height: context.h(10),
+                animatedConHeight: context.h(10),
+                showPercentage: false,
+              ),
             ),
-            SizedBox(height: context.h(23)),
+            SizedBox(height: context.h(24)),
             ...List.generate(4, (index) {
               return Padding(
-                padding: EdgeInsets.only(bottom: context.h(6)),
+                padding: EdgeInsets.only(bottom: context.h(18)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '• ', // Dot bullet
                       style: TextStyle(
-                        fontSize: context.text(12),
-                        fontWeight: FontWeight.w500,
+                        fontSize: context.text(16),
+                        fontWeight: FontWeight.w400,
                         color: AppColors.subHeadingColor,
                       ),
                     ),

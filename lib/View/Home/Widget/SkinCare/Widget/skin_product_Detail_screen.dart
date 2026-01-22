@@ -10,14 +10,15 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/ViewModel/recommended_product_view_model.dart';
 import 'package:provider/provider.dart';
 
-class SkinProductScreen extends StatefulWidget {
-  const SkinProductScreen({super.key});
+class SkinProductDetailScreen extends StatefulWidget {
+  const SkinProductDetailScreen({super.key});
 
   @override
-  State<SkinProductScreen> createState() => _SkinProductScreenState();
+  State<SkinProductDetailScreen> createState() =>
+      _SkinProductDetailScreenState();
 }
 
-class _SkinProductScreenState extends State<SkinProductScreen> {
+class _SkinProductDetailScreenState extends State<SkinProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<RecommendedProductViewModel>(context);
@@ -33,7 +34,6 @@ class _SkinProductScreenState extends State<SkinProductScreen> {
         onTap: () {
           // Navigator.pushNamed(context, RoutesName.ReviewScansScreen);
         },
-        padding: context.padSym(v: 17),
       ),
 
       body: SafeArea(
@@ -183,10 +183,10 @@ class _SkinProductScreenState extends State<SkinProductScreen> {
                 ),
               ],
             ),
+            SizedBox(height: context.h(12)),
             Wrap(
-              spacing: context.w(6),
-              runSpacing: context.h(6),
-
+              spacing: context.w(12),
+              runSpacing: context.h(12),
               children: List.generate(4, (index) {
                 return PlanContainer(
                   isSelected: false,
@@ -200,8 +200,7 @@ class _SkinProductScreenState extends State<SkinProductScreen> {
                 );
               }),
             ),
-
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.h(20)),
           ],
         ),
       ),

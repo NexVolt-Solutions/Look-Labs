@@ -89,17 +89,21 @@ class _HomeScreenState extends State<HomeScreen> {
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(
-              height: context.h(160),
-              width: context.w(double.infinity),
+              height: context.h(140),
+              // width: context.w(double.infinity),
               child: ListView.builder(
-                padding: context.padSym(v: 10),
+                padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
                 itemCount: homeViewModel.listViewData.length,
                 itemBuilder: (context, index) {
                   final item = homeViewModel.listViewData[index];
                   return Container(
-                    margin: context.padSym(h: 12),
-                    padding: context.padSym(h: 11, v: 3),
+                    margin: EdgeInsets.only(
+                      right: context.h(13),
+                      top: context.h(12),
+                      bottom: context.h(12),
+                    ),
+                    padding: context.padSym(h: 13),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(context.radius(16)),
                       color: AppColors.backGroundColor,
@@ -120,42 +124,46 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    child: Column(
-                      children: [
-                        PlanContainer(
-                          padding: context.padAll(4),
-                          radius: BorderRadius.circular(10),
-                          isSelected: false,
-                          onTap: () {},
-                          child: ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(4),
-                            child: Image.asset(
-                              item['image'],
-                              height: context.h(24),
-                              width: context.w(24),
-                              fit: BoxFit.scaleDown,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PlanContainer(
+                            padding: context.padSym(h: 2, v: 2),
+                            radius: BorderRadius.circular(10),
+                            isSelected: false,
+                            onTap: () {},
+                            child: ClipRRect(
+                              borderRadius: BorderRadiusGeometry.circular(6),
+                              child: Image.asset(
+                                item['image'],
+                                height: context.h(24),
+                                width: context.w(24),
+                                fit: BoxFit.scaleDown,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: context.h(9)),
-                        Text(
-                          item['title'],
-                          style: TextStyle(
-                            fontSize: context.text(14),
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.subHeadingColor,
+                          SizedBox(height: context.h(4)),
+                          Text(
+                            item['title'],
+                            style: TextStyle(
+                              fontSize: context.text(14),
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.subHeadingColor,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: context.h(6)),
-                        Text(
-                          item['subTitle'],
-                          style: TextStyle(
-                            fontSize: context.text(12),
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.notSelectedColor,
+                          SizedBox(height: context.h(3)),
+                          Text(
+                            item['subTitle'],
+                            style: TextStyle(
+                              fontSize: context.text(12),
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.notSelectedColor,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
 

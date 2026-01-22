@@ -26,7 +26,6 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
         onTap: () {
           Navigator.pushNamed(context, RoutesName.SkinAnalyzingScreen);
         },
-        padding: context.padSym(h: 145, v: 17),
       ),
       body: SafeArea(
         child: ListView(

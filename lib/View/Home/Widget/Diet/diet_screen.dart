@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/View/Home/Widget/HairCare/hair_care_question_screen.dart';
-import 'package:looklabs/ViewModel/hair_care_view_model.dart';
+import 'package:looklabs/View/Home/Widget/Diet/diet_question_screen.dart';
+import 'package:looklabs/ViewModel/diet_view_model.dart';
 import 'package:provider/provider.dart';
 
-class HairCare extends StatefulWidget {
-  const HairCare({super.key});
+class Diet extends StatefulWidget {
+  const Diet({super.key});
 
   @override
-  State<HairCare> createState() => _HairCareState();
+  State<Diet> createState() => _DietState();
 }
 
-class _HairCareState extends State<HairCare> {
+class _DietState extends State<Diet> {
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<HairCareViewModel>(context);
-    final isLast = vm.currentStep == vm.hairCareQuestions.length - 1;
+    final vm = Provider.of<DietViewModel>(context);
+    final isLast = vm.currentStep == vm.dietQuestions.length - 1;
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
@@ -28,7 +27,7 @@ class _HairCareState extends State<HairCare> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.HairReviewScansScreen);
+            // Navigate to result screen
           } else {
             vm.next();
           }
@@ -39,9 +38,9 @@ class _HairCareState extends State<HairCare> {
         child: PageView.builder(
           controller: vm.pageController,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: vm.hairCareQuestions.length,
+          itemCount: vm.dietQuestions.length,
           itemBuilder: (_, index) {
-            return HairCareQuestion(index: index);
+            return DietQuestion(index: index);
           },
         ),
       ),

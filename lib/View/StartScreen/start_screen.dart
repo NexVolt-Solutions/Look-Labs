@@ -25,7 +25,6 @@ class _StartScreenState extends State<StartScreen> {
         text: 'Get Started',
         colorText: AppColors.headingColor,
         color: AppColors.white,
-        padding: context.padSym(v: 18.5, h: 124),
       ),
       body: SafeArea(
         child: ListView(

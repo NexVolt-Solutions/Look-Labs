@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/product_widget.dart';
+import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
@@ -32,23 +33,24 @@ class _SkinTopProductState extends State<SkinTopProduct> {
               child: AppBarContainer(
                 title: 'Recommended Products',
                 onTap: () => Navigator.pop(context),
+                showHeart: true,
+                onHeartTap: () {},
               ),
             ),
-
             SizedBox(height: context.h(20)),
 
             Padding(
               padding: context.padSym(h: 20),
               child: NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'Curated for your hair & scalp concerns',
+                titleText: 'Curated for your Skin & scalp concerns',
                 titleSize: context.text(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.headingColor,
               ),
             ),
 
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.h(20)),
 
             Expanded(
               child: ListView.builder(
@@ -57,21 +59,34 @@ class _SkinTopProductState extends State<SkinTopProduct> {
                 itemBuilder: (context, index) {
                   final product = skinTopProductViewModel.productData[index];
 
+                  final bool isFirstIndex = index == 0;
+
                   return ProductWidget(
-                    icon1: product['rightIcon'],
-                    text: product['rightText'],
+                    index: index,
                     title: product['title'],
                     disc: product['description'],
+
+                    /// 🔹 ICON (same for all)
+                    icon1: product['rightIcon'],
+
+                    /// 🔹 SECOND ICON (only index 1 & 2)
+                    secondIcon: isFirstIndex ? null : AppAssets.sunIcon,
+
+                    /// 🔹 TEXT (only index 0)
+                    text: isFirstIndex ? product['rightText'] : null,
+
+                    /// 🔹 GRADIENT (always ON)
+                    showGradient: isFirstIndex ? false : true,
+
+                    viewmodel: skinTopProductViewModel,
+
                     onTap: () {
                       Navigator.pushNamed(
                         context,
-                        RoutesName.SkinProductScreen,
-                        arguments: product['title'], // ✅ pass title
+                        RoutesName.SkinProductDetailScreen,
+                        arguments: product['title'],
                       );
                     },
-
-                    viewmodel: skinTopProductViewModel,
-                    index: index, // ✅ FIXED
                   );
                 },
               ),

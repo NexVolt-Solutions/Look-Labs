@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
@@ -18,13 +17,7 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        text: 'Next',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {},
-        padding: context.padSym(h: 145, v: 17),
-      ),
+
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
@@ -67,23 +60,37 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                                 ),
                               ),
                               SizedBox(height: context.h(4)),
-                              Text(
-                                'Use 2–3 times/week',
-                                style: TextStyle(
-                                  fontSize: context.text(14),
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.subHeadingColor,
-                                ),
-                              ),
-                              SizedBox(height: context.h(4)),
-                              Text(
-                                'Soothes scalp, reduces itchiness, controls oil',
-                                style: TextStyle(
-                                  fontSize: context.text(14),
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.subHeadingColor,
-                                ),
-                              ),
+                              ...List.generate(2, (index) {
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: context.h(6),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '• ', // Dot bullet
+                                        style: TextStyle(
+                                          fontSize: context.text(12),
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.iconColor,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          'AM or PM (during hair wash)',
+                                          style: TextStyle(
+                                            fontSize: context.text(12),
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.iconColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
                             ],
                           ),
                         ),
@@ -120,7 +127,7 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                       child: Text(
                         'AM or PM (during hair wash)',
                         style: TextStyle(
-                          fontSize: context.text(12),
+                          fontSize: context.text(16),
                           fontWeight: FontWeight.w400,
                           color: AppColors.subHeadingColor,
                         ),

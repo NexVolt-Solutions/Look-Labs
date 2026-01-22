@@ -71,7 +71,6 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
               onTap: () => Navigator.pushNamed(context, RoutesName.GaolScreen),
               text: 'Next',
               color: AppColors.buttonColor,
-              padding: context.padSym(v: 17),
             ),
           ],
         ),
