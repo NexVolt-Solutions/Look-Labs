@@ -29,6 +29,8 @@ class RoutesName {
 
   static const String DietScreen = 'diet_screen';
   static const String DietResultScreen = 'diet_result_screen';
+  static const String DailyDietRoutineScreen = 'daily_diet_routine_screen';
+  static const String DietDetailsScreen = 'diet_details_screen';
 
   static const String FacialScreen = 'facial_screen';
   static const String FashionScreen = 'fashion_screen';

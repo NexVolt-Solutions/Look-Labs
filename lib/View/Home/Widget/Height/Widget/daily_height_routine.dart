@@ -111,7 +111,7 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                       Expanded(
                         child: NormalText(
                           titleText: 'Morning Routine',
-                          titleSize: context.text(12),
+                          titleSize: context.text(14),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
                           subText: 'Best done after waking up',

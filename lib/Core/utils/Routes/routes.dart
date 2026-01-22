@@ -7,6 +7,8 @@ import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
 import 'package:looklabs/View/CardDetails/card_details_screen.dart';
 import 'package:looklabs/View/GenderScreen/gender_screen.dart';
 import 'package:looklabs/View/GoalScreen/gaol_screen.dart';
+import 'package:looklabs/View/Home/Widget/Diet/Widget/daily_diet_routine_screen.dart';
+import 'package:looklabs/View/Home/Widget/Diet/Widget/diet_details_screen.dart';
 import 'package:looklabs/View/Home/Widget/Diet/Widget/diet_result_screen.dart';
 import 'package:looklabs/View/Home/Widget/Diet/diet_screen.dart';
 import 'package:looklabs/View/Home/Widget/Facial/facial.dart';
@@ -242,6 +244,16 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => DietResultScreen(),
+        );
+      case RoutesName.DailyDietRoutineScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => DailyDietRoutineScreen(),
+        );
+      case RoutesName.DietDetailsScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => DietDetailsScreen(),
         );
 
       default:

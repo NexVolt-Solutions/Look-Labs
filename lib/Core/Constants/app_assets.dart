@@ -57,8 +57,12 @@ class AppAssets {
   static const String flexibilityIcon = "assets/Icon/FlexibilityIcon.svg";
   static const String muscleBodyIcon = "assets/Icon/MuscleBodyIcon.svg";
   static const String oirActivityIcon = "assets/Icon/OirActivityIcon.svg";
-  static const String caloriesIcon = "assets/Icon/caloriesIcon.svg";
   static const String consisIcon = "assets/Icon/consIcon.svg";
+  static const String galleryIcon = "assets/Icon/galleryIcon.svg";
+  static const String mealIcon = "assets/Icon/mealIcon.svg";
+  static const String mynauiSacnIcon = "assets/Icon/mynauiSacnIcon.svg";
+  static const String sacnIcon = "assets/Icon/scanIcon.svg";
+  static const String tablerCameraIcon = "assets/Icon/tablerCameraIcon.svg";
 
   //Home Grid Images
   static const String skinCare = "assets/home/SkinCare.jpg";
