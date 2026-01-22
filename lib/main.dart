@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
+import 'package:looklabs/View/Home/Widget/Diet/Widget/diet_result_screen.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
 import 'package:looklabs/ViewModel/chart_view_model.dart';
+import 'package:looklabs/ViewModel/daily_diet_routine_screen_view_model.dart';
 import 'package:looklabs/ViewModel/daily_hair_care_routine_view_model.dart';
 import 'package:looklabs/ViewModel/daily_height_routine_view_model.dart';
 import 'package:looklabs/ViewModel/daily_skin_care_routine_view_model.dart';
 import 'package:looklabs/ViewModel/daily_workout_routine_view_model.dart';
+import 'package:looklabs/ViewModel/diet_details_screen_view_model.dart';
+import 'package:looklabs/ViewModel/diet_result_screen_view_model.dart';
 import 'package:looklabs/ViewModel/diet_view_model.dart';
 import 'package:looklabs/ViewModel/facial_view_model.dart';
 import 'package:looklabs/ViewModel/fashion_view_model.dart';
@@ -95,11 +99,20 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => YourProgressScreenViewModel(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => DietResultScreenViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DailyDietRoutineScreenViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DietDetailsScreenViewModel(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        // home: DailyWorkoutRoutine(),
-        initialRoute: RoutesName.SplashScreen,
+        home: DietResultScreen(),
+        // initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     ),
