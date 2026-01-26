@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/Widget/height_widget_cont.dart';
 import 'package:looklabs/Core/Constants/Widget/light_widget_continer.dart';
 import 'package:looklabs/Core/Constants/Widget/neu_text_fied.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
-import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
-import 'package:looklabs/View/Home/Widget/Diet/Widget/diet_result_screen.dart';
 import 'package:looklabs/ViewModel/auth_view_model.dart';
 import 'package:looklabs/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/ViewModel/card_details_view_model.dart';
@@ -16,6 +15,7 @@ import 'package:looklabs/ViewModel/diet_details_screen_view_model.dart';
 import 'package:looklabs/ViewModel/diet_progress_screen_view_model.dart';
 import 'package:looklabs/ViewModel/diet_result_screen_view_model.dart';
 import 'package:looklabs/ViewModel/diet_view_model.dart';
+import 'package:looklabs/ViewModel/facial_progress_screen_view_model.dart';
 import 'package:looklabs/ViewModel/facial_view_model.dart';
 import 'package:looklabs/ViewModel/fashion_view_model.dart';
 import 'package:looklabs/ViewModel/gaol_screen_view_model.dart';
@@ -27,6 +27,7 @@ import 'package:looklabs/ViewModel/height_view_model.dart';
 import 'package:looklabs/ViewModel/home_view_model.dart';
 import 'package:looklabs/ViewModel/my_album_view_model.dart';
 import 'package:looklabs/ViewModel/payment_details_vie_model.dart';
+import 'package:looklabs/ViewModel/personalized_exercise_screen_view_model.dart';
 import 'package:looklabs/ViewModel/profile_view_model.dart';
 import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:looklabs/ViewModel/purchase_view_model.dart';
@@ -36,6 +37,7 @@ import 'package:looklabs/ViewModel/skin_care_view_model.dart';
 import 'package:looklabs/ViewModel/skin_top_product_view_model.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
 import 'package:looklabs/ViewModel/start_screen_view_model.dart';
+import 'package:looklabs/ViewModel/style_profile_screen_view_model.dart';
 import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
 import 'package:looklabs/ViewModel/hair_top_product_view_model.dart';
 import 'package:looklabs/ViewModel/track_your_nutrition_view_model.dart';
@@ -115,6 +117,15 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (context) => DietProgressScreenViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => StyleProfileScreenViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PersonalizedExerciseScreenViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => FacialProgressScreenViewModel(),
         ),
       ],
       child: MaterialApp(
