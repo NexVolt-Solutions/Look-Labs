@@ -13,6 +13,7 @@ import 'package:looklabs/ViewModel/daily_height_routine_view_model.dart';
 import 'package:looklabs/ViewModel/daily_skin_care_routine_view_model.dart';
 import 'package:looklabs/ViewModel/daily_workout_routine_view_model.dart';
 import 'package:looklabs/ViewModel/diet_details_screen_view_model.dart';
+import 'package:looklabs/ViewModel/diet_progress_screen_view_model.dart';
 import 'package:looklabs/ViewModel/diet_result_screen_view_model.dart';
 import 'package:looklabs/ViewModel/diet_view_model.dart';
 import 'package:looklabs/ViewModel/facial_view_model.dart';
@@ -37,9 +38,10 @@ import 'package:looklabs/ViewModel/splash_view_model.dart';
 import 'package:looklabs/ViewModel/start_screen_view_model.dart';
 import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
 import 'package:looklabs/ViewModel/hair_top_product_view_model.dart';
+import 'package:looklabs/ViewModel/track_your_nutrition_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_result_screen_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_view_model.dart';
-import 'package:looklabs/ViewModel/your_progress_screen_view_model.dart';
+import 'package:looklabs/ViewModel/work_out_progress_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -97,7 +99,7 @@ void main() {
           create: (context) => DailyWorkoutRoutineViewModel(),
         ),
         ChangeNotifierProvider(
-          create: (context) => YourProgressScreenViewModel(),
+          create: (context) => WorkOutProgressScreenViewModel(),
         ),
         ChangeNotifierProvider(
           create: (context) => DietResultScreenViewModel(),
@@ -108,11 +110,17 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => DietDetailsScreenViewModel(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => TrackYourNutritionViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DietProgressScreenViewModel(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: DietResultScreen(),
-        // initialRoute: RoutesName.SplashScreen,
+        // home: DietResultScreen(),
+        initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     ),

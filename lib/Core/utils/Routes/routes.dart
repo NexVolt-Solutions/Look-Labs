@@ -9,7 +9,9 @@ import 'package:looklabs/View/GenderScreen/gender_screen.dart';
 import 'package:looklabs/View/GoalScreen/gaol_screen.dart';
 import 'package:looklabs/View/Home/Widget/Diet/Widget/daily_diet_routine_screen.dart';
 import 'package:looklabs/View/Home/Widget/Diet/Widget/diet_details_screen.dart';
+import 'package:looklabs/View/Home/Widget/Diet/Widget/diet_progress_screen.dart';
 import 'package:looklabs/View/Home/Widget/Diet/Widget/diet_result_screen.dart';
+import 'package:looklabs/View/Home/Widget/Diet/Widget/track_your_nutrition_screen.dart';
 import 'package:looklabs/View/Home/Widget/Diet/diet_screen.dart';
 import 'package:looklabs/View/Home/Widget/Facial/facial.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
@@ -33,7 +35,7 @@ import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_review_scans.dart
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care.dart';
 import 'package:looklabs/View/Home/Widget/WorkOut/Widget/daily_workout_routine.dart';
 import 'package:looklabs/View/Home/Widget/WorkOut/Widget/work_out_result_screen.dart';
-import 'package:looklabs/View/Home/Widget/WorkOut/Widget/your_progress_screen.dart';
+import 'package:looklabs/View/Home/Widget/WorkOut/Widget/work_out_progress_screen.dart';
 import 'package:looklabs/View/Home/Widget/WorkOut/work_out.dart';
 import 'package:looklabs/View/MyAlbum/my_album_screen.dart';
 import 'package:looklabs/View/OnBoard/on_board_screen.dart';
@@ -238,7 +240,7 @@ class Routes {
       case RoutesName.YourProgressScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => YourProgressScreen(),
+          builder: (_) => WorkOutProgressScreen(),
         );
       case RoutesName.DietResultScreen:
         return MaterialPageRoute(
@@ -254,6 +256,16 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => DietDetailsScreen(),
+        );
+      case RoutesName.TrackYourNutritionScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => TrackYourNutritionScreen(),
+        );
+      case RoutesName.DietProgressScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => DietProgressScreen(),
         );
 
       default:
