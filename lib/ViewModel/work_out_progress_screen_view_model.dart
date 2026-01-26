@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class YourProgressScreenViewModel extends ChangeNotifier {
+class WorkOutProgressScreenViewModel extends ChangeNotifier {
   int currentStep = 0;
   String selectedIndex = '';
 

@@ -11,6 +11,7 @@ class AppColors {
   static const Color headingColor = Color(0xFF1E1A24);
   static const Color subHeadingColor = Color(0xFF1E1A24);
   static const Color notSelectedColor = Color(0xFF6D6D6D);
+  static const Color redColor = Colors.red;
 
   //Default Color
   static const Color blackColor = Colors.black;

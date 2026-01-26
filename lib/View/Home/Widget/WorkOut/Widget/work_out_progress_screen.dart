@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:looklabs/Core/Constants/Widget/activity_consistency_widget.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_container.dart';
 import 'package:looklabs/Core/Constants/Widget/height_widget_cont.dart';
@@ -11,21 +12,21 @@ import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/ViewModel/your_progress_screen_view_model.dart';
+import 'package:looklabs/ViewModel/work_out_progress_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
-class YourProgressScreen extends StatefulWidget {
-  const YourProgressScreen({super.key});
+class WorkOutProgressScreen extends StatefulWidget {
+  const WorkOutProgressScreen({super.key});
 
   @override
-  State<YourProgressScreen> createState() => _YourProgressScreenState();
+  State<WorkOutProgressScreen> createState() => _WorkOutProgressScreenState();
 }
 
-class _YourProgressScreenState extends State<YourProgressScreen> {
+class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
   @override
   Widget build(BuildContext context) {
     final yourProgressScreenViewModel =
-        Provider.of<YourProgressScreenViewModel>(context);
+        Provider.of<WorkOutProgressScreenViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
 
@@ -192,33 +193,10 @@ class _YourProgressScreenState extends State<YourProgressScreen> {
               margin: EdgeInsets.only(bottom: context.h(20)),
               child: Center(child: LineChartWidget()),
             ),
-            PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
-              isSelected: false,
-              onTap: () {},
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  NormalText(
-                    titleText: 'Workout Consistency',
-                    titleSize: context.text(18),
-                    titleWeight: FontWeight.w600,
-                    titleColor: AppColors.subHeadingColor,
-                    sizeBoxheight: context.h(12),
-                    subText: 'Your workout activity this week',
-                    subWeight: FontWeight.w600,
-                    subColor: AppColors.iconColor,
-                    subSize: context.text(14),
-                  ),
-                  SizedBox(height: context.h(16)),
-                  LinearSliderWidget(
-                    progress: 10,
-                    height: context.h(20),
-                    animatedConHeight: context.h(20),
-                  ),
-                  SizedBox(height: context.h(12)),
-                ],
-              ),
+            ActivityConsistencyWidget(
+              title: 'Workout Consistency',
+              subtitle: 'Your workout activity this week',
+              pressentage: 20,
             ),
             SizedBox(height: context.h(16)),
             NormalText(
