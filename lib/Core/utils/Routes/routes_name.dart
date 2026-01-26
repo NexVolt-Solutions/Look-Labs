@@ -35,6 +35,12 @@ class RoutesName {
   static const String DietProgressScreen = 'diet_progress_screen';
 
   static const String FacialScreen = 'facial_screen';
+  static const String FacialReviewScansScreen = 'facial_review_scans_screen';
+  static const String FacialAnalyzingScren = 'facial_analyzing_screen';
+  static const String StyleProfileScreen = 'style_profile_screen';
+  static const String PersonalizedExerciseScreen = 'pers_exer_screen';
+  static const String FacialProgressScreen = 'facial_progress_screen';
+
   static const String FashionScreen = 'fashion_screen';
   static const String QuitPornScreen = 'quit_porn_screen';
 

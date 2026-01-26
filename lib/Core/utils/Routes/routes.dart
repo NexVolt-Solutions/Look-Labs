@@ -13,6 +13,11 @@ import 'package:looklabs/View/Home/Widget/Diet/Widget/diet_progress_screen.dart'
 import 'package:looklabs/View/Home/Widget/Diet/Widget/diet_result_screen.dart';
 import 'package:looklabs/View/Home/Widget/Diet/Widget/track_your_nutrition_screen.dart';
 import 'package:looklabs/View/Home/Widget/Diet/diet_screen.dart';
+import 'package:looklabs/View/Home/Widget/Facial/Widget/facial_analyzing_scren.dart';
+import 'package:looklabs/View/Home/Widget/Facial/Widget/facial_progress_screen.dart';
+import 'package:looklabs/View/Home/Widget/Facial/Widget/facial_review_scans_screen.dart';
+import 'package:looklabs/View/Home/Widget/Facial/Widget/personalized_exercise_screen.dart';
+import 'package:looklabs/View/Home/Widget/Facial/Widget/style_profile_screen.dart';
 import 'package:looklabs/View/Home/Widget/Facial/facial.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/hair_care.dart';
@@ -266,6 +271,31 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => DietProgressScreen(),
+        );
+      case RoutesName.FacialReviewScansScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => FacialReviewScansScreen(),
+        );
+      case RoutesName.FacialAnalyzingScren:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => FacialAnalyzingScren(),
+        );
+      case RoutesName.StyleProfileScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => StyleProfileScreen(),
+        );
+      case RoutesName.PersonalizedExerciseScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => PersonalizedExerciseScreen(),
+        );
+      case RoutesName.FacialProgressScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => FacialProgressScreen(),
         );
 
       default:

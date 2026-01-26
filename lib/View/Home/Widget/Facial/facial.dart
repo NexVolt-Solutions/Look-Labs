@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/Home/Widget/Facial/facial_question_screen.dart';
 import 'package:looklabs/ViewModel/facial_view_model.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class _FacialState extends State<Facial> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            // Navigate to result screen
+            Navigator.pushNamed(context, RoutesName.FacialReviewScansScreen);
           } else {
             vm.next();
           }

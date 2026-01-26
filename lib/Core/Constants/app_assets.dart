@@ -64,6 +64,16 @@ class AppAssets {
   static const String sacnIcon = "assets/Icon/scanIcon.svg";
   static const String tablerCameraIcon = "assets/Icon/tablerCameraIcon.svg";
 
+  //Facial Icon
+  static const String toothIcon = "assets/Icon/toothIcon.svg";
+  static const String noseIcon = "assets/Icon/noseIcon.svg";
+  static const String lipsIcon = "assets/Icon/lipIcon.svg";
+  static const String boneIcon = "assets/Icon/boneIcon.svg";
+  static const String eyeIcon = "assets/Icon/eyesIcon.svg";
+  static const String earIcon = "assets/Icon/earIcon.svg";
+  static const String faceIcon = "assets/Icon/faceIcon.svg";
+  static const String yogaIcon = "assets/Icon/yogaIcon.svg";
+
   //Home Grid Images
   static const String skinCare = "assets/home/SkinCare.jpg";
   static const String hair = "assets/home/Hair.png";
