@@ -13,11 +13,10 @@ class CameraWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: context.h(12)),
         CustomContainer(
           // onTap: () => ageDetailsViewModel.selectItem(index),
           radius: context.radius(10),
-          padding: context.padSym(h: 40.5, v: 44),
+          padding: context.padSym(h: 44, v: 28),
           // margin: context.padSym(v: 12),
           color:
               //  isSelected

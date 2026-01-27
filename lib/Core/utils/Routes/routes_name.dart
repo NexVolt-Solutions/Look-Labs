@@ -25,7 +25,7 @@ class RoutesName {
   static const String WorkOutResultScreen = 'work_out_result_screen';
   static const String DailyWorkoutRoutineScreen =
       'daily_work_out_routine_screen';
-  static const String YourProgressScreen = 'your_progress_screen';
+  static const String WorkOutProgressScreen = 'your_progress_screen';
 
   static const String DietScreen = 'diet_screen';
   static const String DietResultScreen = 'diet_result_screen';
@@ -42,7 +42,9 @@ class RoutesName {
   static const String FacialProgressScreen = 'facial_progress_screen';
 
   static const String FashionScreen = 'fashion_screen';
+
   static const String QuitPornScreen = 'quit_porn_screen';
+  static const String RecoveryPathScreen = 'recovery_path_screen';
 
   static const String HairReviewScansScreen = 'hair_review_scans_screen';
   static const String HairAnalyzingScreen = 'hair_analyzing_screen';

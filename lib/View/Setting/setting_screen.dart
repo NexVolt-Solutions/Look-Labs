@@ -126,7 +126,7 @@ class _SettingScreenState extends State<SettingScreen> {
               items: settingVM.appSettings,
               viewModel: settingVM,
             ),
-            SizedBox(height: context.h(100)),
+            SizedBox(height: context.h(250)),
           ],
         ),
       ),

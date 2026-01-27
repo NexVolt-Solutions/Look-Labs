@@ -52,8 +52,8 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
             SizedBox(height: context.h(12)),
             PlanContainer(
-              height: context.h(50),
-              width: context.w(double.infinity),
+              padding: context.padSym(v: 12, h: 65),
+              margin: context.padSym(v: 12),
               isSelected: false,
               onTap: () {},
               child: Row(
@@ -93,6 +93,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 ],
               ),
             ),
+            SizedBox(height: context.h(12)),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

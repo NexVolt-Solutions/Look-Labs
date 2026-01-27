@@ -47,6 +47,7 @@ class HeightQuestion extends StatelessWidget {
 
           ...List.generate(data['options'].length, (oIndex) {
             return PlanContainer(
+              margin: context.padSym(v: 10),
               isSelected: vm.selectedOptions[index] == oIndex,
               onTap: () => vm.selectOption(index, oIndex),
               padding: context.padSym(h: 22, v: 14),

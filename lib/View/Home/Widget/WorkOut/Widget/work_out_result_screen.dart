@@ -76,7 +76,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.h(18)),
 
             Wrap(
               spacing: context.w(5),
@@ -92,7 +92,6 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                   isSelected: isSelected,
                   radius: BorderRadius.circular(context.radius(16)),
 
-                  margin: context.padSym(h: 1, v: 1),
                   onTap: () {
                     workOutResultViewModel.selectExercise(btnIndex);
                   },
@@ -129,7 +128,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                 );
               }),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.h(18)),
             PlanContainer(
               padding: context.padSym(h: 12, v: 12),
               isSelected: false,
@@ -186,6 +185,8 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                 ],
               ),
             ),
+            SizedBox(height: context.h(18)),
+
             ...List.generate(workOutResultViewModel.heightRoutineList.length, (
               index,
             ) {
