@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/Home/Widget/QuitPorn/quit_porn_question_screen.dart';
 import 'package:looklabs/ViewModel/quit_porn_view_model.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class _QuitPornState extends State<QuitPorn> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            // Navigate to result / goal screen
+            Navigator.pushNamed(context, RoutesName.RecoveryPathScreen);
           } else {
             vm.next();
           }

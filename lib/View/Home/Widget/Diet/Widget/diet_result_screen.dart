@@ -92,7 +92,6 @@ class _DietResultScreenState extends State<DietResultScreen> {
                   isSelected: isSelected,
                   radius: BorderRadius.circular(context.radius(16)),
 
-                  margin: context.padSym(h: 1, v: 1),
                   onTap: () {
                     dietResultScreenViewModel.selectExercise(btnIndex);
                   },

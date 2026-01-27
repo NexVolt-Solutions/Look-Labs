@@ -3,6 +3,7 @@ import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
+import 'package:looklabs/Core/Constants/Widget/light_card_widget.dart';
 import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
@@ -31,7 +32,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
-          Navigator.pushNamed(context, RoutesName.YourProgressScreen);
+          Navigator.pushNamed(context, RoutesName.WorkOutProgressScreen);
         },
       ),
       body: SafeArea(
@@ -593,59 +594,9 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
               ),
             ),
             SizedBox(height: context.h(8)),
-
-            PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
-              isSelected: false,
-              onTap: () {},
-              child: Row(
-                children: [
-                  Container(
-                    height: context.h(28),
-                    width: context.w(28),
-                    decoration: BoxDecoration(
-                      color: AppColors.backGroundColor,
-                      borderRadius: BorderRadius.circular(context.radius(10)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.customContainerColorUp.withOpacity(
-                            0.4,
-                          ),
-                          offset: const Offset(3, 3),
-                          blurRadius: 4,
-                        ),
-                        BoxShadow(
-                          color: AppColors.customContinerColorDown.withOpacity(
-                            0.4,
-                          ),
-                          offset: const Offset(-3, -3),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: SizedBox(
-                        height: context.h(32),
-                        width: context.w(32),
-                        child: SvgPicture.asset(
-                          AppAssets.lightBulbIcon,
-                          fit: BoxFit.scaleDown,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: context.w(11)),
-                  Expanded(
-                    child: NormalText(
-                      subText:
-                          'Consistency improves stamina, strength & posture over time.',
-                      subSize: context.text(12),
-                      subWeight: FontWeight.w600,
-                      subColor: AppColors.iconColor,
-                    ),
-                  ),
-                ],
-              ),
+            LightCardWidget(
+              text:
+                  'Consistency improves stamina, strength & posture over time.',
             ),
           ],
         ),

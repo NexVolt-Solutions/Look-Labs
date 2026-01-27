@@ -33,6 +33,7 @@ import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:looklabs/ViewModel/purchase_view_model.dart';
 import 'package:looklabs/ViewModel/quit_porn_view_model.dart';
 import 'package:looklabs/ViewModel/recommended_product_view_model.dart';
+import 'package:looklabs/ViewModel/recovery_path_screen_view_model.dart';
 import 'package:looklabs/ViewModel/skin_care_view_model.dart';
 import 'package:looklabs/ViewModel/skin_top_product_view_model.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
@@ -126,6 +127,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (context) => FacialProgressScreenViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => RecoveryPathScreenViewModel(),
         ),
       ],
       child: MaterialApp(

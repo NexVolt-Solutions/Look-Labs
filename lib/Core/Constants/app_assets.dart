@@ -74,6 +74,18 @@ class AppAssets {
   static const String faceIcon = "assets/Icon/faceIcon.svg";
   static const String yogaIcon = "assets/Icon/yogaIcon.svg";
 
+  //Quite Icon
+  static const String analysingIcon = "assets/Icon/analysingIcon.svg";
+  static const String breathingIcon = "assets/Icon/breatingIcon.svg";
+  static const String calenderIcon = "assets/Icon/calendarIcon.svg";
+  static const String clamMindIcon = "assets/Icon/clamMindIcon.svg";
+  static const String exrerciseIcon = "assets/Icon/exerciseIcon.svg";
+  static const String goalIcon = "assets/Icon/goalIcon.svg";
+  static const String noteIcon = "assets/Icon/noteIcon.svg";
+  static const String reportIcon = "assets/Icon/reportIcon.svg";
+  static const String trophyIcon = "assets/Icon/trophyIcon.svg";
+  static const String tickIcon = "assets/Icon/tickIcon.svg";
+
   //Home Grid Images
   static const String skinCare = "assets/home/SkinCare.jpg";
   static const String hair = "assets/home/Hair.png";

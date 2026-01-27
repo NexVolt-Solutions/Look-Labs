@@ -31,6 +31,7 @@ import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_home_remedies.dar
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_product_detail_screen.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_review_scans.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/Widget/hair_top_product.dart';
+import 'package:looklabs/View/Home/Widget/QuitPorn/recovery_path_screen.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/daily_skin_care_routine.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_analyzing_screen.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/Widget/skin_home_remedies.dart';
@@ -242,7 +243,7 @@ class Routes {
           settings: settings,
           builder: (_) => DailyWorkoutRoutine(),
         );
-      case RoutesName.YourProgressScreen:
+      case RoutesName.WorkOutProgressScreen:
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => WorkOutProgressScreen(),
@@ -296,6 +297,11 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => FacialProgressScreen(),
+        );
+      case RoutesName.RecoveryPathScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => RecoveryPathScreen(),
         );
 
       default:

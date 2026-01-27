@@ -59,12 +59,12 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                 image: subPlanViewModel.subscriptionData[index]['image']!,
               ),
             ),
-            SizedBox(height: context.h(14)),
             ...List.generate(subPlanViewModel.subscriptionPlan.length, (index) {
               final isSelected = subPlanViewModel.isPlanSelected(index);
               final plan = subPlanViewModel.subscriptionPlan[index];
               return PlanContainer(
-                height: context.h(91),
+                padding: context.padSym(h: 12, v: 12),
+                margin: context.padSym(v: 12),
                 isSelected: isSelected,
                 onTap: () => subPlanViewModel.selectPlan(index),
                 child: Row(
