@@ -18,7 +18,7 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
 
   List<Map<String, dynamic>> repButtonName = [
     {'image': AppAssets.reportIcon, 'text': 'Report Relapse'},
-    {'image': AppAssets.tickIcon, 'text': 'Complete day'},
+    {'image': AppAssets.doneIcon, 'text': 'Complete day'},
   ];
   List<Map<String, dynamic>> checkBoxName = [
     {
@@ -44,8 +44,8 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   }
 
   List<Map<String, dynamic>> recordButtonName = [
-    {'image': AppAssets.calenderIcon, 'text': 'Daily Pland'},
-    {'image': AppAssets.exrerciseIcon, 'text': 'Exercise'},
+    {'image': AppAssets.ageIcon, 'text': 'Daily Plan'},
+    {'image': AppAssets.exersieIcon, 'text': 'Exercise'},
   ];
 
   void selectRepButton(int index) {
