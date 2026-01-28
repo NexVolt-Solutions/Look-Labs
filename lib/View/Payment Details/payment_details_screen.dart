@@ -22,13 +22,24 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     final paymentViewModel = Provider.of<PaymentDetailsVieModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
+      bottomNavigationBar: CustomButton(
+        isEnabled: true,
+        onTap: () => Navigator.pushNamed(context, RoutesName.AuthScreen),
+        text: 'Pay',
+        color: AppColors.buttonColor,
+      ),
       body: SafeArea(
         child: Padding(
           padding: context.padSym(h: 20),
           child: ListView(
             clipBehavior: Clip.hardEdge,
             children: [
-              AppBarContainer(title: 'Payment Details'),
+              AppBarContainer(
+                title: 'Payment Details',
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
               SizedBox(height: context.h(30.89)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,16 +71,6 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                   name: paymentViewModel.cardDetails[index]['name'],
                   subName: paymentViewModel.cardDetails[index]['subName'],
                 ),
-              ),
-              SizedBox(height: context.h(378)),
-              CustomButton(
-                isEnabled: true,
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  RoutesName.PaymentDetailsScreen,
-                ),
-                text: 'Play',
-                color: AppColors.buttonColor,
               ),
             ],
           ),

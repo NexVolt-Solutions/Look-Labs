@@ -39,30 +39,40 @@ class PlanContainer extends StatelessWidget {
               horizontal: context.w(20),
               vertical: context.h(14),
             ),
-        margin: margin ?? context.padSym(v: 10),
+        margin: margin ?? context.padSym(v: 0),
         decoration: BoxDecoration(
-          borderRadius: radius ?? BorderRadius.circular(context.radius(10)),
-          border: Border.all(
-            color: isSelected!
-                ? AppColors.pimaryColor
-                : AppColors.backGroundColor,
-            width: context.w(1.5),
-          ),
           color: isSelected!
-              ? AppColors.pimaryColor.withOpacity(0.15)
+              ? AppColors.buttonColor.withOpacity(0.11) // selected bg
               : AppColors.backGroundColor,
+          borderRadius: BorderRadius.circular(context.radius(10)),
+          border: isSelected!
+              ? Border.all(color: AppColors.pimaryColor, width: 1.5)
+              : null,
           boxShadow: isSelected!
-              ? []
-              : [
+              ? [
                   BoxShadow(
-                    color: AppColors.customContainerColorUp.withOpacity(0.4),
+                    color: AppColors.buttonColor.withOpacity(0.15),
                     offset: const Offset(5, 5),
-                    blurRadius: 5,
+                    blurRadius: 20,
+                    inset: true,
                   ),
                   BoxShadow(
-                    color: AppColors.customContinerColorDown.withOpacity(0.4),
+                    color: AppColors.buttonColor.withOpacity(0.15),
                     offset: const Offset(-5, -5),
-                    blurRadius: 5,
+                    blurRadius: 20,
+                    inset: true,
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: AppColors.customContainerColorUp.withOpacity(0.5),
+                    offset: const Offset(5, 5),
+                    blurRadius: 20,
+                  ),
+                  BoxShadow(
+                    color: AppColors.customContinerColorDown,
+                    offset: const Offset(-5, -5),
+                    blurRadius: 20,
                   ),
                 ],
         ),

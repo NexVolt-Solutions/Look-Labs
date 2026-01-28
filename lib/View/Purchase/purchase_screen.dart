@@ -28,7 +28,8 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: CustomButton(
         isEnabled: true,
-        onTap: () => Navigator.pushNamed(context, RoutesName.AuthScreen),
+        onTap: () =>
+            Navigator.pushNamed(context, RoutesName.PaymentDetailsScreen),
         text: 'Next',
         color: AppColors.buttonColor,
       ),
@@ -37,7 +38,12 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
           padding: context.padSym(h: 20),
           clipBehavior: Clip.hardEdge,
           children: [
-            AppBarContainer(title: 'Purchase'),
+            AppBarContainer(
+              title: 'Purchase',
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
             SizedBox(height: context.h(30.89)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +68,6 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(20)),
             ...List.generate(purchaseViewModel.purchaseCardData.length, (
               index,
             ) {
@@ -70,7 +75,8 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
               final isSelected = plan['isSelected'] as bool;
               return PlanContainer(
                 isSelected: isSelected,
-                // padding: context.padSym(h: 24, v: 12),
+                margin: context.padSym(v: 10),
+                padding: context.padSym(h: 24, v: 12),
                 onTap: () => purchaseViewModel.selectPayment(index),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

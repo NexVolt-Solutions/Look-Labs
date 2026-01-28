@@ -11,6 +11,7 @@ import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/ViewModel/diet_progress_screen_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_progress_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,8 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
   Widget build(BuildContext context) {
     final yourProgressScreenViewModel =
         Provider.of<WorkOutProgressScreenViewModel>(context);
+    final dietProgressScreenViewModel =
+        Provider.of<DietProgressScreenViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
 
@@ -204,10 +207,10 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.h(18)),
             Column(
               children: List.generate(
-                yourProgressScreenViewModel.checkBoxName.length,
+                dietProgressScreenViewModel.checkBoxName.length,
                 (index) {
                   return Padding(
                     padding: EdgeInsets.only(bottom: context.h(12)),
@@ -215,13 +218,17 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            yourProgressScreenViewModel.toggleChecklist(index);
+                            dietProgressScreenViewModel.toggleChecklist(index);
                           },
                           child: Container(
                             height: context.h(28),
                             width: context.w(28),
                             decoration: BoxDecoration(
-                              color: AppColors.backGroundColor,
+                              color:
+                                  dietProgressScreenViewModel
+                                      .selectedChecklist[index]
+                                  ? AppColors.pimaryColor
+                                  : AppColors.backGroundColor,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
@@ -242,17 +249,14 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                             ),
                             child: Center(
                               child:
-                                  yourProgressScreenViewModel
+                                  dietProgressScreenViewModel
                                       .selectedChecklist[index]
                                   ? Icon(
                                       Icons.check,
                                       size: context.h(16),
-                                      color: AppColors.pimaryColor,
+                                      color: AppColors.white,
                                     )
-                                  : NormalText(
-                                      titleText: '${index + 1}',
-                                      titleSize: context.text(12),
-                                    ),
+                                  : SizedBox(),
                             ),
                           ),
                         ),
@@ -262,7 +266,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                         Expanded(
                           child: NormalText(
                             titleText:
-                                yourProgressScreenViewModel.checkBoxName[index],
+                                dietProgressScreenViewModel.checkBoxName[index],
                             titleSize: context.text(16),
                             titleWeight: FontWeight.w600,
                             titleColor: AppColors.subHeadingColor,
@@ -274,6 +278,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                 },
               ),
             ),
+            SizedBox(height: context.h(150)),
           ],
         ),
       ),

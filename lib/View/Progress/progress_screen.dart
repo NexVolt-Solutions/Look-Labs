@@ -28,7 +28,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
           padding: context.padSym(h: 20),
           clipBehavior: Clip.hardEdge,
           children: [
-            SizedBox(height: context.h(11)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(progressViewModel.buttonName.length, (
@@ -48,8 +47,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   border: isSelected
                       ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                       : null,
-                  padding: context.padSym(h: 37, v: 13),
-                  margin: EdgeInsets.only(right: 8),
+                  padding: context.padSym(h: 42, v: 12),
                   child: Center(
                     child: Text(
                       progressViewModel.buttonName[index],
@@ -89,19 +87,23 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       AppAssets.upLoadIcon,
                       height: context.h(24),
                       width: context.w(24),
+                      color: AppColors.pimaryColor,
+
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
               ],
             ),
+            SizedBox(height: context.h(10)),
+
             CustomContainer(
               radius: context.radius(10),
               color: AppColors.backGroundColor,
               padding: context.padSym(h: 10, v: 10),
-              margin: EdgeInsets.only(bottom: context.h(20)),
               child: Center(child: LineChartWidget()),
             ),
+            SizedBox(height: context.h(10)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -127,6 +129,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
                     child: SvgPicture.asset(
                       AppAssets.upLoadIcon,
                       height: context.h(24),
+                      color: AppColors.pimaryColor,
+
                       width: context.w(24),
                       fit: BoxFit.contain,
                     ),
@@ -134,14 +138,14 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 ),
               ],
             ),
-
+            SizedBox(height: context.h(10)),
             CustomContainer(
               radius: context.radius(10),
               color: AppColors.backGroundColor,
               padding: context.padSym(h: 10, v: 10),
-              margin: EdgeInsets.only(bottom: context.h(20)),
               child: Center(child: LineChartWidget()),
             ),
+            SizedBox(height: context.h(20)),
             CustomContainer(
               radius: context.radius(10),
               color: AppColors.backGroundColor,
@@ -151,14 +155,17 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: CustomContainer(
-                      radius: context.radius(10),
-                      color: AppColors.backGroundColor,
+                    child: PlanContainer(
+                      radius: BorderRadius.circular(context.radius(10)),
+                      padding: context.padSym(h: 6, v: 6),
+                      isSelected: false,
+                      onTap: () {},
                       child: SvgPicture.asset(
                         AppAssets.graphIcon,
                         height: context.h(24),
                         width: context.w(24),
                         fit: BoxFit.contain,
+                        color: AppColors.pimaryColor,
                       ),
                     ),
                   ),
@@ -178,7 +185,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(100)),
+            SizedBox(height: context.h(250)),
           ],
         ),
       ),

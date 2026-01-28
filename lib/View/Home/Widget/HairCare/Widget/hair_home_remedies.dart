@@ -11,6 +11,7 @@ class HairHomeRemedies extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),

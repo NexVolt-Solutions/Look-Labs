@@ -28,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: context.padSym(h: 20),
           clipBehavior: Clip.hardEdge,
           children: [
-            SizedBox(height: context.h(11)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Wellness Overview',
@@ -36,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.h(10)),
             SizedBox(
               child: GridView.builder(
                 shrinkWrap: true,
@@ -89,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(
-              height: context.h(140),
+              height: context.h(130),
               // width: context.w(double.infinity),
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -100,10 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Container(
                     margin: EdgeInsets.only(
                       right: context.h(13),
-                      top: context.h(12),
-                      bottom: context.h(12),
+                      top: context.h(16),
+                      bottom: context.h(16),
                     ),
-                    padding: context.padSym(h: 13),
+                    padding: context.padSym(h: 28, v: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(context.radius(16)),
                       color: AppColors.backGroundColor,
@@ -124,95 +123,46 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          PlanContainer(
-                            padding: context.padSym(h: 2, v: 2),
-                            radius: BorderRadius.circular(10),
-                            isSelected: false,
-                            onTap: () {},
-                            child: ClipRRect(
-                              borderRadius: BorderRadiusGeometry.circular(6),
-                              child: Image.asset(
-                                item['image'],
-                                height: context.h(24),
-                                width: context.w(24),
-                                fit: BoxFit.scaleDown,
-                              ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        PlanContainer(
+                          padding: context.padSym(h: 2, v: 2),
+                          radius: BorderRadius.circular(10),
+                          isSelected: false,
+                          onTap: () {},
+                          child: ClipRRect(
+                            borderRadius: BorderRadiusGeometry.circular(6),
+                            child: Image.asset(
+                              item['image'],
+                              height: context.h(24),
+                              width: context.w(24),
+                              fit: BoxFit.scaleDown,
                             ),
                           ),
-                          SizedBox(height: context.h(4)),
-                          Text(
-                            item['title'],
-                            style: TextStyle(
-                              fontSize: context.text(14),
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.subHeadingColor,
-                            ),
+                        ),
+                        SizedBox(height: context.h(4)),
+                        Text(
+                          item['title'],
+                          style: TextStyle(
+                            fontSize: context.text(14),
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.subHeadingColor,
                           ),
-                          SizedBox(height: context.h(3)),
-                          Text(
-                            item['subTitle'],
-                            style: TextStyle(
-                              fontSize: context.text(12),
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.notSelectedColor,
-                            ),
+                        ),
+                        SizedBox(height: context.h(3)),
+                        Text(
+                          item['subTitle'],
+                          style: TextStyle(
+                            fontSize: context.text(12),
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.notSelectedColor,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
-
-                  // CustomContainer(
-                  //   onTap: () {},
-                  //   border: null,
-                  //   // height: context.h(80),
-                  //   // width: context.w(100),
-                  //   radius: context.radius(16),
-                  //   padding: context.padSym(h: 20, v: 11),
-                  //   margin: context.padSym(h: 12),
-                  //   child: Column(
-                  //     children: [
-                  //       PlanContainer(
-                  //         padding: context.padAll(4),
-                  //         radius: BorderRadius.circular(10),
-                  //         isSelected: false,
-                  //         onTap: () {},
-                  //         child: ClipRRect(
-                  //           borderRadius: BorderRadiusGeometry.circular(4),
-                  //           child: Image.asset(
-                  //             'assets/Picsart_25-12-27_23-56-38-946.jpg',
-                  //             height: context.h(40),
-                  //             width: context.w(40),
-                  //             fit: BoxFit.scaleDown,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: context.h(9)),
-                  //       Text(
-                  //         item['title'],
-                  //         style: TextStyle(
-                  //           fontSize: context.text(14),
-                  //           fontWeight: FontWeight.w600,
-                  //           color: AppColors.subHeadingColor,
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: context.h(6)),
-                  //       Text(
-                  //         item['subTitle'],
-                  //         style: TextStyle(
-                  //           fontSize: context.text(12),
-                  //           fontWeight: FontWeight.w400,
-                  //           color: AppColors.notSelectedColor,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // );
                 },
               ),
             ),
@@ -223,9 +173,9 @@ class _HomeScreenState extends State<HomeScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(5)),
+            SizedBox(height: context.h(15)),
             SizedBox(
-              height: context.h(1150),
+              height: context.h(1250),
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

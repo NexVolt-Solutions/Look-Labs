@@ -189,6 +189,7 @@ class _SkinProductDetailScreenState extends State<SkinProductDetailScreen> {
               runSpacing: context.h(12),
               children: List.generate(4, (index) {
                 return PlanContainer(
+                  padding: context.padSym(h: 44, v: 19),
                   isSelected: false,
                   onTap: () {},
                   child: NormalText(

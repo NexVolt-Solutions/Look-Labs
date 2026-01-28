@@ -143,7 +143,11 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                             height: context.h(28),
                             width: context.w(28),
                             decoration: BoxDecoration(
-                              color: AppColors.backGroundColor,
+                              color:
+                                  facialProgressScreenViewModel
+                                      .selectedChecklist[index]
+                                  ? AppColors.pimaryColor
+                                  : AppColors.backGroundColor,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
@@ -169,12 +173,9 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                                   ? Icon(
                                       Icons.check,
                                       size: context.h(16),
-                                      color: AppColors.pimaryColor,
+                                      color: AppColors.white,
                                     )
-                                  : NormalText(
-                                      titleText: '${index + 1}',
-                                      titleSize: context.text(12),
-                                    ),
+                                  : SizedBox(),
                             ),
                           ),
                         ),
@@ -196,6 +197,7 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                 },
               ),
             ),
+            SizedBox(height: context.h(150)),
           ],
         ),
       ),

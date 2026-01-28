@@ -41,6 +41,8 @@ class SkinCareQuestionPage extends StatelessWidget {
         SizedBox(height: context.h(8)),
         ...List.generate(data['options'].length, (oIndex) {
           return PlanContainer(
+            margin: context.padSym(v: 10),
+
             isSelected: vm.selectedOptions[index] == oIndex,
             onTap: () => vm.selectOption(index, oIndex),
             padding: context.padSym(h: 22, v: 14),

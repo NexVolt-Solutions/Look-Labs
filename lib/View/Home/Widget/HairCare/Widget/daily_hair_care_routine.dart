@@ -98,7 +98,7 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
             //                 subTitle: item['subTitle'],
             //                 pers: item['pers'],
             SizedBox(
-              height: context.h(310),
+              height: context.h(330),
               child: PageView.builder(
                 itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
                 itemBuilder: (context, pageIndex) {
@@ -173,7 +173,6 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                 },
               ),
             ),
-            SizedBox(height: context.h(2)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Today’s Routine',
@@ -181,60 +180,58 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(2)),
+            SizedBox(height: context.h(10)),
             PlanContainer(
+              padding: context.padSym(h: 14, v: 18),
               isSelected: false,
               onTap: () {},
               child: Column(
                 children: List.generate(3, (index) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: context.h(10)),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SimpleCheckBox(
-                          isSelected: dailyHairCareRoutineViewModel.isSelected,
-                          onTap: () {
-                            setState(() {
-                              dailyHairCareRoutineViewModel.isSelected =
-                                  !dailyHairCareRoutineViewModel
-                                      .isSelected; // toggle the checkbox
-                            });
-                          },
-                        ),
-                        SizedBox(width: context.w(12)),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Gentle Scalp Wash',
-                                style: TextStyle(
-                                  fontSize: context.text(14),
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.subHeadingColor,
-                                ),
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SimpleCheckBox(
+                        isSelected: dailyHairCareRoutineViewModel.isSelected,
+                        onTap: () {
+                          setState(() {
+                            dailyHairCareRoutineViewModel.isSelected =
+                                !dailyHairCareRoutineViewModel
+                                    .isSelected; // toggle the checkbox
+                          });
+                        },
+                      ),
+                      SizedBox(width: context.w(12)),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Gentle Scalp Wash',
+                              style: TextStyle(
+                                fontSize: context.text(14),
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.subHeadingColor,
                               ),
-                              SizedBox(height: context.h(4)),
-                              Text(
-                                'Removes excess oil and buildup without drying the scalp. '
-                                'Helps maintain a clean and balanced scalp environment.',
-                                style: TextStyle(
-                                  fontSize: context.text(10),
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.subHeadingColor,
-                                ),
+                            ),
+                            SizedBox(height: context.h(4)),
+                            Text(
+                              'Removes excess oil and buildup without drying the scalp. '
+                              'Helps maintain a clean and balanced scalp environment.',
+                              style: TextStyle(
+                                fontSize: context.text(10),
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.subHeadingColor,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   );
                 }),
               ),
             ),
-            SizedBox(height: context.h(2)),
+            SizedBox(height: context.h(10)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Night’s Routine',
@@ -242,8 +239,10 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.h(10)),
             PlanContainer(
+              padding: context.padSym(h: 14, v: 18),
+
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -295,7 +294,7 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                 }),
               ),
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.h(10)),
 
             ...List.generate(
               dailyHairCareRoutineViewModel.remediesData.length,
@@ -313,9 +312,10 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                       titleWeight: FontWeight.w600,
                       titleColor: AppColors.headingColor,
                     ),
+                    SizedBox(height: context.h(10)),
                     PlanContainer(
                       isSelected: isSelected,
-                      padding: context.padSym(h: 19, v: 23.5),
+                      padding: context.padSym(h: 20, v: 22.5),
                       onTap: () {
                         dailyHairCareRoutineViewModel.selectDemedies(index);
 
@@ -360,6 +360,7 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                         ],
                       ),
                     ),
+                    SizedBox(height: context.h(10)),
                   ],
                 );
               },

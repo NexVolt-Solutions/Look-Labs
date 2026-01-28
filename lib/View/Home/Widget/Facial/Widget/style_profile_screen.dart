@@ -37,7 +37,6 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
             ),
             SizedBox(height: context.h(20)),
 
-            // SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Feature Scores',
@@ -45,7 +44,7 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(4)),
+            SizedBox(height: context.h(18)),
             PlanContainer(
               padding: context.padSym(h: 12, v: 12),
               isSelected: false,
@@ -73,7 +72,7 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.h(18)),
             PlanContainer(
               padding: context.padSym(h: 12, v: 12),
               isSelected: false,
@@ -120,7 +119,7 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                                 item['image'],
                                 height: context.h(18.05),
                                 width: context.w(22.56),
-                                color: AppColors.notSelectedColor,
+                                color: AppColors.pimaryColor,
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -154,7 +153,7 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                 ),
               ),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.h(18)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Daily Exercises',

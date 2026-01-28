@@ -243,7 +243,7 @@ class Routes {
           settings: settings,
           builder: (_) => DailyWorkoutRoutine(),
         );
-      case RoutesName.YourProgressScreen:
+      case RoutesName.WorkOutProgressScreen:
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => WorkOutProgressScreen(),

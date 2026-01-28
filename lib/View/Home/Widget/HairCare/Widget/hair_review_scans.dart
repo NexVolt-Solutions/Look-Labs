@@ -65,7 +65,7 @@ class _HairReviewScansState extends State<HairReviewScans> {
                   // mainAxisSpacing: 16,
                   // crossAxisSpacing: 16,
                   // mainAxisExtent: 2,
-                  childAspectRatio: 2.5 / 3,
+                  childAspectRatio: 3 / 3,
                 ),
                 itemCount: 4,
                 // homeViewModel.gridData.length,

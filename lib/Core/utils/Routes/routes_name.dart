@@ -25,7 +25,7 @@ class RoutesName {
   static const String WorkOutResultScreen = 'work_out_result_screen';
   static const String DailyWorkoutRoutineScreen =
       'daily_work_out_routine_screen';
-  static const String YourProgressScreen = 'your_progress_screen';
+  static const String WorkOutProgressScreen = 'your_progress_screen';
 
   static const String DietScreen = 'diet_screen';
   static const String DietResultScreen = 'diet_result_screen';

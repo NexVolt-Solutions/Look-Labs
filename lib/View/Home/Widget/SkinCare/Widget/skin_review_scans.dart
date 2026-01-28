@@ -38,7 +38,7 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
               },
             ),
 
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.h(60)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
               titleText: 'Capture Your Skin',
@@ -55,7 +55,7 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
             ),
             SizedBox(height: context.h(12)),
             SizedBox(
-              height: context.h(1150),
+              height: context.h(600),
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -65,7 +65,7 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
                   // mainAxisSpacing: 16,
                   // crossAxisSpacing: 16,
                   // mainAxisExtent: 2,
-                  childAspectRatio: 2.5 / 3,
+                  childAspectRatio: 3 / 3,
                 ),
                 itemCount: 4,
                 // homeViewModel.gridData.length,

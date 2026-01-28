@@ -66,18 +66,17 @@ class QuestionPage extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: context.h(18)),
               NormalText(
                 titleText: q['question'],
                 titleSize: context.text(14),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
               ),
-              SizedBox(height: context.h(18)),
               ...List.generate(q['options'].length, (oIndex) {
                 return SizedBox(
                   width: double.infinity,
                   child: PlanContainer(
+                    margin: context.padSym(v: 10),
                     isSelected: vm.isSelected(index, qIndex, oIndex),
                     onTap: () => vm.selectOption(index, qIndex, oIndex),
                     padding: context.padSym(h: 22, v: 14),

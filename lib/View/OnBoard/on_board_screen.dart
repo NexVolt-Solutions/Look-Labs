@@ -34,14 +34,17 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
               title: 'OnBoard',
               onTap: () => Navigator.pop(context),
             ),
-            SizedBox(height: context.h(44.89)),
-            Container(
-              height: context.h(594),
-              width: context.w(335),
-              decoration: BoxDecoration(
-                color: AppColors.blurBottomColor,
-                borderRadius: BorderRadius.circular(context.radius(12)),
-                shape: BoxShape.rectangle,
+            SizedBox(height: context.h(20)),
+            ClipRRect(
+              borderRadius: BorderRadiusGeometry.circular(context.radius(10)),
+              child: Container(
+                height: context.h(594),
+                width: context.w(335),
+                decoration: BoxDecoration(
+                  color: AppColors.blurBottomColor,
+                  borderRadius: BorderRadius.circular(context.radius(12)),
+                  shape: BoxShape.rectangle,
+                ),
               ),
             ),
           ],

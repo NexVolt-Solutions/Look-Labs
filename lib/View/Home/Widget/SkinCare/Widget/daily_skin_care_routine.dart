@@ -153,7 +153,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(2)),
+            SizedBox(height: context.h(10)),
             PlanContainer(
               isSelected: false,
               onTap: () {},
@@ -206,6 +206,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                 }),
               ),
             ),
+
             SizedBox(height: context.h(12)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
