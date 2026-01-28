@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Constants/Widget/goal_activity_graph.dart';
-import 'package:looklabs/Core/Constants/Widget/height_indicator.dart';
-import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
-import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
+import 'package:looklabs/Core/Widget/app_bar_container.dart';
+import 'package:looklabs/Core/Widget/goal_activity_graph.dart';
+import 'package:looklabs/Core/Widget/height_indicator.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
+import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/ViewModel/height_view_model.dart';

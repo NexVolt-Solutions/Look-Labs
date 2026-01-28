@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:looklabs/Core/Constants/Widget/activity_consistency_widget.dart';
-import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
-import 'package:looklabs/Core/Constants/Widget/light_widget_continer.dart';
-import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
-import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
+import 'package:looklabs/Core/Widget/activity_consistency_widget.dart';
+import 'package:looklabs/Core/Widget/app_bar_container.dart';
+import 'package:looklabs/Core/Widget/custom_button.dart';
+import 'package:looklabs/Core/Widget/light_card_widget.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
+import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
@@ -159,9 +159,9 @@ class _TrackYourNutritionScreenState extends State<TrackYourNutritionScreen> {
               );
             }),
             SizedBox(height: context.h(14)),
-            LightWidgetContiner(
+            LightCardWidget(
               text:
-                  'Consistency improves stamina, strength & metabolism over time. Keep pushing!',
+                  'Consistency improves stamina, strength & posture over time.',
             ),
             SizedBox(height: context.h(200)),
           ],

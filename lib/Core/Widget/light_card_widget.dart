@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
-import 'package:looklabs/Core/Constants/Widget/plan_container.dart';
+
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
+import 'package:looklabs/Core/Widget/plan_container.dart';
 
-class LightWidgetContiner extends StatelessWidget {
+class LightCardWidget extends StatelessWidget {
   final String? text;
-  const LightWidgetContiner({super.key, this.text});
+  const LightCardWidget({super.key, this.text});
 
   @override
   Widget build(BuildContext context) {
     return PlanContainer(
+      margin: context.padSym(v: 8),
       padding: context.padSym(h: 12, v: 12),
       isSelected: false,
       onTap: () {},
@@ -54,7 +56,7 @@ class LightWidgetContiner extends StatelessWidget {
               subText: text,
               subSize: context.text(12),
               subWeight: FontWeight.w600,
-              subColor: AppColors.subHeadingColor,
+              subColor: AppColors.iconColor,
             ),
           ),
         ],

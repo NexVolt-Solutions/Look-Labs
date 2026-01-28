@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/Widget/scan_food_widgert.dart';
+import 'package:looklabs/Core/Widget/scan_food_widgert.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 

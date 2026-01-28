@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
-import 'package:looklabs/Core/Constants/Widget/height_widget_cont.dart';
-import 'package:looklabs/Core/Constants/Widget/light_widget_continer.dart';
-import 'package:looklabs/Core/Constants/Widget/neu_text_fied.dart';
-import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
+import 'package:looklabs/Core/Widget/app_bar_container.dart';
+import 'package:looklabs/Core/Widget/custom_button.dart';
+import 'package:looklabs/Core/Widget/height_widget_cont.dart';
+import 'package:looklabs/Core/Widget/light_card_widget.dart';
+import 'package:looklabs/Core/Widget/neu_text_fied.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
@@ -94,9 +94,9 @@ class _DietDetailsScreenState extends State<DietDetailsScreen> {
               ),
             ),
             SizedBox(height: context.h(24)),
-            LightWidgetContiner(
+            LightCardWidget(
               text:
-                  'Consistency improves stamina, strength & metabolism over time. Keep pushing!',
+                  'Consistency improves stamina, strength & posture over time.',
             ),
             SizedBox(height: context.h(200)),
           ],

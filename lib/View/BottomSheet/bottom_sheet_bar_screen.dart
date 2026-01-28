@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart' hide BoxShadow;
 import 'package:flutter_svg/svg.dart';
-import 'package:looklabs/Core/Constants/Widget/bottom_icon_container.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_container.dart';
-import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
+import 'package:looklabs/Core/Widget/bottom_icon_container.dart';
+import 'package:looklabs/Core/Widget/custom_container.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';

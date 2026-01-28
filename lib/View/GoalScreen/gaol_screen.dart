@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
-import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
+import 'package:looklabs/Core/Widget/custom_button.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';

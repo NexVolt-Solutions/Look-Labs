@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
-import 'package:looklabs/Core/Constants/Widget/activity_consistency_widget.dart';
-import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_container.dart';
-import 'package:looklabs/Core/Constants/Widget/height_widget_cont.dart';
-import 'package:looklabs/Core/Constants/Widget/line_chart_widget.dart';
-import 'package:looklabs/Core/Constants/Widget/normal_text.dart';
+import 'package:looklabs/Core/Widget/activity_consistency_widget.dart';
+import 'package:looklabs/Core/Widget/app_bar_container.dart';
+import 'package:looklabs/Core/Widget/custom_container.dart';
+import 'package:looklabs/Core/Widget/height_widget_cont.dart';
+import 'package:looklabs/Core/Widget/line_chart_widget.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';

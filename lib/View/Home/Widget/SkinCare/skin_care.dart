@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
+import 'package:looklabs/Core/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/Home/Widget/SkinCare/skin_care_question_screen.dart';

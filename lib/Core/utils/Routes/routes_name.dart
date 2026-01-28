@@ -42,7 +42,9 @@ class RoutesName {
   static const String FacialProgressScreen = 'facial_progress_screen';
 
   static const String FashionScreen = 'fashion_screen';
+
   static const String QuitPornScreen = 'quit_porn_screen';
+  static const String RecoveryPathScreen = 'recovery_path_screen';
 
   static const String HairReviewScansScreen = 'hair_review_scans_screen';
   static const String HairAnalyzingScreen = 'hair_analyzing_screen';

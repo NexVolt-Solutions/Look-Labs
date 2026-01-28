@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/Widget/app_bar_container.dart';
+import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
