@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
+import 'package:looklabs/Core/Widget/custom_container.dart';
+import 'package:looklabs/Core/Widget/line_chart_widget.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Widget/simple_check_box.dart';
@@ -11,6 +13,7 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/ViewModel/daily_hair_care_routine_view_model.dart';
+import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:provider/provider.dart';
 
 class DailyHairCareRoutine extends StatefulWidget {
@@ -25,17 +28,11 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
   Widget build(BuildContext context) {
     final dailyHairCareRoutineViewModel =
         Provider.of<DailyHairCareRoutineViewModel>(context);
+    final progressViewModel = Provider.of<ProgressViewModel>(context);
+
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      // bottomNavigationBar: CustomButton(
-      //   text: 'next',
-      //   color: AppColors.pimaryColor,
-      //   isEnabled: true,
-      //   onTap: () {
-      //     Navigator.pushNamed(context, RoutesName.HomeRemediesScreen);
-      //   },
-      //   padding: context.padSym(h: 145, v: 17),
-      // ),
+
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
@@ -48,57 +45,8 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
             ),
             SizedBox(height: context.h(24)),
 
-            // SizedBox(
-            //   height: context.h(350),
-            //   child: PageView.builder(
-            //     itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
-            //     itemBuilder: (context, pageIndex) {
-            //       final pageData =
-            //           dailyHairCareRoutineViewModel.indicatorPages[pageIndex];
-
-            //       return Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           Row(
-            //             children: [
-            //               SvgPicture.asset(
-            //                 AppAssets.starIcon,
-            //                 height: context.h(24),
-            //                 width: context.w(24),
-            //                 color: AppColors.pimaryColor,
-            //               ),
-            //               SizedBox(width: context.w(8)),
-            //               NormalText(
-            //                 titleText: pageIndex == 0
-            //                     ? 'Hair Attributes'
-            //                     : pageIndex == 1
-            //                     ? 'Hair Health'
-            //                     : 'Concerns Analysis',
-            //                 titleSize: context.text(18),
-            //                 titleWeight: FontWeight.w600,
-            //                 titleColor: AppColors.headingColor,
-            //               ),
-            //             ],
-            //           ),
-            //           SizedBox(height: context.h(12)),
-
-            //           GridView.builder(
-            //             shrinkWrap: true,
-            //             physics: const NeverScrollableScrollPhysics(),
-            //             gridDelegate:
-            //                 const SliverGridDelegateWithFixedCrossAxisCount(
-            //                   crossAxisCount: 2,
-            //                   childAspectRatio: 4 / 3,
-            //                 ),
-            //             itemCount: pageData.length,
-            //             itemBuilder: (context, index) {
-            //               final item = pageData[index];
-            //               return TextAndIndectorContiner(
-            //                 title: item['title'],
-            //                 subTitle: item['subTitle'],
-            //                 pers: item['pers'],
             SizedBox(
-              height: context.h(330),
+              height: context.h(320),
               child: PageView.builder(
                 itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
                 itemBuilder: (context, pageIndex) {
@@ -133,7 +81,6 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                           ),
                         ],
                       ),
-                      // SizedBox(height: context.h(12)),
 
                       // 🔹 Show GridView only if NOT last page
                       if (!isLastPage)
@@ -180,7 +127,6 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(10)),
             PlanContainer(
               padding: context.padSym(h: 14, v: 18),
               isSelected: false,
@@ -239,7 +185,6 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(10)),
             PlanContainer(
               padding: context.padSym(h: 14, v: 18),
 
@@ -296,6 +241,50 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
             ),
             SizedBox(height: context.h(10)),
 
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(progressViewModel.buttonName.length, (
+                index,
+              ) {
+                final bool isSelected =
+                    progressViewModel.selectedIndex ==
+                    progressViewModel.buttonName[index];
+                return CustomContainer(
+                  radius: context.radius(10),
+                  onTap: () {
+                    progressViewModel.selectIndex(index);
+                  },
+                  color: isSelected
+                      ? AppColors.buttonColor.withOpacity(0.11)
+                      : AppColors.backGroundColor,
+                  border: isSelected
+                      ? Border.all(color: AppColors.pimaryColor, width: 1.5)
+                      : null,
+                  padding: context.padSym(h: 42, v: 12),
+                  child: Center(
+                    child: Text(
+                      progressViewModel.buttonName[index],
+                      style: TextStyle(
+                        fontSize: context.text(14),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.seconderyColor,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+
+            SizedBox(height: context.h(10)),
+            PlanContainer(
+              padding: context.padSym(h: 10, v: 10),
+              margin: context.padSym(v: 10),
+              radius: BorderRadius.circular(context.radius(10)),
+              isSelected: false,
+              onTap: () {},
+              child: LineChartWidget(),
+            ),
+            SizedBox(height: context.h(4)),
             ...List.generate(
               dailyHairCareRoutineViewModel.remediesData.length,
               (index) {
@@ -312,10 +301,10 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                       titleWeight: FontWeight.w600,
                       titleColor: AppColors.headingColor,
                     ),
-                    SizedBox(height: context.h(10)),
+                    SizedBox(height: context.h(4)),
                     PlanContainer(
                       isSelected: isSelected,
-                      padding: context.padSym(h: 20, v: 22.5),
+                      padding: context.padSym(h: 19, v: 24),
                       onTap: () {
                         dailyHairCareRoutineViewModel.selectDemedies(index);
 
@@ -360,12 +349,11 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                         ],
                       ),
                     ),
-                    SizedBox(height: context.h(10)),
                   ],
                 );
               },
             ),
-            SizedBox(height: context.h(30)),
+            SizedBox(height: context.h(200)),
           ],
         ),
       ),

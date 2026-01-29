@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 
 class RecoveryPathScreenViewModel extends ChangeNotifier {
-  String selectedSection = 'Daily Tasks'; // or 'Exercise'
+  String selectedSection = 'Daily Tasks';
 
   void selectSection(String section) {
     selectedSection = section;
@@ -19,6 +19,20 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> repButtonName = [
     {'image': AppAssets.reportIcon, 'text': 'Report Relapse'},
     {'image': AppAssets.doneIcon, 'text': 'Complete day'},
+  ];
+  List<Map<String, dynamic>> richTextName = [
+    {
+      'image': AppAssets.tropyIcon,
+      'text': 'Longest Streak',
+      'richtitle': '0',
+      'richsubtitle': 'days',
+    },
+    {
+      'image': AppAssets.goalsIcon,
+      'text': 'current',
+      'richtitle': '0',
+      'richsubtitle': 'days',
+    },
   ];
   List<Map<String, dynamic>> checkBoxName = [
     {
