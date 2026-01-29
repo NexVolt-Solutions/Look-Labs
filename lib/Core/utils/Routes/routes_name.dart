@@ -45,6 +45,7 @@ class RoutesName {
   static const String FashionReviewScanScreen = 'fashion_review_scan_screen';
   static const String FashionAnalyzingScreen = 'fashion_analyzing_screen';
   static const String FashionProfileScreen = 'fashion_profle_screen';
+  static const String WeeklyPlanScreen = 'weekly_plan_screen';
 
   static const String QuitPornScreen = 'quit_porn_screen';
   static const String RecoveryPathScreen = 'recovery_path_screen';
