@@ -6,7 +6,6 @@ import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/View/Home/Widget/Fashion/fashion_review_scan_screen.dart';
 
 class SkinReviewScans extends StatefulWidget {
   const SkinReviewScans({super.key});
@@ -25,7 +24,7 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
-          // Navigator.pushNamed(context, RoutesName.FashionReviewScanScreen);
+          Navigator.pushNamed(context, RoutesName.SkinAnalyzingScreen);
         },
       ),
       body: SafeArea(

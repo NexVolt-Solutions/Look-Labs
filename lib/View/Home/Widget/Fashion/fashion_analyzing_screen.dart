@@ -25,7 +25,7 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
-          Navigator.pushNamed(context, RoutesName.DailySkinCareRoutineScreen);
+          Navigator.pushNamed(context, RoutesName.FashionProfileScreen);
         },
       ),
       body: SafeArea(
@@ -50,12 +50,12 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
             SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Analyzing your Skin',
+              titleText: 'Analyzing your Style',
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
               subText:
-                  'AI is studying your hairs and preparing your personalized routine.',
+                  'AI is studying your body structure, proportions, and skin tone to prepare your personalized fashion routine.',
               subSize: context.text(14),
               subWeight: FontWeight.w400,
               subColor: AppColors.subHeadingColor,

@@ -25,8 +25,7 @@ class HeightWidgetCont extends StatelessWidget {
       child: Container(
         height: context.h(120),
         width: context.w(150),
-        // padding: padding ?? context.padSym(h: 23.5, v: 13.5),
-        // margin: EdgeInsets.only(right: context.w(24)),
+
         margin: EdgeInsetsGeometry.only(right: context.h(18)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(context.radius(16)),
