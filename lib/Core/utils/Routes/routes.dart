@@ -23,6 +23,7 @@ import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion_analyzing_screen.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion_profile_screen.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion_review_scan_screen.dart';
+import 'package:looklabs/View/Home/Widget/Fashion/weekly_plan_screen.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/hair_care.dart';
 import 'package:looklabs/View/Home/Widget/Height/Widget/daily_height_routine.dart';
 import 'package:looklabs/View/Home/Widget/Height/Widget/height_result_screen.dart';
@@ -321,6 +322,11 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => FashionProfileScreen(),
+        );
+      case RoutesName.WeeklyPlanScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => WeeklyPlanScreen(),
         );
 
       default:
