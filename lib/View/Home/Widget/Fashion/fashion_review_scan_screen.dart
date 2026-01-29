@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/camera_widget.dart';
 import 'package:looklabs/Core/Widget/custom_button.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
-import 'package:looklabs/Core/Constants/app_colors.dart';
-import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/View/Home/Widget/Fashion/fashion_review_scan_screen.dart';
 
-class SkinReviewScans extends StatefulWidget {
-  const SkinReviewScans({super.key});
+class FashionReviewScanScreen extends StatefulWidget {
+  const FashionReviewScanScreen({super.key});
 
   @override
-  State<SkinReviewScans> createState() => _SkinReviewScansState();
+  State<FashionReviewScanScreen> createState() =>
+      _FashionReviewScanScreenState();
 }
 
-class _SkinReviewScansState extends State<SkinReviewScans> {
+class _FashionReviewScanScreenState extends State<FashionReviewScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +25,7 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
-          // Navigator.pushNamed(context, RoutesName.FashionReviewScanScreen);
+          Navigator.pushNamed(context, RoutesName.SkinAnalyzingScreen);
         },
       ),
       body: SafeArea(
@@ -42,12 +42,12 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
             SizedBox(height: context.h(60)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Capture Your Skin',
+              titleText: 'Capture Your Body',
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
               subText:
-                  'Take 4 photos from different angles for personalized recommendations',
+                  'Take 2 photos from different angles for personalized recommendations',
               subSize: context.text(14),
               subWeight: FontWeight.w400,
               subColor: AppColors.subHeadingColor,
@@ -68,7 +68,7 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
                   // mainAxisExtent: 2,
                   childAspectRatio: 3 / 3,
                 ),
-                itemCount: 4,
+                itemCount: 2,
                 // homeViewModel.gridData.length,
                 itemBuilder: (context, index) {
                   // final item = homeViewModel.gridData[index];
