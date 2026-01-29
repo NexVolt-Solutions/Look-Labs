@@ -20,6 +20,7 @@ import 'package:looklabs/View/Home/Widget/Facial/Widget/personalized_exercise_sc
 import 'package:looklabs/View/Home/Widget/Facial/Widget/style_profile_screen.dart';
 import 'package:looklabs/View/Home/Widget/Facial/facial.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion.dart';
+import 'package:looklabs/View/Home/Widget/Fashion/fashion_review_scan_screen.dart';
 import 'package:looklabs/View/Home/Widget/HairCare/hair_care.dart';
 import 'package:looklabs/View/Home/Widget/Height/Widget/daily_height_routine.dart';
 import 'package:looklabs/View/Home/Widget/Height/Widget/height_result_screen.dart';
@@ -302,6 +303,11 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => RecoveryPathScreen(),
+        );
+      case RoutesName.FashionReviewScanScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => FashionReviewScanScreen(),
         );
 
       default:
