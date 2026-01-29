@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
+import 'package:looklabs/Core/Widget/custom_container.dart';
+import 'package:looklabs/Core/Widget/line_chart_widget.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Widget/simple_check_box.dart';
@@ -10,6 +12,7 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/ViewModel/daily_skin_care_routine_view_model.dart';
+import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:provider/provider.dart';
 
 class DailySkinCareRoutine extends StatefulWidget {
@@ -24,6 +27,8 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
   Widget build(BuildContext context) {
     final dailySkinCareRoutineViewModel =
         Provider.of<DailySkinCareRoutineViewModel>(context);
+    final progressViewModel = Provider.of<ProgressViewModel>(context);
+
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
@@ -268,7 +273,53 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                 }),
               ),
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.h(10)),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(progressViewModel.buttonName.length, (
+                index,
+              ) {
+                final bool isSelected =
+                    progressViewModel.selectedIndex ==
+                    progressViewModel.buttonName[index];
+                return CustomContainer(
+                  radius: context.radius(10),
+                  onTap: () {
+                    progressViewModel.selectIndex(index);
+                  },
+                  color: isSelected
+                      ? AppColors.buttonColor.withOpacity(0.11)
+                      : AppColors.backGroundColor,
+                  border: isSelected
+                      ? Border.all(color: AppColors.pimaryColor, width: 1.5)
+                      : null,
+                  padding: context.padSym(h: 42, v: 12),
+                  child: Center(
+                    child: Text(
+                      progressViewModel.buttonName[index],
+                      style: TextStyle(
+                        fontSize: context.text(14),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.seconderyColor,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+
+            SizedBox(height: context.h(10)),
+            PlanContainer(
+              padding: context.padSym(h: 10, v: 10),
+              margin: context.padSym(v: 10),
+              radius: BorderRadius.circular(context.radius(10)),
+              isSelected: false,
+              onTap: () {},
+              child: LineChartWidget(),
+            ),
+            SizedBox(height: context.h(10)),
+
             ...List.generate(
               dailySkinCareRoutineViewModel.remediesData.length,
               (index) {

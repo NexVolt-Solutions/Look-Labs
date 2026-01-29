@@ -72,41 +72,50 @@ class StreakWidget extends StatelessWidget {
           ),
         ),
 
-        SizedBox(width: context.w(10)),
+        SizedBox(width: context.w(11)),
 
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            NormalText(
-              titleText: title,
-              titleSize: titleSize ?? context.text(16),
-              titleWeight: titleWeight ?? FontWeight.w600,
-              titleColor: titleColor ?? AppColors.iconColor,
-            ),
-
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: richTitle ?? '0',
-                    style: TextStyle(
-                      fontSize: richTitleSize ?? context.text(26),
-                      fontWeight: richTitleWeight ?? FontWeight.w600,
-                      color: richTitleColor ?? AppColors.subHeadingColor,
-                    ),
-                  ),
-                  TextSpan(
-                    text: richSubTitle ?? '',
-                    style: TextStyle(
-                      fontSize: richSubTitleSize ?? context.text(16),
-                      fontWeight: richSubTitleWeight ?? FontWeight.w600,
-                      color: richSubTitleColor ?? AppColors.subHeadingColor,
-                    ),
-                  ),
-                ],
+        /// 🔥 THIS is the key
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              NormalText(
+                titleText: title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                titleSize: titleSize ?? context.text(14),
+                titleWeight: titleWeight ?? FontWeight.w600,
+                titleColor: titleColor ?? AppColors.iconColor,
               ),
-            ),
-          ],
+
+              SizedBox(height: context.h(4)),
+
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: richTitle ?? '0',
+                      style: TextStyle(
+                        fontSize: richTitleSize ?? context.text(26),
+                        fontWeight: richTitleWeight ?? FontWeight.w600,
+                        color: richTitleColor ?? AppColors.subHeadingColor,
+                      ),
+                    ),
+                    TextSpan(
+                      text: richSubTitle ?? '',
+                      style: TextStyle(
+                        fontSize: richSubTitleSize ?? context.text(16),
+                        fontWeight: richSubTitleWeight ?? FontWeight.w600,
+                        color: richSubTitleColor ?? AppColors.subHeadingColor,
+                      ),
+                    ),
+                  ],
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ],
     );
