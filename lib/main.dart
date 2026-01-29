@@ -128,9 +128,9 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => FacialProgressScreenViewModel(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => RecoveryPathScreenViewModel(),
-        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => RecoveryPathScreenViewModel(),
+        // ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(
-              height: context.h(130),
+              height: context.h(150),
               // width: context.w(double.infinity),
               child: ListView.builder(
                 padding: EdgeInsets.zero,

@@ -11,8 +11,7 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Widget/streak_widget.dart';
-import 'package:looklabs/ViewModel/recovery_path_view_model.dart';
-import 'package:provider/provider.dart';
+import 'package:looklabs/ViewModel/recovery_path_screen_view_model.dart';
 
 class RecoveryPathScreen extends StatefulWidget {
   const RecoveryPathScreen({super.key});
@@ -24,8 +23,7 @@ class RecoveryPathScreen extends StatefulWidget {
 class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
   @override
   Widget build(BuildContext context) {
-    final recoveryPathScreenViewModel =
-        Provider.of<RecoveryPathScreenViewModel>(context);
+    final recoveryPathScreenViewModel = RecoveryPathScreenViewModel();
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
@@ -77,46 +75,51 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                   // SizedBox(height: context.h(18)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(2, (index) {
-                      return Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            right: index == 0 ? context.w(8) : 0,
-                          ),
+                    children: List.generate(
+                      recoveryPathScreenViewModel.richTextName.length,
+                      (index) {
+                        return Expanded(
                           child: PlanContainer(
-                            margin: context.padSym(v: 10),
+                            margin: context.padSym(v: 10, h: 8),
                             radius: BorderRadius.circular(context.radius(10)),
-                            padding: context.padSym(h: 8, v: 8),
+                            padding: context.padSym(h: 12, v: 20),
                             isSelected: false,
                             onTap: () {},
                             child: StreakWidget(
-                              image: AppAssets.fatLossIcon,
-                              title: 'Current',
-                              richTitle: '10',
-                              richSubTitle: ' days',
-                              richTitleSize: context.text(13),
+                              image: recoveryPathScreenViewModel
+                                  .richTextName[index]['image'],
+                              title: recoveryPathScreenViewModel
+                                  .richTextName[index]['text'],
+                              titleColor: AppColors.iconColor,
+                              titleSize: context.text(12),
+                              titleWeight: FontWeight.w500,
+                              richTitle: recoveryPathScreenViewModel
+                                  .richTextName[index]['richtitle'],
+                              richSubTitle: recoveryPathScreenViewModel
+                                  .richTextName[index]['richsubtitle'],
+                              richTitleSize: context.text(14),
                               richTitleWeight: FontWeight.w500,
                               richTitleColor: AppColors.subHeadingColor,
-                              richSubTitleSize: context.text(13),
+                              richSubTitleSize: context.text(14),
                               richSubTitleWeight: FontWeight.w600,
                               richSubTitleColor: AppColors.subHeadingColor,
                             ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.h(8)),
             NormalText(
               titleText: 'Your Progress',
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(18)),
+            // SizedBox(height: context.h(18)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(
@@ -137,7 +140,11 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                         : null,
                     padding: context.padSym(h: 37, v: 13),
-                    margin: EdgeInsets.only(right: 8),
+                    margin: EdgeInsets.only(
+                      right: context.w(5),
+                      top: context.h(18),
+                      bottom: context.h(18),
+                    ),
                     child: Center(
                       child: Text(
                         recoveryPathScreenViewModel.buttonName[index],
@@ -152,81 +159,78 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(18)),
-            CustomContainer(
-              radius: context.radius(10),
-              color: AppColors.backGroundColor,
+            PlanContainer(
               padding: context.padSym(h: 10, v: 10),
-              child: Center(child: LineChartWidget()),
+              radius: BorderRadius.circular(context.radius(10)),
+              isSelected: false,
+              onTap: () {},
+              child: LineChartWidget(),
             ),
-            SizedBox(height: context.h(8)),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(
-                recoveryPathScreenViewModel.repButtonName.length,
-                (index) {
+            SizedBox(height: context.h(8)),
+            SizedBox(
+              height: 100,
+              child: ListView.separated(
+                separatorBuilder: (context, index) =>
+                    SizedBox(width: context.w(12)),
+                scrollDirection: Axis.horizontal,
+                itemCount: 2,
+                itemBuilder: (_, index) {
                   final item = recoveryPathScreenViewModel.repButtonName[index];
 
-                  return Row(
-                    children: [
-                      PlanContainer(
-                        padding: context.padSym(h: 45, v: 12),
-                        radius: BorderRadius.circular(context.radius(10)),
-                        isSelected:
-                            recoveryPathScreenViewModel.selectedRepIndex ==
-                            index,
-                        onTap: () {
-                          recoveryPathScreenViewModel.selectRepButton(index);
-                        },
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: context.h(24),
-                              width: context.w(24),
-                              child: SvgPicture.asset(
-                                item['image'],
-                                color: AppColors.pimaryColor,
-                                fit: BoxFit.scaleDown,
-                              ),
-                            ),
-                            SizedBox(height: context.h(6)),
-                            NormalText(
-                              titleText: item['text'],
-                              titleSize: context.text(12),
-                              titleWeight: FontWeight.w500,
-                              titleColor: AppColors.subHeadingColor,
-                            ),
-                          ],
+                  return PlanContainer(
+                    margin: context.padSym(v: 10),
+                    padding: context.padSym(h: 45, v: 12),
+                    radius: BorderRadius.circular(context.radius(10)),
+                    isSelected:
+                        recoveryPathScreenViewModel.selectedRepIndex == index,
+                    onTap: () {
+                      recoveryPathScreenViewModel.selectRepButton(index);
+                    },
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: context.h(24),
+                          width: context.w(24),
+                          child: SvgPicture.asset(
+                            item['image'],
+                            color: AppColors.pimaryColor,
+                            fit: BoxFit.scaleDown,
+                          ),
                         ),
-                      ),
-
-                      /// ✅ Space between containers (not after last)
-                      // if (index !=
-                      //     recoveryPathScreenViewModel.repButtonName.length - 1)
-                      //   SizedBox(width: context.w(10)),
-                    ],
+                        SizedBox(height: context.h(6)),
+                        NormalText(
+                          titleText: item['text'],
+                          titleSize: context.text(12),
+                          titleWeight: FontWeight.w500,
+                          titleColor: AppColors.subHeadingColor,
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
             ),
-            // SizedBox(height: context.h(8)),
+
+            SizedBox(height: context.h(8)),
             LightCardWidget(
               text:
                   'Consistency improves stamina, strength & posture over time.',
             ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(
-                recoveryPathScreenViewModel.recordButtonName.length,
-                (index) {
+            SizedBox(
+              height: 70,
+              child: ListView.separated(
+                separatorBuilder: (context, index) =>
+                    SizedBox(width: context.w(12)),
+                scrollDirection: Axis.horizontal,
+                itemCount: 2,
+                itemBuilder: (_, index) {
                   final item =
                       recoveryPathScreenViewModel.recordButtonName[index];
-
                   return PlanContainer(
                     margin: context.padSym(v: 10),
-                    padding: context.padSym(h: 35, v: 12),
+                    padding: context.padSym(h: 38, v: 6),
                     radius: BorderRadius.circular(context.radius(10)),
                     isSelected:
                         recoveryPathScreenViewModel.selectedRecIndex == index,
@@ -254,6 +258,43 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
               ),
             ),
 
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: List.generate(
+            //     recoveryPathScreenViewModel.recordButtonName.length,
+            //     (index) {
+            //       final item =
+            //           recoveryPathScreenViewModel.recordButtonName[index];
+
+            //       return PlanContainer(
+            //         margin: context.padSym(v: 10),
+            //         padding: context.padSym(h: 35, v: 12),
+            //         radius: BorderRadius.circular(context.radius(10)),
+            //         isSelected:
+            //             recoveryPathScreenViewModel.selectedRecIndex == index,
+            //         onTap: () {
+            //           recoveryPathScreenViewModel.selectRecordButton(index);
+
+            //           // Add this line to track which section should be shown
+            //           if (item['text'] == 'Daily Tasks') {
+            //             recoveryPathScreenViewModel.selectSection(
+            //               'Daily Tasks',
+            //             );
+            //           } else if (item['text'] == 'Exercise') {
+            //             recoveryPathScreenViewModel.selectSection('Exercise');
+            //           }
+            //         },
+            //         child: Row(
+            //           children: [
+            //             SvgPicture.asset(item['image']),
+            //             SizedBox(width: context.w(6)),
+            //             NormalText(titleText: item['text']),
+            //           ],
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
             SizedBox(height: context.h(8)),
 
             // Show different content based on selectedSection
