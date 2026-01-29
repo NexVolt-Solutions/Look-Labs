@@ -25,7 +25,7 @@ class _FashionReviewScanScreenState extends State<FashionReviewScanScreen> {
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
-          Navigator.pushNamed(context, RoutesName.SkinAnalyzingScreen);
+          Navigator.pushNamed(context, RoutesName.FashionAnalyzingScreen);
         },
       ),
       body: SafeArea(
