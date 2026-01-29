@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/Home/Widget/Fashion/fashion_question_screen.dart';
 import 'package:looklabs/ViewModel/fashion_view_model.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class _FashionState extends State<Fashion> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            // Navigate to result screen
+            Navigator.pushNamed(context, RoutesName.FashionReviewScanScreen);
           } else {
             vm.next();
           }
