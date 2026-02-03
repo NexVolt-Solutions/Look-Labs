@@ -33,7 +33,6 @@ import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:looklabs/ViewModel/purchase_view_model.dart';
 import 'package:looklabs/ViewModel/quit_porn_view_model.dart';
 import 'package:looklabs/ViewModel/recommended_product_view_model.dart';
-import 'package:looklabs/ViewModel/recovery_path_screen_view_model.dart';
 import 'package:looklabs/ViewModel/skin_care_view_model.dart';
 import 'package:looklabs/ViewModel/skin_top_product_view_model.dart';
 import 'package:looklabs/ViewModel/splash_view_model.dart';
@@ -42,6 +41,7 @@ import 'package:looklabs/ViewModel/style_profile_screen_view_model.dart';
 import 'package:looklabs/ViewModel/subscription_plan_view_model.dart';
 import 'package:looklabs/ViewModel/hair_top_product_view_model.dart';
 import 'package:looklabs/ViewModel/track_your_nutrition_view_model.dart';
+import 'package:looklabs/ViewModel/weekly_plan_screen_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_result_screen_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_progress_screen_view_model.dart';
@@ -128,9 +128,9 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => FacialProgressScreenViewModel(),
         ),
-        // ChangeNotifierProvider(
-        //   create: (context) => RecoveryPathScreenViewModel(),
-        // ),
+        ChangeNotifierProvider(
+          create: (context) => WeeklyPlanScreenViewModel(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
