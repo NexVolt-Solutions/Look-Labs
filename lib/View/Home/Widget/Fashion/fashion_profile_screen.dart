@@ -5,7 +5,6 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Widget/custom_button.dart';
 import 'package:looklabs/Core/Widget/height_widget_cont.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Widget/plan_container.dart';
@@ -34,20 +33,20 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
     final fashionProfileScreenViewModel = FashionProfileScreenViewModel();
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        text: 'Next',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          Navigator.pushNamed(context, RoutesName.DailySkinCareRoutineScreen);
-        },
-      ),
+      // bottomNavigationBar: CustomButton(
+      //   text: 'Next',
+      //   color: AppColors.pimaryColor,
+      //   isEnabled: true,
+      //   onTap: () {
+      //     Navigator.pushNamed(context, RoutesName.DailySkinCareRoutineScreen);
+      //   },
+      // ),
       body: SafeArea(
         child: ListView(
           padding: context.padSym(h: 20),
           children: [
             AppBarContainer(
-              title: 'Analyzing',
+              title: 'Your Style Profile',
               onTap: () {
                 Navigator.pop(context);
               },

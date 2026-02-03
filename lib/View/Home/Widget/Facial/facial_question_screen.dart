@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
+import 'package:looklabs/Core/Widget/custom_stepper.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
@@ -32,8 +33,12 @@ class FacialQuestion extends StatelessWidget {
             titleColor: AppColors.headingColor,
           ),
 
-        SizedBox(height: context.h(18)),
+        SizedBox(height: context.h(20)),
 
+        CustomStepper(
+          currentStep: index, // Dynamic step based on current page index
+          steps: const ['Hydration', 'Acne', 'Skin', 'Sun', 'Routine', 'Sense'],
+        ),
         NormalText(
           titleText: data['question'],
           titleSize: context.text(18),
