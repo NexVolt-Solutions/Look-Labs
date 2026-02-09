@@ -50,8 +50,7 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
               weeklyPlanScreenViewModel.heightRoutineList.length,
               (index) {
                 final item = weeklyPlanScreenViewModel.heightRoutineList[index];
-                final bool isSelected = weeklyPlanScreenViewModel
-                    .isPlanSelected(index);
+                weeklyPlanScreenViewModel.isPlanSelected(index);
 
                 return Center(
                   child: AnimatedContainer(

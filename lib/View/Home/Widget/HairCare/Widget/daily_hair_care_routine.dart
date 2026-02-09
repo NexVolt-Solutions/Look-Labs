@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/custom_container.dart';
+import 'package:looklabs/Core/Widget/custom_stepper.dart';
 import 'package:looklabs/Core/Widget/line_chart_widget.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Widget/plan_container.dart';
@@ -15,6 +16,7 @@ import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/ViewModel/daily_hair_care_routine_view_model.dart';
 import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class DailyHairCareRoutine extends StatefulWidget {
   const DailyHairCareRoutine({super.key});
@@ -24,6 +26,20 @@ class DailyHairCareRoutine extends StatefulWidget {
 }
 
 class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final dailyHairCareRoutineViewModel =
@@ -46,8 +62,10 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
             SizedBox(height: context.h(24)),
 
             SizedBox(
-              height: context.h(320),
+              height: context.h(400),
               child: PageView.builder(
+                controller: _pageController,
+
                 itemCount: dailyHairCareRoutineViewModel.indicatorPages.length,
                 itemBuilder: (context, pageIndex) {
                   final pageData =
@@ -57,9 +75,12 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                       dailyHairCareRoutineViewModel.indicatorPages.length - 1;
 
                   return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // 🔹 Page Title Row
+                      CustomStepper(
+                        currentStep: pageIndex,
+                        steps: const ['Attributes', 'Health', 'Concerns'],
+                      ),
                       Row(
                         children: [
                           SvgPicture.asset(
@@ -118,6 +139,21 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                     ],
                   );
                 },
+              ),
+            ),
+            SizedBox(height: context.h(12)),
+            Center(
+              child: SmoothPageIndicator(
+                controller: _pageController,
+                count: dailyHairCareRoutineViewModel.indicatorPages.length,
+                effect: ExpandingDotsEffect(
+                  dotHeight: context.h(8),
+                  dotWidth: context.w(8),
+                  expansionFactor: 3,
+                  spacing: 6,
+                  activeDotColor: AppColors.pimaryColor,
+                  dotColor: AppColors.pimaryColor.withOpacity(0.3),
+                ),
               ),
             ),
             NormalText(

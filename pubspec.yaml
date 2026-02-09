@@ -20,6 +20,7 @@ dependencies:
   flutter_spinkit: ^5.2.2
   google_fonts: ^6.3.3
   syncfusion_flutter_gauges: ^32.1.23
+  smooth_page_indicator: ^2.0.1
 
 dev_dependencies:
   flutter_test:

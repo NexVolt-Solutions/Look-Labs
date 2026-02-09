@@ -14,6 +14,7 @@ import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/ViewModel/daily_skin_care_routine_view_model.dart';
 import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class DailySkinCareRoutine extends StatefulWidget {
   const DailySkinCareRoutine({super.key});
@@ -23,6 +24,20 @@ class DailySkinCareRoutine extends StatefulWidget {
 }
 
 class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final dailySkinCareRoutineViewModel =
@@ -81,24 +96,26 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
               ),
             ),
 
+            SizedBox(height: context.h(20)),
+
+            /// 🔹 PAGE VIEW
             SizedBox(
-              height: context.h(400), // PageView height
+              height: context.h(400),
               child: PageView.builder(
+                controller: _pageController,
                 itemCount: dailySkinCareRoutineViewModel.indicatorPages.length,
-                itemBuilder: (context, pageIndex) {
+                itemBuilder: (_, pageIndex) {
                   final pageData =
                       dailySkinCareRoutineViewModel.indicatorPages[pageIndex];
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 🔹 Title (FIXED - NOT SCROLLING)
                       Row(
                         children: [
                           SvgPicture.asset(
                             AppAssets.starIcon,
                             height: context.h(24),
-                            width: context.w(24),
                             color: AppColors.pimaryColor,
                           ),
                           SizedBox(width: context.w(8)),
@@ -115,10 +132,10 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                         ],
                       ),
 
-                      SizedBox(height: context.h(12)),
+                      SizedBox(height: context.h(10)),
+
                       Expanded(
                         child: GridView.builder(
-                          scrollDirection: Axis.vertical,
                           physics: const BouncingScrollPhysics(),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -126,7 +143,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                                 childAspectRatio: 4 / 3,
                               ),
                           itemCount: pageData.length,
-                          itemBuilder: (context, index) {
+                          itemBuilder: (_, index) {
                             final item = pageData[index];
                             return TextAndIndectorContiner(
                               title: item['title'],
@@ -142,6 +159,23 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                 },
               ),
             ),
+
+            SizedBox(height: context.h(12)),
+            Center(
+              child: SmoothPageIndicator(
+                controller: _pageController,
+                count: dailySkinCareRoutineViewModel.indicatorPages.length,
+                effect: ExpandingDotsEffect(
+                  dotHeight: context.h(8),
+                  dotWidth: context.w(8),
+                  expansionFactor: 3,
+                  spacing: 6,
+                  activeDotColor: AppColors.pimaryColor,
+                  dotColor: AppColors.pimaryColor.withOpacity(0.3),
+                ),
+              ),
+            ),
+
             SizedBox(height: context.h(18)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Widget/custom_stepper.dart';
 import 'package:looklabs/Core/Widget/goal_activity_graph.dart';
 import 'package:looklabs/Core/Widget/height_indicator.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
@@ -24,31 +22,7 @@ class HeightQuestion extends StatelessWidget {
     return ListView(
       padding: context.padSym(h: 20),
       children: [
-        if (index != 0) AppBarContainer(title: data['title'], onTap: vm.back),
-
-        SizedBox(height: context.h(20)),
         if (!isLastScreen) ...[
-          if (index == 0)
-            NormalText(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: data['title'],
-              titleSize: context.text(20),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.headingColor,
-            ),
-          SizedBox(height: context.h(20)),
-
-          CustomStepper(
-            currentStep: index, // Dynamic step based on current page index
-            steps: const [
-              'History',
-              'Spurts',
-              'Any Back',
-              'Sleep',
-              'Active',
-              'Height',
-            ],
-          ),
           NormalText(
             titleText: data['question'],
             titleSize: context.text(18),

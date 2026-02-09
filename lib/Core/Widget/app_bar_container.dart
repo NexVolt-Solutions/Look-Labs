@@ -120,7 +120,6 @@ class AppBarContainer extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          /// 🔙 Back Button
           GestureDetector(
             onTap: onTap,
             child: Container(
@@ -158,8 +157,6 @@ class AppBarContainer extends StatelessWidget {
               ),
             ),
           ),
-
-          /// 🏷 Title
           Expanded(
             child: Center(
               child: NormalText(

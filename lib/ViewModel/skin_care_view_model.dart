@@ -5,6 +5,40 @@ class SkinCareViewModel extends ChangeNotifier {
 
   int currentStep = 0;
 
+  final Map<int, int> selectedOptions = {};
+
+  /// 🔹 Page change listener
+  void setStep(int index) {
+    currentStep = index;
+    notifyListeners();
+  }
+
+  /// 🔹 Next button
+  void next() {
+    if (currentStep < skinCareQuestions.length - 1) {
+      pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  /// 🔹 Back button
+  void back() {
+    if (currentStep > 0) {
+      pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  /// 🔹 Select option
+  void selectOption(int qIndex, int oIndex) {
+    selectedOptions[qIndex] = oIndex;
+    notifyListeners();
+  }
+
   final List<Map<String, dynamic>> skinCareQuestions = [
     {
       "title": "Hydration",
@@ -37,33 +71,4 @@ class SkinCareViewModel extends ChangeNotifier {
       "options": ["Glow", "Clear skin", "Anti-aging"],
     },
   ];
-
-  Map<int, int> selectedOptions = {};
-
-  void selectOption(int index, int optionIndex) {
-    selectedOptions[index] = optionIndex;
-    notifyListeners();
-  }
-
-  void next() {
-    if (currentStep < skinCareQuestions.length - 1) {
-      currentStep++;
-      pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-      notifyListeners();
-    }
-  }
-
-  void back() {
-    if (currentStep > 0) {
-      currentStep--;
-      pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-      notifyListeners();
-    }
-  }
 }

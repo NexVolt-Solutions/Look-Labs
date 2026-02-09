@@ -9,8 +9,6 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/ViewModel/diet_details_screen_view_model.dart';
-import 'package:provider/provider.dart';
 
 class DietDetailsScreen extends StatefulWidget {
   const DietDetailsScreen({super.key});
@@ -22,9 +20,9 @@ class DietDetailsScreen extends StatefulWidget {
 class _DietDetailsScreenState extends State<DietDetailsScreen> {
   @override
   Widget build(BuildContext context) {
-    final dietDetailsScreenViewModel = Provider.of<DietDetailsScreenViewModel>(
-      context,
-    );
+    // final dietDetailsScreenViewModel = Provider.of<DietDetailsScreenViewModel>(
+    //   context,
+    // );
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: CustomButton(

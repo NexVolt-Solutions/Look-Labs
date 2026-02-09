@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 class QuitPornViewModel extends ChangeNotifier {
   final PageController pageController = PageController();
 
-  int currentStep = 0;
-
   final List<Map<String, dynamic>> quitPornQuestions = [
     {
       "title": "Frequency",
@@ -33,32 +31,39 @@ class QuitPornViewModel extends ChangeNotifier {
     },
   ];
 
-  Map<int, int> selectedOptions = {};
+  int currentStep = 0;
 
-  void selectOption(int index, int optionIndex) {
-    selectedOptions[index] = optionIndex;
+  final Map<int, int> selectedOptions = {};
+
+  /// 🔹 Page change listener
+  void setStep(int index) {
+    currentStep = index;
     notifyListeners();
   }
 
+  /// 🔹 Next button
   void next() {
     if (currentStep < quitPornQuestions.length - 1) {
-      currentStep++;
       pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-      notifyListeners();
     }
   }
 
+  /// 🔹 Back button
   void back() {
     if (currentStep > 0) {
-      currentStep--;
       pageController.previousPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-      notifyListeners();
     }
+  }
+
+  /// 🔹 Select option
+  void selectOption(int qIndex, int oIndex) {
+    selectedOptions[qIndex] = oIndex;
+    notifyListeners();
   }
 }

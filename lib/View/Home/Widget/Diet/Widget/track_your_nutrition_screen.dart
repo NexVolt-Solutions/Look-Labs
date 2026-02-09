@@ -10,8 +10,6 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
-import 'package:looklabs/ViewModel/track_your_nutrition_view_model.dart';
-import 'package:provider/provider.dart';
 
 class TrackYourNutritionScreen extends StatefulWidget {
   const TrackYourNutritionScreen({super.key});
@@ -24,8 +22,8 @@ class TrackYourNutritionScreen extends StatefulWidget {
 class _TrackYourNutritionScreenState extends State<TrackYourNutritionScreen> {
   @override
   Widget build(BuildContext context) {
-    final trackYourNutritionViewModel =
-        Provider.of<TrackYourNutritionViewModel>(context);
+    // final trackYourNutritionViewModel =
+    //     Provider.of<TrackYourNutritionViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: CustomButton(
