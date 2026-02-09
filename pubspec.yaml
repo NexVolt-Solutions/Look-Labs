@@ -15,7 +15,7 @@ dependencies:
   flutter_steps: ^1.0.5
   flutter_inset_shadow: ^2.0.3  # keep only this
   flutter_svg: ^2.2.3
-  syncfusion_flutter_charts: ^32.1.19
+  syncfusion_flutter_charts: ^32.2.3
   percent_indicator: ^4.2.5
   flutter_spinkit: ^5.2.2
   google_fonts: ^6.3.3
