@@ -47,7 +47,7 @@ class _StartScreenState extends State<StartScreen> {
               subColor: AppColors.white,
               subAlign: TextAlign.center,
             ),
-            SizedBox(height: context.h(40)),
+            SizedBox(height: context.h(100)),
           ],
         ),
       ),
