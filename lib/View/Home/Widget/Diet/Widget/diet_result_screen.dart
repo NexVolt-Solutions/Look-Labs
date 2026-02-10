@@ -91,7 +91,8 @@ class _DietResultScreenState extends State<DietResultScreen> {
                 return PlanContainer(
                   isSelected: isSelected,
                   radius: BorderRadius.circular(context.radius(16)),
-
+                  margin: context.padSym(h: 0),
+                  padding: context.padSym(h: 14, v: 10),
                   onTap: () {
                     dietResultScreenViewModel.selectExercise(btnIndex);
                   },
@@ -126,9 +127,10 @@ class _DietResultScreenState extends State<DietResultScreen> {
                 );
               }),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.h(18)),
             PlanContainer(
               padding: context.padSym(h: 12, v: 12),
+              margin: context.padSym(h: 0),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -183,8 +185,10 @@ class _DietResultScreenState extends State<DietResultScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.h(18)),
             PlanContainer(
+              margin: context.padSym(h: 0),
+              padding: context.padSym(h: 12, v: 12),
               isSelected: false,
               onTap: () {},
               child: Row(

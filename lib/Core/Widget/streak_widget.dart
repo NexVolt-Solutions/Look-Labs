@@ -81,7 +81,7 @@ class StreakWidget extends StatelessWidget {
             children: [
               NormalText(
                 titleText: title,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 titleSize: titleSize ?? context.text(14),
                 titleWeight: titleWeight ?? FontWeight.w600,

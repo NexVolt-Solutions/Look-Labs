@@ -34,7 +34,7 @@ class _QuitPornState extends State<QuitPorn> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.HairReviewScansScreen);
+            Navigator.pushNamed(context, RoutesName.RecoveryPathScreen);
           } else {
             vm.next();
           }
@@ -43,6 +43,7 @@ class _QuitPornState extends State<QuitPorn> {
 
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /// 🔹 AppBar
             if (index != 0)
@@ -82,6 +83,15 @@ class _QuitPornState extends State<QuitPorn> {
             ),
 
             SizedBox(height: context.h(20)),
+            Padding(
+              padding: context.padSym(h: 20),
+              child: NormalText(
+                titleText: data['question'],
+                titleSize: context.text(18),
+                titleWeight: FontWeight.w600,
+                titleColor: AppColors.headingColor,
+              ),
+            ),
 
             /// 🔹 PageView
             Expanded(
@@ -100,5 +110,4 @@ class _QuitPornState extends State<QuitPorn> {
       ),
     );
   }
-  
 }

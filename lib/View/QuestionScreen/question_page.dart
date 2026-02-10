@@ -123,32 +123,6 @@ class QuestionPage extends StatelessWidget {
     return ListView(
       padding: context.padSym(h: 20),
       children: [
-        // Add Stepper at the top
-        SizedBox(height: context.h(12)),
-
-        if (index != 0) AppBarContainer(title: data['title'], onTap: vm.back),
-        if (index == 0)
-          NormalText(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            titleText: data['title'],
-            titleSize: context.text(20),
-            titleWeight: FontWeight.w600,
-            titleColor: AppColors.headingColor,
-          ),
-        SizedBox(height: context.h(20)),
-
-        CustomStepper(
-          currentStep: index, // Dynamic step based on current page index
-          steps: const [
-            'Profile',
-            'LifeStyle',
-            'Goals',
-            'Motivations',
-            'Planing',
-          ],
-        ),
-        SizedBox(height: context.h(20)),
-
         if (index == 0) ...[
           NeuTextField(
             label: 'What is your name?',

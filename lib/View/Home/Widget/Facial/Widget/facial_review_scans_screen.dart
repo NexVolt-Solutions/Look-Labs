@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/camera_widget.dart';
 import 'package:looklabs/Core/Widget/custom_button.dart';
+import 'package:looklabs/Core/Widget/custom_stepper.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
@@ -16,6 +17,8 @@ class FacialReviewScansScreen extends StatefulWidget {
 }
 
 class _FacialReviewScansScreenState extends State<FacialReviewScansScreen> {
+  int currentStep = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +42,12 @@ class _FacialReviewScansScreenState extends State<FacialReviewScansScreen> {
               },
             ),
 
+            SizedBox(height: context.h(24)),
+
+            CustomStepper(
+              currentStep: currentStep,
+              steps: const ['Front', 'Back', 'Left', 'Right'],
+            ),
             SizedBox(height: context.h(20)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,16 +72,18 @@ class _FacialReviewScansScreenState extends State<FacialReviewScansScreen> {
                 padding: EdgeInsets.zero,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  // mainAxisSpacing: 16,
-                  // crossAxisSpacing: 16,
-                  // mainAxisExtent: 2,
-                  childAspectRatio: 3 / 3,
+                  childAspectRatio: 3.5 / 3.5,
                 ),
                 itemCount: 4,
-                // homeViewModel.gridData.length,
                 itemBuilder: (context, index) {
-                  // final item = homeViewModel.gridData[index];
-                  return CameraWidget();
+                  return CameraWidget(
+                    onTapFun: () {
+                      setState(() {
+                        currentStep = index;
+                      });
+                    },
+                    isSelected: currentStep == index,
+                  );
                 },
               ),
             ),

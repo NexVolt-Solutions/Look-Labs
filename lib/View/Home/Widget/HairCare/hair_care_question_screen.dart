@@ -96,14 +96,12 @@ class HairCareQuestion extends StatelessWidget {
       padding: context.padSym(h: 20),
       children: [
         NormalText(
+          crossAxisAlignment: CrossAxisAlignment.start,
           titleText: data['question'],
           titleSize: context.text(18),
           titleWeight: FontWeight.w600,
           titleColor: AppColors.headingColor,
         ),
-
-        SizedBox(height: context.h(12)),
-
         ...List.generate(data['options'].length, (oIndex) {
           return PlanContainer(
             margin: context.padSym(v: 10),

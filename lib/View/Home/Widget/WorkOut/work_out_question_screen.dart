@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
@@ -17,6 +18,13 @@ class WorkOutQuestion extends StatelessWidget {
     return ListView(
       padding: context.padSym(h: 20),
       children: [
+        NormalText(
+          titleText: data['question'],
+          titleSize: context.text(18),
+          titleWeight: FontWeight.w600,
+          titleColor: AppColors.headingColor,
+        ),
+        SizedBox(height: context.h(8)),
         ...List.generate(data['options'].length, (oIndex) {
           return PlanContainer(
             margin: context.padSym(v: 10),

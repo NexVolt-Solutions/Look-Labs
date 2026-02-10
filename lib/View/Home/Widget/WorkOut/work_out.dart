@@ -34,7 +34,7 @@ class _WorkOutState extends State<WorkOut> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.HairReviewScansScreen);
+            Navigator.pushNamed(context, RoutesName.WorkOutResultScreen);
           } else {
             vm.next();
           }
@@ -48,7 +48,9 @@ class _WorkOutState extends State<WorkOut> {
             if (index != 0)
               Padding(
                 padding: context.padSym(h: 20),
-                child: AppBarContainer(title: data['title'], onTap: vm.back),
+                child: Center(
+                  child: AppBarContainer(title: data['title'], onTap: vm.back),
+                ),
               ),
 
             SizedBox(height: context.h(10)),

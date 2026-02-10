@@ -29,12 +29,12 @@ class _HeightScreenState extends State<HeightScreen> {
       backgroundColor: AppColors.backGroundColor,
 
       bottomNavigationBar: CustomButton(
-        text: isLast ? 'Complete' : 'Next',
+        text: isLast ? 'Start Analysis' : 'Next',
         color: AppColors.pimaryColor,
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.HairReviewScansScreen);
+            Navigator.pushNamed(context, RoutesName.HeightResultScreen);
           } else {
             vm.next();
           }

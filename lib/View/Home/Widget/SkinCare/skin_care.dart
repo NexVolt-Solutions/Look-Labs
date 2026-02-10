@@ -34,7 +34,7 @@ class _SkinCareState extends State<SkinCare> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.HairReviewScansScreen);
+            Navigator.pushNamed(context, RoutesName.SkinReviewScansScreen);
           } else {
             vm.next();
           }

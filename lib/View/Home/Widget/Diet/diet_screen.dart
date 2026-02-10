@@ -34,7 +34,7 @@ class _DietScreenState extends State<DietScreen> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.HairReviewScansScreen);
+            Navigator.pushNamed(context, RoutesName.DietResultScreen);
           } else {
             vm.next();
           }
@@ -44,7 +44,6 @@ class _DietScreenState extends State<DietScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            /// 🔹 AppBar
             if (index != 0)
               Padding(
                 padding: context.padSym(h: 20),

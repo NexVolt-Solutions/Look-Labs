@@ -4,6 +4,7 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/camera_widget.dart';
 import 'package:looklabs/Core/Widget/custom_button.dart';
+import 'package:looklabs/Core/Widget/custom_stepper.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 
@@ -16,6 +17,8 @@ class FashionReviewScanScreen extends StatefulWidget {
 }
 
 class _FashionReviewScanScreenState extends State<FashionReviewScanScreen> {
+  int currentStep = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,8 +41,13 @@ class _FashionReviewScanScreenState extends State<FashionReviewScanScreen> {
                 Navigator.pop(context);
               },
             ),
+            SizedBox(height: context.h(24)),
 
-            SizedBox(height: context.h(60)),
+            CustomStepper(
+              currentStep: currentStep,
+              steps: const ['Front', 'Back', 'Left', 'Right'],
+            ),
+            SizedBox(height: context.h(20)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
               titleText: 'Capture Your Body',
@@ -56,23 +64,25 @@ class _FashionReviewScanScreenState extends State<FashionReviewScanScreen> {
             ),
             SizedBox(height: context.h(12)),
             SizedBox(
-              height: context.h(600),
+              height: context.h(1150),
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  // mainAxisSpacing: 16,
-                  // crossAxisSpacing: 16,
-                  // mainAxisExtent: 2,
-                  childAspectRatio: 3 / 3,
+                  childAspectRatio: 3.5 / 3.5,
                 ),
-                itemCount: 2,
-                // homeViewModel.gridData.length,
+                itemCount: 4,
                 itemBuilder: (context, index) {
-                  // final item = homeViewModel.gridData[index];
-                  return CameraWidget();
+                  return CameraWidget(
+                    onTapFun: () {
+                      setState(() {
+                        currentStep = index;
+                      });
+                    },
+                    isSelected: currentStep == index,
+                  );
                 },
               ),
             ),

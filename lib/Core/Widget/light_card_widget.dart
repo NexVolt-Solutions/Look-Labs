@@ -14,7 +14,7 @@ class LightCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlanContainer(
-      margin: context.padSym(v: 8),
+      margin: context.padSym(v: 0),
       padding: context.padSym(h: 12, v: 12),
       isSelected: false,
       onTap: () {},

@@ -20,7 +20,7 @@ class Facial extends StatefulWidget {
 class _FacialState extends State<Facial> {
   @override
   Widget build(BuildContext context) {
-     final vm = Provider.of<FacialViewModel>(context);
+    final vm = Provider.of<FacialViewModel>(context);
     final isLast = vm.currentStep == vm.facialQuestions.length - 1;
     final index = vm.currentStep;
     final data = vm.facialQuestions[index];
@@ -34,7 +34,7 @@ class _FacialState extends State<Facial> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.HairReviewScansScreen);
+            Navigator.pushNamed(context, RoutesName.FacialReviewScansScreen);
           } else {
             vm.next();
           }

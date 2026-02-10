@@ -37,7 +37,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
               },
             ),
             PlanContainer(
-              margin: context.padSym(v: 20),
+              margin: context.padSym(v: 24),
               padding: context.padSym(h: 12, v: 20),
               isSelected: false,
               onTap: () {},
@@ -112,14 +112,14 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(8)),
+            // SizedBox(height: context.h(8)),
             NormalText(
               titleText: 'Your Progress',
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            // SizedBox(height: context.h(18)),
+            SizedBox(height: context.h(8)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(
@@ -139,12 +139,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                     border: isSelected
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                         : null,
-                    padding: context.padSym(h: 37, v: 13),
-                    margin: EdgeInsets.only(
-                      right: context.w(5),
-                      top: context.h(18),
-                      bottom: context.h(18),
-                    ),
+                    padding: context.padSym(h: 42, v: 12),
                     child: Center(
                       child: Text(
                         recoveryPathScreenViewModel.buttonName[index],
@@ -159,6 +154,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 },
               ),
             ),
+            SizedBox(height: context.h(8)),
             PlanContainer(
               padding: context.padSym(h: 10, v: 10),
               radius: BorderRadius.circular(context.radius(10)),
@@ -169,7 +165,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
 
             SizedBox(height: context.h(8)),
             SizedBox(
-              height: 100,
+              height: 80,
               child: ListView.separated(
                 separatorBuilder: (context, index) =>
                     SizedBox(width: context.w(12)),
@@ -179,8 +175,8 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                   final item = recoveryPathScreenViewModel.repButtonName[index];
 
                   return PlanContainer(
-                    margin: context.padSym(v: 10),
-                    padding: context.padSym(h: 45, v: 12),
+                    margin: context.padSym(v: 0),
+                    padding: context.padSym(h: 45),
                     radius: BorderRadius.circular(context.radius(10)),
                     isSelected:
                         recoveryPathScreenViewModel.selectedRepIndex == index,
@@ -188,6 +184,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                       recoveryPathScreenViewModel.selectRepButton(index);
                     },
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
                           height: context.h(24),
@@ -212,12 +209,12 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
               ),
             ),
 
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.h(18)),
             LightCardWidget(
               text:
                   'Consistency improves stamina, strength & posture over time.',
             ),
-
+            SizedBox(height: context.h(18)),
             SizedBox(
               height: 70,
               child: ListView.separated(
@@ -229,7 +226,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                   final item =
                       recoveryPathScreenViewModel.recordButtonName[index];
                   return PlanContainer(
-                    margin: context.padSym(v: 10),
+                    margin: context.padSym(v: 0),
                     padding: context.padSym(h: 38, v: 6),
                     radius: BorderRadius.circular(context.radius(10)),
                     isSelected:
@@ -297,7 +294,6 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
             // ),
             SizedBox(height: context.h(8)),
 
-            // Show different content based on selectedSection
             if (recoveryPathScreenViewModel.selectedSection == 'Daily Tasks')
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,8 +304,10 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.subHeadingColor,
                   ),
+                  SizedBox(height: context.h(15)),
                   PlanContainer(
-                    margin: context.padSym(v: 10),
+                    margin: context.padSym(v: 0),
+                    padding: context.padSym(v: 5, h: 14),
                     isSelected: false,
                     onTap: () {},
                     child: Column(

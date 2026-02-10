@@ -29,9 +29,7 @@ class HeightQuestion extends StatelessWidget {
             titleWeight: FontWeight.w600,
             titleColor: AppColors.headingColor,
           ),
-
           SizedBox(height: context.h(8)),
-
           ...List.generate(data['options'].length, (oIndex) {
             return PlanContainer(
               margin: context.padSym(v: 10),

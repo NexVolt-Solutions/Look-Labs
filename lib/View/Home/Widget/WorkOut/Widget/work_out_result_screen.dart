@@ -76,7 +76,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.h(8)),
 
             Wrap(
               spacing: context.w(5),
@@ -89,6 +89,8 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                 );
 
                 return PlanContainer(
+                  padding: context.padSym(h: 18, v: 11),
+                  margin: context.padSym(h: 0),
                   isSelected: isSelected,
                   radius: BorderRadius.circular(context.radius(16)),
 
@@ -130,6 +132,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
             ),
             SizedBox(height: context.h(18)),
             PlanContainer(
+              margin: context.padSym(h: 0),
               padding: context.padSym(h: 12, v: 12),
               isSelected: false,
               onTap: () {},
@@ -185,7 +188,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.h(8)),
 
             ...List.generate(workOutResultViewModel.heightRoutineList.length, (
               index,
@@ -239,56 +242,6 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                         children: [
                           Row(
                             children: [
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     dailyHeightViewModel.selectPlan(
-                              //       index,
-                              //     ); // ✔ ONLY
-                              //   },
-                              //   child: Container(
-                              //     height: context.h(28),
-                              //     width: context.w(28),
-                              //     decoration: BoxDecoration(
-                              //       color: AppColors.backGroundColor,
-                              //       shape: BoxShape.circle,
-                              //       boxShadow: [
-                              //         BoxShadow(
-                              //           color: AppColors
-                              //               .customContainerColorUp
-                              //               .withOpacity(0.4),
-                              //           offset: const Offset(3, 3),
-                              //           blurRadius: 4,
-                              //           inset: true,
-                              //         ),
-                              //         BoxShadow(
-                              //           color: AppColors
-                              //               .customContinerColorDown
-                              //               .withOpacity(0.4),
-                              //           offset: const Offset(-3, -3),
-                              //           blurRadius: 4,
-                              //           inset: true,
-                              //         ),
-                              //       ],
-                              //     ),
-                              //     child: Center(
-                              //       child:
-                              //           dailyHeightViewModel
-                              //               .isPlanSelected(index)
-                              //           ? Icon(
-                              //               Icons.check,
-                              //               size: context.h(16),
-                              //               color:
-                              //                   AppColors.pimaryColor,
-                              //             )
-                              //           : NormalText(
-                              //               titleText: '${index + 1}',
-                              //               titleSize: context.text(14),
-                              //               titleWeight:
-                              //                   FontWeight.w600,
-                              //             ),
-                              //     ),
-                              //   ),
-                              // ),
                               GestureDetector(
                                 onTap: () {
                                   workOutResultViewModel.selectPlan(index);
@@ -364,12 +317,25 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: context.h(12)),
-                            NormalText(titleText: item['details']),
+                            NormalText(
+                              titleText: item['details'],
+                              titleSize: context.text(12),
+                              titleWeight: FontWeight.w600,
+                              titleColor: AppColors.iconColor,
+                            ),
                             SizedBox(height: context.h(6)),
-                            NormalText(titleText: "• Do exercises slowly"),
+                            NormalText(
+                              titleText: "• Do exercises slowly",
+                              titleSize: context.text(12),
+                              titleWeight: FontWeight.w600,
+                              titleColor: AppColors.iconColor,
+                            ),
                             SizedBox(height: context.h(6)),
                             NormalText(
                               titleText: "• Maintain proper breathing",
+                              titleSize: context.text(12),
+                              titleWeight: FontWeight.w600,
+                              titleColor: AppColors.iconColor,
                             ),
                           ],
                         ),

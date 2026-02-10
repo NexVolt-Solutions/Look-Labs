@@ -34,7 +34,7 @@ class _FashionState extends State<Fashion> {
         isEnabled: true,
         onTap: () {
           if (isLast) {
-            Navigator.pushNamed(context, RoutesName.HairReviewScansScreen);
+            Navigator.pushNamed(context, RoutesName.FashionReviewScanScreen);
           } else {
             vm.next();
           }
@@ -43,6 +43,7 @@ class _FashionState extends State<Fashion> {
 
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /// 🔹 AppBar
             if (index != 0)

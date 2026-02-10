@@ -118,7 +118,7 @@ class AppBarContainer extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: context.h(8)),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
             onTap: onTap,

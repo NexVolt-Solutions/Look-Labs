@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Widget/custom_stepper.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/QuestionScreen/question_page.dart';
 import 'package:looklabs/ViewModel/profile_view_model.dart';
@@ -30,11 +34,54 @@ class QuestionScreen extends StatelessWidget {
       ),
 
       body: SafeArea(
-        child: PageView.builder(
-          controller: vm.pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: vm.questionData.length,
-          itemBuilder: (_, index) => QuestionPage(index: index),
+        child: Column(
+          children: [
+            SizedBox(height: context.h(12)),
+            if (vm.currentStep != 0)
+              Padding(
+                padding: context.padSym(h: 20),
+                child: AppBarContainer(
+                  title: vm.questionData[vm.currentStep]['title'],
+                  onTap: vm.back,
+                ),
+              )
+            else
+              NormalText(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                titleText: vm.questionData[vm.currentStep]['title'],
+                titleSize: context.text(20),
+                titleWeight: FontWeight.w600,
+                titleColor: AppColors.headingColor,
+              ),
+
+            SizedBox(height: context.h(20)),
+
+            Padding(
+              padding: context.padSym(h: 20),
+              child: CustomStepper(
+                currentStep: vm.currentStep,
+                steps: const [
+                  'Profile',
+                  'LifeStyle',
+                  'Goals',
+                  'Motivations',
+                  'Planning',
+                ],
+              ),
+            ),
+
+            SizedBox(height: context.h(20)),
+
+            /// 🔹 PAGE VIEW (EXPANDABLE CONTENT)
+            Expanded(
+              child: PageView.builder(
+                controller: vm.pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: vm.questionData.length,
+                itemBuilder: (_, index) => QuestionPage(index: index),
+              ),
+            ),
+          ],
         ),
       ),
     );

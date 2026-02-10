@@ -511,6 +511,7 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
             //     ],
             //   ),
             // ),
+            SizedBox(height: context.h(100)),
           ],
         ),
       ),

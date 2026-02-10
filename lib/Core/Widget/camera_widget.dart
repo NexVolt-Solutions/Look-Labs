@@ -1,39 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:looklabs/Core/Widget/custom_container.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Widget/plan_container.dart';
 
-class CameraWidget extends StatelessWidget {
-  const CameraWidget({super.key});
+class CameraWidget extends StatefulWidget {
+  final VoidCallback onTapFun;
+  final bool isSelected;
+  const CameraWidget({
+    super.key,
+    required this.onTapFun,
+    required this.isSelected,
+  });
+
+  @override
+  State<CameraWidget> createState() => _CameraWidgetState();
+}
+
+class _CameraWidgetState extends State<CameraWidget> {
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomContainer(
-          // onTap: () => ageDetailsViewModel.selectItem(index),
-          radius: context.radius(10),
-          padding: context.padSym(h: 44, v: 28),
-          // margin: context.padSym(v: 12),
-          color:
-              //  isSelected
-              //     ? AppColors.buttonColor.withOpacity(0.11)
-              //     :
-              AppColors.backGroundColor,
-          border:
-              //  isSelected
-              //     ?
-              //     Border.all(color: AppColors.pimaryColor, width: 1.5)
-              //     :
-              null,
+        PlanContainer(
+          padding: context.padSym(h: 28, v: 24),
+          margin: context.padSym(h: 0, v: 0),
+          radius: BorderRadius.circular(context.radius(10)),
+          isSelected: widget.isSelected,
+          onTap: widget.onTapFun,
+          // padding: context.padSym(h: 28, v: 24),
+          // margin: context.padSym(h: 0, v: 0),
+          // radius: BorderRadius.circular(context.radius(10)),
+          // isSelected: isSelected,
+          // onTap: () {
+          //   setState(() {
+          //     isSelected = !isSelected;
+          //   });
+          // },
           child: Column(
             children: [
               Container(
                 padding: context.padSym(h: 10.72, v: 12.92),
-                // margin: context.padSym(v: 14),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -58,7 +69,9 @@ class CameraWidget extends StatelessWidget {
                   AppAssets.cameraIcon,
                   height: context.h(18.05),
                   width: context.w(22.56),
-                  color: AppColors.notSelectedColor,
+                  color: isSelected
+                      ? AppColors.pimaryColor
+                      : AppColors.notSelectedColor,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -67,7 +80,9 @@ class CameraWidget extends StatelessWidget {
                 'Tap to Capture',
                 style: TextStyle(
                   fontSize: context.text(12),
-                  color: AppColors.notSelectedColor,
+                  color: isSelected
+                      ? AppColors.pimaryColor
+                      : AppColors.notSelectedColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
