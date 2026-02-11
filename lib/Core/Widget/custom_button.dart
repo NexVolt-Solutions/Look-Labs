@@ -2,25 +2,30 @@ import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Widget/normal_text.dart';
 
 class CustomButton extends StatelessWidget {
   final String? text;
-  // final EdgeInsetsGeometry? padding;
   final Color? color;
   final Color? colorText;
+  final BorderRadius? radius;
   final VoidCallback? onTap;
+  final EdgeInsetsGeometry? padding;
   final bool isEnabled;
   final List<BoxShadow>? boxShadows;
+  final CrossAxisAlignment? crossAxisAlignment; // ✅ optional
 
   const CustomButton({
     super.key,
     this.text,
-    // this.padding,
     this.color,
     this.onTap,
     required this.isEnabled,
     this.colorText,
     this.boxShadows,
+    this.radius,
+    this.padding,
+    this.crossAxisAlignment, // ✅
   });
 
   @override
@@ -29,40 +34,36 @@ class CustomButton extends StatelessWidget {
       onTap: isEnabled ? onTap : null,
       child: Container(
         padding: context.padSym(v: 18),
-        margin: EdgeInsets.only(
-          left: context.w(20),
-          right: context.w(20),
-          bottom: context.h(40),
-        ),
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(context.radius(16)),
+          borderRadius: radius ?? BorderRadius.circular(context.radius(16)),
           boxShadow:
               boxShadows ??
               [
                 BoxShadow(
-                  offset: Offset(-2.5, -2.5),
+                  offset: const Offset(-2.5, -2.5),
                   blurRadius: 5,
                   color: AppColors.blurTopColor,
                   inset: false,
                 ),
                 BoxShadow(
-                  offset: Offset(2.5, 2.5),
+                  offset: const Offset(2.5, 2.5),
                   blurRadius: 5,
                   color: AppColors.blurBottomColor,
                   inset: false,
                 ),
               ],
         ),
-        child: Text(
-          text!,
-          style: TextStyle(
-            color: colorText ?? AppColors.blurTopColor,
-            fontSize: context.text(16),
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Raleway',
+        child: Padding(
+          padding: padding ?? context.padSym(h: 0),
+          child: NormalText(
+            crossAxisAlignment:
+                crossAxisAlignment ?? CrossAxisAlignment.center, // ✅ default
+            titleText: text ?? '',
+            titleSize: context.text(16),
+            titleWeight: FontWeight.w700,
+            titleColor: colorText ?? AppColors.blurTopColor,
           ),
-          textAlign: TextAlign.center,
         ),
       ),
     );

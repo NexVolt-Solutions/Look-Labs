@@ -19,11 +19,14 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        isEnabled: true,
-        onTap: () => Navigator.pushNamed(context, RoutesName.PurchaseScreen),
-        text: 'Proceed to Pay',
-        color: AppColors.buttonColor,
+      bottomNavigationBar: Padding(
+        padding: context.padSym(h: 20, v: 30),
+        child: CustomButton(
+          isEnabled: true,
+          onTap: () => Navigator.pushNamed(context, RoutesName.PurchaseScreen),
+          text: 'Proceed to Pay',
+          color: AppColors.buttonColor,
+        ),
       ),
       body: SafeArea(
         child: ListView(
@@ -34,7 +37,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
               title: 'Card Details',
               onTap: () => Navigator.pop(context),
             ),
-            SizedBox(height: context.h(30.89)),
+            SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Secure Payment Setup',
@@ -80,29 +83,3 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
     );
   }
 }
-// import 'dart:convert';
-
-// import 'package:apitesting2/Ui/APIsWithModel/Model/Post_model1.dart';
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-
-// class PostProvider extends ChangeNotifier {
-//   List<PostModel1> listName = [];
-
-//   Future<List<PostModel1>> getPostData() async {
-//     var res =
-//         await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
-
-//     var maxData = jsonDecode(res.body.toString());
-
-//     if (res.statusCode == 200) {
-//       for (var data in maxData) {
-//         listName.add(PostModel1.fromJson(data));
-//       }
-//       notifyListeners();
-//       return listName;
-//     } else {
-//       return listName;
-//     }
-//   }
-// }

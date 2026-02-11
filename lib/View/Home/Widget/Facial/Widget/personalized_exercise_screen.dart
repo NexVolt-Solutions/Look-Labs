@@ -28,13 +28,21 @@ class _PersonalizedExerciseScreenState
         Provider.of<PersonalizedExerciseScreenViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        text: 'Check Your Progress',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          Navigator.pushNamed(context, RoutesName.FacialProgressScreen);
-        },
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          text: 'Check Your Progress',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            Navigator.pushNamed(context, RoutesName.FacialProgressScreen);
+          },
+        ),
       ),
       body: SafeArea(
         child: ListView(
@@ -164,56 +172,6 @@ class _PersonalizedExerciseScreenState
                                 children: [
                                   Row(
                                     children: [
-                                      // GestureDetector(
-                                      //   onTap: () {
-                                      //     dailyHeightViewModel.selectPlan(
-                                      //       index,
-                                      //     ); // ✔ ONLY
-                                      //   },
-                                      //   child: Container(
-                                      //     height: context.h(28),
-                                      //     width: context.w(28),
-                                      //     decoration: BoxDecoration(
-                                      //       color: AppColors.backGroundColor,
-                                      //       shape: BoxShape.circle,
-                                      //       boxShadow: [
-                                      //         BoxShadow(
-                                      //           color: AppColors
-                                      //               .customContainerColorUp
-                                      //               .withOpacity(0.4),
-                                      //           offset: const Offset(3, 3),
-                                      //           blurRadius: 4,
-                                      //           inset: true,
-                                      //         ),
-                                      //         BoxShadow(
-                                      //           color: AppColors
-                                      //               .customContinerColorDown
-                                      //               .withOpacity(0.4),
-                                      //           offset: const Offset(-3, -3),
-                                      //           blurRadius: 4,
-                                      //           inset: true,
-                                      //         ),
-                                      //       ],
-                                      //     ),
-                                      //     child: Center(
-                                      //       child:
-                                      //           dailyHeightViewModel
-                                      //               .isPlanSelected(index)
-                                      //           ? Icon(
-                                      //               Icons.check,
-                                      //               size: context.h(16),
-                                      //               color:
-                                      //                   AppColors.pimaryColor,
-                                      //             )
-                                      //           : NormalText(
-                                      //               titleText: '${index + 1}',
-                                      //               titleSize: context.text(14),
-                                      //               titleWeight:
-                                      //                   FontWeight.w600,
-                                      //             ),
-                                      //     ),
-                                      //   ),
-                                      // ),
                                       GestureDetector(
                                         onTap: () {
                                           personalizedExerciseScreenViewModel
@@ -335,7 +293,7 @@ class _PersonalizedExerciseScreenState
               ),
             ),
 
-            SizedBox(height: context.h(100)),
+            SizedBox(height: context.h(30)),
           ],
         ),
       ),

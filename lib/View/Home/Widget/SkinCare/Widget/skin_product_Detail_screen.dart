@@ -27,13 +27,21 @@ class _SkinProductDetailScreenState extends State<SkinProductDetailScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
 
-      bottomNavigationBar: CustomButton(
-        text: 'Add to Routine',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          // Navigator.pushNamed(context, RoutesName.ReviewScansScreen);
-        },
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          text: 'Add to Routine',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            // Navigator.pushNamed(context, RoutesName.ReviewScansScreen);
+          },
+        ),
       ),
 
       body: SafeArea(

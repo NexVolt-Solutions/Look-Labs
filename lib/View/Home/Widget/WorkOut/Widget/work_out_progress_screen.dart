@@ -211,7 +211,8 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                     border: isSelected
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                         : null,
-                    padding: context.padSym(h: 42, v: 12),
+                    padding: context.padSym(h: 38, v: 12),
+                    margin: context.padSym(h: 0, v: 0),
                     child: Center(
                       child: Text(
                         yourProgressScreenViewModel.buttonName[index],
@@ -226,42 +227,6 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                 },
               ),
             ),
-
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //   children: List.generate(
-            //     yourProgressScreenViewModel.buttonName.length,
-            //     (index) {
-            //       final bool isSelected =
-            //           yourProgressScreenViewModel.selectedIndex ==
-            //           yourProgressScreenViewModel.buttonName[index];
-            //       return CustomContainer(
-            //         radius: context.radius(10),
-            //         onTap: () {
-            //           yourProgressScreenViewModel.selectIndex(index);
-            //         },
-            //         color: isSelected
-            //             ? AppColors.buttonColor.withOpacity(0.11)
-            //             : AppColors.backGroundColor,
-            //         border: isSelected
-            //             ? Border.all(color: AppColors.pimaryColor, width: 1.5)
-            //             : null,
-            //         padding: context.padSym(h: 37, v: 13),
-            //         margin: EdgeInsets.only(right: 8),
-            //         child: Center(
-            //           child: Text(
-            //             yourProgressScreenViewModel.buttonName[index],
-            //             style: TextStyle(
-            //               fontSize: context.text(14),
-            //               fontWeight: FontWeight.w700,
-            //               color: AppColors.seconderyColor,
-            //             ),
-            //           ),
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
             SizedBox(height: context.h(16)),
             CustomContainer(
               radius: context.radius(10),
@@ -353,7 +318,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(150)),
+            SizedBox(height: context.h(30)),
           ],
         ),
       ),

@@ -36,8 +36,9 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 Navigator.pop(context);
               },
             ),
+            SizedBox(height: context.h(24)),
             PlanContainer(
-              margin: context.padSym(v: 24),
+              margin: context.padSym(v: 0),
               padding: context.padSym(h: 12, v: 20),
               isSelected: false,
               onTap: () {},
@@ -59,13 +60,13 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                     richSubTitleWeight: FontWeight.w600,
                     richSubTitleColor: AppColors.subHeadingColor,
                   ),
-                  SizedBox(height: context.h(18)),
+                  SizedBox(height: context.h(5)),
                   Divider(
-                    color: AppColors.iconColor.withOpacity(0.2),
+                    color: AppColors.iconColor,
                     thickness: 0.5,
                     height: context.h(0.5),
                   ),
-                  SizedBox(height: context.h(18)),
+                  SizedBox(height: context.h(5)),
                   NormalText(
                     titleText: 'Today is day one. Let\'s make it count! 🌱',
                     titleSize: context.text(12),
@@ -80,9 +81,9 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                       (index) {
                         return Expanded(
                           child: PlanContainer(
-                            margin: context.padSym(v: 10, h: 8),
+                            margin: context.padSym(v: 8, h: 6),
                             radius: BorderRadius.circular(context.radius(10)),
-                            padding: context.padSym(h: 12, v: 20),
+                            padding: context.padSym(h: 12, v: 12),
                             isSelected: false,
                             onTap: () {},
                             child: StreakWidget(
@@ -112,7 +113,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 ],
               ),
             ),
-            // SizedBox(height: context.h(8)),
+            SizedBox(height: context.h(20)),
             NormalText(
               titleText: 'Your Progress',
               titleSize: context.text(18),
@@ -139,7 +140,8 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                     border: isSelected
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                         : null,
-                    padding: context.padSym(h: 42, v: 12),
+                    padding: context.padSym(h: 38, v: 12),
+                    margin: context.padSym(h: 0, v: 0),
                     child: Center(
                       child: Text(
                         recoveryPathScreenViewModel.buttonName[index],
@@ -255,43 +257,6 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
               ),
             ),
 
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: List.generate(
-            //     recoveryPathScreenViewModel.recordButtonName.length,
-            //     (index) {
-            //       final item =
-            //           recoveryPathScreenViewModel.recordButtonName[index];
-
-            //       return PlanContainer(
-            //         margin: context.padSym(v: 10),
-            //         padding: context.padSym(h: 35, v: 12),
-            //         radius: BorderRadius.circular(context.radius(10)),
-            //         isSelected:
-            //             recoveryPathScreenViewModel.selectedRecIndex == index,
-            //         onTap: () {
-            //           recoveryPathScreenViewModel.selectRecordButton(index);
-
-            //           // Add this line to track which section should be shown
-            //           if (item['text'] == 'Daily Tasks') {
-            //             recoveryPathScreenViewModel.selectSection(
-            //               'Daily Tasks',
-            //             );
-            //           } else if (item['text'] == 'Exercise') {
-            //             recoveryPathScreenViewModel.selectSection('Exercise');
-            //           }
-            //         },
-            //         child: Row(
-            //           children: [
-            //             SvgPicture.asset(item['image']),
-            //             SizedBox(width: context.w(6)),
-            //             NormalText(titleText: item['text']),
-            //           ],
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
             SizedBox(height: context.h(8)),
 
             if (recoveryPathScreenViewModel.selectedSection == 'Daily Tasks')
@@ -493,7 +458,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                   ),
                 ],
               ),
-            SizedBox(height: context.h(150)),
+            SizedBox(height: context.h(30)),
           ],
         ),
       ),

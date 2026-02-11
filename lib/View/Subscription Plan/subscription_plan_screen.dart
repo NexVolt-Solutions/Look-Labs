@@ -25,11 +25,15 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        isEnabled: true,
-        onTap: () => Navigator.pushNamed(context, RoutesName.CardDetailsScreen),
-        text: 'Continue & Subscribe',
-        color: AppColors.buttonColor,
+      bottomNavigationBar: Padding(
+        padding: context.padSym(h: 20, v: 30),
+        child: CustomButton(
+          isEnabled: true,
+          onTap: () =>
+              Navigator.pushNamed(context, RoutesName.CardDetailsScreen),
+          text: 'Continue & Subscribe',
+          color: AppColors.buttonColor,
+        ),
       ),
       body: SafeArea(
         child: ListView(
@@ -39,7 +43,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
               title: 'Subscription Plan',
               onTap: () => Navigator.pop(context),
             ),
-            SizedBox(height: context.h(30.89)),
+            SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'What you will get',
@@ -47,9 +51,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-
-            SizedBox(height: context.h(14)),
-
+            SizedBox(height: context.h(12)),
             ...List.generate(
               subPlanViewModel.subscriptionData.length,
               (index) => RowIconAndText(
@@ -64,7 +66,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
               final plan = subPlanViewModel.subscriptionPlan[index];
               return PlanContainer(
                 padding: context.padSym(h: 12, v: 12),
-                margin: context.padSym(v: 12),
+                margin: context.padSym(v: 10),
                 isSelected: isSelected,
                 onTap: () => subPlanViewModel.selectPlan(index),
                 child: Row(
@@ -130,6 +132,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                 ),
               );
             }),
+            SizedBox(height: context.h(20)),
           ],
         ),
       ),

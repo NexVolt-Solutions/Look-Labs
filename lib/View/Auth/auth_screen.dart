@@ -24,12 +24,15 @@ class _AuthScreenState extends State<AuthScreen> {
     final authScreenViewMdel = Provider.of<AuthViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        isEnabled: true,
-        onTap: () =>
-            Navigator.pushNamed(context, RoutesName.BottomSheetBarScreen),
-        text: 'Sign In',
-        color: AppColors.buttonColor,
+      bottomNavigationBar: Padding(
+        padding: context.padSym(h: 20, v: 30),
+        child: CustomButton(
+          isEnabled: true,
+          onTap: () =>
+              Navigator.pushNamed(context, RoutesName.BottomSheetBarScreen),
+          text: 'Sign In',
+          color: AppColors.buttonColor,
+        ),
       ),
       body: SafeArea(
         child: ListView(
@@ -37,7 +40,7 @@ class _AuthScreenState extends State<AuthScreen> {
           padding: context.padSym(h: 20),
           children: [
             AppBarContainer(title: 'Sign In'),
-            SizedBox(height: context.h(265)),
+            SizedBox(height: context.h(224)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
               titleText: 'Welcome',
@@ -50,10 +53,10 @@ class _AuthScreenState extends State<AuthScreen> {
               subWeight: FontWeight.w400,
               subColor: AppColors.notSelectedColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.h(2)),
             PlanContainer(
               padding: context.padSym(v: 12, h: 65),
-              margin: context.padSym(v: 12),
+              margin: context.padSym(v: 10),
               isSelected: false,
               onTap: () {},
               child: Row(

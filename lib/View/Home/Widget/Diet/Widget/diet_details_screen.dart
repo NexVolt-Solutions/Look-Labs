@@ -8,7 +8,9 @@ import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/ViewModel/daily_diet_routine_screen_view_model.dart';
+
+import 'package:provider/provider.dart';
 
 class DietDetailsScreen extends StatefulWidget {
   const DietDetailsScreen({super.key});
@@ -20,18 +22,25 @@ class DietDetailsScreen extends StatefulWidget {
 class _DietDetailsScreenState extends State<DietDetailsScreen> {
   @override
   Widget build(BuildContext context) {
-    // final dietDetailsScreenViewModel = Provider.of<DietDetailsScreenViewModel>(
-    //   context,
-    // );
+    final dailyDietRoutineScreenViewModel =
+        Provider.of<DailyDietRoutineScreenViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        text: 'Scan another food',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          Navigator.pushNamed(context, RoutesName.TrackYourNutritionScreen);
-        },
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          text: 'Scan another food',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            dailyDietRoutineScreenViewModel.showTransparentDialog(context);
+          },
+        ),
       ),
 
       body: SafeArea(
@@ -96,7 +105,7 @@ class _DietDetailsScreenState extends State<DietDetailsScreen> {
               text:
                   'Consistency improves stamina, strength & posture over time.',
             ),
-            SizedBox(height: context.h(200)),
+            SizedBox(height: context.h(30)),
           ],
         ),
       ),

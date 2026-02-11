@@ -17,16 +17,19 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        isEnabled: true,
-        onTap: () =>
-            Navigator.pushNamed(context, RoutesName.SubscriptionPlanScreen),
-        text: 'Next',
-        color: AppColors.buttonColor,
+      bottomNavigationBar: Padding(
+        padding: context.padSym(h: 20, v: 30),
+        child: CustomButton(
+          isEnabled: true,
+          onTap: () =>
+              Navigator.pushNamed(context, RoutesName.SubscriptionPlanScreen),
+          text: 'Next',
+          color: AppColors.buttonColor,
+        ),
       ),
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.padSym(h: 24),
           clipBehavior: Clip.hardEdge,
           children: [
             SizedBox(height: context.h(7.11)),
@@ -38,7 +41,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
             ClipRRect(
               borderRadius: BorderRadiusGeometry.circular(context.radius(10)),
               child: Container(
-                height: context.h(594),
+                height: context.h(550),
                 width: context.w(335),
                 decoration: BoxDecoration(
                   color: AppColors.blurBottomColor,

@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/custom_button.dart';
 import 'package:looklabs/Core/Widget/height_widget_cont.dart';
+import 'package:looklabs/Core/Widget/light_card_widget.dart';
 import 'package:looklabs/Core/Widget/linear_slider_widget.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Widget/plan_container.dart';
@@ -27,12 +28,20 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
     double progress = 30;
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        isEnabled: true,
-        onTap: () =>
-            Navigator.pushNamed(context, RoutesName.DailyHeightRoutineScreen),
-        text: 'Get Started',
-        color: AppColors.pimaryColor,
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          isEnabled: true,
+          onTap: () =>
+              Navigator.pushNamed(context, RoutesName.DailyHeightRoutineScreen),
+          text: 'Get Started',
+          color: AppColors.pimaryColor,
+        ),
       ),
       body: SafeArea(
         child: ListView(
@@ -197,60 +206,12 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                 ],
               ),
             ),
-            PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
-              isSelected: false,
-              onTap: () {},
-              child: Row(
-                children: [
-                  Container(
-                    height: context.h(28),
-                    width: context.w(28),
-                    decoration: BoxDecoration(
-                      color: AppColors.backGroundColor,
-                      borderRadius: BorderRadius.circular(context.radius(10)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.customContainerColorUp.withOpacity(
-                            0.4,
-                          ),
-                          offset: const Offset(3, 3),
-                          blurRadius: 4,
-                        ),
-                        BoxShadow(
-                          color: AppColors.customContinerColorDown.withOpacity(
-                            0.4,
-                          ),
-                          offset: const Offset(-3, -3),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: SizedBox(
-                        height: context.h(32),
-                        width: context.w(32),
-                        child: SvgPicture.asset(
-                          AppAssets.lightBulbIcon,
-                          fit: BoxFit.scaleDown,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: context.w(11)),
-                  Expanded(
-                    child: NormalText(
-                      titleText:
-                          'Good posture can instantly improve your height appearance by up to 2–3 cm',
-                      titleSize: context.text(12),
-                      titleWeight: FontWeight.w600,
-                      titleColor: AppColors.subHeadingColor,
-                      maxLines: 3,
-                    ),
-                  ),
-                ],
-              ),
+            SizedBox(height: context.h(12)),
+            LightCardWidget(
+              text:
+                  'Consistency improves stamina, strength & posture over time.',
             ),
+            SizedBox(height: context.h(6)),
             PlanContainer(
               padding: context.padSym(h: 12, v: 12),
               isSelected: false,
@@ -398,14 +359,25 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(height: context.h(12)),
-                                    NormalText(titleText: item['details']),
+                                    NormalText(
+                                      titleText: item['details'],
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
+                                    ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Do exercises slowly",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Maintain proper breathing",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                   ],
                                 ),
@@ -424,94 +396,8 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                 ],
               ),
             ),
-            // PlanContainer(
-            //   padding: context.padSym(h: 12, v: 12),
-            //   isSelected: false,
-            //   onTap: () {},
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       NormalText(
-            //         titleText: 'Today\'s Focus',
-            //         titleSize: context.text(16),
-            //         titleWeight: FontWeight.w600,
-            //         titleColor: AppColors.subHeadingColor,
-            //         maxLines: 3,
-            //       ),
-            //       SizedBox(height: context.h(10)),
-            //       Column(
-            //         children: List.generate(
-            //           heightViewModel.heightRoutineList.length,
-            //           (index) {
-            //             final item = heightViewModel.heightRoutineList[index];
 
-            //             return Padding(
-            //               padding: EdgeInsets.only(bottom: context.h(8)),
-            //               child: PlanContainer(
-            //                 isSelected: heightViewModel.isPlanSelected(index),
-            //                 onTap: () {
-            //                   heightViewModel.selectPlan(index);
-            //                 },
-            //                 child: Row(
-            //                   children: [
-            //                     /// Number Circle
-            //                     Container(
-            //                       height: context.h(28),
-            //                       width: context.w(28),
-            //                       decoration: BoxDecoration(
-            //                         color: AppColors.backGroundColor,
-            //                         shape: BoxShape.circle,
-            //                         boxShadow: [
-            //                           BoxShadow(
-            //                             color: AppColors.customContainerColorUp
-            //                                 .withOpacity(0.4),
-            //                             offset: const Offset(3, 3),
-            //                             blurRadius: 4,
-            //                             inset: true,
-            //                           ),
-            //                           BoxShadow(
-            //                             color: AppColors.customContinerColorDown
-            //                                 .withOpacity(0.4),
-            //                             offset: const Offset(-3, -3),
-            //                             blurRadius: 4,
-            //                             inset: true,
-            //                           ),
-            //                         ],
-            //                       ),
-            //                       child: Center(
-            //                         child: NormalText(
-            //                           titleText: '${index + 1}',
-            //                           titleSize: context.text(14),
-            //                           titleWeight: FontWeight.w600,
-            //                           titleColor: AppColors.subHeadingColor,
-            //                         ),
-            //                       ),
-            //                     ),
-
-            //                     SizedBox(width: context.w(9)),
-
-            //                     /// Text
-            //                     NormalText(
-            //                       titleText: item['time'],
-            //                       titleSize: context.text(14),
-            //                       titleWeight: FontWeight.w500,
-            //                       titleColor: AppColors.subHeadingColor,
-            //                       subText: item['activity'],
-            //                       subSize: context.text(10),
-            //                       subWeight: FontWeight.w400,
-            //                       subColor: AppColors.subHeadingColor,
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             );
-            //           },
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            SizedBox(height: context.h(100)),
+            SizedBox(height: context.h(30)),
           ],
         ),
       ),

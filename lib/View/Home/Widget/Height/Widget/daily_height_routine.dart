@@ -253,14 +253,25 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(height: context.h(12)),
-                                    NormalText(titleText: item['details']),
+                                    NormalText(
+                                      titleText: item['details'],
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
+                                    ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Do exercises slowly",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Maintain proper breathing",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                   ],
                                 ),

@@ -45,7 +45,7 @@ class DailyDietRoutineScreenViewModel extends ChangeNotifier {
     );
 
     // Later you can replace this with actual scan logic
-    Future.delayed(const Duration(minutes: 1), () {
+    Future.delayed(const Duration(seconds: 10), () {
       Navigator.pop(context); // close dialog after scan time
       Navigator.pushNamed(context, RoutesName.DietDetailsScreen);
     });

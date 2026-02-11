@@ -23,13 +23,21 @@ class _FashionReviewScanScreenState extends State<FashionReviewScanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        text: 'Continue',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          Navigator.pushNamed(context, RoutesName.FashionAnalyzingScreen);
-        },
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          text: 'Continue',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            Navigator.pushNamed(context, RoutesName.FashionAnalyzingScreen);
+          },
+        ),
       ),
       body: SafeArea(
         child: ListView(

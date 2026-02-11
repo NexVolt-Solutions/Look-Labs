@@ -22,11 +22,14 @@ class _GaolScreenState extends State<GaolScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
 
-      bottomNavigationBar: CustomButton(
-        isEnabled: true,
-        onTap: () => Navigator.pushNamed(context, RoutesName.OnBoardScreen),
-        text: 'Get Started',
-        color: AppColors.pimaryColor,
+      bottomNavigationBar: Padding(
+        padding: context.padSym(h: 20, v: 30),
+        child: CustomButton(
+          isEnabled: true,
+          onTap: () => Navigator.pushNamed(context, RoutesName.OnBoardScreen),
+          text: 'Get Started',
+          color: AppColors.pimaryColor,
+        ),
       ),
       body: SafeArea(
         child: ListView(

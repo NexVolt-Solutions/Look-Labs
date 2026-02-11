@@ -20,13 +20,21 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        text: 'Next',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          Navigator.pushNamed(context, RoutesName.FashionProfileScreen);
-        },
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          text: 'Next',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            Navigator.pushNamed(context, RoutesName.FashionProfileScreen);
+          },
+        ),
       ),
       body: SafeArea(
         child: ListView(

@@ -28,13 +28,21 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
         Provider.of<DailyWorkoutRoutineViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        text: 'Check your Progress',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          Navigator.pushNamed(context, RoutesName.WorkOutProgressScreen);
-        },
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          text: 'Check your Progress',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            Navigator.pushNamed(context, RoutesName.WorkOutProgressScreen);
+          },
+        ),
       ),
       body: SafeArea(
         child: ListView(
@@ -163,56 +171,6 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                 children: [
                                   Row(
                                     children: [
-                                      // GestureDetector(
-                                      //   onTap: () {
-                                      //     dailyHeightViewModel.selectPlan(
-                                      //       index,
-                                      //     ); // ✔ ONLY
-                                      //   },
-                                      //   child: Container(
-                                      //     height: context.h(28),
-                                      //     width: context.w(28),
-                                      //     decoration: BoxDecoration(
-                                      //       color: AppColors.backGroundColor,
-                                      //       shape: BoxShape.circle,
-                                      //       boxShadow: [
-                                      //         BoxShadow(
-                                      //           color: AppColors
-                                      //               .customContainerColorUp
-                                      //               .withOpacity(0.4),
-                                      //           offset: const Offset(3, 3),
-                                      //           blurRadius: 4,
-                                      //           inset: true,
-                                      //         ),
-                                      //         BoxShadow(
-                                      //           color: AppColors
-                                      //               .customContinerColorDown
-                                      //               .withOpacity(0.4),
-                                      //           offset: const Offset(-3, -3),
-                                      //           blurRadius: 4,
-                                      //           inset: true,
-                                      //         ),
-                                      //       ],
-                                      //     ),
-                                      //     child: Center(
-                                      //       child:
-                                      //           dailyHeightViewModel
-                                      //               .isPlanSelected(index)
-                                      //           ? Icon(
-                                      //               Icons.check,
-                                      //               size: context.h(16),
-                                      //               color:
-                                      //                   AppColors.pimaryColor,
-                                      //             )
-                                      //           : NormalText(
-                                      //               titleText: '${index + 1}',
-                                      //               titleSize: context.text(14),
-                                      //               titleWeight:
-                                      //                   FontWeight.w600,
-                                      //             ),
-                                      //     ),
-                                      //   ),
-                                      // ),
                                       GestureDetector(
                                         onTap: () {
                                           dailyWorkoutRoutineViewModel
@@ -297,14 +255,25 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(height: context.h(12)),
-                                    NormalText(titleText: item['details']),
+                                    NormalText(
+                                      titleText: item['details'],
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
+                                    ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Do exercises slowly",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Maintain proper breathing",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                   ],
                                 ),
@@ -432,56 +401,6 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                 children: [
                                   Row(
                                     children: [
-                                      // GestureDetector(
-                                      //   onTap: () {
-                                      //     dailyHeightViewModel.selectPlan(
-                                      //       index,
-                                      //     ); // ✔ ONLY
-                                      //   },
-                                      //   child: Container(
-                                      //     height: context.h(28),
-                                      //     width: context.w(28),
-                                      //     decoration: BoxDecoration(
-                                      //       color: AppColors.backGroundColor,
-                                      //       shape: BoxShape.circle,
-                                      //       boxShadow: [
-                                      //         BoxShadow(
-                                      //           color: AppColors
-                                      //               .customContainerColorUp
-                                      //               .withOpacity(0.4),
-                                      //           offset: const Offset(3, 3),
-                                      //           blurRadius: 4,
-                                      //           inset: true,
-                                      //         ),
-                                      //         BoxShadow(
-                                      //           color: AppColors
-                                      //               .customContinerColorDown
-                                      //               .withOpacity(0.4),
-                                      //           offset: const Offset(-3, -3),
-                                      //           blurRadius: 4,
-                                      //           inset: true,
-                                      //         ),
-                                      //       ],
-                                      //     ),
-                                      //     child: Center(
-                                      //       child:
-                                      //           dailyHeightViewModel
-                                      //               .isPlanSelected(index)
-                                      //           ? Icon(
-                                      //               Icons.check,
-                                      //               size: context.h(16),
-                                      //               color:
-                                      //                   AppColors.pimaryColor,
-                                      //             )
-                                      //           : NormalText(
-                                      //               titleText: '${index + 1}',
-                                      //               titleSize: context.text(14),
-                                      //               titleWeight:
-                                      //                   FontWeight.w600,
-                                      //             ),
-                                      //     ),
-                                      //   ),
-                                      // ),
                                       GestureDetector(
                                         onTap: () {
                                           dailyWorkoutRoutineViewModel
@@ -566,14 +485,25 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(height: context.h(12)),
-                                    NormalText(titleText: item['details']),
+                                    NormalText(
+                                      titleText: item['details'],
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
+                                    ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Do exercises slowly",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Maintain proper breathing",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                   ],
                                 ),

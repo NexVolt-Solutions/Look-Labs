@@ -5,12 +5,14 @@ import 'package:looklabs/Core/Widget/activity_consistency_widget.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/custom_container.dart';
 import 'package:looklabs/Core/Widget/height_widget_cont.dart';
+import 'package:looklabs/Core/Widget/light_card_widget.dart';
 import 'package:looklabs/Core/Widget/line_chart_widget.dart';
+import 'package:looklabs/Core/Widget/linear_slider_widget.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
-import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/ViewModel/diet_progress_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -64,67 +66,7 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
               ),
             ),
             SizedBox(height: context.h(8)),
-            PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
-              isSelected: false,
-              onTap: () {},
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: context.h(28),
-                        width: context.w(28),
-                        decoration: BoxDecoration(
-                          color: AppColors.backGroundColor,
-                          borderRadius: BorderRadius.circular(
-                            context.radius(10),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.customContainerColorUp
-                                  .withOpacity(0.4),
-                              offset: const Offset(3, 3),
-                              blurRadius: 4,
-                            ),
-                            BoxShadow(
-                              color: AppColors.customContinerColorDown
-                                  .withOpacity(0.4),
-                              offset: const Offset(-3, -3),
-                              blurRadius: 4,
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: SizedBox(
-                            height: context.h(32),
-                            width: context.w(32),
-                            child: SvgPicture.asset(
-                              AppAssets.lightBulbIcon,
-                              fit: BoxFit.scaleDown,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: context.w(11)),
-                      Expanded(
-                        child: NormalText(
-                          titleText:
-                              'Small daily workouts create big long-term results. You\'re doing great—keep up the momentum.',
-                          titleSize: context.text(12),
-                          titleWeight: FontWeight.w600,
-                          titleColor: AppColors.subHeadingColor,
-                          // subText: 'Best done after waking up',
-                          // subSize: context.text(10),
-                          // subWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: context.h(7)),
+
             Row(
               children: [
                 CustomContainer(
@@ -146,6 +88,45 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                   titleColor: AppColors.subHeadingColor,
                 ),
               ],
+            ),
+            SizedBox(height: context.h(2)),
+            SizedBox(
+              height: context.h(130), // ✅ SAFE HEIGHT
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 4,
+                padding: EdgeInsets.zero,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.only(right: context.w(15)),
+                    child: SizedBox(
+                      width: context.w(220),
+                      child: PlanContainer(
+                        padding: context.padSym(h: 7, v: 24),
+                        isSelected: false,
+                        onTap: () {},
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            NormalText(
+                              titleText: 'Fitness Consistency',
+                              titleSize: context.text(16),
+                              titleWeight: FontWeight.w500,
+                              titleColor: AppColors.subHeadingColor,
+                            ),
+                            SizedBox(height: context.h(12)),
+                            LinearSliderWidget(
+                              progress: 10,
+                              height: context.h(12),
+                              animatedConHeight: context.h(12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
             SizedBox(height: context.h(16)),
 
@@ -196,6 +177,11 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
               title: 'Workout Consistency',
               subtitle: 'Your workout activity this week',
               pressentage: 20,
+            ),
+            SizedBox(height: context.h(6)),
+            LightCardWidget(
+              text:
+                  'Consistency improves stamina, strength & posture over time.',
             ),
             SizedBox(height: context.h(16)),
             NormalText(
@@ -274,6 +260,7 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                 },
               ),
             ),
+            SizedBox(height: context.h(30)),
           ],
         ),
       ),

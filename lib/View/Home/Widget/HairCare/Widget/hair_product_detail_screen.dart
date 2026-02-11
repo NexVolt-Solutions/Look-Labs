@@ -1,72 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:looklabs/Core/Constants/Widget/custom_button.dart';
-// import 'package:looklabs/Core/Constants/app_colors.dart';
-// import 'package:looklabs/Core/Constants/size_extension.dart';
-// import 'package:looklabs/View/Home/Widget/SkinCare/Widget/product_page.dart';
-// import 'package:looklabs/ViewModel/recommended_product_view_model.dart';
-// import 'package:provider/provider.dart';
-
-// class Product extends StatefulWidget {
-//   const Product({super.key});
-
-//   @override
-//   State<Product> createState() => _ProductState();
-// }
-
-// class _ProductState extends State<Product> {
-//   @override
-//   Widget build(BuildContext context) {
-//     final vm = Provider.of<RecommendedProductViewModel>(context);
-//     final bool isLastStep = vm.currentStep == vm.prodactData.length - 1;
-//     return
-
-//     Scaffold(
-//       backgroundColor: AppColors.backGroundColor,
-//       bottomNavigationBar: CustomButton(
-//         text: vm.currentStep == 4 ? 'Complete' : 'Next',
-//         color: AppColors.pimaryColor,
-//         isEnabled: true,
-//         onTap: () {
-//           if (isLastStep) {
-//             // Navigator.pushNamed(context, RoutesName.GaolScreen);
-//           } else {
-//             vm.next();
-//           }
-//         },
-//         padding: context.padSym(h: 145, v: 17),
-//       ),
-
-//       body: SafeArea(
-//         child: PageView.builder(
-//           controller: vm.pageController,
-//           physics: const NeverScrollableScrollPhysics(),
-//           itemCount: vm.prodactData.length,
-//           itemBuilder: (_, index) => ProductPage(index: index),
-//         ),
-//       ),
-//     );
-
-//     // Scaffold(
-//     //   bottomNavigationBar: CustomButton(
-//     //     text: 'Add to Routine',
-//     //     color: AppColors.pimaryColor,
-//     //     isEnabled: true,
-//     //     onTap: () {},
-//     //     padding: context.padSym(v: 17),
-//     //   ),
-//     //   backgroundColor: AppColors.backGroundColor,
-//     //   body: SafeArea(
-//     //     child: PageView.builder(
-//     //       controller: vm.pageController,
-//     //       physics: const NeverScrollableScrollPhysics(),
-//     //       itemCount: vm.questionData.length,
-//     //       itemBuilder: (_, index) => QuestionPage(index: index),
-//     //     ),
-//     //   ),
-//     // );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
@@ -96,13 +27,21 @@ class _HairProductDetailScreenState extends State<HairProductDetailScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
 
-      bottomNavigationBar: CustomButton(
-        text: 'Add to Routine',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          // Navigator.pushNamed(context, RoutesName.ReviewScansScreen);
-        },
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          text: 'Add to Routine',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            // Navigator.pushNamed(context, RoutesName.ReviewScansScreen);
+          },
+        ),
       ),
 
       body: SafeArea(

@@ -7,6 +7,7 @@ class PlanContainer extends StatelessWidget {
   /// Controls
   final double? height;
   final double? width;
+  final Color? color;
 
   final bool? isSelected;
   final VoidCallback onTap;
@@ -26,6 +27,7 @@ class PlanContainer extends StatelessWidget {
     this.padding,
     this.radius,
     this.margin,
+    this.color,
   });
 
   @override

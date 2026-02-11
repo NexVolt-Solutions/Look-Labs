@@ -67,11 +67,11 @@ class CustomStepper extends StatelessWidget {
                     overflow: TextOverflow.visible,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: context.text(9),
+                      fontSize: context.text(12),
                       color: stepIndex == currentStep
                           ? AppColors.pimaryColor
                           : AppColors.seconderyColor,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),

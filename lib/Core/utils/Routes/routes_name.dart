@@ -33,6 +33,7 @@ class RoutesName {
   static const String DietDetailsScreen = 'diet_details_screen';
   static const String TrackYourNutritionScreen = 'track_your_nutrition_screen';
   static const String DietProgressScreen = 'diet_progress_screen';
+  static const String AllTrackedFood = 'all_tracked_food_screen';
 
   static const String FacialScreen = 'facial_screen';
   static const String FacialReviewScansScreen = 'facial_review_scans_screen';

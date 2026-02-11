@@ -71,10 +71,7 @@ class StreakWidget extends StatelessWidget {
             child: SvgPicture.asset(image!, fit: BoxFit.scaleDown),
           ),
         ),
-
         SizedBox(width: context.w(11)),
-
-        /// 🔥 THIS is the key
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,9 +84,7 @@ class StreakWidget extends StatelessWidget {
                 titleWeight: titleWeight ?? FontWeight.w600,
                 titleColor: titleColor ?? AppColors.iconColor,
               ),
-
-              SizedBox(height: context.h(4)),
-
+              SizedBox(height: context.h(2)),
               Text.rich(
                 TextSpan(
                   children: [

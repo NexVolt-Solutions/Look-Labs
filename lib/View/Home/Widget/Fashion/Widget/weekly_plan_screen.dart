@@ -139,23 +139,23 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                             children: [
                               NormalText(
                                 titleText: item['details'],
-                                titleColor: AppColors.subHeadingColor,
                                 titleSize: context.text(12),
                                 titleWeight: FontWeight.w600,
+                                titleColor: AppColors.iconColor,
                               ),
                               SizedBox(height: context.h(6)),
                               NormalText(
                                 titleText: "• Do exercises slowly",
-                                titleColor: AppColors.subHeadingColor,
                                 titleSize: context.text(12),
                                 titleWeight: FontWeight.w600,
+                                titleColor: AppColors.iconColor,
                               ),
                               SizedBox(height: context.h(6)),
                               NormalText(
                                 titleText: "• Maintain proper breathing",
-                                titleColor: AppColors.subHeadingColor,
                                 titleSize: context.text(12),
                                 titleWeight: FontWeight.w600,
+                                titleColor: AppColors.iconColor,
                               ),
                             ],
                           ),

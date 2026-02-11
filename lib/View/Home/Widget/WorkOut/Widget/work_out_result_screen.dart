@@ -27,12 +27,22 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
       context,
     );
     return Scaffold(
-      bottomNavigationBar: CustomButton(
-        isEnabled: true,
-        onTap: () =>
-            Navigator.pushNamed(context, RoutesName.DailyWorkoutRoutineScreen),
-        text: 'Get Started',
-        color: AppColors.pimaryColor,
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          isEnabled: true,
+          onTap: () => Navigator.pushNamed(
+            context,
+            RoutesName.DailyWorkoutRoutineScreen,
+          ),
+          text: 'Get Started',
+          color: AppColors.pimaryColor,
+        ),
       ),
 
       backgroundColor: AppColors.backGroundColor,

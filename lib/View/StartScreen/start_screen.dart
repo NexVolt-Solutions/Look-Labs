@@ -19,18 +19,20 @@ class _StartScreenState extends State<StartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pimaryColor,
-      bottomNavigationBar: CustomButton(
-        isEnabled: true,
-        onTap: () => Navigator.pushNamed(context, RoutesName.QuestionScreen),
-        text: 'Get Started',
-        colorText: AppColors.headingColor,
-        color: AppColors.white,
+      bottomNavigationBar: Padding(
+        padding: context.padSym(h: 20, v: 30),
+        child: CustomButton(
+          isEnabled: true,
+          onTap: () => Navigator.pushNamed(context, RoutesName.QuestionScreen),
+          text: 'Get Started',
+          colorText: AppColors.headingColor,
+          color: AppColors.white,
+        ),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
-            Image.asset(AppAssets.splashImage, fit: BoxFit.fill),
+            Image.asset(AppAssets.splashImage, fit: BoxFit.scaleDown),
             SizedBox(height: context.h(28)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,7 +49,6 @@ class _StartScreenState extends State<StartScreen> {
               subColor: AppColors.white,
               subAlign: TextAlign.center,
             ),
-            SizedBox(height: context.h(100)),
           ],
         ),
       ),

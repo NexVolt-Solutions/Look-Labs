@@ -28,17 +28,22 @@ class _DietScreenState extends State<DietScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
 
-      bottomNavigationBar: CustomButton(
-        text: isLast ? 'Complete' : 'Next',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          if (isLast) {
-            Navigator.pushNamed(context, RoutesName.DietResultScreen);
-          } else {
-            vm.next();
-          }
-        },
+      bottomNavigationBar: Padding(
+        padding: context.padSym(h: 20, v: 30),
+        child: CustomButton(
+          crossAxisAlignment: CrossAxisAlignment.center,
+
+          text: isLast ? 'Complete' : 'Next',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            if (isLast) {
+              Navigator.pushNamed(context, RoutesName.DietResultScreen);
+            } else {
+              vm.next();
+            }
+          },
+        ),
       ),
 
       body: SafeArea(

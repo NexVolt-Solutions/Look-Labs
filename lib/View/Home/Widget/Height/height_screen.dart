@@ -28,17 +28,25 @@ class _HeightScreenState extends State<HeightScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
 
-      bottomNavigationBar: CustomButton(
-        text: isLast ? 'Start Analysis' : 'Next',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          if (isLast) {
-            Navigator.pushNamed(context, RoutesName.HeightResultScreen);
-          } else {
-            vm.next();
-          }
-        },
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          text: isLast ? 'Start Analysis' : 'Next',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            if (isLast) {
+              Navigator.pushNamed(context, RoutesName.HeightResultScreen);
+            } else {
+              vm.next();
+            }
+          },
+        ),
       ),
 
       body: SafeArea(

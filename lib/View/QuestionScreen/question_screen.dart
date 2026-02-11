@@ -20,17 +20,20 @@ class QuestionScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        text: vm.currentStep == 4 ? 'Complete' : 'Next',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          if (isLastStep) {
-            Navigator.pushNamed(context, RoutesName.GaolScreen);
-          } else {
-            vm.next();
-          }
-        },
+      bottomNavigationBar: Padding(
+        padding: context.padSym(h: 20, v: 30),
+        child: CustomButton(
+          text: vm.currentStep == 4 ? 'Complete' : 'Next',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            if (isLastStep) {
+              Navigator.pushNamed(context, RoutesName.GaolScreen);
+            } else {
+              vm.next();
+            }
+          },
+        ),
       ),
 
       body: SafeArea(

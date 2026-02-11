@@ -88,8 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(
-              height: context.h(150),
-              // width: context.w(double.infinity),
+              height: context.h(170),
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
@@ -98,11 +97,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   final item = homeViewModel.listViewData[index];
                   return Container(
                     margin: EdgeInsets.only(
-                      right: context.h(13),
+                      right: context.w(13),
+                      left: context.w(5),
                       top: context.h(16),
                       bottom: context.h(16),
                     ),
-                    padding: context.padSym(h: 28, v: 10),
+                    padding: context.padSym(h: 28),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(context.radius(16)),
                       color: AppColors.backGroundColor,
@@ -126,36 +126,118 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
+
                       children: [
-                        PlanContainer(
-                          padding: context.padSym(h: 2, v: 2),
-                          radius: BorderRadius.circular(10),
-                          isSelected: false,
-                          onTap: () {},
-                          child: ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(6),
-                            child: Image.asset(
-                              item['image'],
-                              height: context.h(24),
-                              width: context.w(24),
-                              fit: BoxFit.scaleDown,
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              context.radius(12),
+                            ),
+                            gradient: LinearGradient(
+                              // stops: [51, 26, 100],
+                              colors: [
+                                Color(0xFFFFFFFF).withOpacity(0.9),
+                                Color(0xffDBE6F2).withOpacity(0.5),
+                                Color(0xFF8F9FAE).withOpacity(0.3),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.white.withOpacity(0.4),
+                                offset: const Offset(3, 3),
+                                blurRadius: 2,
+                              ),
+                              BoxShadow(
+                                color: AppColors.white.withOpacity(0.4),
+                                offset: const Offset(-3, -3),
+                                blurRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: Container(
+                            margin: EdgeInsets.all(
+                              context.w(3),
+                            ), // Border width
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                context.radius(14),
+                              ),
+                              color: AppColors.backGroundColor,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                context.radius(14),
+                              ),
+                              child: Image.asset(
+                                item['image'],
+                                height: context.h(45),
+                                width: context.w(45),
+                                fit: BoxFit.scaleDown,
+                              ),
                             ),
                           ),
                         ),
-                        SizedBox(height: context.h(4)),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(
+                        //       context.radius(8),
+                        //     ),
+                        //     border: Border.all(
+                        //       color: AppColors.backGroundColor,
+                        //       width: context.w(2),
+                        //     ),
+                        //     color: AppColors.backGroundColor,
+                        //     boxShadow: [
+                        //       BoxShadow(
+                        //         color: AppColors.customContainerColorUp
+                        //             .withOpacity(0.4),
+                        //         offset: const Offset(5, 5),
+                        //         blurRadius: 5,
+                        //       ),
+                        //       BoxShadow(
+                        //         color: AppColors.customContinerColorDown
+                        //             .withOpacity(0.4),
+                        //         offset: const Offset(-5, -5),
+                        //         blurRadius: 5,
+                        //       ),
+                        //     ],
+                        //   ),
+                        //   child: ClipRRect(
+                        //     borderRadius: BorderRadiusGeometry.circular(
+                        //       context.radius(8),
+                        //     ),
+                        //     child: Image.asset(
+                        //       item['image'],
+                        //       height: context.h(45),
+                        //       width: context.w(45),
+                        //       fit: BoxFit.scaleDown,
+                        //     ),
+                        //   ),
+                        // ),
+                        // PlanContainer(
+                        //   padding: context.padSym(h: 3, v: 3),
+                        //   radius: BorderRadius.circular(8),
+                        //   margin: context.padSym(h: 0, v: 0),
+                        //   isSelected: false,
+                        //   onTap: () {},
+                        //   child:
+                        // ),
+                        SizedBox(height: context.h(8)),
                         Text(
                           item['title'],
                           style: TextStyle(
-                            fontSize: context.text(14),
+                            fontSize: context.text(12),
                             fontWeight: FontWeight.w600,
                             color: AppColors.subHeadingColor,
                           ),
                         ),
-                        SizedBox(height: context.h(3)),
+                        SizedBox(height: context.h(2)),
                         Text(
                           item['subTitle'],
                           style: TextStyle(
-                            fontSize: context.text(12),
+                            fontSize: context.text(10),
                             fontWeight: FontWeight.w400,
                             color: AppColors.notSelectedColor,
                           ),
@@ -173,9 +255,9 @@ class _HomeScreenState extends State<HomeScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(15)),
+            SizedBox(height: context.h(12)),
             SizedBox(
-              height: context.h(1250),
+              height: context.h(1150),
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

@@ -3,11 +3,13 @@ import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/custom_button.dart';
+import 'package:looklabs/Core/Widget/light_card_widget.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/ViewModel/daily_diet_routine_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -25,13 +27,14 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
         Provider.of<DailyDietRoutineScreenViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: CustomButton(
-        text: 'Next',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
+      floatingActionButton: PlanContainer(
+        padding: context.padSym(h: 8, v: 8),
+        radius: BorderRadius.circular(context.radius(10)),
+        isSelected: false,
         onTap: () {
           dailyDietRoutineScreenViewModel.showTransparentDialog(context);
         },
+        child: Icon(Icons.add),
       ),
 
       body: SafeArea(
@@ -242,14 +245,25 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(height: context.h(12)),
-                                    NormalText(titleText: item['details']),
+                                    NormalText(
+                                      titleText: item['details'],
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
+                                    ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Do exercises slowly",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Maintain proper breathing",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                   ],
                                 ),
@@ -458,14 +472,25 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(height: context.h(12)),
-                                    NormalText(titleText: item['details']),
+                                    NormalText(
+                                      titleText: item['details'],
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
+                                    ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Do exercises slowly",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                     SizedBox(height: context.h(6)),
                                     NormalText(
                                       titleText: "• Maintain proper breathing",
+                                      titleSize: context.text(12),
+                                      titleWeight: FontWeight.w600,
+                                      titleColor: AppColors.iconColor,
                                     ),
                                   ],
                                 ),
@@ -486,61 +511,28 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(8)),
-
-            PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
-              isSelected: false,
-              onTap: () {},
-              child: Row(
-                children: [
-                  Container(
-                    height: context.h(28),
-                    width: context.w(28),
-                    decoration: BoxDecoration(
-                      color: AppColors.backGroundColor,
-                      borderRadius: BorderRadius.circular(context.radius(10)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.customContainerColorUp.withOpacity(
-                            0.4,
-                          ),
-                          offset: const Offset(3, 3),
-                          blurRadius: 4,
-                        ),
-                        BoxShadow(
-                          color: AppColors.customContinerColorDown.withOpacity(
-                            0.4,
-                          ),
-                          offset: const Offset(-3, -3),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: SizedBox(
-                        height: context.h(32),
-                        width: context.w(32),
-                        child: SvgPicture.asset(
-                          AppAssets.lightBulbIcon,
-                          fit: BoxFit.scaleDown,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: context.h(11)),
-                  Expanded(
-                    child: NormalText(
-                      subText:
-                          'Consistency improves stamina, strength & metabolism over time. Keep pushing!',
-                      subSize: context.text(12),
-                      subWeight: FontWeight.w600,
-                      subColor: AppColors.subHeadingColor,
-                    ),
-                  ),
-                ],
+            Padding(
+              padding: context.padSym(v: 10),
+              child: CustomButton(
+                padding: context.padSym(h: 20),
+                radius: BorderRadius.circular(context.radius(10)),
+                text: 'Check your daily Calories Intake',
+                color: AppColors.pimaryColor,
+                isEnabled: true,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    RoutesName.TrackYourNutritionScreen,
+                  );
+                },
               ),
             ),
+            SizedBox(height: context.h(8)),
+            LightCardWidget(
+              text:
+                  'Consistency improves stamina, strength & posture over time.',
+            ),
+            SizedBox(height: context.h(30)),
           ],
         ),
       ),

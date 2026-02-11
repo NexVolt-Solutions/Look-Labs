@@ -4,6 +4,7 @@ import 'package:looklabs/Core/Widget/activity_consistency_widget.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/custom_container.dart';
 import 'package:looklabs/Core/Widget/height_widget_cont.dart';
+import 'package:looklabs/Core/Widget/light_card_widget.dart';
 import 'package:looklabs/Core/Widget/line_chart_widget.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
@@ -116,6 +117,11 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
               title: 'Workout Consistency',
               subtitle: 'Your workout activity this week',
               pressentage: 20,
+            ),
+            SizedBox(height: context.h(6)),
+            LightCardWidget(
+              text:
+                  'Consistency improves stamina, strength & posture over time.',
             ),
             SizedBox(height: context.h(16)),
             NormalText(

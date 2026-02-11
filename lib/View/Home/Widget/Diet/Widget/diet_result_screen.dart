@@ -26,13 +26,16 @@ class _DietResultScreenState extends State<DietResultScreen> {
       context,
     );
     return Scaffold(
-      bottomNavigationBar: CustomButton(
-        text: 'Next',
-        color: AppColors.pimaryColor,
-        isEnabled: true,
-        onTap: () {
-          Navigator.pushNamed(context, RoutesName.DailyDietRoutineScreen);
-        },
+      bottomNavigationBar: Padding(
+        padding: context.padSym(h: 20, v: 30),
+        child: CustomButton(
+          text: 'Next',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            Navigator.pushNamed(context, RoutesName.DailyDietRoutineScreen);
+          },
+        ),
       ),
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(

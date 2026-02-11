@@ -48,7 +48,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   border: isSelected
                       ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                       : null,
-                  padding: context.padSym(h: 42, v: 12),
+                  padding: context.padSym(h: 38, v: 12),
+                  margin: context.padSym(h: 0, v: 0),
                   child: Center(
                     child: Text(
                       progressViewModel.buttonName[index],
@@ -97,7 +98,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
               ],
             ),
             SizedBox(height: context.h(10)),
-
             CustomContainer(
               radius: context.radius(10),
               color: AppColors.backGroundColor,
