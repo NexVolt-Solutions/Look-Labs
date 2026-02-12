@@ -29,6 +29,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
           padding: context.padSym(h: 20),
           clipBehavior: Clip.hardEdge,
           children: [
+            SizedBox(height: context.h(10)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(progressViewModel.buttonName.length, (
@@ -186,7 +187,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(250)),
+            SizedBox(height: context.h(100)),
           ],
         ),
       ),

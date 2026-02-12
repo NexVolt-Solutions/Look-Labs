@@ -3,7 +3,9 @@ import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Widget/app_bar_container.dart';
 import 'package:looklabs/Core/Widget/custom_button.dart';
+import 'package:looklabs/Core/Widget/custom_container.dart';
 import 'package:looklabs/Core/Widget/light_card_widget.dart';
+import 'package:looklabs/Core/Widget/line_chart_widget.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
 import 'package:looklabs/Core/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
@@ -11,6 +13,7 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/ViewModel/daily_diet_routine_screen_view_model.dart';
+import 'package:looklabs/ViewModel/progress_view_model.dart';
 import 'package:provider/provider.dart';
 
 class DailyDietRoutineScreen extends StatefulWidget {
@@ -25,6 +28,8 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
   Widget build(BuildContext context) {
     final dailyDietRoutineScreenViewModel =
         Provider.of<DailyDietRoutineScreenViewModel>(context);
+    final progressViewModel = Provider.of<ProgressViewModel>(context);
+
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       floatingActionButton: PlanContainer(
@@ -35,6 +40,49 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
           dailyDietRoutineScreenViewModel.showTransparentDialog(context);
         },
         child: Icon(Icons.add),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: PlanContainer(
+                padding: context.padSym(h: 12, v: 18),
+                radius: BorderRadius.circular(context.radius(16)),
+                isSelected: false,
+                onTap: () {
+                  Navigator.pushNamed(context, RoutesName.AllTrackedFood);
+                },
+                child: NormalText(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  titleText: 'Track Nutrition',
+                  titleSize: context.text(14),
+                  titleColor: AppColors.subHeadingColor,
+                  titleWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            SizedBox(width: context.w(12)),
+            Expanded(
+              child: CustomButton(
+                padding: context.padSym(h: 12),
+                isEnabled: true,
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  RoutesName.TrackYourNutritionScreen,
+                ),
+                text: 'Your Progress',
+                color: AppColors.pimaryColor,
+              ),
+            ),
+          ],
+        ),
       ),
 
       body: SafeArea(
@@ -511,22 +559,80 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: context.padSym(v: 10),
-              child: CustomButton(
-                padding: context.padSym(h: 20),
-                radius: BorderRadius.circular(context.radius(10)),
-                text: 'Check your daily Calories Intake',
-                color: AppColors.pimaryColor,
-                isEnabled: true,
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    RoutesName.TrackYourNutritionScreen,
-                  );
-                },
+            SizedBox(height: context.h(10)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(progressViewModel.buttonName.length, (
+                index,
+              ) {
+                final bool isSelected =
+                    progressViewModel.selectedIndex ==
+                    progressViewModel.buttonName[index];
+                return CustomContainer(
+                  radius: context.radius(10),
+                  onTap: () {
+                    progressViewModel.selectIndex(index);
+                  },
+                  color: isSelected
+                      ? AppColors.buttonColor.withOpacity(0.11)
+                      : AppColors.backGroundColor,
+                  border: isSelected
+                      ? Border.all(color: AppColors.pimaryColor, width: 1.5)
+                      : null,
+                  padding: context.padSym(h: 38, v: 12),
+                  margin: context.padSym(h: 0, v: 0),
+                  child: Center(
+                    child: Text(
+                      progressViewModel.buttonName[index],
+                      style: TextStyle(
+                        fontSize: context.text(14),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.seconderyColor,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+
+            SizedBox(height: context.h(10)),
+            PlanContainer(
+              padding: context.padSym(h: 10, v: 10),
+              margin: context.padSym(v: 10),
+              radius: BorderRadius.circular(context.radius(10)),
+              isSelected: false,
+              onTap: () {},
+              child: LineChartWidget(),
+            ),
+            PlanContainer(
+              padding: context.padSym(h: 10, v: 10),
+              margin: context.padSym(v: 10),
+              radius: BorderRadius.circular(context.radius(10)),
+              isSelected: false,
+              onTap: () {},
+              child: NormalText(
+                titleText: 'Check your daily Calories Intake',
+                titleSize: context.text(14),
+                titleWeight: FontWeight.w600,
               ),
             ),
+
+            // Padding(
+            //   padding: context.padSym(v: 10),
+            //   child: CustomButton(
+            //     padding: context.padSym(h: 20),
+            //     radius: BorderRadius.circular(context.radius(10)),
+            //     text: 'Check your daily Calories Intake',
+            //     color: AppColors.backGroundColor,
+            //     isEnabled: true,
+            //     onTap: () {
+            //       Navigator.pushNamed(
+            //         context,
+            //         RoutesName.TrackYourNutritionScreen,
+            //       );
+            //     },
+            //   ),
+            // ),
             SizedBox(height: context.h(8)),
             LightCardWidget(
               text:

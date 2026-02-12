@@ -29,7 +29,12 @@ class _DietScreenState extends State<DietScreen> {
       backgroundColor: AppColors.backGroundColor,
 
       bottomNavigationBar: Padding(
-        padding: context.padSym(h: 20, v: 30),
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
         child: CustomButton(
           crossAxisAlignment: CrossAxisAlignment.center,
 

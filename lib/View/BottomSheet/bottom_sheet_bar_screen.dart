@@ -65,34 +65,35 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                     ),
                     Row(
                       children: [
+                        // CustomContainer(
+                        //   radius: context.radius(32),
+                        //   padding: context.padSym(h: 11, v: 3),
+                        //   child: Row(
+                        //     children: [
+                        //       SvgPicture.asset(
+                        //         AppAssets.fireIcon,
+                        //         height: context.h(20),
+                        //         color: AppColors.fireColor,
+                        //       ),
+                        //       SizedBox(width: context.w(4)),
+                        //       Text(
+                        //         '12',
+                        //         style: TextStyle(
+                        //           fontSize: context.text(15),
+                        //           fontWeight: FontWeight.w600,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        // SizedBox(width: context.w(10)),
                         CustomContainer(
-                          radius: context.radius(32),
-                          padding: context.padSym(h: 11, v: 3),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                AppAssets.fireIcon,
-                                height: context.h(20),
-                                color: AppColors.fireColor,
-                              ),
-                              SizedBox(width: context.w(4)),
-                              Text(
-                                '12',
-                                style: TextStyle(
-                                  fontSize: context.text(15),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: context.w(10)),
-                        CustomContainer(
-                          radius: context.radius(33),
-                          padding: context.padSym(h: 6, v: 3),
+                          radius: context.radius(30),
+                          padding: context.padSym(h: 6, v: 6),
                           child: SvgPicture.asset(
                             AppAssets.notificationIcon,
-                            height: context.h(24),
+                            fit: BoxFit.scaleDown,
+                            // height: context.h(24),
                             color: AppColors.notSelectedColor,
                           ),
                         ),

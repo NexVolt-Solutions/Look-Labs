@@ -53,10 +53,14 @@ class GridData extends StatelessWidget {
                 ),
               ],
             ),
-            child: SvgPicture.asset(
+            child: Image.asset(
               image ?? AppAssets.heightIcon,
               fit: BoxFit.scaleDown,
             ),
+            // SvgPicture.asset(
+            //   image ?? AppAssets.heightIcon,
+            //   fit: BoxFit.scaleDown,
+            // ),
           ),
 
           SizedBox(width: context.w(6)),
@@ -72,7 +76,7 @@ class GridData extends StatelessWidget {
                   color: AppColors.subHeadingColor,
                 ),
               ),
-              SizedBox(height: context.h(8)),
+              SizedBox(height: context.h(4)),
               Text(
                 subTitle ?? '',
                 style: TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Widget/custom_container.dart';
 import 'package:looklabs/Core/Widget/gird_data.dart';
 import 'package:looklabs/Core/Widget/normal_text.dart';
@@ -134,7 +135,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               context.radius(12),
                             ),
                             gradient: LinearGradient(
-                              // stops: [51, 26, 100],
                               colors: [
                                 Color(0xFFFFFFFF).withOpacity(0.9),
                                 Color(0xffDBE6F2).withOpacity(0.5),
@@ -179,51 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(
-                        //       context.radius(8),
-                        //     ),
-                        //     border: Border.all(
-                        //       color: AppColors.backGroundColor,
-                        //       width: context.w(2),
-                        //     ),
-                        //     color: AppColors.backGroundColor,
-                        //     boxShadow: [
-                        //       BoxShadow(
-                        //         color: AppColors.customContainerColorUp
-                        //             .withOpacity(0.4),
-                        //         offset: const Offset(5, 5),
-                        //         blurRadius: 5,
-                        //       ),
-                        //       BoxShadow(
-                        //         color: AppColors.customContinerColorDown
-                        //             .withOpacity(0.4),
-                        //         offset: const Offset(-5, -5),
-                        //         blurRadius: 5,
-                        //       ),
-                        //     ],
-                        //   ),
-                        //   child: ClipRRect(
-                        //     borderRadius: BorderRadiusGeometry.circular(
-                        //       context.radius(8),
-                        //     ),
-                        //     child: Image.asset(
-                        //       item['image'],
-                        //       height: context.h(45),
-                        //       width: context.w(45),
-                        //       fit: BoxFit.scaleDown,
-                        //     ),
-                        //   ),
-                        // ),
-                        // PlanContainer(
-                        //   padding: context.padSym(h: 3, v: 3),
-                        //   radius: BorderRadius.circular(8),
-                        //   margin: context.padSym(h: 0, v: 0),
-                        //   isSelected: false,
-                        //   onTap: () {},
-                        //   child:
-                        // ),
+
                         SizedBox(height: context.h(8)),
                         Text(
                           item['title'],
@@ -284,12 +240,76 @@ class _HomeScreenState extends State<HomeScreen> {
                           border: null,
                           padding: EdgeInsets.zero,
                           // margin: context.padSym(h: 10, v: 10),
-                          child: ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(10),
-                            child: Image.asset(
-                              item['image'],
-                              fit: BoxFit.scaleDown,
-                            ),
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadiusGeometry.circular(10),
+                                child: Image.asset(
+                                  item['image'],
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    height: 28,
+                                    width: 28,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        context.radius(11),
+                                      ),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xFFFFFFFF).withOpacity(0),
+                                          Color(0xFFDBE6F2).withOpacity(0.5),
+                                          Color(0xFF8b8c8c),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(
+                                            0xFF123D65,
+                                          ).withOpacity(0.15),
+                                          offset: const Offset(0, 7),
+                                          blurRadius: 17,
+                                        ),
+                                        BoxShadow(
+                                          color: AppColors.white.withOpacity(
+                                            0.18,
+                                          ),
+                                          offset: const Offset(-5, -4),
+                                          blurRadius: 58,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Container(
+                                      margin: EdgeInsets.all(
+                                        context.w(1),
+                                      ), // Border width
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          context.radius(11),
+                                        ),
+                                        color: Color(0xFF8b8c8c),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                          context.radius(11),
+                                        ),
+                                        child: SvgPicture.asset(
+                                          AppAssets.crownIcon,
+                                          fit: BoxFit.scaleDown,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         SizedBox(height: context.h(8)),

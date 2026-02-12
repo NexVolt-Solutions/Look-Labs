@@ -11,10 +11,10 @@ class AppAssets {
   static const String circleIcon = "assets/Icon/image.png";
   static const String fireIcon = "assets/Icon/fireIcon.svg";
   static const String notificationIcon = "assets/Icon/notificationIcon.svg";
-  static const String heightIcon = "assets/Icon/height.svg";
-  static const String weightIcon = "assets/Icon/weight.svg";
-  static const String sleepIcon = "assets/Icon/sleep.svg";
-  static const String waterIcon = "assets/Icon/waterIcon.svg";
+  static const String heightIcon = "assets/Icon/heightIcon.png";
+  static const String weightIcon = "assets/Icon/weightIcon.png";
+  static const String sleepIcon = "assets/Icon/sleepIcon.png";
+  static const String waterIcon = "assets/Icon/waterIcon.png";
   static const String homeConIcon = "assets/Icon/keep.png";
   static const String upLoadIcon = "assets/Icon/uploadIcon.svg";
   static const String graphIcon = "assets/Icon/proiconsGraphIcon.svg";
@@ -23,6 +23,7 @@ class AppAssets {
   static const String cameraIcon = "assets/Icon/cameraIcon.svg";
   static const String editIcon = "assets/Icon/eiditIcon.svg";
   static const String starIcon = "assets/Icon/star.svg";
+  static const String crownIcon = "assets/Icon/crown-2.svg";
 
   //Bottom AppBar Icon
   static const String homeIcon = "assets/bottomIcon/homeIcon.svg";
@@ -54,6 +55,7 @@ class AppAssets {
   static const String actionWorkOutIcon =
       "assets/Icon/ArcticonsWorkoutIcon.svg";
   static const String fatLossIcon = "assets/Icon/FatLossIcon.svg";
+  static const String caloriesIcon = "assets/Icon/caloriesRedIcon.png";
   static const String flexibilityIcon = "assets/Icon/FlexibilityIcon.svg";
   static const String muscleBodyIcon = "assets/Icon/MuscleBodyIcon.svg";
   static const String oirActivityIcon = "assets/Icon/OirActivityIcon.svg";

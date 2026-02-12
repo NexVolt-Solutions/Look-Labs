@@ -85,7 +85,7 @@ class HeightWidgetCont extends StatelessWidget {
                 titleSize: context.text(14),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
-                sizeBoxheight: context.h(9),
+                sizeBoxheight: context.h(3),
                 subText: subTitle ?? 'subTitle',
                 subSize: context.text(12),
                 subWeight: FontWeight.w400,

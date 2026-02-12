@@ -34,7 +34,7 @@ class SubscriptionPlanViewModel extends ChangeNotifier {
     {
       'title': 'Premium Filters',
       'subtitle': 'Access 50+ exclusive enhancement filters',
-      'image': AppAssets.permIcon,
+      'image': AppAssets.crownIcon,
     },
   ];
   List<Map<String, dynamic>> subscriptionPlan = [

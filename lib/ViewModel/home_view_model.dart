@@ -8,12 +8,12 @@ class HomeViewModel extends ChangeNotifier {
     {
       'title': 'Your Weight',
       'subTitle': '78 kg',
-      'image': AppAssets.heightIcon,
+      'image': AppAssets.weightIcon,
     },
     {
       'title': 'Sleep Hours',
       'subTitle': '8 Hours',
-      'image': AppAssets.heightIcon,
+      'image': AppAssets.sleepIcon,
     },
     {
       'title': 'Water Intake',
