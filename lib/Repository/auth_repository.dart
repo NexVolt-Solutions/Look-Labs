@@ -1,4 +1,5 @@
 import 'package:looklabs/Core/Network/api_endpoints.dart';
+import 'package:looklabs/Core/Network/api_response.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
 
 /// Authentication repository - Google Sign-In only
@@ -68,9 +69,7 @@ class AuthRepository {
       return data['token'] as String? ??
           data['accessToken'] as String? ??
           data['access_token'] as String? ??
-          (data['data'] is Map
-              ? _extractToken(data['data'])
-              : null);
+          (data['data'] is Map ? _extractToken(data['data']) : null);
     }
     return null;
   }

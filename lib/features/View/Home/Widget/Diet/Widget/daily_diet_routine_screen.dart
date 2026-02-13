@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:looklabs/features/Widget/app_bar_container.dart';
-import 'package:looklabs/features/Widget/custom_button.dart';
-import 'package:looklabs/features/Widget/custom_container.dart';
-import 'package:looklabs/features/Widget/light_card_widget.dart';
-import 'package:looklabs/features/Widget/line_chart_widget.dart';
-import 'package:looklabs/features/Widget/normal_text.dart';
-import 'package:looklabs/features/Widget/plan_container.dart';
+import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:looklabs/Features/Widget/custom_button.dart';
+import 'package:looklabs/Features/Widget/custom_container.dart';
+import 'package:looklabs/Features/Widget/light_card_widget.dart';
+import 'package:looklabs/Features/Widget/line_chart_widget.dart';
+import 'package:looklabs/Features/Widget/normal_text.dart';
+import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
-import 'package:looklabs/features/ViewModel/daily_diet_routine_screen_view_model.dart';
-import 'package:looklabs/features/ViewModel/progress_view_model.dart';
+import 'package:looklabs/Features/ViewModel/daily_diet_routine_screen_view_model.dart';
+import 'package:looklabs/Features/ViewModel/progress_view_model.dart';
 import 'package:provider/provider.dart';
 
 class DailyDietRoutineScreen extends StatefulWidget {

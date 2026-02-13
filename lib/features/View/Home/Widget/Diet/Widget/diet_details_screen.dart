@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/features/Widget/app_bar_container.dart';
-import 'package:looklabs/features/Widget/custom_button.dart';
-import 'package:looklabs/features/Widget/height_widget_cont.dart';
-import 'package:looklabs/features/Widget/light_card_widget.dart';
-import 'package:looklabs/features/Widget/neu_text_fied.dart';
-import 'package:looklabs/features/Widget/normal_text.dart';
+import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:looklabs/Features/Widget/custom_button.dart';
+import 'package:looklabs/Features/Widget/height_widget_cont.dart';
+import 'package:looklabs/Features/Widget/light_card_widget.dart';
+import 'package:looklabs/Features/Widget/neu_text_fied.dart';
+import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/features/ViewModel/daily_diet_routine_screen_view_model.dart';
+import 'package:looklabs/Features/ViewModel/daily_diet_routine_screen_view_model.dart';
 
 import 'package:provider/provider.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/features/Widget/app_bar_container.dart';
-import 'package:looklabs/features/Widget/custom_button.dart';
+import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import '../../../Core/Routes/routes_name.dart';

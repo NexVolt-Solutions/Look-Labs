@@ -3,7 +3,7 @@ import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/features/ViewModel/bottom_sheet_view_model.dart';
+import 'package:looklabs/Features/ViewModel/bottom_sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 class BottomIconContainer extends StatelessWidget {

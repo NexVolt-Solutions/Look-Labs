@@ -89,7 +89,7 @@ class TermsScreen extends StatelessWidget {
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                'GENWALLS is an AI-powered wallpaper generator that allows users to create unique, high-quality digital images and wallpapers using text prompts, customization features, and style options. Users can:  ➤ Enter custom prompts to generate wallpapers  ➤ Explore AI-suggested prompts for inspiration  ➤ Select different image sizes and aspect ratios  ➤ Choose from multiple artistic styles and themes  ➤ Download wallpapers for personal use',
+                'GENWALLS is an AI-powered wallpaper generator that allows users to create unique, high-quality digital images and wallpapers using text prompts, customization features, and style options. Users can: ➤ Enter custom prompts to generate wallpapers ➤ Explore AI-suggested prompts for inspiration ➤ Select different image sizes and aspect ratios ➤ Choose from multiple artistic styles and themes ➤ Download wallpapers for personal use',
                 style: TextStyle(
                   fontSize: context.text(12),
                   fontWeight: FontWeight.w400,

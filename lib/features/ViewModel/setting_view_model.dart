@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
-import 'package:looklabs/features/View/Setting/PrivacyPolicyScreen/privacy_policy_screen.dart';
-import 'package:looklabs/features/View/Setting/TermsScreen/terms_screen.dart';
+import 'package:looklabs/Features/View/Setting/PrivacyPolicyScreen/privacy_policy_screen.dart';
+import 'package:looklabs/Features/View/Setting/TermsScreen/terms_screen.dart';
 
 class SettingViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> personalInfo = [

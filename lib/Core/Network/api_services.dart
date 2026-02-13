@@ -3,39 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-
-import 'api_config.dart';
-
-/// Custom API response wrapper
-class ApiResponse {
-  final bool success;
-  final int statusCode;
-  final dynamic data;
-  final String? message;
-
-  ApiResponse({
-    required this.success,
-    required this.statusCode,
-    this.data,
-    this.message,
-  });
-
-  factory ApiResponse.fromHttpResponse(http.Response response) {
-    final isSuccess = response.statusCode >= 200 && response.statusCode < 300;
-    dynamic decoded;
-    try {
-      decoded = response.body.isEmpty ? null : jsonDecode(response.body);
-    } catch (_) {
-      decoded = response.body;
-    }
-    return ApiResponse(
-      success: isSuccess,
-      statusCode: response.statusCode,
-      data: decoded,
-      message: decoded is Map ? decoded['message']?.toString() : null,
-    );
-  }
-}
+import 'package:looklabs/Core/Network/api_config.dart';
+import 'package:looklabs/Core/Network/api_response.dart';
 
 /// Common API service - use for all HTTP requests across the app
 class ApiServices {
@@ -83,10 +52,7 @@ class ApiServices {
     try {
       final url = _buildUrl(endpoint, queryParams);
       final response = await http
-          .get(
-            Uri.parse(url),
-            headers: headers ?? _headers,
-          )
+          .get(Uri.parse(url), headers: headers ?? _headers)
           .timeout(Duration(seconds: ApiConfig.receiveTimeout));
       return ApiResponse.fromHttpResponse(response);
     } on TimeoutException {
@@ -102,11 +68,7 @@ class ApiServices {
         message: 'No internet connection',
       );
     } catch (e) {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: e.toString(),
-      );
+      return ApiResponse(success: false, statusCode: 0, message: e.toString());
     }
   }
 
@@ -142,11 +104,7 @@ class ApiServices {
         message: 'No internet connection',
       );
     } catch (e) {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: e.toString(),
-      );
+      return ApiResponse(success: false, statusCode: 0, message: e.toString());
     }
   }
 
@@ -182,11 +140,7 @@ class ApiServices {
         message: 'No internet connection',
       );
     } catch (e) {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: e.toString(),
-      );
+      return ApiResponse(success: false, statusCode: 0, message: e.toString());
     }
   }
 
@@ -222,11 +176,7 @@ class ApiServices {
         message: 'No internet connection',
       );
     } catch (e) {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: e.toString(),
-      );
+      return ApiResponse(success: false, statusCode: 0, message: e.toString());
     }
   }
 
@@ -262,11 +212,7 @@ class ApiServices {
         message: 'No internet connection',
       );
     } catch (e) {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: e.toString(),
-      );
+      return ApiResponse(success: false, statusCode: 0, message: e.toString());
     }
   }
 
@@ -290,16 +236,18 @@ class ApiServices {
       }
 
       for (final file in files) {
-        request.files.add(await http.MultipartFile.fromPath(
-          file.fieldName,
-          file.filePath,
-          filename: file.fileName,
-        ));
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            file.fieldName,
+            file.filePath,
+            filename: file.fileName,
+          ),
+        );
       }
 
-      final streamedResponse = await request
-          .send()
-          .timeout(Duration(seconds: ApiConfig.sendTimeout * 2));
+      final streamedResponse = await request.send().timeout(
+        Duration(seconds: ApiConfig.sendTimeout * 2),
+      );
 
       final response = await http.Response.fromStream(streamedResponse);
       return ApiResponse.fromHttpResponse(response);
@@ -316,11 +264,7 @@ class ApiServices {
         message: 'No internet connection',
       );
     } catch (e) {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: e.toString(),
-      );
+      return ApiResponse(success: false, statusCode: 0, message: e.toString());
     }
   }
 
@@ -344,16 +288,18 @@ class ApiServices {
       }
 
       for (final file in files) {
-        request.files.add(await http.MultipartFile.fromPath(
-          file.fieldName,
-          file.filePath,
-          filename: file.fileName,
-        ));
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            file.fieldName,
+            file.filePath,
+            filename: file.fileName,
+          ),
+        );
       }
 
-      final streamedResponse = await request
-          .send()
-          .timeout(Duration(seconds: ApiConfig.sendTimeout * 2));
+      final streamedResponse = await request.send().timeout(
+        Duration(seconds: ApiConfig.sendTimeout * 2),
+      );
 
       final response = await http.Response.fromStream(streamedResponse);
       return ApiResponse.fromHttpResponse(response);
@@ -370,11 +316,7 @@ class ApiServices {
         message: 'No internet connection',
       );
     } catch (e) {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: e.toString(),
-      );
+      return ApiResponse(success: false, statusCode: 0, message: e.toString());
     }
   }
 }

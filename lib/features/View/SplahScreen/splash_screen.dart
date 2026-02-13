@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/features/ViewModel/splash_view_model.dart';
+import 'package:looklabs/Features/ViewModel/splash_view_model.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

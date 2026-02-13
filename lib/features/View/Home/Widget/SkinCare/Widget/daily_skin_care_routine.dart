@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:looklabs/features/Widget/app_bar_container.dart';
-import 'package:looklabs/features/Widget/custom_container.dart';
-import 'package:looklabs/features/Widget/line_chart_widget.dart';
-import 'package:looklabs/features/Widget/normal_text.dart';
-import 'package:looklabs/features/Widget/plan_container.dart';
-import 'package:looklabs/features/Widget/simple_check_box.dart';
-import 'package:looklabs/features/Widget/text_and_indector_container.dart';
+import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:looklabs/Features/Widget/custom_container.dart';
+import 'package:looklabs/Features/Widget/line_chart_widget.dart';
+import 'package:looklabs/Features/Widget/normal_text.dart';
+import 'package:looklabs/Features/Widget/plan_container.dart';
+import 'package:looklabs/Features/Widget/simple_check_box.dart';
+import 'package:looklabs/Features/Widget/text_and_indector_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
-import 'package:looklabs/features/ViewModel/daily_skin_care_routine_view_model.dart';
-import 'package:looklabs/features/ViewModel/progress_view_model.dart';
+import 'package:looklabs/Features/ViewModel/daily_skin_care_routine_view_model.dart';
+import 'package:looklabs/Features/ViewModel/progress_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

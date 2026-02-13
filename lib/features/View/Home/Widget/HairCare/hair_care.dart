@@ -190,15 +190,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
-import 'package:looklabs/features/View/Home/Widget/HairCare/hair_care_question_screen.dart';
+import 'package:looklabs/Features/View/Home/Widget/HairCare/hair_care_question_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/features/Widget/app_bar_container.dart';
-import 'package:looklabs/features/Widget/custom_stepper.dart';
-import 'package:looklabs/features/Widget/normal_text.dart';
-import 'package:looklabs/features/Widget/custom_button.dart';
-import 'package:looklabs/features/ViewModel/hair_care_view_model.dart';
+import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:looklabs/Features/Widget/custom_stepper.dart';
+import 'package:looklabs/Features/Widget/normal_text.dart';
+import 'package:looklabs/Features/Widget/custom_button.dart';
+import 'package:looklabs/Features/ViewModel/hair_care_view_model.dart';
 
 class HairCare extends StatefulWidget {
   const HairCare({super.key});

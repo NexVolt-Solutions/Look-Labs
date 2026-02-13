@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:looklabs/features/Widget/app_bar_container.dart';
-import 'package:looklabs/features/Widget/linear_slider_widget.dart';
-import 'package:looklabs/features/Widget/normal_text.dart';
-import 'package:looklabs/features/Widget/plan_container.dart';
+import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:looklabs/Features/Widget/linear_slider_widget.dart';
+import 'package:looklabs/Features/Widget/normal_text.dart';
+import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
-import 'package:looklabs/features/ViewModel/style_profile_screen_view_model.dart';
+import 'package:looklabs/Features/ViewModel/style_profile_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
 class StyleProfileScreen extends StatefulWidget {

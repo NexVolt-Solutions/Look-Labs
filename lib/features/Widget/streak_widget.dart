@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/features/Widget/normal_text.dart';
+import 'package:looklabs/Features/Widget/normal_text.dart';
 
 class StreakWidget extends StatelessWidget {
   final String? image;

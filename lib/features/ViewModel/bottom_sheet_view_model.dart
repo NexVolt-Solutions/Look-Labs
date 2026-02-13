@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
-import 'package:looklabs/features/View/Home/home_screen.dart';
-import 'package:looklabs/features/View/Progress/progress_screen.dart';
-import 'package:looklabs/features/View/Setting/setting_screen.dart';
+import 'package:looklabs/Features/View/Home/home_screen.dart';
+import 'package:looklabs/Features/View/Progress/progress_screen.dart';
+import 'package:looklabs/Features/View/Setting/setting_screen.dart';
 
 class BottomSheetViewModel extends ChangeNotifier {
   int selectedIndex = 0;

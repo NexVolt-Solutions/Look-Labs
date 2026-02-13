@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/features/Widget/app_bar_container.dart';
-import 'package:looklabs/features/Widget/custom_button.dart';
-import 'package:looklabs/features/Widget/normal_text.dart';
-import 'package:looklabs/features/Widget/plan_container.dart';
-import 'package:looklabs/features/Widget/row_icon_and_text.dart';
-import 'package:looklabs/features/Widget/simple_check_box.dart';
+import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:looklabs/Features/Widget/custom_button.dart';
+import 'package:looklabs/Features/Widget/normal_text.dart';
+import 'package:looklabs/Features/Widget/plan_container.dart';
+import 'package:looklabs/Features/Widget/row_icon_and_text.dart';
+import 'package:looklabs/Features/Widget/simple_check_box.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
-import 'package:looklabs/features/ViewModel/subscription_plan_view_model.dart';
+import 'package:looklabs/Features/ViewModel/subscription_plan_view_model.dart';
 import 'package:provider/provider.dart';
 
 class SubscriptionPlanScreen extends StatefulWidget {

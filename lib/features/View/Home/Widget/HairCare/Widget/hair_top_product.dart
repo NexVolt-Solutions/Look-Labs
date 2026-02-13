@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/features/Widget/app_bar_container.dart';
-import 'package:looklabs/features/Widget/normal_text.dart';
-import 'package:looklabs/features/Widget/product_widget.dart';
+import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:looklabs/Features/Widget/normal_text.dart';
+import 'package:looklabs/Features/Widget/product_widget.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
-import 'package:looklabs/features/ViewModel/hair_top_product_view_model.dart';
+import 'package:looklabs/Features/ViewModel/hair_top_product_view_model.dart';
 import 'package:provider/provider.dart';
 
 class HairTopProduct extends StatefulWidget {

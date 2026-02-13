@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:looklabs/features/Widget/custom_container.dart';
-import 'package:looklabs/features/Widget/normal_text.dart';
+import 'package:looklabs/Features/Widget/custom_container.dart';
+import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/features/ViewModel/setting_view_model.dart';
+import 'package:looklabs/Features/ViewModel/setting_view_model.dart';
 
 class SettingContainer extends StatelessWidget {
   final List<Map<String, dynamic>> items;
