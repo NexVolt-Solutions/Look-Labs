@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/features/View/Auth/auth_screen.dart';
 import 'package:looklabs/features/View/BottomSheet/bottom_sheet_bar_screen.dart';
 import 'package:looklabs/features/View/CardDetails/card_details_screen.dart';

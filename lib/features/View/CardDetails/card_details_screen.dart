@@ -5,7 +5,7 @@ import 'package:looklabs/features/Widget/neu_text_fied.dart';
 import 'package:looklabs/features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 
 class CardDetailsScreen extends StatefulWidget {
   const CardDetailsScreen({super.key});

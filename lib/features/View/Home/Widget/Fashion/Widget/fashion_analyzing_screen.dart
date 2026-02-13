@@ -6,7 +6,7 @@ import 'package:looklabs/features/Widget/app_bar_container.dart';
 import 'package:looklabs/features/Widget/custom_button.dart';
 import 'package:looklabs/features/Widget/linear_slider_widget.dart';
 import 'package:looklabs/features/Widget/normal_text.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 
 class FashionAnalyzingScreen extends StatefulWidget {
   const FashionAnalyzingScreen({super.key});

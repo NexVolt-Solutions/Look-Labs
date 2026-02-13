@@ -8,7 +8,7 @@ import 'package:looklabs/features/Widget/app_bar_container.dart';
 import 'package:looklabs/features/Widget/height_widget_cont.dart';
 import 'package:looklabs/features/Widget/normal_text.dart';
 import 'package:looklabs/features/Widget/plan_container.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/features/ViewModel/fashion_profile_screen_view_model.dart';
 
 class FashionProfileScreen extends StatefulWidget {

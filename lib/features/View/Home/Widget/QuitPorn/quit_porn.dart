@@ -5,7 +5,7 @@ import 'package:looklabs/features/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/features/Widget/custom_stepper.dart';
 import 'package:looklabs/features/Widget/normal_text.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/features/View/Home/Widget/QuitPorn/quit_porn_question_screen.dart';
 import 'package:looklabs/features/ViewModel/quit_porn_view_model.dart';
 import 'package:provider/provider.dart';

@@ -5,7 +5,7 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
-import '../../../Core/utils/Routes/routes_name.dart';
+import '../../../Core/Routes/routes_name.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});

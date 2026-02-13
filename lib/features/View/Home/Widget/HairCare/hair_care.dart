@@ -189,7 +189,7 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/features/View/Home/Widget/HairCare/hair_care_question_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';

@@ -3,7 +3,7 @@ import 'package:looklabs/features/Widget/app_bar_container.dart';
 import 'package:looklabs/features/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import '../../../Core/utils/Routes/routes_name.dart';
+import '../../../Core/Routes/routes_name.dart';
 
 class OnBoardScreen extends StatefulWidget {
   const OnBoardScreen({super.key});

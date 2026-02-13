@@ -7,7 +7,7 @@ import 'package:looklabs/features/Widget/simple_check_box.dart';
 import 'package:looklabs/features/Widget/user_info.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/features/ViewModel/purchase_view_model.dart';
 import 'package:provider/provider.dart';
 

@@ -6,7 +6,7 @@ import 'package:looklabs/features/Widget/camera_widget.dart';
 import 'package:looklabs/features/Widget/custom_button.dart';
 import 'package:looklabs/features/Widget/custom_stepper.dart';
 import 'package:looklabs/features/Widget/normal_text.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 
 class FashionReviewScanScreen extends StatefulWidget {
   const FashionReviewScanScreen({super.key});

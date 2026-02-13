@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Config/env_loader.dart';
-import 'package:looklabs/Core/utils/Routes/routes.dart';
-import 'package:looklabs/Core/utils/Routes/routes_name.dart';
+import 'package:looklabs/Core/Routes/routes.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/features/View/BottomSheet/bottom_sheet_bar_screen.dart';
 import 'package:looklabs/features/ViewModel/auth_view_model.dart';
 import 'package:looklabs/features/ViewModel/bottom_sheet_view_model.dart';
