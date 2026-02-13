@@ -1,51 +1,27 @@
 import 'package:looklabs/Core/Network/api_endpoints.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
 
-/// Authentication repository - handles all auth-related API calls
+/// Authentication repository - Google Sign-In only
 class AuthRepository {
   AuthRepository._();
 
   static final AuthRepository _instance = AuthRepository._();
   static AuthRepository get instance => _instance;
 
-  /// Login with email and password
-  Future<ApiResponse> login({
-    required String email,
-    required String password,
-  }) async {
-    final response = await ApiServices.post(
-      ApiEndpoints.login,
-      body: {
-        'email': email,
-        'password': password,
-      },
-    );
-
-    if (response.success && response.data != null) {
-      final token = _extractToken(response.data);
-      if (token != null) {
-        ApiServices.setAuthToken(token);
-      }
-    }
-    return response;
-  }
-
-  /// Register new user
-  Future<ApiResponse> register({
-    required String email,
-    required String password,
-    String? name,
-    String? phone,
-    Map<String, dynamic>? extraFields,
+  /// Sign in with Google - pass the idToken from google_sign_in package
+  /// Backend validates the token and returns app JWT
+  Future<ApiResponse> signInWithGoogle({
+    required String idToken,
+    String? accessToken,
   }) async {
     final body = <String, dynamic>{
-      'email': email,
-      'password': password,
-      if (name != null) 'name': name,
-      if (phone != null) 'phone': phone,
-      if (extraFields != null) ...extraFields,
+      'idToken': idToken,
+      if (accessToken != null) 'accessToken': accessToken,
     };
-    final response = await ApiServices.post(ApiEndpoints.register, body: body);
+    final response = await ApiServices.post(
+      ApiEndpoints.googleSignIn,
+      body: body,
+    );
 
     if (response.success && response.data != null) {
       final token = _extractToken(response.data);
@@ -73,14 +49,6 @@ class AuthRepository {
       }
     }
     return response;
-  }
-
-  /// Forgot password - send reset link to email
-  Future<ApiResponse> forgotPassword({required String email}) async {
-    return ApiServices.post(
-      ApiEndpoints.forgotPassword,
-      body: {'email': email},
-    );
   }
 
   /// Get current user profile

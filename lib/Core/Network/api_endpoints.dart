@@ -2,12 +2,10 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
-  // Auth
-  static const String login = '/auth/login';
-  static const String register = '/auth/register';
+  // Auth (Google Sign-In only)
+  static const String googleSignIn = '/auth/google';
   static const String logout = '/auth/logout';
   static const String refreshToken = '/auth/refresh';
-  static const String forgotPassword = '/auth/forgot-password';
   static const String profile = '/auth/profile';
 
   // User
