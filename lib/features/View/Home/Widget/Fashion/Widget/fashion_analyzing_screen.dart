@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
@@ -28,7 +29,7 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
           bottom: context.h(30),
         ),
         child: CustomButton(
-          text: 'Next',
+          text: AppText.next,
           color: AppColors.pimaryColor,
           isEnabled: true,
           onTap: () {
@@ -41,7 +42,7 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
           padding: context.padSym(h: 20),
           children: [
             AppBarContainer(
-              title: 'Analyzing',
+              title: AppText.analyzing,
               onTap: () {
                 Navigator.pop(context);
               },
@@ -58,12 +59,12 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
             SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Analyzing your Style',
+              titleText: AppText.analyzingYourStyle,
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
               subText:
-                  'AI is studying your body structure, proportions, and skin tone to prepare your personalized fashion routine.',
+                  AppText.aiStudyingStyle,
               subSize: context.text(14),
               subWeight: FontWeight.w400,
               subColor: AppColors.subHeadingColor,
@@ -99,7 +100,7 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        'Dark circles under eyes',
+                        AppText.darkCirclesUnderEyes,
                         style: TextStyle(
                           fontSize: context.text(12),
                           fontWeight: FontWeight.w400,

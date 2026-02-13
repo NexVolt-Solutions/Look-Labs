@@ -5,6 +5,7 @@ import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/linear_slider_widget.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 
@@ -28,7 +29,7 @@ class _FacialAnalyzingScrenState extends State<FacialAnalyzingScren> {
           bottom: context.h(30),
         ),
         child: CustomButton(
-          text: 'Next',
+          text: AppText.next,
           color: AppColors.pimaryColor,
           isEnabled: true,
           onTap: () {
@@ -41,7 +42,7 @@ class _FacialAnalyzingScrenState extends State<FacialAnalyzingScren> {
           padding: context.padSym(h: 20),
           children: [
             AppBarContainer(
-              title: 'Analyzing',
+              title: AppText.analyzing,
               onTap: () {
                 Navigator.pop(context);
               },
@@ -58,12 +59,12 @@ class _FacialAnalyzingScrenState extends State<FacialAnalyzingScren> {
             SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Analyzing your Face',
+              titleText: AppText.analyzingYourFace,
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
               subText:
-                  'AI is studying your face shape, symmetry, and key features to prepare your personalized facial improvement routine.',
+                  AppText.aiStudyingFace,
               subSize: context.text(14),
               subWeight: FontWeight.w400,
               subColor: AppColors.subHeadingColor,
@@ -99,7 +100,7 @@ class _FacialAnalyzingScrenState extends State<FacialAnalyzingScren> {
                     ),
                     Expanded(
                       child: Text(
-                        'Daily exercises ready',
+                        AppText.dailyExercisesReady,
                         style: TextStyle(
                           fontSize: context.text(12),
                           fontWeight: FontWeight.w400,

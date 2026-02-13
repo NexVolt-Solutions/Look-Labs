@@ -5,6 +5,7 @@ import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Features/Widget/simple_check_box.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
@@ -30,7 +31,7 @@ class _AuthScreenState extends State<AuthScreen> {
           isEnabled: true,
           onTap: () =>
               Navigator.pushNamed(context, RoutesName.BottomSheetBarScreen),
-          text: 'Sign In',
+          text: AppText.signIn,
           color: AppColors.buttonColor,
         ),
       ),
@@ -39,16 +40,16 @@ class _AuthScreenState extends State<AuthScreen> {
           clipBehavior: Clip.hardEdge,
           padding: context.padSym(h: 20),
           children: [
-            AppBarContainer(title: 'Sign In'),
+            AppBarContainer(title: AppText.signIn),
             SizedBox(height: context.h(224)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Welcome',
+              titleText: AppText.welcome,
               titleSize: context.text(18),
               titleWeight: FontWeight.w500,
               titleColor: AppColors.subHeadingColor,
               sizeBoxheight: context.h(12),
-              subText: 'Your Transformation begins now',
+              subText: AppText.yourTransformationBegins,
               subSize: context.text(14),
               subWeight: FontWeight.w400,
               subColor: AppColors.notSelectedColor,
@@ -65,7 +66,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   Image.asset(AppAssets.gmailIcon),
                   SizedBox(width: context.w(8)),
                   Text(
-                    'Continue with Google ',
+                    AppText.continueWithGoogle,
                     style: TextStyle(
                       fontSize: context.text(16),
                       fontWeight: FontWeight.w500,
@@ -86,7 +87,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   Image.asset(AppAssets.appaleIcon),
                   SizedBox(width: context.w(8)),
                   Text(
-                    'Continue with Apple ',
+                    AppText.continueWithApple,
                     style: TextStyle(
                       fontSize: context.text(16),
                       fontWeight: FontWeight.w500,
@@ -106,7 +107,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
                 SizedBox(width: context.w(8)),
                 Text(
-                  'Subscription activated',
+                  AppText.subscriptionActivated,
                   style: TextStyle(
                     fontSize: context.text(14),
                     fontWeight: FontWeight.w400,

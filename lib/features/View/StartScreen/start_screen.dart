@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
@@ -24,7 +25,7 @@ class _StartScreenState extends State<StartScreen> {
         child: CustomButton(
           isEnabled: true,
           onTap: () => Navigator.pushNamed(context, RoutesName.QuestionScreen),
-          text: 'Get Started',
+          text: AppText.getStarted,
           colorText: AppColors.headingColor,
           color: AppColors.white,
         ),
@@ -36,14 +37,14 @@ class _StartScreenState extends State<StartScreen> {
             SizedBox(height: context.h(28)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Become the Chad You Were',
+              titleText: AppText.becomeTheChadYouWere,
               titleSize: context.text(24),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.white,
               titleAlign: TextAlign.center,
               sizeBoxheight: context.h(8),
               subText:
-                  'Build strong habits every day, Train your body and mind Become your best version',
+                  AppText.buildStrongHabits,
               subSize: context.text(16),
               subWeight: FontWeight.w400,
               subColor: AppColors.white,

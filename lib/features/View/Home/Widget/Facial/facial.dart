@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
@@ -36,7 +37,7 @@ class _FacialState extends State<Facial> {
           bottom: context.h(30),
         ),
         child: CustomButton(
-          text: isLast ? 'Complete' : 'Next',
+          text: isLast ? AppText.complete : AppText.next,
           color: AppColors.pimaryColor,
           isEnabled: true,
           onTap: () {
@@ -79,12 +80,12 @@ class _FacialState extends State<Facial> {
               child: CustomStepper(
                 currentStep: index,
                 steps: const [
-                  'Hydration',
-                  'Acne',
-                  'Skin',
-                  'Sun',
-                  'Routine',
-                  'Sense',
+                  AppText.hydration,
+                  AppText.acne,
+                  AppText.skin,
+                  AppText.sun,
+                  AppText.routine,
+                  AppText.sense,
                 ],
               ),
             ),

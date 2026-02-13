@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/setting_continer.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/ViewModel/setting_view_model.dart';
@@ -27,7 +28,7 @@ class _SettingScreenState extends State<SettingScreen> {
           children: [
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Setting',
+              titleText: AppText.setting,
               titleSize: context.text(20),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
@@ -76,7 +77,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   NormalText(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    titleText: 'Personal Information ',
+                    titleText: AppText.personalInformation,
                     titleSize: context.text(18),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.subHeadingColor,
@@ -99,7 +100,7 @@ class _SettingScreenState extends State<SettingScreen> {
               padding: context.padSym(h: 20),
               child: NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'Account',
+                titleText: AppText.account,
                 titleSize: context.text(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
@@ -115,7 +116,7 @@ class _SettingScreenState extends State<SettingScreen> {
               padding: context.padSym(h: 20),
               child: NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'Preferences & Support',
+                titleText: AppText.preferencesAndSupport,
                 titleSize: context.text(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,

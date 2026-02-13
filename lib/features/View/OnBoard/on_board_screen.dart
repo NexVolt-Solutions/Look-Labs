@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import '../../../Core/Routes/routes_name.dart';
 
@@ -23,7 +24,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
           isEnabled: true,
           onTap: () =>
               Navigator.pushNamed(context, RoutesName.SubscriptionPlanScreen),
-          text: 'Next',
+          text: AppText.next,
           color: AppColors.buttonColor,
         ),
       ),
@@ -34,7 +35,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
           children: [
             SizedBox(height: context.h(7.11)),
             AppBarContainer(
-              title: 'OnBoard',
+              title: AppText.onBoard,
               onTap: () => Navigator.pop(context),
             ),
             SizedBox(height: context.h(20)),

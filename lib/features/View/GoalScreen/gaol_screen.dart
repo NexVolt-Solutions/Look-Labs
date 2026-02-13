@@ -3,6 +3,7 @@ import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/gaol_screen_view_model.dart';
@@ -27,7 +28,7 @@ class _GaolScreenState extends State<GaolScreen> {
         child: CustomButton(
           isEnabled: true,
           onTap: () => Navigator.pushNamed(context, RoutesName.OnBoardScreen),
-          text: 'Get Started',
+          text: AppText.getStarted,
           color: AppColors.pimaryColor,
         ),
       ),
@@ -40,7 +41,7 @@ class _GaolScreenState extends State<GaolScreen> {
 
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Choose Goal',
+              titleText: AppText.chooseGoal,
               titleSize: context.text(20),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,

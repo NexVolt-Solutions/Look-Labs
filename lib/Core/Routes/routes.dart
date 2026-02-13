@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
@@ -343,7 +344,7 @@ class Routes {
               children: [
                 Center(
                   child: Text(
-                    'No Route Found',
+                    AppText.noRouteFound,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: AppColors.headingColor,

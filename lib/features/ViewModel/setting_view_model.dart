@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Features/View/Setting/PrivacyPolicyScreen/privacy_policy_screen.dart';
 import 'package:looklabs/Features/View/Setting/TermsScreen/terms_screen.dart';
 
 class SettingViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> personalInfo = [
-    {'icon': AppAssets.nameIcon, 'title': 'Full Name', 'value': 'Shehzad'},
-    {'icon': AppAssets.emailIcon, 'title': 'Email', 'value': 'Shezikhan2014'},
-    {'icon': AppAssets.ageIcon, 'title': 'Age', 'value': '25'},
-    {'icon': AppAssets.genderIcon, 'title': 'Gender', 'value': 'Male'},
+    {'icon': AppAssets.nameIcon, 'title': AppText.fullName, 'value': 'Shehzad'},
+    {'icon': AppAssets.emailIcon, 'title': AppText.email, 'value': 'Shezikhan2014'},
+    {'icon': AppAssets.ageIcon, 'title': AppText.age, 'value': '25'},
+    {'icon': AppAssets.genderIcon, 'title': AppText.gender, 'value': AppText.male},
   ];
   void onItemTap(Map<String, dynamic> item, BuildContext context) {
     switch (item['title']) {
-      case 'Privacy Policy':
+      case AppText.privacyPolicy:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()),
         );
         break;
 
-      case 'Terms of Service':
+      case AppText.termsOfService:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const TermsScreen()),
         );
         break;
 
-      case 'Sign Out':
+      case AppText.signOut:
         // showDialog(context: context, builder: (_) => const SignOutDialog());
         break;
     }
@@ -36,7 +37,7 @@ class SettingViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> paymentInfo = [
     {
       'icon': AppAssets.paymentIcon,
-      'title': 'Payment Method',
+      'title': AppText.paymentMethod,
       'value': '03XXXXXXXXX',
     },
   ];
@@ -46,21 +47,21 @@ class SettingViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> appSettings = [
     {
       'icon': AppAssets.settingNotifIcon,
-      'title': 'Notification',
+      'title': AppText.notification,
       'isSwitch': true,
       'value': false,
     },
     {
       'icon': AppAssets.settingPrivacyIcon,
-      'title': 'Privacy Policy',
+      'title': AppText.privacyPolicy,
       'isArrow': true,
     },
     {
       'icon': AppAssets.settingTermIcon,
-      'title': 'Terms of Service',
+      'title': AppText.termsOfService,
       'isArrow': true,
     },
-    {'icon': AppAssets.signOutIcon, 'title': 'Sign Out', 'isArrow': true},
+    {'icon': AppAssets.signOutIcon, 'title': AppText.signOut, 'isArrow': true},
   ];
 
   void toggleNotification(int index, bool value) {

@@ -6,6 +6,7 @@ import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Features/Widget/row_icon_and_text.dart';
 import 'package:looklabs/Features/Widget/simple_check_box.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/subscription_plan_view_model.dart';
@@ -31,7 +32,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
           isEnabled: true,
           onTap: () =>
               Navigator.pushNamed(context, RoutesName.CardDetailsScreen),
-          text: 'Continue & Subscribe',
+          text: AppText.continueAndSubscribe,
           color: AppColors.buttonColor,
         ),
       ),
@@ -40,13 +41,13 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
           padding: context.padSym(h: 20),
           children: [
             AppBarContainer(
-              title: 'Subscription Plan',
+              title: AppText.subscriptionPlan,
               onTap: () => Navigator.pop(context),
             ),
             SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'What you will get',
+              titleText: AppText.whatYouWillGet,
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,

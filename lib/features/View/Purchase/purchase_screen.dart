@@ -6,6 +6,7 @@ import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Features/Widget/simple_check_box.dart';
 import 'package:looklabs/Features/Widget/user_info.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/purchase_view_model.dart';
@@ -32,7 +33,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
           isEnabled: true,
           onTap: () =>
               Navigator.pushNamed(context, RoutesName.PaymentDetailsScreen),
-          text: 'Next',
+          text: AppText.next,
           color: AppColors.buttonColor,
         ),
       ),
@@ -42,7 +43,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
           clipBehavior: Clip.hardEdge,
           children: [
             AppBarContainer(
-              title: 'Purchase',
+              title: AppText.purchase,
               onTap: () {
                 Navigator.pop(context);
               },
@@ -50,7 +51,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'User Information',
+              titleText: AppText.userInformation,
               titleSize: context.text(20),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
@@ -66,7 +67,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             SizedBox(height: context.h(20)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'Select Payment Method',
+              titleText: AppText.selectPaymentMethod,
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,

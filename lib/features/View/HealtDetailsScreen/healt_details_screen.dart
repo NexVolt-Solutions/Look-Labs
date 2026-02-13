@@ -3,6 +3,7 @@ import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/custom_continer.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/healt_details_view_model.dart';
@@ -29,7 +30,7 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
             SizedBox(height: context.h(32)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Healt Details',
+              titleText: AppText.healtDetails,
               titleSize: context.text(20),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
@@ -40,12 +41,12 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
               onTap: () {
                 healtDetailsViewModel.showSelectionBottomSheet(
                   context: context,
-                  title: 'Diet Type',
+                  title: AppText.dietType,
                   list: healtDetailsViewModel.dietTypButtonName,
                   isDiet: true,
                 );
               },
-              title1: 'Diet Type',
+              title1: AppText.dietType,
               title2: healtDetailsViewModel.selectedDiet,
               title2Color: AppColors.pimaryColor,
             ),
@@ -56,12 +57,12 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
               onTap: () {
                 healtDetailsViewModel.showSelectionBottomSheet(
                   context: context,
-                  title: 'Workout Frequency',
+                  title: AppText.workoutFrequency,
                   list: healtDetailsViewModel.workOutFreButtonName,
                   isDiet: false,
                 );
               },
-              title1: 'Workout Frequency',
+              title1: AppText.workoutFrequency,
               title2: healtDetailsViewModel.selectedWorkout,
               title2Color: AppColors.pimaryColor,
             ),
@@ -69,7 +70,7 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
             CustomButton(
               isEnabled: true,
               onTap: () => Navigator.pushNamed(context, RoutesName.GaolScreen),
-              text: 'Next',
+              text: AppText.next,
               color: AppColors.buttonColor,
             ),
           ],

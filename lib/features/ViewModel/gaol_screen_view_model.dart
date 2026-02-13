@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 
 class GaolScreenViewModel extends ChangeNotifier {
   List<String> buttonName = [
-    'Skincare',
-    'Hair care',
-    'Fashion',
-    'Workout',
-    'Quit Porn',
-    'Bloating',
-    'Confidence',
-    'Height',
-    'Fitness',
-    'Diet',
+    AppText.skincare,
+    AppText.hairCare,
+    AppText.fashion,
+    AppText.workout,
+    AppText.quitPorn,
+    AppText.bloating,
+    AppText.confidence,
+    AppText.height,
+    AppText.fitness,
+    AppText.diet,
   ];
 
   String selectedIndex = '';

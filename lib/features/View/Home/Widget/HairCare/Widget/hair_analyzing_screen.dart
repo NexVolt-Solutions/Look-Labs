@@ -5,6 +5,7 @@ import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/linear_slider_widget.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 
@@ -28,7 +29,7 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
           bottom: context.h(30),
         ),
         child: CustomButton(
-          text: 'Next',
+          text: AppText.next,
           color: AppColors.pimaryColor,
           isEnabled: true,
           onTap: () {
@@ -41,7 +42,7 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
           padding: context.padSym(h: 20),
           children: [
             AppBarContainer(
-              title: 'Analyzing',
+              title: AppText.analyzing,
               onTap: () {
                 Navigator.pop(context);
               },
@@ -58,12 +59,12 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
             SizedBox(height: context.h(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Analyzing your hair ',
+              titleText: AppText.analyzingYourHair,
               titleSize: context.text(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
               subText:
-                  'AI is studying your hairs and preparing your personalized routine.',
+                  AppText.aiStudyingHair,
               subSize: context.text(14),
               subWeight: FontWeight.w400,
               subColor: AppColors.subHeadingColor,
@@ -99,7 +100,7 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        'Dark circles under eyes',
+                        AppText.darkCirclesUnderEyes,
                         style: TextStyle(
                           fontSize: context.text(12),
                           fontWeight: FontWeight.w400,

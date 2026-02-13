@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
@@ -7,21 +8,21 @@ class HealtDetailsViewModel extends ChangeNotifier {
   int currentStep = 0;
 
   List<String> dietTypButtonName = [
-    'Balanced',
-    'Protein',
-    'Vegetarian',
-    'Custom',
+    AppText.balanced,
+    AppText.protein,
+    AppText.vegetarian,
+    AppText.custom,
   ];
 
   List<String> workOutFreButtonName = [
-    'Daily',
-    '3-4x per week',
-    'Rarely',
-    'Never',
+    AppText.daily,
+    AppText.threeFourPerWeek,
+    AppText.rarely,
+    AppText.never,
   ];
 
-  String selectedDiet = 'Balance Diet';
-  String selectedWorkout = 'Never';
+  String selectedDiet = AppText.balanceDiet;
+  String selectedWorkout = AppText.never;
 
   void selectValue(String value, bool isDiet) {
     if (isDiet) {

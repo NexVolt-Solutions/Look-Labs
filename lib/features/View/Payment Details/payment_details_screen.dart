@@ -4,6 +4,7 @@ import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/user_info.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/payment_details_vie_model.dart';
@@ -27,7 +28,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
         child: CustomButton(
           isEnabled: true,
           onTap: () => Navigator.pushNamed(context, RoutesName.AuthScreen),
-          text: 'Pay',
+          text: AppText.pay,
           color: AppColors.buttonColor,
         ),
       ),
@@ -38,7 +39,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
             clipBehavior: Clip.hardEdge,
             children: [
               AppBarContainer(
-                title: 'Payment Details',
+                title: AppText.paymentDetails,
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -46,7 +47,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
               SizedBox(height: context.h(24)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'User Information',
+                titleText: AppText.userInformation,
                 titleSize: context.text(20),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
@@ -62,7 +63,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
               SizedBox(height: context.h(20)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'Card Details',
+                titleText: AppText.cardDetailsSection,
                 titleSize: context.text(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,

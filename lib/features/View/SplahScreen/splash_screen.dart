@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Constants/apptext.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/ViewModel/splash_view_model.dart';
@@ -38,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
           SizedBox(height: context.h(12)),
           Center(
             child: Text(
-              'Looks Lab',
+              AppText.appName,
               style: TextStyle(
                 color: AppColors.white,
                 fontSize: context.text(24),
