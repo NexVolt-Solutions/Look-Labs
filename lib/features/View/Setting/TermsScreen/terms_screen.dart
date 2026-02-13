@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Constants/apptext.dart';
+import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 

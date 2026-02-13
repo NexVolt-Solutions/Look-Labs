@@ -4,7 +4,7 @@ import 'package:looklabs/Features/Widget/bottom_icon_container.dart';
 import 'package:looklabs/Features/Widget/custom_container.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
-import 'package:looklabs/Core/Constants/apptext.dart';
+import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/ViewModel/bottom_sheet_view_model.dart';

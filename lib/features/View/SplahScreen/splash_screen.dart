@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
-import 'package:looklabs/Core/Constants/apptext.dart';
+import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/ViewModel/splash_view_model.dart';

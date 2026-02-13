@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
-import 'package:looklabs/Core/Constants/apptext.dart';
+import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
@@ -43,8 +43,7 @@ class _StartScreenState extends State<StartScreen> {
               titleColor: AppColors.white,
               titleAlign: TextAlign.center,
               sizeBoxheight: context.h(8),
-              subText:
-                  AppText.buildStrongHabits,
+              subText: AppText.buildStrongHabits,
               subSize: context.text(16),
               subWeight: FontWeight.w400,
               subColor: AppColors.white,

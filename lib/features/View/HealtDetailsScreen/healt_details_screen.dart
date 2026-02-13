@@ -3,7 +3,7 @@ import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/custom_continer.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
-import 'package:looklabs/Core/Constants/apptext.dart';
+import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/healt_details_view_model.dart';

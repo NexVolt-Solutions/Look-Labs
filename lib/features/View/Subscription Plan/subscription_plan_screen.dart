@@ -6,7 +6,7 @@ import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Features/Widget/row_icon_and_text.dart';
 import 'package:looklabs/Features/Widget/simple_check_box.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
-import 'package:looklabs/Core/Constants/apptext.dart';
+import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/subscription_plan_view_model.dart';

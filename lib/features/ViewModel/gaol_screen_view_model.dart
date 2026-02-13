@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/apptext.dart';
+import 'package:looklabs/Core/Constants/app_text.dart';
 
 class GaolScreenViewModel extends ChangeNotifier {
   List<String> buttonName = [
