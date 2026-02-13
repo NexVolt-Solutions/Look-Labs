@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+import 'package:looklabs/features/Widget/app_bar_container.dart';
+import 'package:looklabs/features/Widget/custom_button.dart';
+import 'package:looklabs/features/Widget/height_widget_cont.dart';
+import 'package:looklabs/features/Widget/light_card_widget.dart';
+import 'package:looklabs/features/Widget/neu_text_fied.dart';
+import 'package:looklabs/features/Widget/normal_text.dart';
+import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/features/ViewModel/daily_diet_routine_screen_view_model.dart';
+
+import 'package:provider/provider.dart';
+
+class DietDetailsScreen extends StatefulWidget {
+  const DietDetailsScreen({super.key});
+
+  @override
+  State<DietDetailsScreen> createState() => _DietDetailsScreenState();
+}
+
+class _DietDetailsScreenState extends State<DietDetailsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final dailyDietRoutineScreenViewModel =
+        Provider.of<DailyDietRoutineScreenViewModel>(context);
+    return Scaffold(
+      backgroundColor: AppColors.backGroundColor,
+      bottomNavigationBar: Padding(
+        padding: EdgeInsetsGeometry.only(
+          top: context.h(5),
+          left: context.w(20),
+          right: context.w(20),
+          bottom: context.h(30),
+        ),
+        child: CustomButton(
+          text: 'Scan another food',
+          color: AppColors.pimaryColor,
+          isEnabled: true,
+          onTap: () {
+            dailyDietRoutineScreenViewModel.showTransparentDialog(context);
+          },
+        ),
+      ),
+
+      body: SafeArea(
+        child: ListView(
+          padding: context.padSym(h: 20),
+          children: [
+            AppBarContainer(
+              title: 'Food Details',
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            SizedBox(height: context.h(24)),
+            ClipRRect(
+              borderRadius: BorderRadiusGeometry.circular(context.radius(10)),
+              child: Container(
+                height: 251,
+                width: context.w(336),
+                decoration: BoxDecoration(color: AppColors.black),
+              ),
+            ),
+            SizedBox(height: context.h(24)),
+            NeuTextField(
+              label: 'Food Name',
+              obscure: true,
+              validatorType: 'name',
+              hintText: 'Enter food name',
+              keyboard: TextInputType.name,
+            ),
+            SizedBox(height: context.h(24)),
+            NeuTextField(
+              label: 'Portion Size',
+              obscure: true,
+              validatorType: 'name',
+              hintText: 'Enter portion size',
+              keyboard: TextInputType.name,
+            ),
+            SizedBox(height: context.h(24)),
+            NormalText(
+              titleText: 'Nutrition Facts',
+              titleSize: context.text(18),
+              titleWeight: FontWeight.w600,
+              titleColor: AppColors.subHeadingColor,
+            ),
+            SizedBox(height: context.h(12)),
+            SizedBox(
+              height: context.h(135),
+              child: ListView.builder(
+                itemCount: 4,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return HeightWidgetCont(
+                    title: '2300',
+                    subTitle: 'Weekly Cal',
+                    imgPath: AppAssets.fatLossIcon,
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: context.h(24)),
+            LightCardWidget(
+              text:
+                  'Consistency improves stamina, strength & posture over time.',
+            ),
+            SizedBox(height: context.h(30)),
+          ],
+        ),
+      ),
+    );
+  }
+}
