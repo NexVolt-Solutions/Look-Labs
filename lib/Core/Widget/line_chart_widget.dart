@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/chart_constants.dart';
-import 'package:looklabs/Core/Model/sales_data.dart';
+import 'package:looklabs/Model/sales_data.dart';
 import 'package:looklabs/ViewModel/chart_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';

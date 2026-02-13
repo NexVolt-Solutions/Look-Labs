@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Model/sales_data.dart';
+import 'package:looklabs/Model/sales_data.dart';
 
 class ChartViewModel extends ChangeNotifier {
   final List<SalesData> chartData = [
