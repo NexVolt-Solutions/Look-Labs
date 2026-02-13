@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Config/env_loader.dart';
 import 'package:looklabs/Core/utils/Routes/routes.dart';
 import 'package:looklabs/Core/utils/Routes/routes_name.dart';
 import 'package:looklabs/View/BottomSheet/bottom_sheet_bar_screen.dart';
@@ -47,7 +48,9 @@ import 'package:looklabs/ViewModel/work_out_view_model.dart';
 import 'package:looklabs/ViewModel/work_out_progress_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await loadEnv();
   runApp(
     MultiProvider(
       providers: [

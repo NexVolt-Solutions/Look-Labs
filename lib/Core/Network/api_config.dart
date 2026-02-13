@@ -1,10 +1,16 @@
+import 'package:looklabs/Core/Config/env_loader.dart';
+
 /// API configuration - Base URL and environment settings
+/// Set via --dart-define=BASE_URL=... (CI) or api.env (local)
 class ApiConfig {
   ApiConfig._();
 
   /// Base URL for all API requests
-  /// TODO: Replace with your actual API base URL
-  static const String baseUrl = 'https://api.looklabs.com/v1';
+  static String get baseUrl {
+    const fromDefine = String.fromEnvironment('BASE_URL', defaultValue: '');
+    if (fromDefine.isNotEmpty) return fromDefine;
+    return env('BASE_URL');
+  }
 
   /// API timeout duration in seconds
   static const int connectTimeout = 30;
