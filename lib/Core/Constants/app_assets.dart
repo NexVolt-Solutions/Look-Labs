@@ -24,6 +24,7 @@ class AppAssets {
   static const String editIcon = "assets/Icon/eiditIcon.svg";
   static const String starIcon = "assets/Icon/star.svg";
   static const String crownIcon = "assets/Icon/crown-2.svg";
+  static const String premIcon = "assets/subscription/permIcon.png";
 
   //Bottom AppBar Icon
   static const String homeIcon = "assets/bottomIcon/homeIcon.svg";
