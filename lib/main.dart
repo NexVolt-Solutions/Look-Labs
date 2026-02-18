@@ -29,7 +29,6 @@ import 'package:looklabs/Features/ViewModel/home_view_model.dart';
 import 'package:looklabs/Features/ViewModel/my_album_view_model.dart';
 import 'package:looklabs/Features/ViewModel/payment_details_vie_model.dart';
 import 'package:looklabs/Features/ViewModel/personalized_exercise_screen_view_model.dart';
-import 'package:looklabs/Features/ViewModel/profile_view_model.dart';
 import 'package:looklabs/Features/ViewModel/progress_view_model.dart';
 import 'package:looklabs/Features/ViewModel/purchase_view_model.dart';
 import 'package:looklabs/Features/ViewModel/quit_porn_view_model.dart';
@@ -46,6 +45,7 @@ import 'package:looklabs/Features/ViewModel/weekly_plan_screen_view_model.dart';
 import 'package:looklabs/Features/ViewModel/work_out_result_screen_view_model.dart';
 import 'package:looklabs/Features/ViewModel/work_out_view_model.dart';
 import 'package:looklabs/Features/ViewModel/work_out_progress_screen_view_model.dart';
+import 'package:looklabs/features/ViewModel/question_answer_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -55,7 +55,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => SplashViewModel()),
-        ChangeNotifierProvider(create: (context) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (context) => QuestionAnswerViewModel()),
         ChangeNotifierProvider(create: (context) => HealtDetailsViewModel()),
         ChangeNotifierProvider(create: (context) => GaolScreenViewModel()),
         ChangeNotifierProvider(

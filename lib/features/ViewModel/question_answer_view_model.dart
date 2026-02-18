@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ProfileViewModel extends ChangeNotifier {
+class QuestionAnswerViewModel extends ChangeNotifier {
   final PageController pageController = PageController();
 
   int currentStep = 0;

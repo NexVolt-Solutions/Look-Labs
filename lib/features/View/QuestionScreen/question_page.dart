@@ -5,7 +5,7 @@ import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Features/ViewModel/profile_view_model.dart';
+import 'package:looklabs/features/ViewModel/question_answer_view_model.dart';
 import 'package:provider/provider.dart';
 
 class QuestionPage extends StatelessWidget {
@@ -14,7 +14,7 @@ class QuestionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<ProfileViewModel>(context);
+    final vm = Provider.of<QuestionAnswerViewModel>(context);
     final data = vm.questionData[index];
 
     return ListView(

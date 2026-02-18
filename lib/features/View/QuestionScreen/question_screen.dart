@@ -7,7 +7,7 @@ import 'package:looklabs/Features/Widget/custom_stepper.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/View/QuestionScreen/question_page.dart';
-import 'package:looklabs/Features/ViewModel/profile_view_model.dart';
+import 'package:looklabs/features/ViewModel/question_answer_view_model.dart';
 import 'package:provider/provider.dart';
 
 class QuestionScreen extends StatelessWidget {
@@ -15,7 +15,7 @@ class QuestionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<ProfileViewModel>(context);
+    final vm = Provider.of<QuestionAnswerViewModel>(context);
     final bool isLastStep = vm.currentStep == vm.questionData.length - 1;
 
     return Scaffold(
