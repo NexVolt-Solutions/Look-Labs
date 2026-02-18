@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:looklabs/Core/Config/env_loader.dart';
 import 'package:looklabs/Core/Routes/routes.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
@@ -50,6 +51,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await loadEnv();
   runApp(
     MultiProvider(
