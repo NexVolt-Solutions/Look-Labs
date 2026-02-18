@@ -10,7 +10,6 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -137,23 +136,13 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ],
             ),
-
-            // FutureBuilder(
-            //   future: authScreenViewMdel.signInWithGoogle(idToken: ''),
-            //   builder: (context, snapshot) {
-            //     if (!snapshot.hasData) {
-            //       return CircularPercentIndicator(radius: 10);
-            //     } else {
-            //       return ListView.builder(
-            //         itemBuilder: (context, index) {
-            //           return Text('Signed in with Google');
-            //         },
-            //       );
-            //     }
-            //   },
-            // ),
-          ],
-        ),
+          ),
+          if (authVm.isLoading)
+            Container(
+              color: Colors.black26,
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+        ],
       ),
     );
   }

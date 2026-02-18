@@ -1,19 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:looklabs/Model/user_model.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
 
 class AuthViewModel extends ChangeNotifier {
-  final bool isSelected = false;
-  AuthRepository get _authRepo => AuthRepository.instance;
-
-  bool get isLoading => _isLoading;
-  bool get isSelected => _isSelected;
-  String? get errorMessage => _errorMessage;
-  UserModel? get user => _user;
-  bool get isLoggedIn => _user != null;
-
   final AuthRepository _authRepo = AuthRepository.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  bool _isLoading = false;
+  String? _errorMessage;
+  UserModel? _user;
+  bool _isSelected = false;
+
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
+  UserModel? get user => _user;
+  bool get isLoggedIn => _user != null;
+  bool get isSelected => _isSelected;
 
   void clearError() {
     _errorMessage = null;
