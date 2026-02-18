@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "599895027153",
+    "project_id": "lookslab-2b9b3",
+    "storage_bucket": "lookslab-2b9b3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599895027153:android:743a3d10d9302374f204f0",
+        "android_client_info": {
+          "package_name": "com.nexvoltsolutions.looklabs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2vV56Eu_Hpz2SyeroM3Ap_1KpXLfZrtQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
