@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
+import 'package:provider/provider.dart';
+import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
+import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
 import 'package:looklabs/Features/View/Setting/PrivacyPolicyScreen/privacy_policy_screen.dart';
 import 'package:looklabs/Features/View/Setting/TermsScreen/terms_screen.dart';
 
@@ -19,7 +22,10 @@ class SettingViewModel extends ChangeNotifier {
       'value': AppText.male,
     },
   ];
-  void onItemTap(Map<String, dynamic> item, BuildContext context) {
+  Future<void> onItemTap(
+    Map<String, dynamic> item,
+    BuildContext context,
+  ) async {
     switch (item['title']) {
       case AppText.privacyPolicy:
         Navigator.push(
@@ -36,7 +42,15 @@ class SettingViewModel extends ChangeNotifier {
         break;
 
       case AppText.signOut:
-        // showDialog(context: context, builder: (_) => const SignOutDialog());
+        final authVm = Provider.of<AuthViewModel>(context, listen: false);
+        await authVm.logout();
+        if (context.mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            RoutesName.AuthScreen,
+            (route) => false,
+          );
+        }
         break;
     }
   }

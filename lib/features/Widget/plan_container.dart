@@ -10,7 +10,7 @@ class PlanContainer extends StatelessWidget {
   final Color? color;
 
   final bool? isSelected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final BorderRadius? radius;
@@ -22,7 +22,7 @@ class PlanContainer extends StatelessWidget {
     this.height,
     this.width,
     required this.isSelected,
-    required this.onTap,
+    this.onTap,
     required this.child,
     this.padding,
     this.radius,
