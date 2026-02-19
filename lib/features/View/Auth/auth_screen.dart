@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
@@ -22,18 +23,31 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   Future<void> _handleSignIn(AuthViewModel vm) async {
     vm.clearError();
-    final success = await vm.signInWithGoogle();
-    if (!mounted) return;
-    if (success) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        RoutesName.BottomSheetBarScreen,
-        (route) => false,
-      );
-    } else if (vm.errorMessage != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(vm.errorMessage!)));
+    try {
+      final success = await vm.signInWithGoogle();
+      if (!mounted) return;
+      if (success) {
+        debugPrint('[AuthScreen] Sign-in success, navigating to dashboard');
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RoutesName.BottomSheetBarScreen,
+          (route) => false,
+        );
+      } else if (vm.errorMessage != null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(vm.errorMessage!)),
+          );
+        }
+      }
+    } catch (e, st) {
+      debugPrint('[AuthScreen] _handleSignIn error: $e');
+      debugPrint('[AuthScreen] $st');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Something went wrong: ${e.toString()}')),
+        );
+      }
     }
   }
 
