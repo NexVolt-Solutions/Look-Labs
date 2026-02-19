@@ -36,6 +36,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - api.env
     - assets/subscription/
     - assets/
     - assets/bottomIcon/

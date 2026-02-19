@@ -9,7 +9,7 @@ class ApiConfig {
   static String get baseUrl {
     const fromDefine = String.fromEnvironment('BASE_URL', defaultValue: '');
     if (fromDefine.isNotEmpty) return fromDefine;
-    return env('BASE_URL');
+    return env('BASE_URL') ?? '';
   }
 
   /// API timeout duration in seconds
@@ -23,9 +23,9 @@ class ApiConfig {
 
   /// Common headers applied to all requests
   static Map<String, String> get defaultHeaders => {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      };
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
 
   /// Get full URL from endpoint path
   static String getFullUrl(String endpoint) {

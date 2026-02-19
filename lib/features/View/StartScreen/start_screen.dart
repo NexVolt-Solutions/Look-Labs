@@ -31,25 +31,28 @@ class _StartScreenState extends State<StartScreen> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Image.asset(AppAssets.splashImage, fit: BoxFit.scaleDown),
-            SizedBox(height: context.h(28)),
-            NormalText(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: AppText.becomeTheChadYouWere,
-              titleSize: context.text(24),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.white,
-              titleAlign: TextAlign.center,
-              sizeBoxheight: context.h(8),
-              subText: AppText.buildStrongHabits,
-              subSize: context.text(16),
-              subWeight: FontWeight.w400,
-              subColor: AppColors.white,
-              subAlign: TextAlign.center,
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(AppAssets.splashImage, fit: BoxFit.scaleDown),
+              SizedBox(height: context.h(28)),
+              NormalText(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                titleText: AppText.becomeTheChadYouWere,
+                titleSize: context.text(24),
+                titleWeight: FontWeight.w600,
+                titleColor: AppColors.white,
+                titleAlign: TextAlign.center,
+                sizeBoxheight: context.h(8),
+                subText: AppText.buildStrongHabits,
+                subSize: context.text(16),
+                subWeight: FontWeight.w400,
+                subColor: AppColors.white,
+                subAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
