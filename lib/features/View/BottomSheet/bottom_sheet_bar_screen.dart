@@ -7,6 +7,7 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
 import 'package:looklabs/Features/ViewModel/bottom_sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,11 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
   @override
   Widget build(BuildContext context) {
     final bottomSheetBarViewModel = context.watch<BottomSheetViewModel>();
+    final authViewModel = context.watch<AuthViewModel>();
+    final userName = authViewModel.user?.name;
+    final greeting = userName != null && userName.isNotEmpty
+        ? '${AppText.hi} $userName'
+        : AppText.hi;
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
@@ -54,7 +60,7 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                         ),
                         SizedBox(width: context.w(12)),
                         NormalText(
-                          titleText: AppText.hiShehzad,
+                          titleText: greeting,
                           titleSize: context.text(16),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,

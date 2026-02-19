@@ -6,7 +6,8 @@ class AppText {
   // Auth
   static const String signIn = 'Sign In';
   static const String welcome = 'Welcome';
-  static const String yourTransformationBegins = 'Your Transformation begins now';
+  static const String yourTransformationBegins =
+      'Your Transformation begins now';
   static const String continueWithGoogle = 'Continue with Google ';
   static const String continueWithApple = 'Continue with Apple ';
   static const String subscriptionActivated = 'Subscription activated';
@@ -14,7 +15,8 @@ class AppText {
   // Start
   static const String getStarted = 'Get Started';
   static const String becomeTheChadYouWere = 'Become the Chad You Were';
-  static const String buildStrongHabits = 'Build strong habits every day, Train your body and mind Become your best version';
+  static const String buildStrongHabits =
+      'Build strong habits every day, Train your body and mind Become your best version';
 
   // OnBoard
   static const String onBoard = 'OnBoard';
@@ -111,10 +113,14 @@ class AppText {
   static const String analyzingYourHair = 'Analyzing your hair ';
   static const String analyzingYourSkin = 'Analyzing your Skin';
   static const String analyzingYourFace = 'Analyzing your Face';
-  static const String aiStudyingStyle = 'AI is studying your body structure, proportions, and skin tone to prepare your personalized fashion routine.';
-  static const String aiStudyingHair = 'AI is studying your hairs and preparing your personalized routine.';
-  static const String aiStudyingSkin = 'AI is studying your hairs and preparing your personalized routine.';
-  static const String aiStudyingFace = 'AI is studying your face shape, symmetry, and key features to prepare your personalized facial improvement routine.';
+  static const String aiStudyingStyle =
+      'AI is studying your body structure, proportions, and skin tone to prepare your personalized fashion routine.';
+  static const String aiStudyingHair =
+      'AI is studying your hairs and preparing your personalized routine.';
+  static const String aiStudyingSkin =
+      'AI is studying your hairs and preparing your personalized routine.';
+  static const String aiStudyingFace =
+      'AI is studying your face shape, symmetry, and key features to prepare your personalized facial improvement routine.';
   static const String darkCirclesUnderEyes = 'Dark circles under eyes';
   static const String dailyExercisesReady = 'Daily exercises ready';
 
@@ -151,9 +157,11 @@ class AppText {
 
   // Facial Progress
   static const String yourProgress = 'Your Progress';
-  static const String trackFacialImprovement = 'Track your facial feature improvement journey';
+  static const String trackFacialImprovement =
+      'Track your facial feature improvement journey';
   static const String weeklyCal = 'Weekly Cal';
-  static const String workoutActivityThisWeek = 'Your workout activity this week';
+  static const String workoutActivityThisWeek =
+      'Your workout activity this week';
   static const String dailyRecoveryChecklist = 'Daily Recovery Checklist';
 
   // Product
@@ -163,7 +171,8 @@ class AppText {
   static const String whenToUse = 'When to Use:';
   static const String dontUseWith = "Don't Use With";
   static const String recommendedProducts = 'Recommended Products';
-  static const String curatedForHairScalp = 'Curated for your hair & scalp concerns';
+  static const String curatedForHairScalp =
+      'Curated for your hair & scalp concerns';
 
   // Fashion Profile
   static const String yourStyleProfile = 'Your Style Profile';
@@ -179,7 +188,8 @@ class AppText {
   static const String dailyWorkoutRoutine = 'Daily Workout Routine';
   static const String yourGuidedExercises = 'Your guided exercises for today';
   static const String dailyRoutine = 'Daily Routine';
-  static const String stretchingExercises = 'Stretching exercises for posture improvement';
+  static const String stretchingExercises =
+      'Stretching exercises for posture improvement';
   static const String morningPlan = 'Morning Plan';
   static const String eveningPlan = 'Evening Plan';
   static const String morningRoutine = 'Morning Routine';
@@ -192,21 +202,88 @@ class AppText {
   static const String currentHeight = 'Current Height';
   static const String desiredHeight = 'Desired Height';
 
-  // Bottom Sheet
-  static const String hiShehzad = 'Hi Shehzad';
+  // Bottom Sheet (use with user name: e.g. "Hi ${user.name}" when logged in)
+  static const String hi = 'Hi';
   static const String goodMorning = 'Good Morning';
 
   // Terms / Privacy
-  static const String lastUpdated = 'Last updated: [Insert Date]';
-  static const String termsWelcome = 'Welcome to [App Name] ("we", "our", "us"). These Terms of Use govern your use of our mobile application (the "Service"). By accessing or using [App Name], you agree to be bound by these Terms.';
+  static const String lastUpdated = 'Last updated: February 2025';
+
+  // Privacy Policy – full content for Looks Lab
+  static const String privacyLastUpdated = 'Last updated: February 2025';
+  static const String privacyIntro =
+      'Looks Lab ("we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, store, and share information when you use our mobile application and related services.';
+  static const String privacyInfoWeCollect = 'Information We Collect';
+  static const String privacyInfoWeCollectBody =
+      '• Account & profile: When you sign in with Google, we receive your name, email address, and profile photo from Google. We may also store a user ID and optional phone number on our servers.\n\n'
+      '• Health & lifestyle: To personalize your experience, we collect your choices from our onboarding and profile flows, such as diet type (e.g. balanced, protein, vegetarian), workout frequency, gender, age, height, weight, and answers to questions about energy, mood, sleep, stress, screen time, and lifestyle.\n\n'
+      '• Photos & scans: If you use our skin, hair, facial, or fashion analysis features, you may upload or capture photos. These are used to generate personalized routines and recommendations and may be processed on our servers or by trusted service providers.\n\n'
+      '• Subscription & payment: When you subscribe, we collect information needed to process payment (e.g. cardholder name, card details, billing-related data). Payment processing may be handled by third-party payment providers; we do not store full card numbers on our systems.';
+  static const String privacyHowWeUse = 'How We Use Your Information';
+  static const String privacyHowWeUseBody =
+      'We use your information to: create and manage your account; provide personalized skincare, haircare, fitness, diet, height, facial, and fashion routines; analyze your photos to deliver AI-based recommendations; process subscriptions and payments; improve our app and services; and communicate with you (e.g. support, important updates). We do not sell your personal information to third parties for advertising or marketing.';
+  static const String privacyDataStorage = 'Data Storage and Retention';
+  static const String privacyDataStorageBody =
+      'Your data is stored on secure servers and may be processed in regions where our service providers operate. We retain your information for as long as your account is active or as needed to provide the service, comply with law, or resolve disputes. You can request deletion of your account and associated data at any time; we will delete or anonymize it in line with our legal obligations.';
+  static const String privacyThirdParty = 'Third-Party Services';
+  static const String privacyThirdPartyBody =
+      'We use third-party services that may collect or process data: Google (for sign-in and account info), Firebase (authentication and backend), and payment processors for subscriptions. These providers have their own privacy policies. We only share data necessary for them to perform their services and require they protect your information appropriately.';
+  static const String privacyPhotosAndAi = 'Photos and AI Analysis';
+  static const String privacyPhotosAndAiBody =
+      'Photos you provide for skin, hair, facial, or body/style analysis are used solely to generate your personalized routines and recommendations. They may be stored temporarily for processing and are not used for advertising or sold to third parties. We use technical and organizational measures to protect your images.';
+  static const String privacyYourRights = 'Your Rights';
+  static const String privacyYourRightsBody =
+      'Depending on your location, you may have the right to access, correct, or delete your personal data, object to or restrict certain processing, and data portability. You can update profile information in the app and request full account deletion by contacting us. We will respond to valid requests in line with applicable law.';
+  static const String privacySecurity = 'Security';
+  static const String privacySecurityBody =
+      'We use industry-standard measures to protect your data from unauthorized access, loss, or misuse. No system is completely secure; we encourage you to keep your login credentials safe and use a secure connection when using the app.';
+  static const String privacyChildren = 'Children';
+  static const String privacyChildrenBody =
+      'Looks Lab is not intended for users under 13. We do not knowingly collect personal information from children under 13. If we learn that we have collected such data, we will delete it promptly. If you are a parent or guardian and believe your child has provided us data, please contact us.';
+  static const String privacyChanges = 'Changes to This Policy';
+  static const String privacyChangesBody =
+      'We may update this Privacy Policy from time to time. The "Last updated" date at the top will change when we do. We may notify you of significant changes in the app or by email. Continued use of the app after changes means you accept the updated policy.';
+  static const String privacyContact = 'Contact Us';
+  static const String privacyContactBody =
+      'For privacy-related questions, requests (e.g. access or deletion), or complaints, contact us at the support email provided in the app or on our website. We will respond in accordance with applicable law.';
+
+  // Terms of Service – full content for Looks Lab
+  static const String termsLastUpdated = 'Last updated: February 2025';
+  static const String termsWelcome =
+      'Welcome to Looks Lab ("we", "our", "us"). These Terms of Use govern your use of our mobile application (the "Service"). By accessing or using Looks Lab, you agree to be bound by these Terms.';
   static const String acceptanceOfTerms = 'Acceptance of Terms';
-  static const String termsAgeConfirm = 'By registering or using our Service, you confirm that you are at least 13 years of age and you agree to these Terms and our Privacy Policy. If you do not agree, please discontinue use of the Service.';
+  static const String termsAgeConfirm =
+      'By registering or using our Service, you confirm that you are at least 13 years of age and you agree to these Terms and our Privacy Policy. If you do not agree, please discontinue use of the Service.';
   static const String descriptionOfService = 'Description of Service';
-  static const String termsGenwallsDesc = 'GENWALLS is an AI-powered wallpaper generator that allows users to create unique, high-quality digital images and wallpapers using text prompts, customization features, and style options. Users can: ➤ Enter custom prompts to generate wallpapers ➤ Explore AI-suggested prompts for inspiration ➤ Select different image sizes and aspect ratios ➤ Choose from multiple artistic styles and themes ➤ Download wallpapers for personal use';
+  static const String termsServiceDesc =
+      'Looks Lab is a wellness and self-improvement app that provides personalized routines and recommendations for skincare, haircare, fitness, diet, height, facial improvement, and fashion. Users can: sign in with Google; set health and lifestyle preferences; upload or capture photos for skin, hair, facial, or body analysis; receive AI-based personalized routines and product recommendations; track nutrition and progress; and subscribe to access premium features.';
   static const String userAccounts = 'User Accounts';
-  static const String termsAccountInfo = 'When creating an account, you must provide accurate and complete information. You are responsible for maintaining the confidentiality of your login credentials and all activity conducted under your account.';
+  static const String termsAccountInfo =
+      'When creating an account, you must provide accurate and complete information. You are responsible for maintaining the confidentiality of your login credentials and all activity conducted under your account.';
   static const String intellectualProperty = 'Intellectual Property';
-  static const String termsIpDesc = 'All content, design, branding, and features within [App Name] are the exclusive property of our company. You may not copy, modify, reverse engineer, or redistribute any part of the Service without prior permission.';
+  static const String termsIpDesc =
+      'All content, design, branding, and features within Looks Lab are the exclusive property of our company. You may not copy, modify, reverse engineer, or redistribute any part of the Service without prior permission.';
+  static const String termsSubscription = 'Subscription and Payment';
+  static const String termsSubscriptionBody =
+      'Paid features may require a subscription. By subscribing, you agree to the pricing and billing terms shown at the time of purchase. Fees are charged in accordance with your chosen plan (e.g. monthly or annual). You may cancel in line with your device or app store settings. Refunds are subject to the applicable store policy and our refund policy. We reserve the right to change pricing with notice; continued use after a change constitutes acceptance.';
+  static const String termsUserContent = 'User Content and Conduct';
+  static const String termsUserContentBody =
+      'You are responsible for any content you submit, including photos and profile information. You must not use the Service for any illegal purpose or in a way that harms others, infringes rights, or violates these Terms. We may remove content or suspend or terminate accounts that breach these rules. Our use of your content is described in our Privacy Policy.';
+  static const String termsDisclaimers = 'Disclaimers';
+  static const String termsDisclaimersBody =
+      'The Service and all content, routines, and recommendations are provided "as is" for general wellness and informational purposes only. They are not a substitute for professional medical, nutritional, or fitness advice. Consult a qualified professional before starting any new diet, exercise, or health regimen. We do not guarantee specific results from using the app.';
+  static const String termsLimitation = 'Limitation of Liability';
+  static const String termsLimitationBody =
+      'To the fullest extent permitted by law, we and our affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or data, arising from your use of the Service. Our total liability shall not exceed the amount you paid us in the twelve months before the claim. Some jurisdictions do not allow certain limitations; in such cases our liability is limited to the maximum permitted by law.';
+  static const String termsTermination = 'Termination';
+  static const String termsTerminationBody =
+      'We may suspend or terminate your access to the Service at any time for breach of these Terms or for any other reason. You may stop using the Service at any time. Upon termination, your right to use the Service ends. Provisions that by their nature should survive (including intellectual property, disclaimers, and limitation of liability) will remain in effect.';
+  static const String termsGoverningLaw = 'Governing Law';
+  static const String termsGoverningLawBody =
+      'These Terms are governed by the laws of the jurisdiction in which we operate, without regard to conflict of law principles. Any disputes shall be resolved in the courts of that jurisdiction, except where prohibited.';
+  static const String termsContact = 'Contact Us';
+  static const String termsContactBody =
+      'For questions about these Terms of Service, contact us at the support email or address provided in the app or on our website.';
 
   // Home
   static const String wellnessOverview = 'Wellness Overview';

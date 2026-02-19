@@ -8,20 +8,30 @@ import 'package:looklabs/Features/View/Setting/PrivacyPolicyScreen/privacy_polic
 import 'package:looklabs/Features/View/Setting/TermsScreen/terms_screen.dart';
 
 class SettingViewModel extends ChangeNotifier {
-  List<Map<String, dynamic>> personalInfo = [
-    {'icon': AppAssets.nameIcon, 'title': AppText.fullName, 'value': 'Shehzad'},
-    {
-      'icon': AppAssets.emailIcon,
-      'title': AppText.email,
-      'value': 'Shezikhan2014',
-    },
-    {'icon': AppAssets.ageIcon, 'title': AppText.age, 'value': '25'},
-    {
-      'icon': AppAssets.genderIcon,
-      'title': AppText.gender,
-      'value': AppText.male,
-    },
-  ];
+  String _name = '';
+  String _email = '';
+  String _age = '';
+  String _gender = '';
+
+  List<Map<String, dynamic>> get personalInfo => [
+        {'icon': AppAssets.nameIcon, 'title': AppText.fullName, 'value': _name},
+        {'icon': AppAssets.emailIcon, 'title': AppText.email, 'value': _email},
+        {'icon': AppAssets.ageIcon, 'title': AppText.age, 'value': _age},
+        {'icon': AppAssets.genderIcon, 'title': AppText.gender, 'value': _gender},
+      ];
+
+  void updateFromUser({
+    String? name,
+    String? email,
+    String? age,
+    String? gender,
+  }) {
+    _name = name ?? '';
+    _email = email ?? '';
+    _age = age ?? '';
+    _gender = gender ?? '';
+    notifyListeners();
+  }
   Future<void> onItemTap(
     Map<String, dynamic> item,
     BuildContext context,
@@ -55,14 +65,20 @@ class SettingViewModel extends ChangeNotifier {
     }
   }
 
-  // Section 2 – Payment
-  List<Map<String, dynamic>> paymentInfo = [
-    {
-      'icon': AppAssets.paymentIcon,
-      'title': AppText.paymentMethod,
-      'value': '03XXXXXXXXX',
-    },
-  ];
+  String _paymentMask = '';
+
+  List<Map<String, dynamic>> get paymentInfo => [
+        {
+          'icon': AppAssets.paymentIcon,
+          'title': AppText.paymentMethod,
+          'value': _paymentMask,
+        },
+      ];
+
+  void updatePaymentMask(String? mask) {
+    _paymentMask = mask ?? '';
+    notifyListeners();
+  }
 
   // Section 3 – App Settings
 

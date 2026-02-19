@@ -50,4 +50,8 @@ class ApiEndpoints {
   // Upload / Multipart
   static const String upload = '/upload';
   static const String uploadImage = '/upload/image';
+
+  // Legal (e.g. privacy policy, terms – optional, for dynamic content from backend)
+  static const String privacyPolicy = '/legal/privacy-policy';
+  static const String termsOfService = '/legal/terms';
 }

@@ -1,0 +1,61 @@
+{
+  "version": "1.0",
+  "lastUpdated": "February 2025",
+  "sections": [
+    {
+      "id": "intro",
+      "title": "",
+      "body": "Looks Lab (\"we\", \"our\", \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, store, and share information when you use our mobile application and related services."
+    },
+    {
+      "id": "information-we-collect",
+      "title": "Information We Collect",
+      "body": "• Account & profile: When you sign in with Google, we receive your name, email address, and profile photo from Google. We may also store a user ID and optional phone number on our servers.\n\n• Health & lifestyle: To personalize your experience, we collect your choices from our onboarding and profile flows, such as diet type (e.g. balanced, protein, vegetarian), workout frequency, gender, age, height, weight, and answers to questions about energy, mood, sleep, stress, screen time, and lifestyle.\n\n• Photos & scans: If you use our skin, hair, facial, or fashion analysis features, you may upload or capture photos. These are used to generate personalized routines and recommendations and may be processed on our servers or by trusted service providers.\n\n• Subscription & payment: When you subscribe, we collect information needed to process payment (e.g. cardholder name, card details, billing-related data). Payment processing may be handled by third-party payment providers; we do not store full card numbers on our systems."
+    },
+    {
+      "id": "how-we-use",
+      "title": "How We Use Your Information",
+      "body": "We use your information to: create and manage your account; provide personalized skincare, haircare, fitness, diet, height, facial, and fashion routines; analyze your photos to deliver AI-based recommendations; process subscriptions and payments; improve our app and services; and communicate with you (e.g. support, important updates). We do not sell your personal information to third parties for advertising or marketing."
+    },
+    {
+      "id": "data-storage",
+      "title": "Data Storage and Retention",
+      "body": "Your data is stored on secure servers and may be processed in regions where our service providers operate. We retain your information for as long as your account is active or as needed to provide the service, comply with law, or resolve disputes. You can request deletion of your account and associated data at any time; we will delete or anonymize it in line with our legal obligations."
+    },
+    {
+      "id": "third-party",
+      "title": "Third-Party Services",
+      "body": "We use third-party services that may collect or process data: Google (for sign-in and account info), Firebase (authentication and backend), and payment processors for subscriptions. These providers have their own privacy policies. We only share data necessary for them to perform their services and require they protect your information appropriately."
+    },
+    {
+      "id": "photos-and-ai",
+      "title": "Photos and AI Analysis",
+      "body": "Photos you provide for skin, hair, facial, or body/style analysis are used solely to generate your personalized routines and recommendations. They may be stored temporarily for processing and are not used for advertising or sold to third parties. We use technical and organizational measures to protect your images."
+    },
+    {
+      "id": "your-rights",
+      "title": "Your Rights",
+      "body": "Depending on your location, you may have the right to access, correct, or delete your personal data, object to or restrict certain processing, and data portability. You can update profile information in the app and request full account deletion by contacting us. We will respond to valid requests in line with applicable law."
+    },
+    {
+      "id": "security",
+      "title": "Security",
+      "body": "We use industry-standard measures to protect your data from unauthorized access, loss, or misuse. No system is completely secure; we encourage you to keep your login credentials safe and use a secure connection when using the app."
+    },
+    {
+      "id": "children",
+      "title": "Children",
+      "body": "Looks Lab is not intended for users under 13. We do not knowingly collect personal information from children under 13. If we learn that we have collected such data, we will delete it promptly. If you are a parent or guardian and believe your child has provided us data, please contact us."
+    },
+    {
+      "id": "changes",
+      "title": "Changes to This Policy",
+      "body": "We may update this Privacy Policy from time to time. The \"Last updated\" date at the top will change when we do. We may notify you of significant changes in the app or by email. Continued use of the app after changes means you accept the updated policy."
+    },
+    {
+      "id": "contact",
+      "title": "Contact Us",
+      "body": "For privacy-related questions, requests (e.g. access or deletion), or complaints, contact us at the support email provided in the app or on our website. We will respond in accordance with applicable law."
+    }
+  ]
+}

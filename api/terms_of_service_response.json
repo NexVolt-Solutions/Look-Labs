@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "lastUpdated": "February 2025",
+  "sections": [
+    {
+      "id": "intro",
+      "title": "",
+      "body": "Welcome to Looks Lab (\"we\", \"our\", \"us\"). These Terms of Use govern your use of our mobile application (the \"Service\"). By accessing or using Looks Lab, you agree to be bound by these Terms."
+    },
+    {
+      "id": "acceptance",
+      "title": "Acceptance of Terms",
+      "body": "By registering or using our Service, you confirm that you are at least 13 years of age and you agree to these Terms and our Privacy Policy. If you do not agree, please discontinue use of the Service."
+    },
+    {
+      "id": "description",
+      "title": "Description of Service",
+      "body": "Looks Lab is a wellness and self-improvement app that provides personalized routines and recommendations for skincare, haircare, fitness, diet, height, facial improvement, and fashion. Users can: sign in with Google; set health and lifestyle preferences; upload or capture photos for skin, hair, facial, or body analysis; receive AI-based personalized routines and product recommendations; track nutrition and progress; and subscribe to access premium features."
+    },
+    {
+      "id": "user-accounts",
+      "title": "User Accounts",
+      "body": "When creating an account, you must provide accurate and complete information. You are responsible for maintaining the confidentiality of your login credentials and all activity conducted under your account."
+    },
+    {
+      "id": "intellectual-property",
+      "title": "Intellectual Property",
+      "body": "All content, design, branding, and features within Looks Lab are the exclusive property of our company. You may not copy, modify, reverse engineer, or redistribute any part of the Service without prior permission."
+    },
+    {
+      "id": "subscription",
+      "title": "Subscription and Payment",
+      "body": "Paid features may require a subscription. By subscribing, you agree to the pricing and billing terms shown at the time of purchase. Fees are charged in accordance with your chosen plan (e.g. monthly or annual). You may cancel in line with your device or app store settings. Refunds are subject to the applicable store policy and our refund policy. We reserve the right to change pricing with notice; continued use after a change constitutes acceptance."
+    },
+    {
+      "id": "user-content",
+      "title": "User Content and Conduct",
+      "body": "You are responsible for any content you submit, including photos and profile information. You must not use the Service for any illegal purpose or in a way that harms others, infringes rights, or violates these Terms. We may remove content or suspend or terminate accounts that breach these rules. Our use of your content is described in our Privacy Policy."
+    },
+    {
+      "id": "disclaimers",
+      "title": "Disclaimers",
+      "body": "The Service and all content, routines, and recommendations are provided \"as is\" for general wellness and informational purposes only. They are not a substitute for professional medical, nutritional, or fitness advice. Consult a qualified professional before starting any new diet, exercise, or health regimen. We do not guarantee specific results from using the app."
+    },
+    {
+      "id": "limitation",
+      "title": "Limitation of Liability",
+      "body": "To the fullest extent permitted by law, we and our affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or data, arising from your use of the Service. Our total liability shall not exceed the amount you paid us in the twelve months before the claim. Some jurisdictions do not allow certain limitations; in such cases our liability is limited to the maximum permitted by law."
+    },
+    {
+      "id": "termination",
+      "title": "Termination",
+      "body": "We may suspend or terminate your access to the Service at any time for breach of these Terms or for any other reason. You may stop using the Service at any time. Upon termination, your right to use the Service ends. Provisions that by their nature should survive (including intellectual property, disclaimers, and limitation of liability) will remain in effect."
+    },
+    {
+      "id": "governing-law",
+      "title": "Governing Law",
+      "body": "These Terms are governed by the laws of the jurisdiction in which we operate, without regard to conflict of law principles. Any disputes shall be resolved in the courts of that jurisdiction, except where prohibited."
+    },
+    {
+      "id": "contact",
+      "title": "Contact Us",
+      "body": "For questions about these Terms of Service, contact us at the support email or address provided in the app or on our website."
+    }
+  ]
+}

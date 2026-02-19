@@ -6,7 +6,9 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
 import 'package:looklabs/Features/ViewModel/setting_view_model.dart';
+import 'package:provider/provider.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -20,6 +22,21 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authVm = context.watch<AuthViewModel>();
+    final user = authVm.user;
+    settingVM.updateFromUser(
+      name: user?.name,
+      email: user?.email,
+    );
+
+    final name = user?.name;
+    final email = user?.email;
+    final avatarLabel = (name != null && name.isNotEmpty)
+        ? name.substring(0, 1).toUpperCase()
+        : (email != null && email.isNotEmpty)
+            ? email.substring(0, 1).toUpperCase()
+            : '—';
+
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
@@ -62,7 +79,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 child: NormalText(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  titleText: 'Aj',
+                  titleText: avatarLabel,
                   titleSize: context.text(20),
                   titleWeight: FontWeight.w600,
                   titleColor: AppColors.iconColor,
