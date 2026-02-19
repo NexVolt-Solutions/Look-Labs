@@ -56,9 +56,7 @@ class QuestionScreen extends StatelessWidget {
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.headingColor,
               ),
-
             SizedBox(height: context.h(20)),
-
             Padding(
               padding: context.padSym(h: 20),
               child: CustomStepper(
