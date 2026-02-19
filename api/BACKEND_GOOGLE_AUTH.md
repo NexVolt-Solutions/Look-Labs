@@ -73,3 +73,24 @@ Get the **exact Web client ID** from: Google Cloud Console → APIs & Services �
 | iOS OAuth Client ID | `599895027153-aksrj4i879m7kclai3hktq4rhpo3n57j.apps.googleusercontent.com` |
 
 **API keys** (e.g. in `firebase_options.dart`) are for **client** use only. Do **not** use them for token verification on the backend; use the **Firebase Service Account** (and optionally Google Web/Android/iOS client IDs if you verify Google idToken).
+
+---
+
+## 4. Flutter app – api.env (Android idToken & fixing ApiException 10)
+
+On **Android**, the app must use the **Web application** OAuth client ID as `serverClientId` (not the Android client ID). Using the Android client ID causes **ApiException: 10 (DEVELOPER_ERROR)**.
+
+**Add to your `api.env` file (project root):**
+
+```env
+GOOGLE_WEB_CLIENT_ID=599895027153-xxxxxxxx.apps.googleusercontent.com
+```
+
+**How to get the Web client ID:**
+
+1. **Google Cloud Console** → [Credentials](https://console.cloud.google.com/apis/credentials) → select project **lookslab**.
+2. If you see **"Web client (auto created by Google Service)"** under OAuth 2.0 Client IDs → click it → copy **Client ID** → paste into `api.env` as above.
+3. If you do **not** have a Web client: click **+ Create credentials** → **OAuth client ID** → Application type: **Web application** → Name (e.g. "Looks Lab Web") → **Create** → copy the new **Client ID** → paste into `api.env`.
+4. Rebuild the app (`flutter clean && flutter run`).
+
+**Important:** Use the **Web application** client ID only. Do **not** use the Android client ID (e.g. `...-obgm88...`) here; that causes sign_in_failed with ApiException 10.

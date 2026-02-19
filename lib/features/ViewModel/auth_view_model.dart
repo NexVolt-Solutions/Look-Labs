@@ -2,14 +2,34 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:looklabs/Core/Config/env_loader.dart';
 import 'package:looklabs/Model/user_model.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
 
+/// Web client ID from Google Cloud Console (Credentials → Web client).
+/// Required on Android for idToken. Set in api.env as GOOGLE_WEB_CLIENT_ID=...
+/// Or paste below and rebuild (e.g. '599895027153-xxx.apps.googleusercontent.com').
+const String? _kWebClientIdOverride = null;
+
+String? get _googleWebClientId => _kWebClientIdOverride ?? env('GOOGLE_WEB_CLIENT_ID');
+
 class AuthViewModel extends ChangeNotifier {
   final AuthRepository _authRepo = AuthRepository.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'profile'],
-  );
+  late final GoogleSignIn _googleSignIn = () {
+    final serverClientId = _googleWebClientId;
+    if (kDebugMode) {
+      if (serverClientId != null) {
+        debugPrint('[AuthViewModel] GoogleSignIn with serverClientId (required on Android for idToken)');
+      } else {
+        debugPrint('[AuthViewModel] GoogleSignIn without serverClientId - idToken may be null on Android. Add GOOGLE_WEB_CLIENT_ID to api.env');
+      }
+    }
+    return GoogleSignIn(
+      scopes: ['email', 'profile'],
+      serverClientId: serverClientId,
+    );
+  }();
+
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   static void _log(String message, [Object? error, StackTrace? st]) {
@@ -56,14 +76,15 @@ class AuthViewModel extends ChangeNotifier {
       }
       _log('user selected: ${googleUser.email}');
 
-      _log('getting authentication');
+      _log('getting authentication (googleUser.authentication)');
       final GoogleSignInAuthentication auth = await googleUser.authentication;
       final idToken = auth.idToken;
       final accessToken = auth.accessToken;
 
+      _log('auth result: idToken=${idToken != null ? "present (${idToken.length} chars)" : "NULL"}, accessToken=${accessToken != null ? "present" : "null"}');
       if (idToken == null) {
-        _log('idToken is null');
-        _errorMessage = 'Failed to get Google credentials';
+        _log('idToken is null - on Android add GOOGLE_WEB_CLIENT_ID (Web client ID) to api.env and rebuild');
+        _errorMessage = 'Failed to get Google credentials. On Android, add Web client ID to api.env (see README).';
         _isLoading = false;
         notifyListeners();
         return false;
@@ -82,12 +103,12 @@ class AuthViewModel extends ChangeNotifier {
       final token = await firebaseUser?.getIdToken();
 
       if (token != null) {
-        _log('calling backend signInWithGoogle with Firebase token');
+        _log('Firebase token present, calling backend signInWithGoogle with Firebase idToken');
         final response = await _authRepo.signInWithGoogle(
           idToken: token,
           accessToken: accessToken,
         );
-        _log('backend response: success=${response.success}, statusCode=${response.statusCode}');
+        _log('backend response: success=${response.success}, statusCode=${response.statusCode}, message=${response.message}');
 
         if (response.success && response.data != null) {
           _user = _parseUser(response.data);
@@ -105,7 +126,7 @@ class AuthViewModel extends ChangeNotifier {
         }
       }
 
-      _log('no Firebase token, trying backend with Google idToken');
+      _log('Firebase getIdToken returned null, trying backend with Google idToken');
       final response = await _authRepo.signInWithGoogle(
         idToken: idToken,
         accessToken: accessToken,
@@ -126,7 +147,12 @@ class AuthViewModel extends ChangeNotifier {
       return false;
     } catch (e, st) {
       _log('signInWithGoogle exception', e, st);
-      _errorMessage = e.toString().replaceFirst('Exception: ', '');
+      final msg = e.toString();
+      if (msg.contains('ApiException: 10') || msg.contains('sign_in_failed')) {
+        _errorMessage = 'Google Sign-In config error. Use a Web application client ID (not Android) in api.env as GOOGLE_WEB_CLIENT_ID. Create one in Google Cloud Console → Credentials → OAuth client ID → Web application.';
+      } else {
+        _errorMessage = msg.replaceFirst('Exception: ', '');
+      }
       _isLoading = false;
       notifyListeners();
       return false;

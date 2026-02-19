@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 import 'package:looklabs/Core/Network/api_config.dart';
 import 'package:looklabs/Core/Network/api_response.dart';
 
@@ -24,6 +25,44 @@ class ApiServices {
       _extraHeaders = headers;
   static void addExtraHeader(String key, String value) =>
       _extraHeaders[key] = value;
+
+  /// True if host is localhost or private IP (dev only). For these we allow relaxed SSL.
+  static bool _isDevHost(String host) {
+    if (host.isEmpty) return false;
+    if (host == 'localhost' || host == '127.0.0.1') return true;
+    final parts = host.split('.');
+    if (parts.length == 4) {
+      final a = int.tryParse(parts[0]) ?? -1;
+      final b = int.tryParse(parts[1]) ?? -1;
+      final c = int.tryParse(parts[2]) ?? -1;
+      final d = int.tryParse(parts[3]) ?? -1;
+      if (a >= 0 && a <= 255 && b >= 0 && b <= 255 && c >= 0 && c <= 255 && d >= 0 && d <= 255) {
+        if (a == 10) return true;
+        if (a == 172 && b >= 16 && b <= 31) return true;
+        if (a == 192 && b == 168) return true;
+      }
+    }
+    return false;
+  }
+
+  static http.Client? _httpClient;
+  /// Reuse a single client. For dev hosts (localhost/private IP) use relaxed SSL to avoid hostname mismatch.
+  static http.Client get _client {
+    if (_httpClient != null) return _httpClient!;
+    try {
+      final uri = Uri.parse(ApiConfig.baseUrl);
+      if (uri.host.isNotEmpty && _isDevHost(uri.host)) {
+        final io = HttpClient();
+        io.badCertificateCallback = (_, __, ___) => true;
+        _httpClient = IOClient(io);
+      } else {
+        _httpClient = http.Client();
+      }
+    } catch (_) {
+      _httpClient = http.Client();
+    }
+    return _httpClient!;
+  }
 
   static Map<String, String> get _headers {
     final headers = Map<String, String>.from(ApiConfig.defaultHeaders);
@@ -51,7 +90,7 @@ class ApiServices {
   }) async {
     try {
       final url = _buildUrl(endpoint, queryParams);
-      final response = await http
+      final response = await _client
           .get(Uri.parse(url), headers: headers ?? _headers)
           .timeout(Duration(seconds: ApiConfig.receiveTimeout));
       return ApiResponse.fromHttpResponse(response);
@@ -67,6 +106,12 @@ class ApiServices {
         statusCode: 0,
         message: 'No internet connection',
       );
+    } on HandshakeException {
+      return ApiResponse(
+        success: false,
+        statusCode: 0,
+        message: 'SSL error: hostname does not match server certificate. Set BASE_URL in api.env to the exact URL whose certificate matches (e.g. https://api.yourdomain.com/v1). For local dev use https://localhost or https://YOUR_IP.',
+      );
     } catch (e) {
       return ApiResponse(success: false, statusCode: 0, message: e.toString());
     }
@@ -81,7 +126,7 @@ class ApiServices {
   }) async {
     try {
       final url = _buildUrl(endpoint, queryParams);
-      final response = await http
+      final response = await _client
           .post(
             Uri.parse(url),
             headers: headers ?? _headers,
@@ -103,6 +148,12 @@ class ApiServices {
         statusCode: 0,
         message: 'No internet connection',
       );
+    } on HandshakeException {
+      return ApiResponse(
+        success: false,
+        statusCode: 0,
+        message: 'SSL error: hostname does not match server certificate. Set BASE_URL in api.env to the exact URL whose certificate matches (e.g. https://api.yourdomain.com/v1). For local dev use https://localhost or https://YOUR_IP.',
+      );
     } catch (e) {
       return ApiResponse(success: false, statusCode: 0, message: e.toString());
     }
@@ -117,7 +168,7 @@ class ApiServices {
   }) async {
     try {
       final url = _buildUrl(endpoint, queryParams);
-      final response = await http
+      final response = await _client
           .put(
             Uri.parse(url),
             headers: headers ?? _headers,
@@ -153,7 +204,7 @@ class ApiServices {
   }) async {
     try {
       final url = _buildUrl(endpoint, queryParams);
-      final response = await http
+      final response = await _client
           .patch(
             Uri.parse(url),
             headers: headers ?? _headers,
@@ -189,7 +240,7 @@ class ApiServices {
   }) async {
     try {
       final url = _buildUrl(endpoint, queryParams);
-      final response = await http
+      final response = await _client
           .delete(
             Uri.parse(url),
             headers: headers ?? _headers,
@@ -245,7 +296,7 @@ class ApiServices {
         );
       }
 
-      final streamedResponse = await request.send().timeout(
+      final streamedResponse = await _client.send(request).timeout(
         Duration(seconds: ApiConfig.sendTimeout * 2),
       );
 
@@ -297,7 +348,7 @@ class ApiServices {
         );
       }
 
-      final streamedResponse = await request.send().timeout(
+      final streamedResponse = await _client.send(request).timeout(
         Duration(seconds: ApiConfig.sendTimeout * 2),
       );
 
