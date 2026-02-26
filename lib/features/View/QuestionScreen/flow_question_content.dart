@@ -37,7 +37,7 @@ class FlowQuestionContent extends StatelessWidget {
         ),
         SizedBox(height: context.sh(12)),
         NeuTextField(
-          label: question.question,
+          label: 'Your answer',
           hintText: 'Enter your answer',
           keyboard: TextInputType.text,
           validatorType: '',
@@ -68,7 +68,7 @@ class FlowQuestionContent extends StatelessWidget {
         ),
         SizedBox(height: context.sh(12)),
         NeuTextField(
-          label: question.question,
+          label: 'Your answer',
           hintText: hint,
           keyboard: TextInputType.number,
           validatorType: '',

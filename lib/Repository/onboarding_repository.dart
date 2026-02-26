@@ -36,7 +36,9 @@ class OnboardingRepository {
     );
     if (!response.success) {
       final dataStr = response.data != null ? response.data.toString() : 'null';
-      debugPrint('[OnboardingRepository] failure body: ${dataStr.length > 400 ? "${dataStr.substring(0, 400)}..." : dataStr}');
+      debugPrint(
+        '[OnboardingRepository] failure body: ${dataStr.length > 400 ? "${dataStr.substring(0, 400)}..." : dataStr}',
+      );
     }
 
     if (response.success && response.data is Map<String, dynamic>) {
@@ -44,7 +46,9 @@ class OnboardingRepository {
         Map<String, dynamic>.from(response.data as Map),
       );
       currentSession = session;
-      debugPrint('[OnboardingRepository] Session created: id=${session.id} isPaid=${session.isPaid}');
+      debugPrint(
+        '[OnboardingRepository] Session created: id=${session.id} isPaid=${session.isPaid}',
+      );
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
@@ -74,7 +78,9 @@ class OnboardingRepository {
       'index': index.toString(),
     };
     final fullUrl = ApiConfig.getFullUrl(endpoint);
-    debugPrint('[OnboardingRepository] GET $endpoint (step=$step index=$index)');
+    debugPrint(
+      '[OnboardingRepository] GET $endpoint (step=$step index=$index)',
+    );
     debugPrint('[OnboardingRepository] URL: $fullUrl');
     final response = await ApiServices.get(
       endpoint,
@@ -86,7 +92,9 @@ class OnboardingRepository {
     );
     if (!response.success && response.data != null) {
       final dataStr = response.data.toString();
-      debugPrint('[OnboardingRepository] failure body: ${dataStr.length > 300 ? "${dataStr.substring(0, 300)}..." : dataStr}');
+      debugPrint(
+        '[OnboardingRepository] failure body: ${dataStr.length > 300 ? "${dataStr.substring(0, 300)}..." : dataStr}',
+      );
     }
     if (response.success &&
         response.data != null &&
@@ -103,6 +111,55 @@ class OnboardingRepository {
       );
     }
     return response;
+  }
+
+  /// Log flow API response for debugging (Question screen).
+  static void _logFlowResponse(OnboardingFlowResponse flow) {
+    debugPrint('[OnboardingRepository] === flow response ===');
+    debugPrint('[OnboardingRepository] status: ${flow.status}');
+    debugPrint('[OnboardingRepository] redirect: ${flow.redirect}');
+    if (flow.current != null) {
+      final c = flow.current!;
+      debugPrint(
+        '[OnboardingRepository] current: id=${c.id} step=${c.step} type=${c.type} question="${c.question}"',
+      );
+      debugPrint('[OnboardingRepository] current options: ${c.options}');
+      debugPrint(
+        '[OnboardingRepository] current constraints: ${c.constraints}',
+      );
+    } else {
+      debugPrint('[OnboardingRepository] current: null');
+    }
+    if (flow.next != null) {
+      final n = flow.next!;
+      debugPrint(
+        '[OnboardingRepository] next: id=${n.id} step=${n.step} type=${n.type} question="${n.question}"',
+      );
+      debugPrint('[OnboardingRepository] next options: ${n.options}');
+      debugPrint('[OnboardingRepository] next constraints: ${n.constraints}');
+    } else {
+      debugPrint('[OnboardingRepository] next: null');
+    }
+    if (flow.progress != null) {
+      final p = flow.progress!;
+      debugPrint(
+        '[OnboardingRepository] progress: session_id=${p.sessionId} step=${p.step} total_questions=${p.totalQuestions}',
+      );
+      debugPrint(
+        '[OnboardingRepository] progress answered_questions: ${p.answeredQuestions}',
+      );
+      if (p.progress != null) {
+        debugPrint(
+          '[OnboardingRepository] progress.sections: ${p.progress!.sections}',
+        );
+        debugPrint(
+          '[OnboardingRepository] progress.overall: ${p.progress!.overall}',
+        );
+      }
+    } else {
+      debugPrint('[OnboardingRepository] progress: null');
+    }
+    debugPrint('[OnboardingRepository] === end flow response ===');
   }
 
   /// Parses API response data into [OnboardingSession]. Use when you have raw map.

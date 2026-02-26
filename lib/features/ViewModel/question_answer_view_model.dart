@@ -99,12 +99,14 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     flowResponse = flow;
 
     final list = <FlowQuestion>[];
-    if (flow.current != null && flow.current!.step == step) {
-      list.add(flow.current!);
+    final seenIds = <int>{};
+    void addIfNew(FlowQuestion? q) {
+      if (q == null || q.step != step || seenIds.contains(q.id)) return;
+      seenIds.add(q.id);
+      list.add(q);
     }
-    if (flow.next != null && flow.next!.step == step) {
-      list.add(flow.next!);
-    }
+    addIfNew(flow.current);
+    addIfNew(flow.next);
 
     currentStepQuestions = list;
     flowError = list.isEmpty ? 'No questions for this step' : null;
