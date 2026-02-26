@@ -28,7 +28,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
-        padding: context.padSym(h: 20, v: 30),
+        padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
         child: CustomButton(
           isEnabled: true,
           onTap: () =>
@@ -39,7 +39,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
       ),
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           clipBehavior: Clip.hardEdge,
           children: [
             AppBarContainer(
@@ -48,15 +48,15 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: AppText.userInformation,
-              titleSize: context.text(20),
+              titleSize: context.sp(20),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             ...List.generate(
               purchaseViewModel.userInfData.length,
               (index) => UserInfo(
@@ -64,15 +64,15 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                 subName: purchaseViewModel.userInfData[index]['subName'],
               ),
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: AppText.selectPaymentMethod,
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             ...List.generate(purchaseViewModel.purchaseCardData.length, (
               index,
             ) {
@@ -80,8 +80,8 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
               final isSelected = plan['isSelected'] as bool;
               return PlanContainer(
                 isSelected: isSelected,
-                margin: context.padSym(v: 12),
-                padding: context.padSym(h: 24, v: 12),
+                margin: context.paddingSymmetricR(vertical: 12),
+                padding: context.paddingSymmetricR(horizontal: 24, vertical: 12),
                 onTap: () => purchaseViewModel.selectPayment(index),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,11 +89,11 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                     Row(
                       children: [
                         Image.asset(plan['image']),
-                        SizedBox(width: context.w(12)),
+                        SizedBox(width: context.sw(12)),
                         Text(
                           plan['title'],
                           style: TextStyle(
-                            fontSize: context.text(16),
+                            fontSize: context.sp(16),
                             fontWeight: FontWeight.w600,
                             color: isSelected
                                 ? AppColors.subHeadingColor

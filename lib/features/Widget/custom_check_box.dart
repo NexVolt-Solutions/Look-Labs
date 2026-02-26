@@ -20,12 +20,12 @@
 //         GestureDetector(
 //           onTap: () => signInViewModel.selectGender(genderName!),
 //           child: Container(
-//             height: context.h(26),
-//             width: context.w(26),
-//             margin: context.padSym(v: 12),
+//             height: context.sh(26),
+//             width: context.sw(26),
+//             margin: context.paddingSymmetricR(vertical: 12),
 //             decoration: BoxDecoration(
 //               shape: BoxShape.circle,
-//               border: Border.all(color: AppColors.white, width: context.w(0.5)),
+//               border: Border.all(color: AppColors.white, width: context.sw(0.5)),
 //               color: isSelected
 //                   ? AppColors.pimaryColor
 //                   : AppColors.backGroundColor,
@@ -51,12 +51,12 @@
 //                 : const SizedBox(),
 //           ),
 //         ),
-//         SizedBox(width: context.w(12)),
+//         SizedBox(width: context.sw(12)),
 //         Text(
 //           genderName!,
 //           style: TextStyle(
 //             color: AppColors.headingColor,
-//             fontSize: context.text(14),
+//             fontSize: context.sp(14),
 //             fontWeight: FontWeight.w600,
 //           ),
 //         ),

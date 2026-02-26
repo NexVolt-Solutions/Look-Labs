@@ -29,7 +29,7 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: context.h(8)),
+      padding: EdgeInsets.only(bottom: context.sh(8)),
       child: GestureDetector(
         onTap: () {
           setState(() => isExpanded = !isExpanded);
@@ -47,8 +47,8 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
               children: [
                 /// Number Circle
                 Container(
-                  height: context.h(28),
-                  width: context.w(28),
+                  height: context.sh(28),
+                  width: context.sw(28),
                   decoration: BoxDecoration(
                     color: AppColors.backGroundColor,
                     shape: BoxShape.circle,
@@ -74,22 +74,22 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
                   child: Center(
                     child: NormalText(
                       titleText: '${widget.index + 1}',
-                      titleSize: context.text(14),
+                      titleSize: context.sp(14),
                       titleWeight: FontWeight.w600,
                       titleColor: AppColors.subHeadingColor,
                     ),
                   ),
                 ),
-                SizedBox(width: context.w(9)),
+                SizedBox(width: context.sw(9)),
 
                 /// Text
                 NormalText(
                   titleText: widget.item['time'] ?? '',
-                  titleSize: context.text(14),
+                  titleSize: context.sp(14),
                   titleWeight: FontWeight.w500,
                   titleColor: AppColors.subHeadingColor,
                   subText: widget.item['activity'] ?? '',
-                  subSize: context.text(10),
+                  subSize: context.sp(10),
                   subWeight: FontWeight.w400,
                   subColor: AppColors.subHeadingColor,
                 ),
@@ -115,8 +115,8 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
                 Row(
                   children: [
                     Container(
-                      height: context.h(28),
-                      width: context.w(28),
+                      height: context.sh(28),
+                      width: context.sw(28),
                       decoration: BoxDecoration(
                         color: AppColors.backGroundColor,
                         shape: BoxShape.circle,
@@ -141,20 +141,20 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
                       child: Center(
                         child: NormalText(
                           titleText: '${widget.index + 1}',
-                          titleSize: context.text(14),
+                          titleSize: context.sp(14),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
                         ),
                       ),
                     ),
-                    SizedBox(width: context.w(9)),
+                    SizedBox(width: context.sw(9)),
                     NormalText(
                       titleText: widget.item['time'] ?? '',
-                      titleSize: context.text(14),
+                      titleSize: context.sp(14),
                       titleWeight: FontWeight.w500,
                       titleColor: AppColors.subHeadingColor,
                       subText: widget.item['activity'] ?? '',
-                      subSize: context.text(10),
+                      subSize: context.sp(10),
                       subWeight: FontWeight.w400,
                       subColor: AppColors.subHeadingColor,
                     ),
@@ -165,7 +165,7 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
                     ),
                   ],
                 ),
-                SizedBox(height: context.h(10)),
+                SizedBox(height: context.sh(10)),
 
                 /// Expanded Instructions
                 NormalText(
@@ -175,7 +175,7 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
                       '• Exhale, round spine, tuck chin to chest (Cat)\n'
                       '• Move slowly with your breath\n'
                       '• Repeat in a smooth, controlled flow',
-                  titleSize: context.text(12),
+                  titleSize: context.sp(12),
                   titleWeight: FontWeight.w400,
                   titleColor: AppColors.subHeadingColor,
                 ),

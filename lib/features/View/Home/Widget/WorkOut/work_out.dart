@@ -30,10 +30,10 @@ class _WorkOutState extends State<WorkOut> {
 
       bottomNavigationBar: Padding(
         padding: EdgeInsetsGeometry.only(
-          top: context.h(5),
-          left: context.w(20),
-          right: context.w(20),
-          bottom: context.h(30),
+          top: context.sh(5),
+          left: context.sw(20),
+          right: context.sw(20),
+          bottom: context.sh(30),
         ),
         child: CustomButton(
           text: isLast ? 'Complete' : 'Next',
@@ -55,29 +55,29 @@ class _WorkOutState extends State<WorkOut> {
             /// 🔹 AppBar
             if (index != 0)
               Padding(
-                padding: context.padSym(h: 20),
+                padding: context.paddingSymmetricR(horizontal: 20),
                 child: Center(
                   child: AppBarContainer(title: data['title'], onTap: vm.back),
                 ),
               ),
 
-            SizedBox(height: context.h(10)),
+            SizedBox(height: context.sh(10)),
 
             /// 🔹 Title
             if (index == 0)
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 titleText: data['title'],
-                titleSize: context.text(20),
+                titleSize: context.sp(20),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.headingColor,
               ),
 
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
 
             /// 🔹 Stepper
             Padding(
-              padding: context.padSym(h: 20),
+              padding: context.paddingSymmetricR(horizontal: 20),
               child: CustomStepper(
                 currentStep: index,
                 steps: const [
@@ -91,7 +91,7 @@ class _WorkOutState extends State<WorkOut> {
               ),
             ),
 
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
 
             /// 🔹 PageView
             Expanded(

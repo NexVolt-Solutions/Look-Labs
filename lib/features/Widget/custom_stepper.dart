@@ -47,7 +47,7 @@ class CustomStepper extends StatelessWidget {
           }),
         ),
 
-        SizedBox(height: context.h(6)),
+        SizedBox(height: context.sh(6)),
 
         /// 🔹 STEP LABELS (FIXED ONE LINE)
         Row(
@@ -67,7 +67,7 @@ class CustomStepper extends StatelessWidget {
                     overflow: TextOverflow.visible,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: context.text(12),
+                      fontSize: context.sp(12),
                       color: stepIndex == currentStep
                           ? AppColors.pimaryColor
                           : AppColors.seconderyColor,
@@ -90,15 +90,15 @@ class CustomStepper extends StatelessWidget {
     required bool isUpcoming,
   }) {
     return Container(
-      width: context.w(22),
-      height: context.w(22),
+      width: context.sw(22),
+      height: context.sw(22),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
           color: isUpcoming
               ? AppColors.white.withOpacity(0.3)
               : AppColors.pimaryColor,
-          width: context.w(2),
+          width: context.sw(2),
         ),
         color: isCompleted ? AppColors.pimaryColor : AppColors.backGroundColor,
         boxShadow: [
@@ -116,11 +116,11 @@ class CustomStepper extends StatelessWidget {
       ),
       child: Center(
         child: isCompleted
-            ? Icon(Icons.check, color: Colors.white, size: context.w(10))
+            ? Icon(Icons.check, color: Colors.white, size: context.sw(10))
             : isCurrent
             ? Container(
-                width: context.w(4),
-                height: context.w(4),
+                width: context.sw(4),
+                height: context.sw(4),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.pimaryColor,

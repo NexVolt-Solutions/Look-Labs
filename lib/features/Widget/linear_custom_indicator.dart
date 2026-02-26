@@ -13,32 +13,32 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Padding(
-//       padding: context.padSym(h: 55.5),
+//       padding: context.paddingSymmetricR(horizontal: 55.5),
 //       child: Column(
 //         children: [
 //           SvgPicture.asset(
 //             'assets/Icon/sugIcon.svg',
 //             color: Colors.amber,
-//             height: context.h(60),
-//             width: context.w(50),
+//             height: context.sh(60),
+//             width: context.sw(50),
 //             fit: BoxFit.fill,
 //           ),
 //           CustomContainer(
-//             width: wedth ?? context.w(264),
-//             height: height ?? context.h(10),
-//             radius: context.radius(10),
+//             width: wedth ?? context.sw(264),
+//             height: height ?? context.sh(10),
+//             radius: context.radiusR(10),
 //             padding: EdgeInsets.zero,
 //             color: AppColors.backGroundColor,
 //             child: ClipRRect(
-//               borderRadius: BorderRadius.circular(context.radius(10)),
+//               borderRadius: BorderRadius.circular(context.radiusR(10)),
 //               child: LinearPercentIndicator(
 //                 padding: EdgeInsets.zero,
-//                 width: context.w(250),
-//                 lineHeight: context.h(10),
+//                 width: context.sw(250),
+//                 lineHeight: context.sh(10),
 //                 percent: 0.5,
 //                 backgroundColor: AppColors.backGroundColor,
 //                 progressColor: AppColors.pimaryColor,
-//                 barRadius: Radius.circular(context.radius(10)),
+//                 barRadius: Radius.circular(context.radiusR(10)),
 //               ),
 //             ),
 //           ),
@@ -65,7 +65,7 @@ class LinearCustomIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: context.padSym(h: 55.5),
+      padding: context.paddingSymmetricR(horizontal: 55.5),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -75,8 +75,8 @@ class LinearCustomIndicator extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 AppAssets.sugIcon,
-                // height: context.h(70),
-                width: context.w(50),
+                // height: context.sh(70),
+                width: context.sw(50),
                 // fit: BoxFit.contain,
               ),
 
@@ -86,11 +86,11 @@ class LinearCustomIndicator extends StatelessWidget {
                 duration: const Duration(milliseconds: 600),
                 builder: (context, value, _) {
                   return Padding(
-                    padding: EdgeInsetsGeometry.only(bottom: context.h(10)),
+                    padding: EdgeInsetsGeometry.only(bottom: context.sh(10)),
                     child: Text(
                       "${(value * 100).toInt()}%",
                       style: TextStyle(
-                        fontSize: context.text(12),
+                        fontSize: context.sp(12),
                         fontWeight: FontWeight.w400,
                         color: AppColors.headingColor,
                       ),
@@ -109,20 +109,20 @@ class LinearCustomIndicator extends StatelessWidget {
                 builder: (context, value, _) {
                   return CustomContainer(
                     width: constraints.maxWidth,
-                    height: height ?? context.h(10),
-                    radius: context.radius(10),
+                    height: height ?? context.sh(10),
+                    radius: context.radiusR(10),
                     padding: EdgeInsets.zero,
                     color: AppColors.backGroundColor,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(context.radius(10)),
+                      borderRadius: BorderRadius.circular(context.radiusR(10)),
                       child: LinearPercentIndicator(
                         padding: EdgeInsets.zero,
                         width: constraints.maxWidth,
-                        lineHeight: height ?? context.h(10),
+                        lineHeight: height ?? context.sh(10),
                         percent: value,
                         backgroundColor: AppColors.backGroundColor,
                         progressColor: AppColors.pimaryColor,
-                        barRadius: Radius.circular(context.radius(10)),
+                        barRadius: Radius.circular(context.radiusR(10)),
                       ),
                     ),
                   );

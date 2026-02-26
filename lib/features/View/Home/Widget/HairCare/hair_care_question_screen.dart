@@ -18,22 +18,22 @@
 //     final data = vm.hairCareQuestions[index];
 
 //     return ListView(
-//       padding: context.padSym(h: 20),
+//       padding: context.paddingSymmetricR(horizontal: 20),
 //       children: [
 //         // if (index != 0) AppBarContainer(title: data['title'], onTap: vm.back),
 
-//         // SizedBox(height: context.h(20)),
+//         // SizedBox(height: context.sh(20)),
 
 //         // if (index == 0)
 //         //   NormalText(
 //         //     crossAxisAlignment: CrossAxisAlignment.center,
 //         //     titleText: data['title'],
-//         //     titleSize: context.text(20),
+//         //     titleSize: context.sp(20),
 //         //     titleWeight: FontWeight.w600,
 //         //     titleColor: AppColors.headingColor,
 //         //   ),
 
-//         // SizedBox(height: context.h(20)),
+//         // SizedBox(height: context.sh(20)),
 
 //         // CustomStepper(
 //         //   currentStep: index, // Dynamic step based on current page index
@@ -46,26 +46,26 @@
 //         //     'Routine',
 //         //   ],
 //         // ),
-//         // SizedBox(height: context.h(20)),
+//         // SizedBox(height: context.sh(20)),
 
 //         // NormalText(
 //         //   titleText: data['question'],
-//         //   titleSize: context.text(18),
+//         //   titleSize: context.sp(18),
 //         //   titleWeight: FontWeight.w600,
 //         //   titleColor: AppColors.headingColor,
 //         // ),
-//         SizedBox(height: context.h(8)),
+//         SizedBox(height: context.sh(8)),
 
 //         ...List.generate(data['options'].length, (oIndex) {
 //           return PlanContainer(
-//             margin: context.padSym(v: 10),
+//             margin: context.paddingSymmetricR(vertical: 10),
 //             isSelected: vm.selectedOptions[index] == oIndex,
 //             onTap: () => vm.selectOption(index, oIndex),
-//             padding: context.padSym(h: 22, v: 14),
+//             padding: context.paddingSymmetricR(horizontal: 22, vertical: 14),
 //             child: Text(
 //               data['options'][oIndex],
 //               style: TextStyle(
-//                 fontSize: context.text(14),
+//                 fontSize: context.sp(14),
 //                 color: AppColors.subHeadingColor,
 //               ),
 //             ),
@@ -93,25 +93,25 @@ class HairCareQuestion extends StatelessWidget {
     final data = vm.hairCareQuestions[index];
 
     return ListView(
-      padding: context.padSym(h: 20),
+      padding: context.paddingSymmetricR(horizontal: 20),
       children: [
         NormalText(
           crossAxisAlignment: CrossAxisAlignment.start,
           titleText: data['question'],
-          titleSize: context.text(18),
+          titleSize: context.sp(18),
           titleWeight: FontWeight.w600,
           titleColor: AppColors.headingColor,
         ),
         ...List.generate(data['options'].length, (oIndex) {
           return PlanContainer(
-            margin: context.padSym(v: 10),
+            margin: context.paddingSymmetricR(vertical: 10),
             isSelected: vm.selectedOptions[index] == oIndex,
             onTap: () => vm.selectOption(index, oIndex),
-            padding: context.padSym(h: 22, v: 14),
+            padding: context.paddingSymmetricR(horizontal: 22, vertical: 14),
             child: Text(
               data['options'][oIndex],
               style: TextStyle(
-                fontSize: context.text(14),
+                fontSize: context.sp(14),
                 color: AppColors.subHeadingColor,
               ),
             ),

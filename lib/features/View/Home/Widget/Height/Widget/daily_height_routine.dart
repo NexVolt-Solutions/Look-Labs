@@ -32,7 +32,7 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Daily Routine',
@@ -40,21 +40,21 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Stretching exercises for posture improvement',
-              titleSize: context.text(16),
+              titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(2, (index) {
                 return SizedBox(
                   child: HeightWidgetCont(
-                    // padding: context.padSym(h: 11.5, v: 14.5),
+                    // padding: context.paddingSymmetricR(horizontal: 11.5, vertical: 14.5),
                     title: '25%',
                     subTitle: 'Evening',
                     imgPath: AppAssets.heightIcon,
@@ -62,10 +62,10 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                 );
               }),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
 
             PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -73,12 +73,12 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                   Row(
                     children: [
                       Container(
-                        height: context.h(28),
-                        width: context.w(28),
+                        height: context.sh(28),
+                        width: context.sw(28),
                         decoration: BoxDecoration(
                           color: AppColors.backGroundColor,
                           borderRadius: BorderRadius.circular(
-                            context.radius(10),
+                            context.radiusR(10),
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -97,8 +97,8 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                         ),
                         child: Center(
                           child: SizedBox(
-                            height: context.h(32),
-                            width: context.w(32),
+                            height: context.sh(32),
+                            width: context.sw(32),
                             child: SvgPicture.asset(
                               AppAssets.sunIcon,
                               color: AppColors.fireColor,
@@ -107,15 +107,15 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: context.w(11)),
+                      SizedBox(width: context.sw(11)),
                       Expanded(
                         child: NormalText(
                           titleText: 'Morning Routine',
-                          titleSize: context.text(14),
+                          titleSize: context.sp(14),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
                           subText: 'Best done after waking up',
-                          subSize: context.text(10),
+                          subSize: context.sp(10),
                           subWeight: FontWeight.w400,
                         ),
                       ),
@@ -133,15 +133,15 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           width: double.infinity,
-                          padding: context.padSym(v: 8, h: 20),
-                          margin: context.padSym(v: 11),
+                          padding: context.paddingSymmetricR(vertical: 8, horizontal: 20),
+                          margin: context.paddingSymmetricR(vertical: 11),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color: isSelected
                                   ? AppColors.pimaryColor
                                   : AppColors.backGroundColor,
-                              width: context.w(1.5),
+                              width: context.sw(1.5),
                             ),
                             color: isSelected
                                 ? AppColors.pimaryColor.withOpacity(0.15)
@@ -179,8 +179,8 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                                           );
                                         },
                                         child: Container(
-                                          height: context.h(28),
-                                          width: context.w(28),
+                                          height: context.sh(28),
+                                          width: context.sw(28),
                                           decoration: BoxDecoration(
                                             color: AppColors.backGroundColor,
                                             shape: BoxShape.circle,
@@ -209,7 +209,7 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                                                     .isPlanSelected(index)
                                                 ? Icon(
                                                     Icons.check,
-                                                    size: context.h(16),
+                                                    size: context.sh(16),
                                                     color:
                                                         AppColors.pimaryColor,
                                                   )
@@ -219,14 +219,14 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: context.w(9)),
+                                      SizedBox(width: context.sw(9)),
                                       NormalText(
                                         titleText: item['time'],
-                                        titleSize: context.text(14),
+                                        titleSize: context.sp(14),
                                         titleWeight: FontWeight.w500,
                                         titleColor: AppColors.subHeadingColor,
                                         subText: item['activity'],
-                                        subSize: context.text(10),
+                                        subSize: context.sp(10),
                                         subWeight: FontWeight.w400,
                                         subColor: AppColors.subHeadingColor,
                                       ),
@@ -240,7 +240,7 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                                       dailyHeightViewModel.isExpanded(index)
                                           ? Icons.keyboard_arrow_up
                                           : Icons.keyboard_arrow_down,
-                                      size: context.h(24),
+                                      size: context.sh(24),
                                     ),
                                   ),
                                 ],
@@ -252,24 +252,24 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                                 secondChild: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(height: context.h(12)),
+                                    SizedBox(height: context.sh(12)),
                                     NormalText(
                                       titleText: item['details'],
-                                      titleSize: context.text(12),
+                                      titleSize: context.sp(12),
                                       titleWeight: FontWeight.w600,
                                       titleColor: AppColors.iconColor,
                                     ),
-                                    SizedBox(height: context.h(6)),
+                                    SizedBox(height: context.sh(6)),
                                     NormalText(
                                       titleText: "• Do exercises slowly",
-                                      titleSize: context.text(12),
+                                      titleSize: context.sp(12),
                                       titleWeight: FontWeight.w600,
                                       titleColor: AppColors.iconColor,
                                     ),
-                                    SizedBox(height: context.h(6)),
+                                    SizedBox(height: context.sh(6)),
                                     NormalText(
                                       titleText: "• Maintain proper breathing",
-                                      titleSize: context.text(12),
+                                      titleSize: context.sp(12),
                                       titleWeight: FontWeight.w600,
                                       titleColor: AppColors.iconColor,
                                     ),

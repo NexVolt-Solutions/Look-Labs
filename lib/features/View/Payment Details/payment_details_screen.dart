@@ -24,7 +24,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
-        padding: context.padSym(h: 20, v: 30),
+        padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
         child: CustomButton(
           isEnabled: true,
           onTap: () => Navigator.pushNamed(context, RoutesName.AuthScreen),
@@ -34,7 +34,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           child: ListView(
             clipBehavior: Clip.hardEdge,
             children: [
@@ -44,15 +44,15 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                   Navigator.pop(context);
                 },
               ),
-              SizedBox(height: context.h(24)),
+              SizedBox(height: context.sh(24)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 titleText: AppText.userInformation,
-                titleSize: context.text(20),
+                titleSize: context.sp(20),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
               ),
-              SizedBox(height: context.h(20)),
+              SizedBox(height: context.sh(20)),
               ...List.generate(
                 paymentViewModel.userInfData.length,
                 (index) => UserInfo(
@@ -60,15 +60,15 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                   subName: paymentViewModel.userInfData[index]['subName'],
                 ),
               ),
-              SizedBox(height: context.h(20)),
+              SizedBox(height: context.sh(20)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 titleText: AppText.cardDetailsSection,
-                titleSize: context.text(18),
+                titleSize: context.sp(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
               ),
-              SizedBox(height: context.h(20)),
+              SizedBox(height: context.sh(20)),
               ...List.generate(
                 paymentViewModel.cardDetails.length,
                 (index) => UserInfo(

@@ -20,7 +20,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
       body: SafeArea(
         child: ListView(
           clipBehavior: Clip.hardEdge,
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: AppText.myAlbum,
@@ -28,7 +28,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(25)),
+            SizedBox(height: context.sh(25)),
             SizedBox(
               child: GridView.builder(
                 shrinkWrap: true,
@@ -44,7 +44,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                 itemBuilder: (context, index) {
                   // final item = homeViewModel.homeOverViewData[index];
                   return Padding(
-                    padding: context.padSym(h: 5, v: 5),
+                    padding: context.paddingSymmetricR(horizontal: 5, vertical: 5),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.asset(AppAssets.image, fit: BoxFit.cover),

@@ -29,7 +29,7 @@ class _HairTopProductState extends State<HairTopProduct> {
         child: Column(
           children: [
             Padding(
-              padding: context.padSym(h: 20),
+              padding: context.paddingSymmetricR(horizontal: 20),
               child: AppBarContainer(
                 title: 'Recommended Products',
                 onTap: () => Navigator.pop(context),
@@ -37,24 +37,24 @@ class _HairTopProductState extends State<HairTopProduct> {
                 onHeartTap: () {},
               ),
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
 
             Padding(
-              padding: context.padSym(h: 20),
+              padding: context.paddingSymmetricR(horizontal: 20),
               child: NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 titleText: 'Curated for your hair & scalp concerns',
-                titleSize: context.text(18),
+                titleSize: context.sp(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.headingColor,
               ),
             ),
 
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
 
             Expanded(
               child: ListView.builder(
-                padding: context.padSym(h: 20),
+                padding: context.paddingSymmetricR(horizontal: 20),
                 itemCount: hairTopProductViewModel.productData.length,
                 itemBuilder: (context, index) {
                   final product = hairTopProductViewModel.productData[index];
@@ -106,28 +106,28 @@ class _HairTopProductState extends State<HairTopProduct> {
     //     child: Column(
     //       children: [
     //         Padding(
-    //           padding: context.padSym(h: 20),
+    //           padding: context.paddingSymmetricR(horizontal: 20),
     //           child: AppBarContainer(
     //             title: 'Recommended Products',
     //             onTap: () => Navigator.pop(context),
     //           ),
     //         ),
-    //         SizedBox(height: context.h(20)),
+    //         SizedBox(height: context.sh(20)),
     //         Padding(
-    //           padding: context.padSym(h: 20),
+    //           padding: context.paddingSymmetricR(horizontal: 20),
     //           child: NormalText(
     //             crossAxisAlignment: CrossAxisAlignment.start,
     //             titleText: 'Curated for your hair & scalp concerns',
-    //             titleSize: context.text(18),
+    //             titleSize: context.sp(18),
     //             titleWeight: FontWeight.w600,
     //             titleColor: AppColors.headingColor,
     //           ),
     //         ),
-    //         SizedBox(height: context.h(20)),
+    //         SizedBox(height: context.sh(20)),
 
     //         Expanded(
     //           child: ListView.builder(
-    //             padding: context.padSym(h: 20),
+    //             padding: context.paddingSymmetricR(horizontal: 20),
     //             itemCount: hairTopProductViewModel.HairproductData.length,
     //             itemBuilder: (context, index) {
     //               final product =

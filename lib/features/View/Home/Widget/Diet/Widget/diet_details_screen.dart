@@ -28,10 +28,10 @@ class _DietDetailsScreenState extends State<DietDetailsScreen> {
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
         padding: EdgeInsetsGeometry.only(
-          top: context.h(5),
-          left: context.w(20),
-          right: context.w(20),
-          bottom: context.h(30),
+          top: context.sh(5),
+          left: context.sw(20),
+          right: context.sw(20),
+          bottom: context.sh(30),
         ),
         child: CustomButton(
           text: 'Scan another food',
@@ -45,7 +45,7 @@ class _DietDetailsScreenState extends State<DietDetailsScreen> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Food Details',
@@ -53,16 +53,16 @@ class _DietDetailsScreenState extends State<DietDetailsScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             ClipRRect(
-              borderRadius: BorderRadiusGeometry.circular(context.radius(10)),
+              borderRadius: BorderRadiusGeometry.circular(context.radiusR(10)),
               child: Container(
                 height: 251,
-                width: context.w(336),
+                width: context.sw(336),
                 decoration: BoxDecoration(color: AppColors.black),
               ),
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NeuTextField(
               label: 'Food Name',
               obscure: true,
@@ -70,7 +70,7 @@ class _DietDetailsScreenState extends State<DietDetailsScreen> {
               hintText: 'Enter food name',
               keyboard: TextInputType.name,
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NeuTextField(
               label: 'Portion Size',
               obscure: true,
@@ -78,16 +78,16 @@ class _DietDetailsScreenState extends State<DietDetailsScreen> {
               hintText: 'Enter portion size',
               keyboard: TextInputType.name,
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               titleText: 'Nutrition Facts',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
             SizedBox(
-              height: context.h(135),
+              height: context.sh(135),
               child: ListView.builder(
                 itemCount: 4,
                 scrollDirection: Axis.horizontal,
@@ -100,12 +100,12 @@ class _DietDetailsScreenState extends State<DietDetailsScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             LightCardWidget(
               text:
                   'Consistency improves stamina, strength & posture over time.',
             ),
-            SizedBox(height: context.h(30)),
+            SizedBox(height: context.sh(30)),
           ],
         ),
       ),

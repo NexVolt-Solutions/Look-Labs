@@ -27,7 +27,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
-        padding: context.padSym(h: 20, v: 30),
+        padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
         child: CustomButton(
           isEnabled: true,
           onTap: () =>
@@ -38,21 +38,21 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
       ),
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: AppText.subscriptionPlan,
               onTap: () => Navigator.pop(context),
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: AppText.whatYouWillGet,
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
             ...List.generate(
               subPlanViewModel.subscriptionData.length,
               (index) => RowIconAndText(
@@ -66,8 +66,8 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
               final isSelected = subPlanViewModel.isPlanSelected(index);
               final plan = subPlanViewModel.subscriptionPlan[index];
               return PlanContainer(
-                padding: context.padSym(h: 12, v: 12),
-                margin: context.padSym(v: 10),
+                padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
+                margin: context.paddingSymmetricR(vertical: 10),
                 isSelected: isSelected,
                 onTap: () => subPlanViewModel.selectPlan(index),
                 child: Row(
@@ -83,11 +83,11 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: AppColors.subHeadingColor,
-                              fontSize: context.text(12),
+                              fontSize: context.sp(12),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          SizedBox(height: context.h(8)),
+                          SizedBox(height: context.sh(8)),
                           RichText(
                             text: TextSpan(
                               children: [
@@ -95,7 +95,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                                   text: plan['price'],
                                   style: TextStyle(
                                     color: AppColors.headingColor,
-                                    fontSize: context.text(14),
+                                    fontSize: context.sp(14),
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -104,7 +104,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                                   text: plan['planDuration'],
                                   style: TextStyle(
                                     color: AppColors.subHeadingColor,
-                                    fontSize: context.text(10),
+                                    fontSize: context.sp(10),
                                   ),
                                 ),
                               ],
@@ -112,12 +112,12 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                           ),
 
                           if (index != 0 && plan['planRate'] != null) ...[
-                            SizedBox(height: context.h(8)),
+                            SizedBox(height: context.sh(8)),
                             Text(
                               plan['planRate'],
                               style: TextStyle(
                                 color: AppColors.subHeadingColor,
-                                fontSize: context.text(12),
+                                fontSize: context.sp(12),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -133,7 +133,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                 ),
               );
             }),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
           ],
         ),
       ),

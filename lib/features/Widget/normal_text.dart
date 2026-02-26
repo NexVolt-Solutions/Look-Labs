@@ -56,7 +56,7 @@ class NormalText extends StatelessWidget {
             overflow: overflow ?? TextOverflow.visible,
             style: TextStyle(
               color: titleColor ?? AppColors.headingColor,
-              fontSize: titleSize ?? context.text(16),
+              fontSize: titleSize ?? context.sp(16),
               fontWeight: titleWeight ?? FontWeight.w500,
               fontFamily: 'Raleway',
             ),
@@ -73,7 +73,7 @@ class NormalText extends StatelessWidget {
             overflow: TextOverflow.visible,
             style: TextStyle(
               color: subColor ?? AppColors.subHeadingColor,
-              fontSize: subSize ?? context.text(14),
+              fontSize: subSize ?? context.sp(14),
               fontWeight: subWeight ?? FontWeight.w400,
               fontFamily: 'Raleway',
             ),

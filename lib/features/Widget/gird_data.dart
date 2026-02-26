@@ -13,9 +13,9 @@ class GridData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: context.padSym(h: 12, v: 12),
+      padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.radius(16)),
+        borderRadius: BorderRadius.circular(context.radiusR(16)),
         color: AppColors.backGroundColor,
         boxShadow: [
           BoxShadow(
@@ -33,12 +33,12 @@ class GridData extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: context.padSym(h: 4, v: 4),
-            // height: context.h(44),
-            // width: context.w(44),
+            padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
+            // height: context.sh(44),
+            // width: context.sw(44),
             decoration: BoxDecoration(
               color: AppColors.backGroundColor,
-              borderRadius: BorderRadius.circular(context.radius(10)),
+              borderRadius: BorderRadius.circular(context.radiusR(10)),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.customContainerColorUp.withOpacity(0.4),
@@ -62,7 +62,7 @@ class GridData extends StatelessWidget {
             // ),
           ),
 
-          SizedBox(width: context.w(6)),
+          SizedBox(width: context.sw(6)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -70,16 +70,16 @@ class GridData extends StatelessWidget {
               Text(
                 title ?? '',
                 style: TextStyle(
-                  fontSize: context.text(14),
+                  fontSize: context.sp(14),
                   fontWeight: FontWeight.w600,
                   color: AppColors.subHeadingColor,
                 ),
               ),
-              SizedBox(height: context.h(4)),
+              SizedBox(height: context.sh(4)),
               Text(
                 subTitle ?? '',
                 style: TextStyle(
-                  fontSize: context.text(12),
+                  fontSize: context.sp(12),
                   fontWeight: FontWeight.w400,
                   color: AppColors.notSelectedColor,
                 ),

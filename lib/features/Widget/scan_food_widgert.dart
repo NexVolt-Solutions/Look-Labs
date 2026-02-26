@@ -18,13 +18,13 @@ class ScanFoodWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          height: context.h(93),
-          width: context.w(120),
-          // padding: context.padSym(h: 21, v: 12),
-          margin: EdgeInsets.only(right: context.w(20), bottom: context.h(12)),
+          height: context.sh(93),
+          width: context.sw(120),
+          // padding: context.paddingSymmetricR(horizontal: 21, vertical: 12),
+          margin: EdgeInsets.only(right: context.sw(20), bottom: context.sh(12)),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(context.radius(16)),
-            border: Border.all(color: AppColors.white, width: context.w(1.5)),
+            borderRadius: BorderRadius.circular(context.radiusR(16)),
+            border: Border.all(color: AppColors.white, width: context.sw(1.5)),
             color: AppColors.white,
             boxShadow: [
               BoxShadow(
@@ -43,11 +43,11 @@ class ScanFoodWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: context.h(28),
-                width: context.w(28),
+                height: context.sh(28),
+                width: context.sw(28),
                 decoration: BoxDecoration(
                   color: AppColors.white,
-                  borderRadius: BorderRadius.circular(context.radius(10)),
+                  borderRadius: BorderRadius.circular(context.radiusR(10)),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.customContainerColorUp.withOpacity(0.4),
@@ -63,10 +63,10 @@ class ScanFoodWidget extends StatelessWidget {
                 ),
                 child: SvgPicture.asset(icon ?? '', fit: BoxFit.scaleDown),
               ),
-              SizedBox(height: context.h(15)),
+              SizedBox(height: context.sh(15)),
               NormalText(
                 titleText: text ?? '',
-                titleSize: context.text(14),
+                titleSize: context.sp(14),
                 titleWeight: FontWeight.w600,
               ),
             ],

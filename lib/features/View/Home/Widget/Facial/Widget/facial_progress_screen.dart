@@ -30,7 +30,7 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Your Progress',
@@ -38,17 +38,17 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Track your facial feature improvement journey',
-              titleSize: context.text(16),
+              titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             SizedBox(
-              height: context.h(135),
+              height: context.sh(135),
               child: ListView.builder(
                 itemCount: 4,
                 scrollDirection: Axis.horizontal,
@@ -61,14 +61,14 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(17)),
+            SizedBox(height: context.sh(17)),
             NormalText(
               titleText: 'Your Progress',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(17)),
+            SizedBox(height: context.sh(17)),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -79,7 +79,7 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                       facialProgressScreenViewModel.selectedIndex ==
                       facialProgressScreenViewModel.buttonName[index];
                   return CustomContainer(
-                    radius: context.radius(10),
+                    radius: context.radiusR(10),
                     onTap: () {
                       facialProgressScreenViewModel.selectIndex(index);
                     },
@@ -89,13 +89,13 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                     border: isSelected
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                         : null,
-                    padding: context.padSym(h: 37, v: 13),
+                    padding: context.paddingSymmetricR(horizontal: 37, vertical: 13),
                     margin: EdgeInsets.only(right: 8),
                     child: Center(
                       child: Text(
                         facialProgressScreenViewModel.buttonName[index],
                         style: TextStyle(
-                          fontSize: context.text(14),
+                          fontSize: context.sp(14),
                           fontWeight: FontWeight.w700,
                           color: AppColors.seconderyColor,
                         ),
@@ -105,12 +105,12 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             CustomContainer(
-              radius: context.radius(10),
+              radius: context.radiusR(10),
               color: AppColors.backGroundColor,
-              padding: context.padSym(h: 10, v: 10),
-              margin: EdgeInsets.only(bottom: context.h(20)),
+              padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
+              margin: EdgeInsets.only(bottom: context.sh(20)),
               child: Center(child: LineChartWidget()),
             ),
             ActivityConsistencyWidget(
@@ -118,25 +118,25 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
               subtitle: 'Your workout activity this week',
               pressentage: 20,
             ),
-            SizedBox(height: context.h(6)),
+            SizedBox(height: context.sh(6)),
             LightCardWidget(
               text:
                   'Consistency improves stamina, strength & posture over time.',
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             NormalText(
               titleText: 'Daily Recovery Checklist',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             Column(
               children: List.generate(
                 facialProgressScreenViewModel.checkBoxName.length,
                 (index) {
                   return Padding(
-                    padding: EdgeInsets.only(bottom: context.h(12)),
+                    padding: EdgeInsets.only(bottom: context.sh(12)),
                     child: Row(
                       children: [
                         GestureDetector(
@@ -146,8 +146,8 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                             );
                           },
                           child: Container(
-                            height: context.h(28),
-                            width: context.w(28),
+                            height: context.sh(28),
+                            width: context.sw(28),
                             decoration: BoxDecoration(
                               color:
                                   facialProgressScreenViewModel
@@ -178,7 +178,7 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                                       .selectedChecklist[index]
                                   ? Icon(
                                       Icons.check,
-                                      size: context.h(16),
+                                      size: context.sh(16),
                                       color: AppColors.white,
                                     )
                                   : SizedBox(),
@@ -186,13 +186,13 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                           ),
                         ),
 
-                        SizedBox(width: context.w(12)),
+                        SizedBox(width: context.sw(12)),
 
                         Expanded(
                           child: NormalText(
                             titleText: facialProgressScreenViewModel
                                 .checkBoxName[index],
-                            titleSize: context.text(16),
+                            titleSize: context.sp(16),
                             titleWeight: FontWeight.w600,
                             titleColor: AppColors.subHeadingColor,
                           ),
@@ -203,7 +203,7 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(150)),
+            SizedBox(height: context.sh(150)),
           ],
         ),
       ),

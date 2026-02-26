@@ -33,10 +33,10 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
       onTap: isEnabled ? onTap : null,
       child: Container(
-        padding: context.padSym(v: 18),
+        padding: context.paddingSymmetricR(vertical: 18),
         decoration: BoxDecoration(
           color: color,
-          borderRadius: radius ?? BorderRadius.circular(context.radius(16)),
+          borderRadius: radius ?? BorderRadius.circular(context.radiusR(16)),
           boxShadow:
               boxShadows ??
               [
@@ -55,12 +55,12 @@ class CustomButton extends StatelessWidget {
               ],
         ),
         child: Padding(
-          padding: padding ?? context.padSym(h: 0),
+          padding: padding ?? context.paddingSymmetricR(horizontal: 0),
           child: NormalText(
             crossAxisAlignment:
                 crossAxisAlignment ?? CrossAxisAlignment.center, // ✅ default
             titleText: text ?? '',
-            titleSize: context.text(16),
+            titleSize: context.sp(16),
             titleWeight: FontWeight.w700,
             titleColor: colorText ?? AppColors.blurTopColor,
           ),

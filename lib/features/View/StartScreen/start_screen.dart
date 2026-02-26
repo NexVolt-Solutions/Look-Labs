@@ -21,7 +21,7 @@ class _StartScreenState extends State<StartScreen> {
     return Scaffold(
       backgroundColor: AppColors.pimaryColor,
       bottomNavigationBar: Padding(
-        padding: context.padSym(h: 20, v: 30),
+        padding: context.paddingOnlyR(bottom: 20, left: 20, right: 20),
         child: CustomButton(
           isEnabled: true,
           onTap: () => Navigator.pushNamed(context, RoutesName.QuestionScreen),
@@ -35,22 +35,34 @@ class _StartScreenState extends State<StartScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(AppAssets.splashImage, fit: BoxFit.scaleDown),
-              SizedBox(height: context.h(28)),
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(context.radiusR(12)),
+                  bottomRight: Radius.circular(context.radiusR(12)),
+                ),
+                child: SizedBox(
+                  width: context.screenWidth,
+                  height: context.sh(600),
+
+                  child: Image.asset(AppAssets.splashImage, fit: BoxFit.cover),
+                ),
+              ),
+              SizedBox(height: context.sh(16)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 titleText: AppText.becomeTheChadYouWere,
-                titleSize: context.text(24),
+                titleSize: context.sp(24),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.white,
                 titleAlign: TextAlign.center,
-                sizeBoxheight: context.h(8),
+                sizeBoxheight: context.sh(8),
                 subText: AppText.buildStrongHabits,
-                subSize: context.text(16),
+                subSize: context.sp(16),
                 subWeight: FontWeight.w400,
                 subColor: AppColors.white,
                 subAlign: TextAlign.center,
               ),
+              SizedBox(height: context.sh(16)),
             ],
           ),
         ),

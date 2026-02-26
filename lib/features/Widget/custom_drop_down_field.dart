@@ -31,8 +31,8 @@ class CustomDropdownFieldState extends State<CustomDropdownField>
 
   @override
   Widget build(BuildContext context) {
-    final double headerHeight = context.h(54);
-    final double maxListHeight = context.h(200);
+    final double headerHeight = context.sh(54);
+    final double maxListHeight = context.sh(200);
 
     return FormField<String>(
       validator: widget.validator,
@@ -42,12 +42,12 @@ class CustomDropdownFieldState extends State<CustomDropdownField>
           children: [
             if (widget.label != null)
               Padding(
-                padding: EdgeInsets.only(bottom: context.h(8)),
+                padding: EdgeInsets.only(bottom: context.sh(8)),
                 child: Text(
                   widget.label!,
                   style: TextStyle(
                     color: AppColors.headingColor,
-                    fontSize: context.text(14),
+                    fontSize: context.sp(14),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -55,10 +55,10 @@ class CustomDropdownFieldState extends State<CustomDropdownField>
             Container(
               decoration: BoxDecoration(
                 color: AppColors.backGroundColor,
-                borderRadius: BorderRadius.circular(context.radius(16)),
+                borderRadius: BorderRadius.circular(context.radiusR(16)),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.4),
-                  width: context.w(0.5),
+                  width: context.sw(0.5),
                 ),
                 boxShadow: const [
                   BoxShadow(
@@ -82,13 +82,13 @@ class CustomDropdownFieldState extends State<CustomDropdownField>
                     onTap: () => setState(() => _isExpanded = !_isExpanded),
                     child: Container(
                       height: headerHeight,
-                      padding: context.padSym(h: 17),
+                      padding: context.paddingSymmetricR(horizontal: 17),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           NormalText(
                             titleText: _selectedValue ?? widget.hintText ?? "",
-                            titleSize: context.text(16),
+                            titleSize: context.sp(16),
                             titleWeight: FontWeight.w400,
                             titleColor: _selectedValue == null
                                 ? AppColors.notSelectedColor
@@ -126,10 +126,10 @@ class CustomDropdownFieldState extends State<CustomDropdownField>
                                     widget.onSelected(value);
                                   },
                                   child: Padding(
-                                    padding: context.padSym(h: 17, v: 12),
+                                    padding: context.paddingSymmetricR(horizontal: 17, vertical: 12),
                                     child: NormalText(
                                       titleText: value,
-                                      titleSize: context.text(16),
+                                      titleSize: context.sp(16),
                                       titleWeight: FontWeight.w400,
                                       titleColor: AppColors.headingColor,
                                     ),
@@ -145,12 +145,12 @@ class CustomDropdownFieldState extends State<CustomDropdownField>
             ),
             if (field.hasError)
               Padding(
-                padding: EdgeInsets.only(top: context.h(8)),
+                padding: EdgeInsets.only(top: context.sh(8)),
                 child: Text(
                   field.errorText ?? '',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.error,
-                    fontSize: context.text(12),
+                    fontSize: context.sp(12),
                   ),
                 ),
               ),

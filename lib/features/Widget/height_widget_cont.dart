@@ -23,12 +23,12 @@ class HeightWidgetCont extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: context.h(120),
-        width: context.w(150),
+        height: context.sh(120),
+        width: context.sw(150),
 
-        margin: EdgeInsetsGeometry.only(right: context.h(18)),
+        margin: EdgeInsetsGeometry.only(right: context.sh(18)),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(context.radius(16)),
+          borderRadius: BorderRadius.circular(context.radiusR(16)),
           color: AppColors.backGroundColor,
           boxShadow: [
             BoxShadow(
@@ -44,15 +44,15 @@ class HeightWidgetCont extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: EdgeInsetsGeometry.only(top: context.h(13)),
+          padding: EdgeInsetsGeometry.only(top: context.sh(13)),
           child: Column(
             children: [
               Container(
-                height: context.h(44),
-                width: context.w(44),
+                height: context.sh(44),
+                width: context.sw(44),
                 decoration: BoxDecoration(
                   color: AppColors.backGroundColor,
-                  borderRadius: BorderRadius.circular(context.radius(10)),
+                  borderRadius: BorderRadius.circular(context.radiusR(10)),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.customContainerColorUp.withOpacity(0.4),
@@ -68,8 +68,8 @@ class HeightWidgetCont extends StatelessWidget {
                 ),
                 child: Center(
                   child: SizedBox(
-                    height: context.h(20),
-                    width: context.w(20),
+                    height: context.sh(20),
+                    width: context.sw(20),
                     child: SvgPicture.asset(
                       imgPath ?? AppAssets.heightIcon,
                       fit: BoxFit.scaleDown,
@@ -78,16 +78,16 @@ class HeightWidgetCont extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: context.h(9)),
+              SizedBox(height: context.sh(9)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 titleText: title ?? 'title',
-                titleSize: context.text(14),
+                titleSize: context.sp(14),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
-                sizeBoxheight: context.h(3),
+                sizeBoxheight: context.sh(3),
                 subText: subTitle ?? 'subTitle',
-                subSize: context.text(12),
+                subSize: context.sp(12),
                 subWeight: FontWeight.w400,
                 subColor: AppColors.iconColor,
               ),

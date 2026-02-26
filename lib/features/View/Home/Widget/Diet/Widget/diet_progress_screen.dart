@@ -33,7 +33,7 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Your Progress',
@@ -41,18 +41,18 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText:
                   'Track your fitness, consistency, and recovery over time',
-              titleSize: context.text(16),
+              titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             SizedBox(
-              height: context.h(135),
+              height: context.sh(135),
               child: ListView.builder(
                 itemCount: 4,
                 scrollDirection: Axis.horizontal,
@@ -65,44 +65,44 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
 
             Row(
               children: [
                 CustomContainer(
-                  padding: context.padSym(h: 4, v: 4),
-                  radius: context.radius(10),
+                  padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
+                  radius: context.radiusR(10),
                   color: AppColors.backGroundColor,
                   child: SvgPicture.asset(
                     AppAssets.graphIcon,
-                    height: context.h(24),
-                    width: context.w(24),
+                    height: context.sh(24),
+                    width: context.sw(24),
                     fit: BoxFit.scaleDown,
                   ),
                 ),
-                SizedBox(width: context.w(12)),
+                SizedBox(width: context.sw(12)),
                 NormalText(
                   titleText: 'Your Progress',
-                  titleSize: context.text(18),
+                  titleSize: context.sp(18),
                   titleWeight: FontWeight.w600,
                   titleColor: AppColors.subHeadingColor,
                 ),
               ],
             ),
-            SizedBox(height: context.h(2)),
+            SizedBox(height: context.sh(2)),
             SizedBox(
-              height: context.h(130), // ✅ SAFE HEIGHT
+              height: context.sh(130), // ✅ SAFE HEIGHT
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: 4,
                 padding: EdgeInsets.zero,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.only(right: context.w(15)),
+                    padding: EdgeInsets.only(right: context.sw(15)),
                     child: SizedBox(
-                      width: context.w(220),
+                      width: context.sw(220),
                       child: PlanContainer(
-                        padding: context.padSym(h: 7, v: 24),
+                        padding: context.paddingSymmetricR(horizontal: 7, vertical: 24),
                         isSelected: false,
                         onTap: () {},
                         child: Column(
@@ -110,15 +110,15 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                           children: [
                             NormalText(
                               titleText: 'Fitness Consistency',
-                              titleSize: context.text(16),
+                              titleSize: context.sp(16),
                               titleWeight: FontWeight.w500,
                               titleColor: AppColors.subHeadingColor,
                             ),
-                            SizedBox(height: context.h(12)),
+                            SizedBox(height: context.sh(12)),
                             LinearSliderWidget(
                               progress: 10,
-                              height: context.h(12),
-                              animatedConHeight: context.h(12),
+                              height: context.sh(12),
+                              animatedConHeight: context.sh(12),
                             ),
                           ],
                         ),
@@ -128,7 +128,7 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -139,7 +139,7 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                       dietProgressScreenViewModel.selectedIndex ==
                       dietProgressScreenViewModel.buttonName[index];
                   return CustomContainer(
-                    radius: context.radius(10),
+                    radius: context.radiusR(10),
                     onTap: () {
                       dietProgressScreenViewModel.selectIndex(index);
                     },
@@ -149,13 +149,13 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                     border: isSelected
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                         : null,
-                    padding: context.padSym(h: 37, v: 13),
+                    padding: context.paddingSymmetricR(horizontal: 37, vertical: 13),
                     margin: EdgeInsets.only(right: 8),
                     child: Center(
                       child: Text(
                         dietProgressScreenViewModel.buttonName[index],
                         style: TextStyle(
-                          fontSize: context.text(14),
+                          fontSize: context.sp(14),
                           fontWeight: FontWeight.w700,
                           color: AppColors.seconderyColor,
                         ),
@@ -165,12 +165,12 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             CustomContainer(
-              radius: context.radius(10),
+              radius: context.radiusR(10),
               color: AppColors.backGroundColor,
-              padding: context.padSym(h: 10, v: 10),
-              margin: EdgeInsets.only(bottom: context.h(20)),
+              padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
+              margin: EdgeInsets.only(bottom: context.sh(20)),
               child: Center(child: LineChartWidget()),
             ),
             ActivityConsistencyWidget(
@@ -178,25 +178,25 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
               subtitle: 'Your workout activity this week',
               pressentage: 20,
             ),
-            SizedBox(height: context.h(6)),
+            SizedBox(height: context.sh(6)),
             LightCardWidget(
               text:
                   'Consistency improves stamina, strength & posture over time.',
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             NormalText(
               titleText: 'Daily Recovery Checklist',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             Column(
               children: List.generate(
                 dietProgressScreenViewModel.checkBoxName.length,
                 (index) {
                   return Padding(
-                    padding: EdgeInsets.only(bottom: context.h(12)),
+                    padding: EdgeInsets.only(bottom: context.sh(12)),
                     child: Row(
                       children: [
                         GestureDetector(
@@ -204,8 +204,8 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                             dietProgressScreenViewModel.toggleChecklist(index);
                           },
                           child: Container(
-                            height: context.h(28),
-                            width: context.w(28),
+                            height: context.sh(28),
+                            width: context.sw(28),
                             decoration: BoxDecoration(
                               color: AppColors.backGroundColor,
                               shape: BoxShape.circle,
@@ -232,24 +232,24 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                                       .selectedChecklist[index]
                                   ? Icon(
                                       Icons.check,
-                                      size: context.h(16),
+                                      size: context.sh(16),
                                       color: AppColors.pimaryColor,
                                     )
                                   : NormalText(
                                       titleText: '${index + 1}',
-                                      titleSize: context.text(12),
+                                      titleSize: context.sp(12),
                                     ),
                             ),
                           ),
                         ),
 
-                        SizedBox(width: context.w(12)),
+                        SizedBox(width: context.sw(12)),
 
                         Expanded(
                           child: NormalText(
                             titleText:
                                 dietProgressScreenViewModel.checkBoxName[index],
-                            titleSize: context.text(16),
+                            titleSize: context.sp(16),
                             titleWeight: FontWeight.w600,
                             titleColor: AppColors.subHeadingColor,
                           ),
@@ -260,7 +260,7 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(30)),
+            SizedBox(height: context.sh(30)),
           ],
         ),
       ),

@@ -20,26 +20,26 @@ class HeightQuestion extends StatelessWidget {
     final bool isLastScreen = index == vm.heightQuestions.length - 1;
 
     return ListView(
-      padding: context.padSym(h: 20),
+      padding: context.paddingSymmetricR(horizontal: 20),
       children: [
         if (!isLastScreen) ...[
           NormalText(
             titleText: data['question'],
-            titleSize: context.text(18),
+            titleSize: context.sp(18),
             titleWeight: FontWeight.w600,
             titleColor: AppColors.headingColor,
           ),
-          SizedBox(height: context.h(8)),
+          SizedBox(height: context.sh(8)),
           ...List.generate(data['options'].length, (oIndex) {
             return PlanContainer(
-              margin: context.padSym(v: 10),
+              margin: context.paddingSymmetricR(vertical: 10),
               isSelected: vm.selectedOptions[index] == oIndex,
               onTap: () => vm.selectOption(index, oIndex),
-              padding: context.padSym(h: 22, v: 14),
+              padding: context.paddingSymmetricR(horizontal: 22, vertical: 14),
               child: Text(
                 data['options'][oIndex],
                 style: TextStyle(
-                  fontSize: context.text(14),
+                  fontSize: context.sp(14),
                   color: AppColors.subHeadingColor,
                 ),
               ),
@@ -50,17 +50,17 @@ class HeightQuestion extends StatelessWidget {
           NormalText(
             crossAxisAlignment: CrossAxisAlignment.start,
             titleText: 'Your Height Goals',
-            titleSize: context.text(16),
+            titleSize: context.sp(16),
             titleWeight: FontWeight.w600,
             titleColor: AppColors.subHeadingColor,
-            sizeBoxheight: context.h(4),
+            sizeBoxheight: context.sh(4),
             subText: 'Set your current and desired height',
-            subSize: context.text(14),
+            subSize: context.sp(14),
             subWeight: FontWeight.w400,
             subColor: AppColors.subHeadingColor,
           ),
 
-          SizedBox(height: context.h(18)),
+          SizedBox(height: context.sh(18)),
 
           GoalActivityGraph(
             title1: 'Current',
@@ -69,7 +69,7 @@ class HeightQuestion extends StatelessWidget {
             desiredHeight: 150,
           ),
 
-          SizedBox(height: context.h(18)),
+          SizedBox(height: context.sh(18)),
           HeightIndicater(
             title: 'Current Height',
             initialValue: 0.6,
@@ -77,7 +77,7 @@ class HeightQuestion extends StatelessWidget {
               debugPrint('Current value: ${(value * 100).round()}%');
             },
           ),
-          SizedBox(height: context.h(18)),
+          SizedBox(height: context.sh(18)),
           HeightIndicater(
             title: 'Desired Height',
             initialValue: 0.6,

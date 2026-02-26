@@ -38,10 +38,10 @@ class SpeedMeterWidget extends StatelessWidget {
           children: List.generate(2, (index) {
             return Expanded(
               child: Container(
-                padding: context.padSym(h: 20, v: 30),
-                margin: context.padSym(h: 8, v: 8),
+                padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
+                margin: context.paddingSymmetricR(horizontal: 8, vertical: 8),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(context.radius(16)),
+                  borderRadius: BorderRadius.circular(context.radiusR(16)),
                   color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
@@ -64,7 +64,7 @@ class SpeedMeterWidget extends StatelessWidget {
                     Text(
                       box1Title,
                       style: TextStyle(
-                        fontSize: context.text(16.32),
+                        fontSize: context.sp(16.32),
                         fontWeight: FontWeight.w600,
                         color: AppColors.notSelectedColor,
                       ),
@@ -72,7 +72,7 @@ class SpeedMeterWidget extends StatelessWidget {
                     Text(
                       box1subTitle,
                       style: TextStyle(
-                        fontSize: context.text(16.32),
+                        fontSize: context.sp(16.32),
                         fontWeight: FontWeight.w600,
                         color: AppColors.subHeadingColor,
                       ),
@@ -82,10 +82,10 @@ class SpeedMeterWidget extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Container(
-                            height: context.h(10),
+                            height: context.sh(10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
-                                context.radius(20),
+                                context.radiusR(20),
                               ),
                               color: AppColors.backGroundColor,
                               boxShadow: [
@@ -107,24 +107,24 @@ class SpeedMeterWidget extends StatelessWidget {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(
-                                context.radius(20),
+                                context.radiusR(20),
                               ),
                               child: LinearPercentIndicator(
                                 padding: EdgeInsets.zero,
-                                lineHeight: context.h(8),
+                                lineHeight: context.sh(8),
                                 percent: 0.5,
                                 backgroundColor: AppColors.backGroundColor,
                                 progressColor: AppColors.pimaryColor,
-                                barRadius: Radius.circular(context.radius(20)),
+                                barRadius: Radius.circular(context.radiusR(20)),
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(width: context.w(8)),
+                        SizedBox(width: context.sw(8)),
                         Text(
                           box1per,
                           style: TextStyle(
-                            fontSize: context.text(12),
+                            fontSize: context.sp(12),
                             fontWeight: FontWeight.w600,
                             color: AppColors.subHeadingColor,
                           ),
@@ -139,10 +139,10 @@ class SpeedMeterWidget extends StatelessWidget {
         ),
 
         Container(
-          padding: context.padSym(h: 20, v: 13),
-          margin: context.padSym(h: 8, v: 8),
+          padding: context.paddingSymmetricR(horizontal: 20, vertical: 13),
+          margin: context.paddingSymmetricR(horizontal: 8, vertical: 8),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(context.radius(16)),
+            borderRadius: BorderRadius.circular(context.radiusR(16)),
             color: AppColors.backGroundColor,
             boxShadow: [
               BoxShadow(
@@ -165,18 +165,18 @@ class SpeedMeterWidget extends StatelessWidget {
                 children: [
                   NormalText(
                     titleText: smHTitle,
-                    titleSize: context.text(16),
+                    titleSize: context.sp(16),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
                   ),
                   Divider(thickness: 1, indent: 0, endIndent: 10),
                   NormalText(
                     titleText: smTitle,
-                    titleSize: context.text(12),
+                    titleSize: context.sp(12),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
                     subText: smsSubTitle,
-                    subSize: context.text(14),
+                    subSize: context.sp(14),
                     subWeight: FontWeight.w600,
                     subColor: AppColors.subHeadingColor,
                   ),

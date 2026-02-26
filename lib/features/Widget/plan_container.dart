@@ -38,17 +38,17 @@ class PlanContainer extends StatelessWidget {
         padding:
             padding ??
             EdgeInsets.symmetric(
-              horizontal: context.w(20),
-              vertical: context.h(14),
+              horizontal: context.sw(20),
+              vertical: context.sh(14),
             ),
-        margin: margin ?? context.padSym(v: 10),
+        margin: margin ?? context.paddingSymmetricR(vertical: 10),
         decoration: BoxDecoration(
-          borderRadius: radius ?? BorderRadius.circular(context.radius(10)),
+          borderRadius: radius ?? BorderRadius.circular(context.radiusR(10)),
           border: Border.all(
             color: isSelected!
                 ? AppColors.pimaryColor
                 : AppColors.backGroundColor,
-            width: context.w(1.5),
+            width: context.sw(1.5),
           ),
           color: isSelected!
               ? AppColors.pimaryColor.withOpacity(0.15)

@@ -24,23 +24,23 @@
 //       children: [
 //         NormalText(
 //           titleText: title ?? '',
-//           titleSize: context.text(14),
+//           titleSize: context.sp(14),
 //           titleWeight: FontWeight.w600,
 //           titleColor: AppColors.subHeadingColor,
 //         ),
-//         SizedBox(height: context.h(16)),
+//         SizedBox(height: context.sh(16)),
 
 //         Row(
 //           children: [
 //             // 🔹 Slider takes remaining width
 //             Expanded(
 //               child: Container(
-//                 height: context.h(20),
+//                 height: context.sh(20),
 //                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(context.radius(10)),
+//                   borderRadius: BorderRadius.circular(context.radiusR(10)),
 //                   border: Border.all(
 //                     color: AppColors.backGroundColor,
-//                     width: context.w(1.5),
+//                     width: context.sw(1.5),
 //                   ),
 //                   color: AppColors.backGroundColor,
 //                   boxShadow: [
@@ -63,24 +63,24 @@
 //                   children: [
 //                     // Active bar
 //                     Container(
-//                       height: context.h(20),
-//                       width: context.w(200), // later dynamic
+//                       height: context.sh(20),
+//                       width: context.sw(200), // later dynamic
 //                       decoration: BoxDecoration(
-//                         borderRadius: BorderRadius.circular(context.radius(10)),
+//                         borderRadius: BorderRadius.circular(context.radiusR(10)),
 //                         color: AppColors.pimaryColor,
 //                       ),
 //                     ),
 
 //                     // Thumb
 //                     Positioned(
-//                       left: context.w(180),
-//                       top: -context.h(4),
+//                       left: context.sw(180),
+//                       top: -context.sh(4),
 //                       child: Container(
-//                         height: context.h(28),
-//                         width: context.w(44),
+//                         height: context.sh(28),
+//                         width: context.sw(44),
 //                         decoration: BoxDecoration(
 //                           borderRadius: BorderRadius.circular(
-//                             context.radius(76),
+//                             context.radiusR(76),
 //                           ),
 //                           color: AppColors.backGroundColor,
 //                           boxShadow: [
@@ -104,7 +104,7 @@
 //                             style: TextStyle(
 //                               fontWeight: FontWeight.w800,
 //                               color: AppColors.pimaryColor,
-//                               fontSize: context.text(15),
+//                               fontSize: context.sp(15),
 //                             ),
 //                           ),
 //                         ),
@@ -115,12 +115,12 @@
 //               ),
 //             ),
 
-//             SizedBox(width: context.w(8)),
+//             SizedBox(width: context.sw(8)),
 
 //             // 🔹 Percentage text
 //             NormalText(
 //               titleText: per ?? '',
-//               titleSize: context.text(12),
+//               titleSize: context.sp(12),
 //               titleWeight: FontWeight.w600,
 //               titleColor: AppColors.subHeadingColor,
 //             ),
@@ -172,20 +172,20 @@ class _HeightIndicaterState extends State<HeightIndicater> {
 
   @override
   Widget build(BuildContext context) {
-    final double barHeight = context.h(20);
-    final double thumbWidth = context.w(44);
+    final double barHeight = context.sh(20);
+    final double thumbWidth = context.sw(44);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         NormalText(
           titleText: widget.title,
-          titleSize: context.text(14),
+          titleSize: context.sp(14),
           titleWeight: FontWeight.w600,
           titleColor: AppColors.subHeadingColor,
         ),
 
-        SizedBox(height: context.h(16)),
+        SizedBox(height: context.sh(16)),
 
         Row(
           children: [
@@ -208,7 +208,7 @@ class _HeightIndicaterState extends State<HeightIndicater> {
                     child: Container(
                       height: barHeight,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(context.radius(10)),
+                        borderRadius: BorderRadius.circular(context.radiusR(10)),
                         color: AppColors.backGroundColor,
                         boxShadow: [
                           BoxShadow(
@@ -237,7 +237,7 @@ class _HeightIndicaterState extends State<HeightIndicater> {
                             width: progressWidth,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
-                                context.radius(10),
+                                context.radiusR(10),
                               ),
                               color: AppColors.pimaryColor,
                             ),
@@ -246,13 +246,13 @@ class _HeightIndicaterState extends State<HeightIndicater> {
                           /// THUMB
                           Positioned(
                             left: thumbLeft,
-                            top: -context.h(4),
+                            top: -context.sh(4),
                             child: Container(
-                              height: context.h(28),
+                              height: context.sh(28),
                               width: thumbWidth,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(
-                                  context.radius(76),
+                                  context.radiusR(76),
                                 ),
                                 color: AppColors.backGroundColor,
                                 boxShadow: [
@@ -275,7 +275,7 @@ class _HeightIndicaterState extends State<HeightIndicater> {
                                   style: TextStyle(
                                     fontWeight: FontWeight.w800,
                                     color: AppColors.pimaryColor,
-                                    fontSize: context.text(15),
+                                    fontSize: context.sp(15),
                                   ),
                                 ),
                               ),
@@ -289,12 +289,12 @@ class _HeightIndicaterState extends State<HeightIndicater> {
               ),
             ),
 
-            SizedBox(width: context.w(8)),
+            SizedBox(width: context.sw(8)),
 
             /// 🔹 PERCENT TEXT
             NormalText(
               titleText: '${(_value * 100).round()}%',
-              titleSize: context.text(12),
+              titleSize: context.sp(12),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),

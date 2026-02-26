@@ -348,14 +348,14 @@ class Routes {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: AppColors.headingColor,
-                      fontSize: context.text(18),
+                      fontSize: context.sp(18),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 Positioned(
-                  top: context.h(50),
-                  left: context.w(20),
+                  top: context.sh(50),
+                  left: context.sw(20),
                   child: InkWell(
                     onTap: () => Navigator.pop(context),
                     child: const Icon(

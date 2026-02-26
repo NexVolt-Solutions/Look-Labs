@@ -22,18 +22,18 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Padding(
-//       padding: EdgeInsets.only(top: context.h(8)),
+//       padding: EdgeInsets.only(top: context.sh(8)),
 //       child: Row(
 //         mainAxisAlignment: MainAxisAlignment.center,
 //         children: [
 //           GestureDetector(
 //             onTap: onTap,
 //             child: Container(
-//               height: context.h(40),
-//               width: context.w(40),
+//               height: context.sh(40),
+//               width: context.sw(40),
 //               decoration: BoxDecoration(
 //                 color: AppColors.backGroundColor,
-//                 borderRadius: BorderRadius.circular(context.radius(12)),
+//                 borderRadius: BorderRadius.circular(context.radiusR(12)),
 //                 border: Border.all(
 //                   color: AppColors.white.withOpacity(0.2),
 //                   width: 1.5,
@@ -66,7 +66,7 @@
 //             child: Center(
 //               child: NormalText(
 //                 titleText: title,
-//                 titleSize: context.text(20),
+//                 titleSize: context.sp(20),
 //                 titleWeight: FontWeight.w600,
 //                 titleColor: AppColors.headingColor,
 //                 maxLines: 1,
@@ -77,8 +77,8 @@
 
 //           /// ❤️ Heart OR Empty Space
 //           SizedBox(
-//             height: context.h(40),
-//             width: context.w(40),
+//             height: context.sh(40),
+//             width: context.sw(40),
 //             child: showHeart
 //                 ? GestureDetector(
 //                     onTap: onHeartTap,
@@ -123,7 +123,7 @@ class AppBarContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: context.h(8)),
+      padding: EdgeInsets.only(top: context.sh(8)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -132,11 +132,11 @@ class AppBarContainer extends StatelessWidget {
               ? GestureDetector(
                   onTap: onTap,
                   child: Container(
-                    height: context.h(40),
-                    width: context.w(40),
+                    height: context.sh(40),
+                    width: context.sw(40),
                     decoration: BoxDecoration(
                       color: AppColors.backGroundColor,
-                      borderRadius: BorderRadius.circular(context.radius(12)),
+                      borderRadius: BorderRadius.circular(context.radiusR(12)),
                       border: Border.all(
                         color: AppColors.white.withOpacity(0.2),
                         width: 1.5,
@@ -164,14 +164,14 @@ class AppBarContainer extends StatelessWidget {
                     ),
                   ),
                 )
-              : SizedBox(height: context.h(40), width: context.w(40)),
+              : SizedBox(height: context.sh(40), width: context.sw(40)),
 
           /// 🏷 Title
           Expanded(
             child: Center(
               child: NormalText(
                 titleText: title,
-                titleSize: context.text(20),
+                titleSize: context.sp(20),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.headingColor,
                 maxLines: 1,
@@ -182,8 +182,8 @@ class AppBarContainer extends StatelessWidget {
 
           /// ❤️ Heart OR Empty Space
           SizedBox(
-            height: context.h(40),
-            width: context.w(40),
+            height: context.sh(40),
+            width: context.sw(40),
             child: showHeart
                 ? GestureDetector(
                     onTap: onHeartTap,

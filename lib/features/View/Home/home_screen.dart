@@ -27,17 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           clipBehavior: Clip.hardEdge,
           children: [
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: AppText.wellnessOverview,
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(10)),
+            SizedBox(height: context.sh(10)),
             SizedBox(
               child: GridView.builder(
                 shrinkWrap: true,
@@ -60,12 +60,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             Container(
-              padding: context.padSym(h: 8, v: 8),
+              padding: context.paddingSymmetricR(horizontal: 8, vertical: 8),
               decoration: BoxDecoration(
                 color: AppColors.backGroundColor,
-                borderRadius: BorderRadius.circular(context.radius(14)),
+                borderRadius: BorderRadius.circular(context.radiusR(14)),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.customContainerColorUp.withOpacity(0.4),
@@ -81,16 +81,16 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Image.asset(AppAssets.homeConIcon, fit: BoxFit.contain),
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: AppText.weeklyProgressScore,
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(
-              height: context.h(170),
+              height: context.sh(170),
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
@@ -99,14 +99,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   final item = homeViewModel.listViewData[index];
                   return Container(
                     margin: EdgeInsets.only(
-                      right: context.w(13),
-                      left: context.w(5),
-                      top: context.h(16),
-                      bottom: context.h(16),
+                      right: context.sw(13),
+                      left: context.sw(5),
+                      top: context.sh(16),
+                      bottom: context.sh(16),
                     ),
-                    padding: context.padSym(h: 28),
+                    padding: context.paddingSymmetricR(horizontal: 28),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(context.radius(16)),
+                      borderRadius: BorderRadius.circular(context.radiusR(16)),
                       color: AppColors.backGroundColor,
                       boxShadow: [
                         BoxShadow(
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(
-                              context.radius(12),
+                              context.radiusR(12),
                             ),
                             gradient: LinearGradient(
                               colors: [
@@ -159,42 +159,42 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: Container(
                             margin: EdgeInsets.all(
-                              context.w(3),
+                              context.sw(3),
                             ), // Border width
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
-                                context.radius(14),
+                                context.radiusR(14),
                               ),
                               color: AppColors.backGroundColor,
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(
-                                context.radius(14),
+                                context.radiusR(14),
                               ),
                               child: Image.asset(
                                 item['image'],
-                                height: context.h(45),
-                                width: context.w(45),
+                                height: context.sh(45),
+                                width: context.sw(45),
                                 fit: BoxFit.scaleDown,
                               ),
                             ),
                           ),
                         ),
 
-                        SizedBox(height: context.h(8)),
+                        SizedBox(height: context.sh(8)),
                         Text(
                           item['title'],
                           style: TextStyle(
-                            fontSize: context.text(12),
+                            fontSize: context.sp(12),
                             fontWeight: FontWeight.w600,
                             color: AppColors.subHeadingColor,
                           ),
                         ),
-                        SizedBox(height: context.h(2)),
+                        SizedBox(height: context.sh(2)),
                         Text(
                           item['subTitle'],
                           style: TextStyle(
-                            fontSize: context.text(10),
+                            fontSize: context.sp(10),
                             fontWeight: FontWeight.w400,
                             color: AppColors.notSelectedColor,
                           ),
@@ -208,13 +208,13 @@ class _HomeScreenState extends State<HomeScreen> {
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Explore your plans',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
             SizedBox(
-              height: context.h(1150),
+              height: context.sh(1150),
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -240,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         CustomContainer(
                           border: null,
                           padding: EdgeInsets.zero,
-                          // margin: context.padSym(h: 10, v: 10),
+                          // margin: context.paddingSymmetricR(horizontal: 10, vertical: 10),
                           child: Stack(
                             children: [
                               ClipRRect(
@@ -259,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: 28,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(
-                                        context.radius(11),
+                                        context.radiusR(11),
                                       ),
                                       gradient: LinearGradient(
                                         colors: [
@@ -289,17 +289,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     child: Container(
                                       margin: EdgeInsets.all(
-                                        context.w(1),
+                                        context.sw(1),
                                       ), // Border width
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(
-                                          context.radius(11),
+                                          context.radiusR(11),
                                         ),
                                         color: Color(0xFF8b8c8c),
                                       ),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(
-                                          context.radius(11),
+                                          context.radiusR(11),
                                         ),
                                         child: SvgPicture.asset(
                                           AppAssets.crownIcon,
@@ -313,15 +313,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: context.h(8)),
+                        SizedBox(height: context.sh(8)),
                         NormalText(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           titleText: item['title'],
-                          titleSize: context.text(16),
+                          titleSize: context.sp(16),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
                           subText: item['subTitle'],
-                          subSize: context.text(12),
+                          subSize: context.sp(12),
                           subColor: AppColors.subHeadingColor,
                           subWeight: FontWeight.w400,
                         ),

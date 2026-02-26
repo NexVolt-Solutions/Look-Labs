@@ -24,10 +24,10 @@ class CustomContiner extends StatelessWidget {
     return GestureDetector(
       onTap: isEnabled ? onTap : null,
       child: Container(
-        padding: context.padSym(h: 17, v: 16),
+        padding: context.paddingSymmetricR(horizontal: 17, vertical: 16),
         decoration: BoxDecoration(
           color: AppColors.backGroundColor,
-          borderRadius: BorderRadius.circular(context.radius(16)),
+          borderRadius: BorderRadius.circular(context.radiusR(16)),
           boxShadow: [
             BoxShadow(
               color: AppColors.customContainerColorUp.withOpacity(0.5),
@@ -50,7 +50,7 @@ class CustomContiner extends StatelessWidget {
             Text(
               title1,
               style: TextStyle(
-                fontSize: context.text(14),
+                fontSize: context.sp(14),
                 fontWeight: FontWeight.w600,
                 color: AppColors.seconderyColor,
               ),
@@ -61,15 +61,15 @@ class CustomContiner extends StatelessWidget {
                 Text(
                   title2,
                   style: TextStyle(
-                    fontSize: context.text(14),
+                    fontSize: context.sp(14),
                     fontWeight: FontWeight.w600,
                     color: title2Color ?? AppColors.buttonColor,
                   ),
                 ),
-                SizedBox(width: context.w(19)),
+                SizedBox(width: context.sw(19)),
                 Container(
-                  height: context.h(32),
-                  width: context.w(32),
+                  height: context.sh(32),
+                  width: context.sw(32),
                   decoration: BoxDecoration(
                     color: AppColors.backGroundColor,
                     shape: BoxShape.circle,
@@ -90,7 +90,7 @@ class CustomContiner extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Icon(Icons.arrow_forward_ios, size: context.h(16)),
+                  child: Icon(Icons.arrow_forward_ios, size: context.sh(16)),
                 ),
               ],
             ),

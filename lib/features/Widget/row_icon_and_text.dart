@@ -26,16 +26,16 @@ class RowIconAndText extends StatelessWidget {
       onTap: isEnabled ? onTap : null,
 
       child: Padding(
-        padding: context.padSym(v: 14),
+        padding: context.paddingSymmetricR(vertical: 14),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: context.h(40),
-              width: context.w(40),
+              height: context.sh(40),
+              width: context.sw(40),
               decoration: BoxDecoration(
                 color: AppColors.backGroundColor,
-                borderRadius: BorderRadius.circular(context.radius(16)),
+                borderRadius: BorderRadius.circular(context.radiusR(16)),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.customContainerColorUp.withOpacity(0.4),
@@ -54,7 +54,7 @@ class RowIconAndText extends StatelessWidget {
 
               child: Center(child: Image.asset(image!)),
             ),
-            SizedBox(width: context.w(10)),
+            SizedBox(width: context.sw(10)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,18 +62,18 @@ class RowIconAndText extends StatelessWidget {
                   Text(
                     titleText!,
                     style: TextStyle(
-                      fontSize: context.text(14),
+                      fontSize: context.sp(14),
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Raleway',
 
                       color: AppColors.headingColor,
                     ),
                   ),
-                  SizedBox(height: context.h(9)),
+                  SizedBox(height: context.sh(9)),
                   Text(
                     subText!,
                     style: TextStyle(
-                      fontSize: context.text(12),
+                      fontSize: context.sp(12),
                       fontWeight: FontWeight.w400,
                       fontFamily: 'Raleway',
 

@@ -34,12 +34,12 @@
 
 //     return Container(
 //       padding: EdgeInsets.symmetric(
-//         horizontal: context.w(12),
-//         vertical: context.h(12),
+//         horizontal: context.sw(12),
+//         vertical: context.sh(12),
 //       ),
-//       margin: context.padSym(v: 12),
+//       margin: context.paddingSymmetricR(vertical: 12),
 //       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(context.radius(10)),
+//         borderRadius: BorderRadius.circular(context.radiusR(10)),
 //         color: AppColors.backGroundColor,
 //         boxShadow: [
 //           BoxShadow(
@@ -62,9 +62,9 @@
 //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //             children: [
 //               Container(
-//                 padding: context.padSym(h: 4, v: 4),
+//                 padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
 //                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(context.radius(10)),
+//                   borderRadius: BorderRadius.circular(context.radiusR(10)),
 //                   color: AppColors.backGroundColor,
 //                   boxShadow: [
 //                     BoxShadow(
@@ -83,14 +83,14 @@
 //                 ),
 //                 child: SvgPicture.asset(
 //                   AppAssets.dropIcon,
-//                   height: context.h(24),
-//                   width: context.w(24),
+//                   height: context.sh(24),
+//                   width: context.sw(24),
 //                 ),
 //               ),
 //               Container(
-//                 padding: context.padSym(h: 6, v: 6),
+//                 padding: context.paddingSymmetricR(horizontal: 6, vertical: 6),
 //                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(context.radius(10)),
+//                   borderRadius: BorderRadius.circular(context.radiusR(10)),
 //                   color: AppColors.backGroundColor,
 //                   boxShadow: [
 //                     BoxShadow(
@@ -111,13 +111,13 @@
 //                   children: [
 //                     SvgPicture.asset(
 //                       icon1 ?? '',
-//                       height: context.h(20),
-//                       width: context.w(20),
+//                       height: context.sh(20),
+//                       width: context.sw(20),
 //                     ),
-//                     SizedBox(width: context.w(4)),
+//                     SizedBox(width: context.sw(4)),
 //                     NormalText(
 //                       titleText: text,
-//                       titleSize: context.text(10),
+//                       titleSize: context.sp(10),
 //                       titleColor: AppColors.iconColor,
 //                     ),
 //                   ],
@@ -126,43 +126,43 @@
 //             ],
 //           ),
 
-//           SizedBox(height: context.h(12)),
+//           SizedBox(height: context.sh(12)),
 
 //           /// 🔹 TITLE + DESC
 //           NormalText(
 //             titleText: title,
 //             subText: disc,
-//             titleSize: context.text(16),
-//             subSize: context.text(12),
+//             titleSize: context.sp(16),
+//             subSize: context.sp(12),
 //             titleWeight: FontWeight.w600,
 //             subWeight: FontWeight.w500,
 //           ),
 
-//           SizedBox(height: context.h(12)),
+//           SizedBox(height: context.sh(12)),
 
 //           /// 🔹 BUTTON TAGS
 //           Wrap(
-//             spacing: context.w(8),
-//             runSpacing: context.h(8),
+//             spacing: context.sw(8),
+//             runSpacing: context.sh(8),
 //             children: List.generate(viewmodel.productData.length.toInt(), (
 //               btnIndex,
 //             ) {
 //               return PlanContainer(
-//                 padding: context.padSym(h: 12, v: 8),
-//                 radius: BorderRadius.circular(context.radius(16)),
+//                 padding: context.paddingSymmetricR(horizontal: 12, vertical: 8),
+//                 radius: BorderRadius.circular(context.radiusR(16)),
 //                 isSelected: false,
 //                 onTap: () {},
 //                 child: NormalText(
 //                   titleText:
 //                       viewmodel!.productData[index]['buttonText'][btnIndex],
-//                   titleSize: context.text(10),
+//                   titleSize: context.sp(10),
 //                   titleWeight: FontWeight.w600,
 //                   titleColor: AppColors.subHeadingColor,
 //                 ),
 //               );
 //             }),
 //           ),
-//           // SizedBox(height: context.h(2)),
+//           // SizedBox(height: context.sh(2)),
 
 //           /// 🔹 VIEW DETAILS
 //           PlanContainer(
@@ -225,12 +225,12 @@ class ProductWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: context.w(12),
-        vertical: context.h(12),
+        horizontal: context.sw(12),
+        vertical: context.sh(12),
       ),
-      margin: context.padSym(v: 12),
+      margin: context.paddingSymmetricR(vertical: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.radius(10)),
+        borderRadius: BorderRadius.circular(context.radiusR(10)),
         color: AppColors.backGroundColor,
         boxShadow: [
           BoxShadow(
@@ -254,9 +254,9 @@ class ProductWidget extends StatelessWidget {
             children: [
               /// Left Icon
               Container(
-                padding: context.padSym(h: 4, v: 4),
+                padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(context.radius(10)),
+                  borderRadius: BorderRadius.circular(context.radiusR(10)),
                   color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
@@ -273,8 +273,8 @@ class ProductWidget extends StatelessWidget {
                 ),
                 child: SvgPicture.asset(
                   AppAssets.dropIcon,
-                  height: context.h(24),
-                  width: context.w(24),
+                  height: context.sh(24),
+                  width: context.sw(24),
                   placeholderBuilder: (_) =>
                       const Icon(Icons.image_not_supported),
                 ),
@@ -282,9 +282,9 @@ class ProductWidget extends StatelessWidget {
 
               /// Right Badge (Gradient Optional)
               Container(
-                padding: context.padSym(h: 6, v: 6),
+                padding: context.paddingSymmetricR(horizontal: 6, vertical: 6),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(context.radius(10)),
+                  borderRadius: BorderRadius.circular(context.radiusR(10)),
                   gradient: showGradient
                       ? const LinearGradient(
                           begin: Alignment.centerLeft,
@@ -319,28 +319,28 @@ class ProductWidget extends StatelessWidget {
                     if (icon1 != null)
                       SvgPicture.asset(
                         icon1!,
-                        height: context.h(20),
-                        width: context.w(20),
+                        height: context.sh(20),
+                        width: context.sw(20),
                         placeholderBuilder: (_) => const Icon(Icons.image),
                       ),
 
                     /// Second Icon (Optional)
                     if (secondIcon != null) ...[
-                      SizedBox(width: context.w(4)),
+                      SizedBox(width: context.sw(4)),
                       SvgPicture.asset(
                         secondIcon!,
-                        height: context.h(16),
-                        width: context.w(16),
+                        height: context.sh(16),
+                        width: context.sw(16),
                         placeholderBuilder: (_) => const Icon(Icons.image),
                       ),
                     ],
 
                     /// Text (Optional)
                     if (text != null) ...[
-                      SizedBox(width: context.w(4)),
+                      SizedBox(width: context.sw(4)),
                       NormalText(
                         titleText: text,
-                        titleSize: context.text(10),
+                        titleSize: context.sp(10),
                         titleColor: AppColors.iconColor,
                       ),
                     ],
@@ -350,36 +350,36 @@ class ProductWidget extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: context.h(12)),
+          SizedBox(height: context.sh(12)),
 
           /// 🔹 TITLE + DESCRIPTION
           NormalText(
             titleText: title,
             subText: disc,
-            titleSize: context.text(16),
-            subSize: context.text(12),
+            titleSize: context.sp(16),
+            subSize: context.sp(12),
             titleWeight: FontWeight.w600,
             subWeight: FontWeight.w500,
           ),
 
-          SizedBox(height: context.h(12)),
+          SizedBox(height: context.sh(12)),
 
           /// 🔹 BUTTON TAGS
           Wrap(
-            spacing: context.w(8),
-            runSpacing: context.h(8),
+            spacing: context.sw(8),
+            runSpacing: context.sh(8),
             children: List.generate(
               viewmodel.productData[index]['buttonText'].length,
               (btnIndex) {
                 return PlanContainer(
-                  padding: context.padSym(h: 12, v: 8),
-                  radius: BorderRadius.circular(context.radius(16)),
+                  padding: context.paddingSymmetricR(horizontal: 12, vertical: 8),
+                  radius: BorderRadius.circular(context.radiusR(16)),
                   isSelected: false,
                   onTap: () {},
                   child: NormalText(
                     titleText:
                         viewmodel.productData[index]['buttonText'][btnIndex],
-                    titleSize: context.text(10),
+                    titleSize: context.sp(10),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.subHeadingColor,
                   ),
@@ -388,7 +388,7 @@ class ProductWidget extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: context.h(12)),
+          SizedBox(height: context.sh(12)),
 
           /// 🔹 VIEW DETAILS BUTTON
           PlanContainer(

@@ -43,7 +43,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
       // ),
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Your Style Profile',
@@ -52,18 +52,18 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
               },
             ),
 
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
 
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'AI analysis complete',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
 
             SizedBox(
-              height: context.h(140),
+              height: context.sh(140),
               child: ListView.builder(
                 itemCount: 4,
                 scrollDirection: Axis.horizontal,
@@ -77,20 +77,20 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
               ),
             ),
 
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
 
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'AI analysis complete',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
 
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
 
             SizedBox(
-              height: context.h(190),
+              height: context.sh(190),
               child: ListView.builder(
                 itemCount: 3,
                 scrollDirection: Axis.horizontal,
@@ -98,9 +98,9 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                   return Column(
                     children: [
                       Container(
-                        width: context.w(158),
-                        padding: context.padSym(h: 1, v: 1),
-                        margin: EdgeInsets.only(right: context.w(12)),
+                        width: context.sw(158),
+                        padding: context.paddingSymmetricR(horizontal: 1, vertical: 1),
+                        margin: EdgeInsets.only(right: context.sw(12)),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: AppColors.pimaryColor),
@@ -113,11 +113,11 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: context.h(8)),
+                      SizedBox(height: context.sh(8)),
                       NormalText(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         titleText: 'LeftSide',
-                        titleSize: context.text(14),
+                        titleSize: context.sp(14),
                         titleWeight: FontWeight.w600,
                         titleColor: AppColors.subHeadingColor,
                       ),
@@ -126,12 +126,12 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
 
             /// 🔹 Best Clothing Fits Section
             PlanContainer(
-              margin: context.padSym(v: 0),
-              padding: context.padSym(h: 12, v: 12),
+              margin: context.paddingSymmetricR(vertical: 0),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -140,8 +140,8 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                   Row(
                     children: [
                       PlanContainer(
-                        margin: context.padSym(v: 0),
-                        padding: context.padSym(v: 4, h: 4),
+                        margin: context.paddingSymmetricR(vertical: 0),
+                        padding: context.paddingSymmetricR(vertical: 4, horizontal: 4),
                         isSelected: false,
                         onTap: () {},
                         child: GestureDetector(
@@ -151,8 +151,8 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                             });
                           },
                           child: Container(
-                            height: context.h(20),
-                            width: context.w(20),
+                            height: context.sh(20),
+                            width: context.sw(20),
                             decoration: BoxDecoration(
                               color: isBestClothingSelected
                                   ? AppColors.pimaryColor
@@ -179,7 +179,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                               child: isBestClothingSelected
                                   ? Icon(
                                       Icons.check,
-                                      size: context.h(16),
+                                      size: context.sh(16),
                                       color: AppColors.white,
                                     )
                                   : const SizedBox(),
@@ -187,30 +187,30 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: context.w(11)),
+                      SizedBox(width: context.sw(11)),
                       NormalText(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         titleText: 'Styles to Avoid',
-                        titleSize: context.text(14),
+                        titleSize: context.sp(14),
                         titleWeight: FontWeight.w600,
                         titleColor: AppColors.subHeadingColor,
                       ),
                     ],
                   ),
-                  SizedBox(height: context.h(12)),
+                  SizedBox(height: context.sh(12)),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: clothingFits.map((item) {
                       return PlanContainer(
-                        margin: context.padSym(v: 0),
-                        radius: BorderRadius.circular(context.radius(10)),
-                        padding: context.padSym(v: 8, h: 12),
+                        margin: context.paddingSymmetricR(vertical: 0),
+                        radius: BorderRadius.circular(context.radiusR(10)),
+                        padding: context.paddingSymmetricR(vertical: 8, horizontal: 12),
                         isSelected: false,
                         onTap: () {},
                         child: NormalText(
                           titleText: item,
-                          titleSize: context.text(10),
+                          titleSize: context.sp(10),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
                         ),
@@ -221,11 +221,11 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
               ),
             ),
 
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
 
             PlanContainer(
-              margin: context.padSym(v: 0),
-              padding: context.padSym(h: 12, v: 12),
+              margin: context.paddingSymmetricR(vertical: 0),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -234,9 +234,9 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                   Row(
                     children: [
                       PlanContainer(
-                        margin: context.padSym(v: 0),
+                        margin: context.paddingSymmetricR(vertical: 0),
 
-                        padding: context.padSym(v: 4, h: 4),
+                        padding: context.paddingSymmetricR(vertical: 4, horizontal: 4),
                         isSelected: false,
                         onTap: () {},
                         child: GestureDetector(
@@ -251,30 +251,30 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: context.w(11)),
+                      SizedBox(width: context.sw(11)),
                       NormalText(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         titleText: 'Best Clothing Fits',
-                        titleSize: context.text(14),
+                        titleSize: context.sp(14),
                         titleWeight: FontWeight.w600,
                         titleColor: AppColors.subHeadingColor,
                       ),
                     ],
                   ),
-                  SizedBox(height: context.h(12)),
+                  SizedBox(height: context.sh(12)),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: clothingFits.map((item) {
                       return PlanContainer(
-                        margin: context.padSym(v: 0),
-                        radius: BorderRadius.circular(context.radius(10)),
-                        padding: context.padSym(v: 8, h: 12),
+                        margin: context.paddingSymmetricR(vertical: 0),
+                        radius: BorderRadius.circular(context.radiusR(10)),
+                        padding: context.paddingSymmetricR(vertical: 8, horizontal: 12),
                         isSelected: false,
                         onTap: () {},
                         child: NormalText(
                           titleText: item,
-                          titleSize: context.text(10),
+                          titleSize: context.sp(10),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
                         ),
@@ -284,10 +284,10 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             PlanContainer(
-              margin: context.padSym(v: 0),
-              padding: context.padSym(h: 12, v: 12),
+              margin: context.paddingSymmetricR(vertical: 0),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -296,8 +296,8 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                   Row(
                     children: [
                       PlanContainer(
-                        margin: context.padSym(v: 0),
-                        padding: context.padSym(v: 4, h: 4),
+                        margin: context.paddingSymmetricR(vertical: 0),
+                        padding: context.paddingSymmetricR(vertical: 4, horizontal: 4),
                         isSelected: false,
                         onTap: () {},
                         child: GestureDetector(
@@ -312,30 +312,30 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: context.w(11)),
+                      SizedBox(width: context.sw(11)),
                       NormalText(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         titleText: 'Your Warm Palette',
-                        titleSize: context.text(14),
+                        titleSize: context.sp(14),
                         titleWeight: FontWeight.w600,
                         titleColor: AppColors.subHeadingColor,
                       ),
                     ],
                   ),
-                  SizedBox(height: context.h(12)),
+                  SizedBox(height: context.sh(12)),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: clothingFits.map((item) {
                       return PlanContainer(
-                        margin: context.padSym(v: 0),
-                        radius: BorderRadius.circular(context.radius(10)),
-                        padding: context.padSym(v: 20, h: 20),
+                        margin: context.paddingSymmetricR(vertical: 0),
+                        radius: BorderRadius.circular(context.radiusR(10)),
+                        padding: context.paddingSymmetricR(vertical: 20, horizontal: 20),
                         isSelected: false,
                         onTap: () {},
                         child: ClipRRect(
                           borderRadius: BorderRadiusGeometry.circular(
-                            context.radius(10),
+                            context.radiusR(10),
                           ),
                         ),
                       );
@@ -344,17 +344,17 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Weekly Plan',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
             PlanContainer(
-              padding: context.padSym(h: 19, v: 22),
+              padding: context.paddingSymmetricR(horizontal: 19, vertical: 22),
               isSelected: fashionProfileScreenViewModel.isExerciseSelected,
               onTap: () {
                 fashionProfileScreenViewModel.selectExercise();
@@ -369,7 +369,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                   NormalText(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     titleText: 'Style themes to keep you sharp',
-                    titleSize: context.text(18),
+                    titleSize: context.sp(18),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.headingColor,
                   ),

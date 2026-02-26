@@ -21,7 +21,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
-        padding: context.padSym(h: 20, v: 30),
+        padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
         child: CustomButton(
           isEnabled: true,
           onTap: () => Navigator.pushNamed(context, RoutesName.PurchaseScreen),
@@ -31,22 +31,22 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
       ),
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           clipBehavior: Clip.hardEdge,
           children: [
             AppBarContainer(
               title: AppText.cardDetails,
               onTap: () => Navigator.pop(context),
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: AppText.securePaymentSetup,
-              titleSize: context.text(20),
+              titleSize: context.sp(20),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             NeuTextField(
               label: AppText.nameOfCardHolder,
               obscure: true,
@@ -54,7 +54,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
               hintText: AppText.enterCardHolderName,
               keyboard: TextInputType.name,
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             NeuTextField(
               label: AppText.cardNumber,
               obscure: true,
@@ -62,7 +62,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
               hintText: AppText.enterCardNumber,
               keyboard: TextInputType.name,
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             NeuTextField(
               label: AppText.cvv,
               obscure: true,
@@ -70,7 +70,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> {
               hintText: AppText.enterCvv,
               keyboard: TextInputType.name,
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             NeuTextField(
               label: AppText.expiryDate,
               obscure: true,

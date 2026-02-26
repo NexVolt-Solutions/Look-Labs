@@ -35,7 +35,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Your Progress',
@@ -43,18 +43,18 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText:
                   'Track your fitness, consistency, and recovery over time',
-              titleSize: context.text(16),
+              titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             SizedBox(
-              height: context.h(135),
+              height: context.sh(135),
               child: ListView.builder(
                 itemCount: 4,
                 scrollDirection: Axis.horizontal,
@@ -67,9 +67,9 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -77,12 +77,12 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                   Row(
                     children: [
                       Container(
-                        height: context.h(28),
-                        width: context.w(28),
+                        height: context.sh(28),
+                        width: context.sw(28),
                         decoration: BoxDecoration(
                           color: AppColors.backGroundColor,
                           borderRadius: BorderRadius.circular(
-                            context.radius(10),
+                            context.radiusR(10),
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -101,8 +101,8 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                         ),
                         child: Center(
                           child: SizedBox(
-                            height: context.h(32),
-                            width: context.w(32),
+                            height: context.sh(32),
+                            width: context.sw(32),
                             child: SvgPicture.asset(
                               AppAssets.lightBulbIcon,
                               fit: BoxFit.scaleDown,
@@ -110,16 +110,16 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: context.w(11)),
+                      SizedBox(width: context.sw(11)),
                       Expanded(
                         child: NormalText(
                           titleText:
                               'Small daily workouts create big long-term results. You\'re doing great—keep up the momentum.',
-                          titleSize: context.text(12),
+                          titleSize: context.sp(12),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
                           // subText: 'Best done after waking up',
-                          // subSize: context.text(10),
+                          // subSize: context.sp(10),
                           // subWeight: FontWeight.w400,
                         ),
                       ),
@@ -128,43 +128,43 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(7)),
+            SizedBox(height: context.sh(7)),
             Row(
               children: [
                 CustomContainer(
-                  padding: context.padSym(h: 4, v: 4),
-                  radius: context.radius(10),
+                  padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
+                  radius: context.radiusR(10),
                   color: AppColors.backGroundColor,
                   child: SvgPicture.asset(
                     AppAssets.graphIcon,
-                    height: context.h(24),
-                    width: context.w(24),
+                    height: context.sh(24),
+                    width: context.sw(24),
                     fit: BoxFit.scaleDown,
                   ),
                 ),
-                SizedBox(width: context.w(12)),
+                SizedBox(width: context.sw(12)),
                 NormalText(
                   titleText: 'Your Progress',
-                  titleSize: context.text(18),
+                  titleSize: context.sp(18),
                   titleWeight: FontWeight.w600,
                   titleColor: AppColors.subHeadingColor,
                 ),
               ],
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             SizedBox(
-              height: context.h(130), // ✅ SAFE HEIGHT
+              height: context.sh(130), // ✅ SAFE HEIGHT
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: 4,
                 padding: EdgeInsets.zero,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.only(right: context.w(12)),
+                    padding: EdgeInsets.only(right: context.sw(12)),
                     child: SizedBox(
-                      width: context.w(220),
+                      width: context.sw(220),
                       child: PlanContainer(
-                        padding: context.padSym(h: 7, v: 24),
+                        padding: context.paddingSymmetricR(horizontal: 7, vertical: 24),
                         isSelected: false,
                         onTap: () {},
                         child: Column(
@@ -172,15 +172,15 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                           children: [
                             NormalText(
                               titleText: 'Fitness Consistency',
-                              titleSize: context.text(16),
+                              titleSize: context.sp(16),
                               titleWeight: FontWeight.w500,
                               titleColor: AppColors.subHeadingColor,
                             ),
-                            SizedBox(height: context.h(12)),
+                            SizedBox(height: context.sh(12)),
                             LinearSliderWidget(
                               progress: 10,
-                              height: context.h(12),
-                              animatedConHeight: context.h(12),
+                              height: context.sh(12),
+                              animatedConHeight: context.sh(12),
                             ),
                           ],
                         ),
@@ -191,7 +191,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
               ),
             ),
 
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(
@@ -201,7 +201,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       yourProgressScreenViewModel.selectedIndex ==
                       yourProgressScreenViewModel.buttonName[index];
                   return CustomContainer(
-                    radius: context.radius(10),
+                    radius: context.radiusR(10),
                     onTap: () {
                       yourProgressScreenViewModel.selectIndex(index);
                     },
@@ -211,13 +211,13 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                     border: isSelected
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                         : null,
-                    padding: context.padSym(h: 38, v: 12),
-                    margin: context.padSym(h: 0, v: 0),
+                    padding: context.paddingSymmetricR(horizontal: 38, vertical: 12),
+                    margin: context.paddingSymmetricR(horizontal: 0, vertical: 0),
                     child: Center(
                       child: Text(
                         yourProgressScreenViewModel.buttonName[index],
                         style: TextStyle(
-                          fontSize: context.text(14),
+                          fontSize: context.sp(14),
                           fontWeight: FontWeight.w700,
                           color: AppColors.seconderyColor,
                         ),
@@ -227,12 +227,12 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             CustomContainer(
-              radius: context.radius(10),
+              radius: context.radiusR(10),
               color: AppColors.backGroundColor,
-              padding: context.padSym(h: 10, v: 10),
-              margin: EdgeInsets.only(bottom: context.h(20)),
+              padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
+              margin: EdgeInsets.only(bottom: context.sh(20)),
               child: Center(child: LineChartWidget()),
             ),
             ActivityConsistencyWidget(
@@ -240,20 +240,20 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
               subtitle: 'Your workout activity this week',
               pressentage: 20,
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             NormalText(
               titleText: 'Daily Recovery Checklist',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             Column(
               children: List.generate(
                 dietProgressScreenViewModel.checkBoxName.length,
                 (index) {
                   return Padding(
-                    padding: EdgeInsets.only(bottom: context.h(12)),
+                    padding: EdgeInsets.only(bottom: context.sh(12)),
                     child: Row(
                       children: [
                         GestureDetector(
@@ -261,8 +261,8 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                             dietProgressScreenViewModel.toggleChecklist(index);
                           },
                           child: Container(
-                            height: context.h(28),
-                            width: context.w(28),
+                            height: context.sh(28),
+                            width: context.sw(28),
                             decoration: BoxDecoration(
                               color:
                                   dietProgressScreenViewModel
@@ -293,7 +293,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                                       .selectedChecklist[index]
                                   ? Icon(
                                       Icons.check,
-                                      size: context.h(16),
+                                      size: context.sh(16),
                                       color: AppColors.white,
                                     )
                                   : SizedBox(),
@@ -301,13 +301,13 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                           ),
                         ),
 
-                        SizedBox(width: context.w(12)),
+                        SizedBox(width: context.sw(12)),
 
                         Expanded(
                           child: NormalText(
                             titleText:
                                 dietProgressScreenViewModel.checkBoxName[index],
-                            titleSize: context.text(16),
+                            titleSize: context.sp(16),
                             titleWeight: FontWeight.w600,
                             titleColor: AppColors.subHeadingColor,
                           ),
@@ -318,7 +318,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(30)),
+            SizedBox(height: context.sh(30)),
           ],
         ),
       ),

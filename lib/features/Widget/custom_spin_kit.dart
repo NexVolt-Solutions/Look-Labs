@@ -9,7 +9,7 @@ class CustomSpinKit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SpinKitFadingCircle(
-      size: context.w(40),
+      size: context.sw(40),
       itemBuilder: (context, index) {
         return DecoratedBox(
           decoration: BoxDecoration(

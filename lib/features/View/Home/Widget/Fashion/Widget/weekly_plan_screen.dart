@@ -29,7 +29,7 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Weekly Plan',
@@ -37,15 +37,15 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Daily style themes to keep you sharp',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             ...List.generate(
               weeklyPlanScreenViewModel.heightRoutineList.length,
               (index) {
@@ -56,13 +56,13 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     width: double.infinity,
-                    padding: context.padSym(h: 20),
-                    margin: context.padSym(v: 10),
+                    padding: context.paddingSymmetricR(horizontal: 20),
+                    margin: context.paddingSymmetricR(vertical: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: AppColors.backGroundColor,
-                        width: context.w(1.5),
+                        width: context.sw(1.5),
                       ),
                       color: AppColors.backGroundColor,
 
@@ -93,7 +93,7 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                             Row(
                               children: [
                                 PlanContainer(
-                                  padding: context.padSym(h: 6, v: 6),
+                                  padding: context.paddingSymmetricR(horizontal: 6, vertical: 6),
                                   isSelected: false,
                                   onTap: () {},
                                   child: Center(
@@ -104,14 +104,14 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: context.w(11)),
+                                SizedBox(width: context.sw(11)),
                                 NormalText(
                                   titleText: item['time'],
-                                  titleSize: context.text(14),
+                                  titleSize: context.sp(14),
                                   titleWeight: FontWeight.w500,
                                   titleColor: AppColors.subHeadingColor,
                                   subText: item['activity'],
-                                  subSize: context.text(10),
+                                  subSize: context.sp(10),
                                   subWeight: FontWeight.w400,
                                   subColor: AppColors.subHeadingColor,
                                 ),
@@ -125,7 +125,7 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                                 weeklyPlanScreenViewModel.isExpanded(index)
                                     ? Icons.keyboard_arrow_up
                                     : Icons.keyboard_arrow_down,
-                                size: context.h(24),
+                                size: context.sh(24),
                               ),
                             ),
                           ],
@@ -139,21 +139,21 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                             children: [
                               NormalText(
                                 titleText: item['details'],
-                                titleSize: context.text(12),
+                                titleSize: context.sp(12),
                                 titleWeight: FontWeight.w600,
                                 titleColor: AppColors.iconColor,
                               ),
-                              SizedBox(height: context.h(6)),
+                              SizedBox(height: context.sh(6)),
                               NormalText(
                                 titleText: "• Do exercises slowly",
-                                titleSize: context.text(12),
+                                titleSize: context.sp(12),
                                 titleWeight: FontWeight.w600,
                                 titleColor: AppColors.iconColor,
                               ),
-                              SizedBox(height: context.h(6)),
+                              SizedBox(height: context.sh(6)),
                               NormalText(
                                 titleText: "• Maintain proper breathing",
-                                titleSize: context.text(12),
+                                titleSize: context.sp(12),
                                 titleWeight: FontWeight.w600,
                                 titleColor: AppColors.iconColor,
                               ),
@@ -171,22 +171,22 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                 );
               },
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             NormalText(
               titleText: 'Seasonal Style',
-              titleSize: context.text(16),
+              titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
               subText: 'Weather-appropriate recommendations',
-              subSize: context.text(14),
+              subSize: context.sp(14),
               subWeight: FontWeight.w600,
               subColor: AppColors.iconColor,
-              sizeBoxheight: context.h(8),
+              sizeBoxheight: context.sh(8),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             Wrap(
-              spacing: context.w(8), // horizontal gap
-              runSpacing: context.h(8), // vertical gap
+              spacing: context.sw(8), // horizontal gap
+              runSpacing: context.sh(8), // vertical gap
               children: List.generate(
                 weeklyPlanScreenViewModel.buttonName.length,
                 (index) {
@@ -197,8 +197,8 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                     onTap: () {
                       weeklyPlanScreenViewModel.selectIndex(index);
                     },
-                    radius: context.radius(10),
-                    padding: context.padSym(h: 19, v: 11),
+                    radius: context.radiusR(10),
+                    padding: context.paddingSymmetricR(horizontal: 19, vertical: 11),
                     color: isSelected
                         ? AppColors.buttonColor.withOpacity(0.11)
                         : AppColors.backGroundColor,
@@ -212,11 +212,11 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                           weeklyPlanScreenViewModel.buttonName[index]['image'],
                           fit: BoxFit.scaleDown,
                         ),
-                        SizedBox(width: context.w(4)),
+                        SizedBox(width: context.sw(4)),
                         Text(
                           weeklyPlanScreenViewModel.buttonName[index]['title'],
                           style: TextStyle(
-                            fontSize: context.text(13),
+                            fontSize: context.sp(13),
                             fontWeight: FontWeight.w700,
                             color: AppColors.seconderyColor,
                             fontFamily: 'Raleway',
@@ -228,7 +228,7 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             if (weeklyPlanScreenViewModel.showClothingCard)
               ButtonCard(
                 title: weeklyPlanScreenViewModel

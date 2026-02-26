@@ -31,18 +31,18 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Center(
             child: SizedBox(
-              height: context.h(120),
-              width: context.w(120),
+              height: context.sh(120),
+              width: context.sw(120),
               child: SvgPicture.asset(AppAssets.splashIcon, fit: BoxFit.fill),
             ),
           ),
-          SizedBox(height: context.h(12)),
+          SizedBox(height: context.sh(12)),
           Center(
             child: Text(
               AppText.appName,
               style: TextStyle(
                 color: AppColors.white,
-                fontSize: context.text(24),
+                fontSize: context.sp(24),
                 fontFamily: 'Raleway',
                 fontWeight: FontWeight.w800,
               ),

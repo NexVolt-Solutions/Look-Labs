@@ -24,7 +24,7 @@ class _GaolScreenState extends State<GaolScreen> {
       backgroundColor: AppColors.backGroundColor,
 
       bottomNavigationBar: Padding(
-        padding: context.padSym(h: 20, v: 30),
+        padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
         child: CustomButton(
           isEnabled: true,
           onTap: () => Navigator.pushNamed(context, RoutesName.OnBoardScreen),
@@ -34,26 +34,26 @@ class _GaolScreenState extends State<GaolScreen> {
       ),
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           clipBehavior: Clip.none,
           children: [
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
 
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
               titleText: AppText.chooseGoal,
-              titleSize: context.text(20),
+              titleSize: context.sp(20),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: context.w(16),
-                crossAxisSpacing: context.w(16),
+                mainAxisSpacing: context.sw(16),
+                crossAxisSpacing: context.sw(16),
                 childAspectRatio: 2.5,
               ),
               itemCount: gaolScreenViewModel.buttonName.length,
@@ -73,7 +73,7 @@ class _GaolScreenState extends State<GaolScreen> {
                               0.11,
                             ) // selected bg
                           : AppColors.backGroundColor,
-                      borderRadius: BorderRadius.circular(context.radius(16)),
+                      borderRadius: BorderRadius.circular(context.radiusR(16)),
                       border: isSelected
                           ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                           : null,
@@ -110,7 +110,7 @@ class _GaolScreenState extends State<GaolScreen> {
                       child: Text(
                         gaolScreenViewModel.buttonName[index],
                         style: TextStyle(
-                          fontSize: context.text(14),
+                          fontSize: context.sp(14),
                           fontWeight: FontWeight.w700,
                           color: isSelected
                               ? AppColors.headingColor
@@ -122,7 +122,7 @@ class _GaolScreenState extends State<GaolScreen> {
                 );
               },
             ),
-            SizedBox(height: context.h(223)),
+            SizedBox(height: context.sh(223)),
           ],
         ),
       ),

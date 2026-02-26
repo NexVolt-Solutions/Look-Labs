@@ -23,12 +23,12 @@ class SimpleCheckBox extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: context.h(26),
-        width: context.w(26),
-        // margin: margin ?? context.padSym(v: 12),
+        height: context.sh(26),
+        width: context.sw(26),
+        // margin: margin ?? context.paddingSymmetricR(vertical: 12),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: AppColors.white, width: context.w(0.5)),
+          border: Border.all(color: AppColors.white, width: context.sw(0.5)),
           color: isSelected ? AppColors.pimaryColor : AppColors.backGroundColor,
           boxShadow: isSelected
               ? []

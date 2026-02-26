@@ -10,7 +10,7 @@ class UserInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: context.h(14)),
+      padding: EdgeInsets.only(bottom: context.sh(14)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -20,7 +20,7 @@ class UserInfo extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: AppColors.seconderyColor,
-              fontSize: context.text(12),
+              fontSize: context.sp(12),
               fontWeight: FontWeight.w600,
               fontFamily: 'Raleway',
             ),
@@ -32,7 +32,7 @@ class UserInfo extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: AppColors.subHeadingColor,
-              fontSize: context.text(12),
+              fontSize: context.sp(12),
               fontWeight: FontWeight.w400,
               fontFamily: 'Raleway',
             ),

@@ -23,10 +23,10 @@ class _FacialAnalyzingScrenState extends State<FacialAnalyzingScren> {
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
         padding: EdgeInsetsGeometry.only(
-          top: context.h(5),
-          left: context.w(20),
-          right: context.w(20),
-          bottom: context.h(30),
+          top: context.sh(5),
+          left: context.sw(20),
+          right: context.sw(20),
+          bottom: context.sh(30),
         ),
         child: CustomButton(
           text: AppText.next,
@@ -39,7 +39,7 @@ class _FacialAnalyzingScrenState extends State<FacialAnalyzingScren> {
       ),
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: AppText.analyzing,
@@ -47,52 +47,52 @@ class _FacialAnalyzingScrenState extends State<FacialAnalyzingScren> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(32)),
+            SizedBox(height: context.sh(32)),
             SizedBox(
-              // width: context.w(60),
-              // height: context.h(60),
+              // width: context.sw(60),
+              // height: context.sh(60),
               child: CupertinoActivityIndicator(
                 radius: 50,
                 color: AppColors.pimaryColor,
               ),
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
               titleText: AppText.analyzingYourFace,
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
               subText: AppText.aiStudyingFace,
-              subSize: context.text(14),
+              subSize: context.sp(14),
               subWeight: FontWeight.w400,
               subColor: AppColors.subHeadingColor,
-              sizeBoxheight: context.h(4),
+              sizeBoxheight: context.sh(4),
               subAlign: TextAlign.center,
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             Padding(
-              padding: context.padSym(h: 56),
+              padding: context.paddingSymmetricR(horizontal: 56),
               child: LinearSliderWidget(
                 showTopIcon: true,
                 progress: 20,
                 inset: false,
-                height: context.h(10),
-                animatedConHeight: context.h(10),
+                height: context.sh(10),
+                animatedConHeight: context.sh(10),
                 showPercentage: false,
               ),
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             ...List.generate(4, (index) {
               return Padding(
-                padding: EdgeInsets.only(bottom: context.h(18)),
+                padding: EdgeInsets.only(bottom: context.sh(18)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '• ', // Dot bullet
                       style: TextStyle(
-                        fontSize: context.text(16),
+                        fontSize: context.sp(16),
                         fontWeight: FontWeight.w400,
                         color: AppColors.subHeadingColor,
                       ),
@@ -101,7 +101,7 @@ class _FacialAnalyzingScrenState extends State<FacialAnalyzingScren> {
                       child: Text(
                         AppText.dailyExercisesReady,
                         style: TextStyle(
-                          fontSize: context.text(12),
+                          fontSize: context.sp(12),
                           fontWeight: FontWeight.w400,
                           color: AppColors.subHeadingColor,
                         ),

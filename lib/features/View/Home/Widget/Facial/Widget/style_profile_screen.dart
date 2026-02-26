@@ -27,7 +27,7 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Your Style Profile',
@@ -35,18 +35,18 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
 
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Feature Scores',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -55,26 +55,26 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                   NormalText(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     titleText: 'Overall Score',
-                    titleSize: context.text(18),
+                    titleSize: context.sp(18),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.headingColor,
                   ),
-                  SizedBox(height: context.h(12)),
+                  SizedBox(height: context.sh(12)),
 
                   LinearSliderWidget(
                     showTopIcon: true,
                     progress: 20,
                     inset: false,
-                    height: context.h(10),
-                    animatedConHeight: context.h(10),
+                    height: context.sh(10),
+                    animatedConHeight: context.sh(10),
                     showPercentage: false,
                   ),
                 ],
               ),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -89,15 +89,15 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Container(
-                              padding: context.padSym(h: 4, v: 4),
-                              // margin: context.padSym(v: 14),
+                              padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
+                              // margin: context.paddingSymmetricR(vertical: 14),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(
-                                  context.radius(10),
+                                  context.radiusR(10),
                                 ),
                                 border: Border.all(
                                   color: AppColors.backGroundColor,
-                                  width: context.w(2),
+                                  width: context.sw(2),
                                 ),
                                 color: AppColors.backGroundColor,
                                 boxShadow: [
@@ -117,53 +117,53 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                               ),
                               child: SvgPicture.asset(
                                 item['image'],
-                                height: context.h(18.05),
-                                width: context.w(22.56),
+                                height: context.sh(18.05),
+                                width: context.sw(22.56),
                                 color: AppColors.pimaryColor,
                                 fit: BoxFit.contain,
                               ),
                             ),
-                            SizedBox(width: context.w(11)),
+                            SizedBox(width: context.sw(11)),
                             NormalText(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               titleText: item['title'],
-                              titleSize: context.text(14),
+                              titleSize: context.sp(14),
                               titleWeight: FontWeight.w500,
                               titleColor: AppColors.headingColor,
                               titleAlign: TextAlign.start,
                               subText: item['subtitle'],
-                              subSize: context.text(10),
+                              subSize: context.sp(10),
                               subWeight: FontWeight.w400,
                               subColor: AppColors.iconColor,
-                              sizeBoxheight: context.h(4),
+                              sizeBoxheight: context.sh(4),
                               subAlign: TextAlign.start,
                             ),
                           ],
                         ),
-                        SizedBox(height: context.h(10)),
+                        SizedBox(height: context.sh(10)),
                         LinearSliderWidget(
                           progress: item['per'].toDouble(),
-                          height: context.h(12),
-                          animatedConHeight: context.h(12),
+                          height: context.sh(12),
+                          animatedConHeight: context.sh(12),
                         ),
-                        SizedBox(height: context.h(12)),
+                        SizedBox(height: context.sh(12)),
                       ],
                     );
                   },
                 ),
               ),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Daily Exercises',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             PlanContainer(
-              padding: context.padSym(h: 19, v: 22),
+              padding: context.paddingSymmetricR(horizontal: 19, vertical: 22),
               isSelected: styleProfileScreenViewModel.isExerciseSelected,
               onTap: () {
                 styleProfileScreenViewModel.selectExercise();
@@ -181,7 +181,7 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                   NormalText(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     titleText: 'View your personalized exercises',
-                    titleSize: context.text(18),
+                    titleSize: context.sp(18),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.headingColor,
                   ),
@@ -190,7 +190,7 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
               ),
             ),
 
-            SizedBox(height: context.h(100)),
+            SizedBox(height: context.sh(100)),
           ],
         ),
       ),

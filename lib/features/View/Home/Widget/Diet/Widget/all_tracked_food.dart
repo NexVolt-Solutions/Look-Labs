@@ -20,7 +20,7 @@ class _AllTrackedFoodState extends State<AllTrackedFood> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'All Tracked Foods',
@@ -28,18 +28,18 @@ class _AllTrackedFoodState extends State<AllTrackedFood> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
 
             NormalText(
               titleText: 'All Foods',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleColor: AppColors.subHeadingColor,
               titleWeight: FontWeight.w600,
             ),
 
             ...List.generate(3, (index) {
               return PlanContainer(
-                padding: context.padSym(h: 12, v: 12),
+                padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
                 isSelected: false,
                 onTap: () {},
                 child: Row(
@@ -47,17 +47,17 @@ class _AllTrackedFoodState extends State<AllTrackedFood> {
                   children: [
                     NormalText(
                       titleText: 'Greek Yogurt',
-                      titleSize: context.text(16),
+                      titleSize: context.sp(16),
                       titleColor: AppColors.subHeadingColor,
                       titleWeight: FontWeight.w500,
                       subText: 'Breakfast',
-                      subSize: context.text(12),
+                      subSize: context.sp(12),
                       subWeight: FontWeight.w600,
                       subColor: AppColors.iconColor,
                     ),
                     NormalText(
                       titleText: '150 kcal',
-                      titleSize: context.text(16),
+                      titleSize: context.sp(16),
                       titleColor: AppColors.redColor,
                       titleWeight: FontWeight.w600,
                     ),

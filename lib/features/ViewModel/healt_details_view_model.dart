@@ -46,16 +46,16 @@ class HealtDetailsViewModel extends ChangeNotifier {
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(context.radius(24)),
+          top: Radius.circular(context.radiusR(24)),
         ),
       ),
       builder: (_) {
         return Padding(
           padding: EdgeInsets.only(
-            left: context.w(20),
-            right: context.w(20),
-            top: context.h(20),
-            bottom: context.h(20),
+            left: context.sw(20),
+            right: context.sw(20),
+            top: context.sh(20),
+            bottom: context.sh(20),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -63,19 +63,19 @@ class HealtDetailsViewModel extends ChangeNotifier {
             children: [
               NormalText(
                 titleText: title,
-                titleSize: context.text(20),
+                titleSize: context.sp(20),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.headingColor,
               ),
-              SizedBox(height: context.h(24)),
+              SizedBox(height: context.sh(24)),
 
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  mainAxisSpacing: context.w(16),
-                  crossAxisSpacing: context.w(16),
+                  mainAxisSpacing: context.sw(16),
+                  crossAxisSpacing: context.sw(16),
                   childAspectRatio: 2.5,
                 ),
                 itemCount: list.length,
@@ -90,12 +90,12 @@ class HealtDetailsViewModel extends ChangeNotifier {
                       Navigator.pop(context);
                     },
                     child: Container(
-                      padding: context.padSym(h: 24, v: 18),
+                      padding: context.paddingSymmetricR(horizontal: 24, vertical: 18),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppColors.buttonColor.withOpacity(0.11)
                             : AppColors.backGroundColor,
-                        borderRadius: BorderRadius.circular(context.radius(16)),
+                        borderRadius: BorderRadius.circular(context.radiusR(16)),
                         border: isSelected
                             ? Border.all(
                                 color: AppColors.buttonColor,
@@ -121,7 +121,7 @@ class HealtDetailsViewModel extends ChangeNotifier {
                         child: Text(
                           list[index],
                           style: TextStyle(
-                            fontSize: context.text(14),
+                            fontSize: context.sp(14),
                             fontWeight: FontWeight.w700,
                             color: isSelected
                                 ? AppColors.headingColor

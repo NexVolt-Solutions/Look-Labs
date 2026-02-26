@@ -14,18 +14,18 @@ class LightCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlanContainer(
-      margin: context.padSym(v: 0),
-      padding: context.padSym(h: 12, v: 12),
+      margin: context.paddingSymmetricR(vertical: 0),
+      padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
       isSelected: false,
       onTap: () {},
       child: Row(
         children: [
           Container(
-            height: context.h(28),
-            width: context.w(28),
+            height: context.sh(28),
+            width: context.sw(28),
             decoration: BoxDecoration(
               color: AppColors.backGroundColor,
-              borderRadius: BorderRadius.circular(context.radius(10)),
+              borderRadius: BorderRadius.circular(context.radiusR(10)),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.customContainerColorUp.withOpacity(0.4),
@@ -41,8 +41,8 @@ class LightCardWidget extends StatelessWidget {
             ),
             child: Center(
               child: SizedBox(
-                height: context.h(32),
-                width: context.w(32),
+                height: context.sh(32),
+                width: context.sw(32),
                 child: SvgPicture.asset(
                   AppAssets.lightBulbIcon,
                   fit: BoxFit.scaleDown,
@@ -50,11 +50,11 @@ class LightCardWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: context.w(11)),
+          SizedBox(width: context.sw(11)),
           Expanded(
             child: NormalText(
               subText: text,
-              subSize: context.text(12),
+              subSize: context.sp(12),
               subWeight: FontWeight.w600,
               subColor: AppColors.iconColor,
             ),

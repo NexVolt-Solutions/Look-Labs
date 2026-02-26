@@ -13,8 +13,8 @@ class ButtonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlanContainer(
-      margin: context.padSym(v: 10),
-      padding: context.padSym(h: 12, v: 12),
+      margin: context.paddingSymmetricR(vertical: 10),
+      padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
       isSelected: false,
       onTap: () {},
       child: Column(
@@ -23,24 +23,24 @@ class ButtonCard extends StatelessWidget {
           NormalText(
             crossAxisAlignment: CrossAxisAlignment.start,
             titleText: title,
-            titleSize: context.text(14),
+            titleSize: context.sp(14),
             titleWeight: FontWeight.w600,
             titleColor: AppColors.subHeadingColor,
           ),
-          SizedBox(height: context.h(12)),
+          SizedBox(height: context.sh(12)),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: listData.map((item) {
               return PlanContainer(
-                margin: context.padSym(v: 0),
-                radius: BorderRadius.circular(context.radius(10)),
-                padding: context.padSym(v: 8, h: 24),
+                margin: context.paddingSymmetricR(vertical: 0),
+                radius: BorderRadius.circular(context.radiusR(10)),
+                padding: context.paddingSymmetricR(vertical: 8, horizontal: 24),
                 isSelected: false,
                 onTap: () {},
                 child: NormalText(
                   titleText: item,
-                  titleSize: context.text(10),
+                  titleSize: context.sp(10),
                   titleWeight: FontWeight.w600,
                   titleColor: AppColors.subHeadingColor,
                 ),

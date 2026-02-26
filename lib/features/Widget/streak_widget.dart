@@ -48,10 +48,10 @@ class StreakWidget extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: context.padSym(h: 4, v: 4),
+          padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
           decoration: BoxDecoration(
             color: AppColors.backGroundColor,
-            borderRadius: BorderRadius.circular(context.radius(10)),
+            borderRadius: BorderRadius.circular(context.radiusR(10)),
             boxShadow: [
               BoxShadow(
                 color: AppColors.customContainerColorUp.withOpacity(0.4),
@@ -66,12 +66,12 @@ class StreakWidget extends StatelessWidget {
             ],
           ),
           child: SizedBox(
-            height: context.h(24),
-            width: context.w(24),
+            height: context.sh(24),
+            width: context.sw(24),
             child: SvgPicture.asset(image!, fit: BoxFit.scaleDown),
           ),
         ),
-        SizedBox(width: context.w(11)),
+        SizedBox(width: context.sw(11)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,18 +80,18 @@ class StreakWidget extends StatelessWidget {
                 titleText: title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                titleSize: titleSize ?? context.text(14),
+                titleSize: titleSize ?? context.sp(14),
                 titleWeight: titleWeight ?? FontWeight.w600,
                 titleColor: titleColor ?? AppColors.iconColor,
               ),
-              SizedBox(height: context.h(2)),
+              SizedBox(height: context.sh(2)),
               Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
                       text: richTitle ?? '0',
                       style: TextStyle(
-                        fontSize: richTitleSize ?? context.text(26),
+                        fontSize: richTitleSize ?? context.sp(26),
                         fontWeight: richTitleWeight ?? FontWeight.w600,
                         color: richTitleColor ?? AppColors.subHeadingColor,
                       ),
@@ -99,7 +99,7 @@ class StreakWidget extends StatelessWidget {
                     TextSpan(
                       text: richSubTitle ?? '',
                       style: TextStyle(
-                        fontSize: richSubTitleSize ?? context.text(16),
+                        fontSize: richSubTitleSize ?? context.sp(16),
                         fontWeight: richSubTitleWeight ?? FontWeight.w600,
                         color: richSubTitleColor ?? AppColors.subHeadingColor,
                       ),

@@ -19,7 +19,7 @@ class ActivityConsistencyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlanContainer(
-      padding: context.padSym(h: 12, v: 12),
+      padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
       isSelected: false,
       onTap: () {},
       child: Column(
@@ -27,22 +27,22 @@ class ActivityConsistencyWidget extends StatelessWidget {
         children: [
           NormalText(
             titleText: title,
-            titleSize: context.text(18),
+            titleSize: context.sp(18),
             titleWeight: FontWeight.w600,
             titleColor: AppColors.subHeadingColor,
-            sizeBoxheight: context.h(12),
+            sizeBoxheight: context.sh(12),
             subText: subtitle,
             subWeight: FontWeight.w600,
             subColor: AppColors.iconColor,
-            subSize: context.text(14),
+            subSize: context.sp(14),
           ),
-          SizedBox(height: context.h(16)),
+          SizedBox(height: context.sh(16)),
           LinearSliderWidget(
             progress: pressentage ?? 10,
-            height: context.h(20),
-            animatedConHeight: context.h(20),
+            height: context.sh(20),
+            animatedConHeight: context.sh(20),
           ),
-          SizedBox(height: context.h(12)),
+          SizedBox(height: context.sh(12)),
         ],
       ),
     );

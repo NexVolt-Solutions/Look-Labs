@@ -27,27 +27,27 @@ class TermsScreen extends StatelessWidget {
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           clipBehavior: Clip.hardEdge,
           children: [
             AppBarContainer(
               title: AppText.termsOfService,
               onTap: () => Navigator.pop(context),
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             _buildParagraph(
               context,
               AppText.termsLastUpdated,
               fontWeight: FontWeight.w600,
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             _buildParagraph(context, AppText.termsWelcome),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             ..._sections.expand((section) => [
                   _buildHeading(context, section['title']!),
-                  SizedBox(height: context.h(8)),
+                  SizedBox(height: context.sh(8)),
                   _buildParagraph(context, section['body']!),
-                  SizedBox(height: context.h(16)),
+                  SizedBox(height: context.sh(16)),
                 ]),
           ],
         ),
@@ -61,7 +61,7 @@ class TermsScreen extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: context.text(18),
+          fontSize: context.sp(18),
           fontWeight: FontWeight.w600,
           color: AppColors.headingColor,
         ),
@@ -80,7 +80,7 @@ class TermsScreen extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: context.text(12),
+          fontSize: context.sp(12),
           fontWeight: fontWeight,
           color: AppColors.subHeadingColor,
           height: 1.4,

@@ -24,18 +24,18 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           clipBehavior: Clip.hardEdge,
           children: [
-            SizedBox(height: context.h(32)),
+            SizedBox(height: context.sh(32)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
               titleText: AppText.healtDetails,
-              titleSize: context.text(20),
+              titleSize: context.sp(20),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             CustomContiner(
               isEnabled: true,
               onTap: () {
@@ -51,7 +51,7 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
               title2Color: AppColors.pimaryColor,
             ),
 
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             CustomContiner(
               isEnabled: true,
               onTap: () {
@@ -66,7 +66,7 @@ class _HealtDetailsScreenState extends State<HealtDetailsScreen> {
               title2: healtDetailsViewModel.selectedWorkout,
               title2Color: AppColors.pimaryColor,
             ),
-            SizedBox(height: context.h(305)),
+            SizedBox(height: context.sh(305)),
             CustomButton(
               isEnabled: true,
               onTap: () => Navigator.pushNamed(context, RoutesName.GaolScreen),

@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:looklabs/Core/Config/env_loader.dart';
 import 'package:looklabs/Model/user_model.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
+import 'package:looklabs/Repository/onboarding_repository.dart';
 
 /// Web client ID from Google Cloud Console (Credentials → Web client).
 /// Required on Android for idToken. Set in api.env as GOOGLE_WEB_CLIENT_ID=...
@@ -112,6 +113,7 @@ class AuthViewModel extends ChangeNotifier {
 
         if (response.success && response.data != null) {
           _user = _parseUser(response.data);
+          OnboardingRepository.clearSession();
           _errorMessage = null;
           _isLoading = false;
           notifyListeners();
@@ -134,6 +136,7 @@ class AuthViewModel extends ChangeNotifier {
 
       if (response.success && response.data != null) {
         _user = _parseUser(response.data);
+        OnboardingRepository.clearSession();
         _errorMessage = null;
         _isLoading = false;
         notifyListeners();

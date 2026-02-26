@@ -28,10 +28,10 @@ class _DietResultScreenState extends State<DietResultScreen> {
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: EdgeInsetsGeometry.only(
-          top: context.h(5),
-          left: context.w(20),
-          right: context.w(20),
-          bottom: context.h(30),
+          top: context.sh(5),
+          left: context.sw(20),
+          right: context.sw(20),
+          bottom: context.sh(30),
         ),
         child: CustomButton(
           text: 'Next',
@@ -45,7 +45,7 @@ class _DietResultScreenState extends State<DietResultScreen> {
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Diet',
@@ -53,22 +53,22 @@ class _DietResultScreenState extends State<DietResultScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Improve strength & track your workout progress',
-              titleSize: context.text(16),
+              titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 dietResultScreenViewModel.gridData.length,
                 (index) {
                   return HeightWidgetCont(
-                    // padding: context.padSym(h: 11.5, v: 14.5),
+                    // padding: context.paddingSymmetricR(horizontal: 11.5, vertical: 14.5),
                     title: dietResultScreenViewModel.gridData[index]['title'],
                     subTitle:
                         dietResultScreenViewModel.gridData[index]['subtitle'],
@@ -77,18 +77,18 @@ class _DietResultScreenState extends State<DietResultScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             NormalText(
               titleText: 'Today\'s Focus',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
 
             Wrap(
-              spacing: context.w(5),
-              runSpacing: context.h(11),
+              spacing: context.sw(5),
+              runSpacing: context.sh(11),
               children: List.generate(dietResultScreenViewModel.exData.length, (
                 btnIndex,
               ) {
@@ -98,9 +98,9 @@ class _DietResultScreenState extends State<DietResultScreen> {
 
                 return PlanContainer(
                   isSelected: isSelected,
-                  radius: BorderRadius.circular(context.radius(16)),
-                  margin: context.padSym(h: 0),
-                  padding: context.padSym(h: 14, v: 10),
+                  radius: BorderRadius.circular(context.radiusR(16)),
+                  margin: context.paddingSymmetricR(horizontal: 0),
+                  padding: context.paddingSymmetricR(horizontal: 14, vertical: 10),
                   onTap: () {
                     dietResultScreenViewModel.selectExercise(btnIndex);
                   },
@@ -109,8 +109,8 @@ class _DietResultScreenState extends State<DietResultScreen> {
                     children: [
                       Center(
                         child: SizedBox(
-                          height: context.h(20),
-                          width: context.w(20),
+                          height: context.sh(20),
+                          width: context.sw(20),
                           child: SvgPicture.asset(
                             dietResultScreenViewModel.exData[btnIndex]['image'],
                             fit: BoxFit.scaleDown,
@@ -120,11 +120,11 @@ class _DietResultScreenState extends State<DietResultScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: context.w(8)),
+                      SizedBox(width: context.sw(8)),
                       NormalText(
                         titleText:
                             dietResultScreenViewModel.exData[btnIndex]['title'],
-                        titleSize: context.text(14),
+                        titleSize: context.sp(14),
                         titleWeight: FontWeight.w500,
                         titleColor: isSelected
                             ? AppColors.pimaryColor
@@ -135,21 +135,21 @@ class _DietResultScreenState extends State<DietResultScreen> {
                 );
               }),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
-              margin: context.padSym(h: 0),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
+              margin: context.paddingSymmetricR(horizontal: 0),
               isSelected: false,
               onTap: () {},
               child: Column(
                 crossAxisAlignment: .start,
                 children: [
                   Container(
-                    height: context.h(28),
-                    width: context.w(28),
+                    height: context.sh(28),
+                    width: context.sw(28),
                     decoration: BoxDecoration(
                       color: AppColors.backGroundColor,
-                      borderRadius: BorderRadius.circular(context.radius(10)),
+                      borderRadius: BorderRadius.circular(context.radiusR(10)),
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.customContainerColorUp.withOpacity(
@@ -169,8 +169,8 @@ class _DietResultScreenState extends State<DietResultScreen> {
                     ),
                     child: Center(
                       child: SizedBox(
-                        height: context.h(32),
-                        width: context.w(32),
+                        height: context.sh(32),
+                        width: context.sw(32),
                         child: SvgPicture.asset(
                           AppAssets.lightBulbIcon,
                           fit: BoxFit.scaleDown,
@@ -178,25 +178,25 @@ class _DietResultScreenState extends State<DietResultScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: context.h(8)),
+                  SizedBox(height: context.sh(8)),
 
                   NormalText(
                     titleText: 'Posture Insight',
-                    titleSize: context.text(16),
+                    titleSize: context.sp(16),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
                     subText:
                         'Consistency improves stamina, strength & metabolism over time. Keep pushing!',
-                    subSize: context.text(12),
+                    subSize: context.sp(12),
                     subWeight: FontWeight.w600,
                   ),
                 ],
               ),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             PlanContainer(
-              margin: context.padSym(h: 0),
-              padding: context.padSym(h: 12, v: 12),
+              margin: context.paddingSymmetricR(horizontal: 0),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Row(
@@ -204,17 +204,17 @@ class _DietResultScreenState extends State<DietResultScreen> {
                 children: [
                   NormalText(
                     titleText: 'Today\'s Meals',
-                    titleSize: context.text(16),
+                    titleSize: context.sp(16),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
                     subText: '3 meals + 2 snacks • 22 min prep',
-                    subSize: context.text(12),
+                    subSize: context.sp(12),
                     subWeight: FontWeight.w600,
                   ),
                   Container(
-                    padding: context.padSym(h: 6, v: 6),
+                    padding: context.paddingSymmetricR(horizontal: 6, vertical: 6),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(context.radius(10)),
+                      borderRadius: BorderRadius.circular(context.radiusR(10)),
                       gradient: const LinearGradient(
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
@@ -250,16 +250,16 @@ class _DietResultScreenState extends State<DietResultScreen> {
                         /// First Icon
                         SvgPicture.asset(
                           AppAssets.sunIcon,
-                          height: context.h(20),
-                          width: context.w(20),
+                          height: context.sh(20),
+                          width: context.sw(20),
                           placeholderBuilder: (_) => const Icon(Icons.image),
                         ),
 
-                        SizedBox(width: context.w(4)),
+                        SizedBox(width: context.sw(4)),
                         SvgPicture.asset(
                           AppAssets.nightIcon,
-                          height: context.h(16),
-                          width: context.w(16),
+                          height: context.sh(16),
+                          width: context.sw(16),
                           placeholderBuilder: (_) => const Icon(Icons.image),
                         ),
                       ],

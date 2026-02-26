@@ -20,10 +20,10 @@ class TextAndIndectorContiner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: context.padSym(h: 25, v: 13),
-      margin: context.padSym(h: 8, v: 8),
+      padding: context.paddingSymmetricR(horizontal: 25, vertical: 13),
+      margin: context.paddingSymmetricR(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.radius(16)),
+        borderRadius: BorderRadius.circular(context.radiusR(16)),
         color: AppColors.backGroundColor,
         boxShadow: [
           BoxShadow(
@@ -47,7 +47,7 @@ class TextAndIndectorContiner extends StatelessWidget {
           Text(
             title ?? '',
             style: TextStyle(
-              fontSize: context.text(16.32),
+              fontSize: context.sp(16.32),
               fontWeight: FontWeight.w600,
               color: AppColors.notSelectedColor,
             ),
@@ -55,18 +55,18 @@ class TextAndIndectorContiner extends StatelessWidget {
           Text(
             subTitle ?? '',
             style: TextStyle(
-              fontSize: context.text(16.32),
+              fontSize: context.sp(16.32),
               fontWeight: FontWeight.w600,
               color: AppColors.subHeadingColor,
             ),
           ),
-          SizedBox(height: context.h(10)),
+          SizedBox(height: context.sh(10)),
           LinearSliderWidget(
             showTopIcon: false,
             progress: progress ?? 10,
             inset: true,
-            height: context.h(8.16),
-            animatedConHeight: context.h(8.16),
+            height: context.sh(8.16),
+            animatedConHeight: context.sh(8.16),
             showPercentage: true,
           ),
           // Row(
@@ -74,10 +74,10 @@ class TextAndIndectorContiner extends StatelessWidget {
           //   children: [
           //     Expanded(
           //       child: Container(
-          //         height: context.h(10),
-          //         // padding: context.padSym(h: 15.3),
+          //         height: context.sh(10),
+          //         // padding: context.paddingSymmetricR(horizontal: 15.3),
           //         decoration: BoxDecoration(
-          //           borderRadius: BorderRadius.circular(context.radius(20)),
+          //           borderRadius: BorderRadius.circular(context.radiusR(20)),
           //           color: AppColors.backGroundColor,
           //           boxShadow: [
           //             BoxShadow(
@@ -99,23 +99,23 @@ class TextAndIndectorContiner extends StatelessWidget {
           //           ],
           //         ),
           //         child: ClipRRect(
-          //           borderRadius: BorderRadius.circular(context.radius(20)),
+          //           borderRadius: BorderRadius.circular(context.radiusR(20)),
           //           child: LinearPercentIndicator(
           //             padding: EdgeInsets.zero,
-          //             lineHeight: context.h(8),
+          //             lineHeight: context.sh(8),
           //             percent: 0.5,
           //             backgroundColor: AppColors.backGroundColor,
           //             progressColor: AppColors.pimaryColor,
-          //             barRadius: Radius.circular(context.radius(20)),
+          //             barRadius: Radius.circular(context.radiusR(20)),
           //           ),
           //         ),
           //       ),
           //     ),
-          //     SizedBox(width: context.w(8)),
+          //     SizedBox(width: context.sw(8)),
           //     Text(
           //       '${pers}%',
           //       style: TextStyle(
-          //         fontSize: context.text(12),
+          //         fontSize: context.sp(12),
           //         fontWeight: FontWeight.w600,
           //         color: AppColors.subHeadingColor,
           //       ),

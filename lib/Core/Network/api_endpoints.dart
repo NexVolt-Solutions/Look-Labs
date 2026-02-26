@@ -2,6 +2,12 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
+  // Onboarding (anonymous – no auth token required)
+  static const String onboardingSessions = 'onboarding/sessions';
+  /// GET onboarding/sessions/{session_id}/flow?step=...&index=...
+  static String onboardingSessionFlow(String sessionId) =>
+      'onboarding/sessions/$sessionId/flow';
+
   // Auth (Google Sign-In only)
   static const String googleSignIn = 'auth/google';
   static const String appleSignIn = 'auth/apple';

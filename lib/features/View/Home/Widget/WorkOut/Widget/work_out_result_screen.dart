@@ -29,10 +29,10 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: EdgeInsetsGeometry.only(
-          top: context.h(5),
-          left: context.w(20),
-          right: context.w(20),
-          bottom: context.h(30),
+          top: context.sh(5),
+          left: context.sw(20),
+          right: context.sw(20),
+          bottom: context.sh(30),
         ),
         child: CustomButton(
           isEnabled: true,
@@ -49,7 +49,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Workout',
@@ -57,40 +57,40 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Build strength, stamina & consistency',
-              titleSize: context.text(16),
+              titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(workOutResultViewModel.gridData.length, (
                 index,
               ) {
                 return HeightWidgetCont(
-                  // padding: context.padSym(h: 11.5, v: 14.5),
+                  // padding: context.paddingSymmetricR(horizontal: 11.5, vertical: 14.5),
                   title: workOutResultViewModel.gridData[index]['title'],
                   subTitle: workOutResultViewModel.gridData[index]['subtitle'],
                   imgPath: workOutResultViewModel.gridData[index]['image'],
                 );
               }),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             NormalText(
               titleText: 'Today\'s Focus',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
 
             Wrap(
-              spacing: context.w(5),
-              runSpacing: context.h(11),
+              spacing: context.sw(5),
+              runSpacing: context.sh(11),
               children: List.generate(workOutResultViewModel.exData.length, (
                 btnIndex,
               ) {
@@ -99,10 +99,10 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                 );
 
                 return PlanContainer(
-                  padding: context.padSym(h: 18, v: 11),
-                  margin: context.padSym(h: 0),
+                  padding: context.paddingSymmetricR(horizontal: 18, vertical: 11),
+                  margin: context.paddingSymmetricR(horizontal: 0),
                   isSelected: isSelected,
-                  radius: BorderRadius.circular(context.radius(16)),
+                  radius: BorderRadius.circular(context.radiusR(16)),
 
                   onTap: () {
                     workOutResultViewModel.selectExercise(btnIndex);
@@ -112,8 +112,8 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                     children: [
                       Center(
                         child: SizedBox(
-                          height: context.h(20),
-                          width: context.w(20),
+                          height: context.sh(20),
+                          width: context.sw(20),
                           child: SvgPicture.asset(
                             workOutResultViewModel.exData[btnIndex]['image'],
                             fit: BoxFit.scaleDown,
@@ -124,12 +124,12 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                         ),
                       ),
 
-                      SizedBox(width: context.w(8)),
+                      SizedBox(width: context.sw(8)),
 
                       NormalText(
                         titleText:
                             workOutResultViewModel.exData[btnIndex]['title'],
-                        titleSize: context.text(14),
+                        titleSize: context.sp(14),
                         titleWeight: FontWeight.w500,
                         titleColor: isSelected
                             ? AppColors.pimaryColor
@@ -140,21 +140,21 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                 );
               }),
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             PlanContainer(
-              margin: context.padSym(h: 0),
-              padding: context.padSym(h: 12, v: 12),
+              margin: context.paddingSymmetricR(horizontal: 0),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
                 crossAxisAlignment: .start,
                 children: [
                   Container(
-                    height: context.h(28),
-                    width: context.w(28),
+                    height: context.sh(28),
+                    width: context.sw(28),
                     decoration: BoxDecoration(
                       color: AppColors.backGroundColor,
-                      borderRadius: BorderRadius.circular(context.radius(10)),
+                      borderRadius: BorderRadius.circular(context.radiusR(10)),
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.customContainerColorUp.withOpacity(
@@ -174,8 +174,8 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                     ),
                     child: Center(
                       child: SizedBox(
-                        height: context.h(32),
-                        width: context.w(32),
+                        height: context.sh(32),
+                        width: context.sw(32),
                         child: SvgPicture.asset(
                           AppAssets.lightBulbIcon,
                           fit: BoxFit.scaleDown,
@@ -183,22 +183,22 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: context.h(8)),
+                  SizedBox(height: context.sh(8)),
 
                   NormalText(
                     titleText: 'Posture Insight',
-                    titleSize: context.text(16),
+                    titleSize: context.sp(16),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
                     subText:
                         'Consistency improves stamina, strength & metabolism over time. Keep pushing!',
-                    subSize: context.text(12),
+                    subSize: context.sp(12),
                     subWeight: FontWeight.w600,
                   ),
                 ],
               ),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
 
             ...List.generate(workOutResultViewModel.heightRoutineList.length, (
               index,
@@ -212,15 +212,15 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   width: double.infinity,
-                  padding: context.padSym(v: 8, h: 20),
-                  margin: context.padSym(v: 11),
+                  padding: context.paddingSymmetricR(vertical: 8, horizontal: 20),
+                  margin: context.paddingSymmetricR(vertical: 11),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: isSelected
                           ? AppColors.pimaryColor
                           : AppColors.backGroundColor,
-                      width: context.w(1.5),
+                      width: context.sw(1.5),
                     ),
                     color: isSelected
                         ? AppColors.pimaryColor.withOpacity(0.15)
@@ -257,8 +257,8 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                                   workOutResultViewModel.selectPlan(index);
                                 },
                                 child: Container(
-                                  height: context.h(28),
-                                  width: context.w(28),
+                                  height: context.sh(28),
+                                  width: context.sw(28),
                                   decoration: BoxDecoration(
                                     color: AppColors.backGroundColor,
                                     shape: BoxShape.circle,
@@ -286,21 +286,21 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                                         )
                                         ? Icon(
                                             Icons.check,
-                                            size: context.h(16),
+                                            size: context.sh(16),
                                             color: AppColors.pimaryColor,
                                           )
                                         : NormalText(titleText: '${index + 1}'),
                                   ),
                                 ),
                               ),
-                              SizedBox(width: context.w(9)),
+                              SizedBox(width: context.sw(9)),
                               NormalText(
                                 titleText: item['time'],
-                                titleSize: context.text(14),
+                                titleSize: context.sp(14),
                                 titleWeight: FontWeight.w500,
                                 titleColor: AppColors.subHeadingColor,
                                 subText: item['activity'],
-                                subSize: context.text(10),
+                                subSize: context.sp(10),
                                 subWeight: FontWeight.w400,
                                 subColor: AppColors.subHeadingColor,
                               ),
@@ -314,7 +314,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                               workOutResultViewModel.isExpanded(index)
                                   ? Icons.keyboard_arrow_up
                                   : Icons.keyboard_arrow_down,
-                              size: context.h(24),
+                              size: context.sh(24),
                             ),
                           ),
                         ],
@@ -326,24 +326,24 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                         secondChild: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: context.h(12)),
+                            SizedBox(height: context.sh(12)),
                             NormalText(
                               titleText: item['details'],
-                              titleSize: context.text(12),
+                              titleSize: context.sp(12),
                               titleWeight: FontWeight.w600,
                               titleColor: AppColors.iconColor,
                             ),
-                            SizedBox(height: context.h(6)),
+                            SizedBox(height: context.sh(6)),
                             NormalText(
                               titleText: "• Do exercises slowly",
-                              titleSize: context.text(12),
+                              titleSize: context.sp(12),
                               titleWeight: FontWeight.w600,
                               titleColor: AppColors.iconColor,
                             ),
-                            SizedBox(height: context.h(6)),
+                            SizedBox(height: context.sh(6)),
                             NormalText(
                               titleText: "• Maintain proper breathing",
-                              titleSize: context.text(12),
+                              titleSize: context.sp(12),
                               titleWeight: FontWeight.w600,
                               titleColor: AppColors.iconColor,
                             ),

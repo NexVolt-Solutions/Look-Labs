@@ -29,12 +29,12 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 //         /// Slider
 //         Expanded(
 //           child: Container(
-//             height: height ?? context.h(20),
+//             height: height ?? context.sh(20),
 //             decoration: BoxDecoration(
-//               borderRadius: BorderRadius.circular(context.radius(10)),
+//               borderRadius: BorderRadius.circular(context.radiusR(10)),
 //               border: Border.all(
 //                 color: AppColors.backGroundColor,
-//                 width: context.w(1.5),
+//                 width: context.sw(1.5),
 //               ),
 //               color: AppColors.backGroundColor,
 //               boxShadow: [
@@ -58,10 +58,10 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 //                   children: [
 //                     AnimatedContainer(
 //                       duration: const Duration(milliseconds: 400),
-//                       height: animatedConHeight ?? context.h(20),
+//                       height: animatedConHeight ?? context.sh(20),
 //                       width: constraints.maxWidth * (progress / 100),
 //                       decoration: BoxDecoration(
-//                         borderRadius: BorderRadius.circular(context.radius(10)),
+//                         borderRadius: BorderRadius.circular(context.radiusR(10)),
 //                         color: AppColors.pimaryColor,
 //                         boxShadow: [
 //                           BoxShadow(
@@ -80,16 +80,16 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 //         ),
 //         if (showPercentage == true)
 //           /// Space
-//           SizedBox(width: context.w(8)),
+//           SizedBox(width: context.sw(8)),
 
 //         /// Percentage OR Placeholder (UI stable)
 //         if (showPercentage == true)
 //           SizedBox(
-//             width: context.w(30), // fixed width so layout never shifts
+//             width: context.sw(30), // fixed width so layout never shifts
 //             child: showPercentage
 //                 ? NormalText(
 //                     titleText: '${progress.toInt()}%',
-//                     titleSize: context.text(12),
+//                     titleSize: context.sp(12),
 //                     titleWeight: FontWeight.w600,
 //                     titleColor: AppColors.subHeadingColor,
 //                   )
@@ -128,19 +128,19 @@ class LinearSliderWidget extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 AppAssets.sugIcon,
-                width: context.w(50),
-                // height: context.h(70),
+                width: context.sw(50),
+                // height: context.sh(70),
               ),
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 0, end: progress),
                 duration: const Duration(milliseconds: 600),
                 builder: (context, value, _) {
                   return Padding(
-                    padding: EdgeInsets.only(bottom: context.h(10)),
+                    padding: EdgeInsets.only(bottom: context.sh(10)),
                     child: Text(
                       "${value.toInt()}%",
                       style: TextStyle(
-                        fontSize: context.text(12),
+                        fontSize: context.sp(12),
                         fontWeight: FontWeight.w400,
                         color: AppColors.headingColor,
                       ),
@@ -150,19 +150,19 @@ class LinearSliderWidget extends StatelessWidget {
               ),
             ],
           ),
-        SizedBox(height: context.h(4)),
+        SizedBox(height: context.sh(4)),
 
         /// Main Slider Row
         Row(
           children: [
             Expanded(
               child: Container(
-                height: height ?? context.h(20),
+                height: height ?? context.sh(20),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(context.radius(10)),
+                  borderRadius: BorderRadius.circular(context.radiusR(10)),
                   border: Border.all(
                     color: AppColors.backGroundColor,
-                    width: context.w(1.5),
+                    width: context.sw(1.5),
                   ),
                   color: AppColors.backGroundColor,
                   boxShadow: [
@@ -186,11 +186,11 @@ class LinearSliderWidget extends StatelessWidget {
                       children: [
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 400),
-                          height: animatedConHeight ?? context.h(20),
+                          height: animatedConHeight ?? context.sh(20),
                           width: constraints.maxWidth * (progress / 100),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(
-                              context.radius(10),
+                              context.radiusR(10),
                             ),
                             color: AppColors.pimaryColor,
                             boxShadow: [
@@ -208,13 +208,13 @@ class LinearSliderWidget extends StatelessWidget {
                 ),
               ),
             ),
-            if (showPercentage) SizedBox(width: context.w(8)),
+            if (showPercentage) SizedBox(width: context.sw(8)),
             if (showPercentage)
               SizedBox(
-                width: context.w(30),
+                width: context.sw(30),
                 child: NormalText(
                   titleText: '${progress.toInt()}%',
-                  titleSize: context.text(12),
+                  titleSize: context.sp(12),
                   titleWeight: FontWeight.w600,
                   titleColor: AppColors.subHeadingColor,
                 ),

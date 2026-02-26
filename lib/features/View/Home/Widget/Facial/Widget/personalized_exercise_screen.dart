@@ -30,10 +30,10 @@ class _PersonalizedExerciseScreenState
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
         padding: EdgeInsetsGeometry.only(
-          top: context.h(5),
-          left: context.w(20),
-          right: context.w(20),
-          bottom: context.h(30),
+          top: context.sh(5),
+          left: context.sw(20),
+          right: context.sw(20),
+          bottom: context.sh(30),
         ),
         child: CustomButton(
           text: 'Check Your Progress',
@@ -46,7 +46,7 @@ class _PersonalizedExerciseScreenState
       ),
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Personalized Exercise',
@@ -54,9 +54,9 @@ class _PersonalizedExerciseScreenState
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             PlanContainer(
-              padding: context.padSym(h: 12, v: 12),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -64,12 +64,12 @@ class _PersonalizedExerciseScreenState
                   Row(
                     children: [
                       Container(
-                        height: context.h(28),
-                        width: context.w(28),
+                        height: context.sh(28),
+                        width: context.sw(28),
                         decoration: BoxDecoration(
                           color: AppColors.backGroundColor,
                           borderRadius: BorderRadius.circular(
-                            context.radius(10),
+                            context.radiusR(10),
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -88,8 +88,8 @@ class _PersonalizedExerciseScreenState
                         ),
                         child: Center(
                           child: SizedBox(
-                            height: context.h(32),
-                            width: context.w(32),
+                            height: context.sh(32),
+                            width: context.sw(32),
                             child: SvgPicture.asset(
                               AppAssets.yogaIcon,
                               fit: BoxFit.scaleDown,
@@ -97,21 +97,21 @@ class _PersonalizedExerciseScreenState
                           ),
                         ),
                       ),
-                      SizedBox(width: context.w(11)),
+                      SizedBox(width: context.sw(11)),
                       Expanded(
                         child: NormalText(
                           titleText: 'Today\'s Progress',
-                          titleSize: context.text(12),
+                          titleSize: context.sp(12),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
                           // subText: 'Best done after waking up',
-                          // subSize: context.text(10),
+                          // subSize: context.sp(10),
                           // subWeight: FontWeight.w400,
                         ),
                       ),
                       NormalText(
                         titleText: '2/5',
-                        titleSize: context.text(12),
+                        titleSize: context.sp(12),
                         titleWeight: FontWeight.w600,
                         titleColor: AppColors.iconColor,
                       ),
@@ -133,15 +133,15 @@ class _PersonalizedExerciseScreenState
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           width: double.infinity,
-                          padding: context.padSym(v: 8, h: 20),
-                          margin: context.padSym(v: 11),
+                          padding: context.paddingSymmetricR(vertical: 8, horizontal: 20),
+                          margin: context.paddingSymmetricR(vertical: 11),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color: isSelected
                                   ? AppColors.pimaryColor
                                   : AppColors.backGroundColor,
-                              width: context.w(1.5),
+                              width: context.sw(1.5),
                             ),
                             color: isSelected
                                 ? AppColors.pimaryColor.withOpacity(0.15)
@@ -178,8 +178,8 @@ class _PersonalizedExerciseScreenState
                                               .selectPlan(index);
                                         },
                                         child: Container(
-                                          height: context.h(28),
-                                          width: context.w(28),
+                                          height: context.sh(28),
+                                          width: context.sw(28),
                                           decoration: BoxDecoration(
                                             color: AppColors.backGroundColor,
                                             shape: BoxShape.circle,
@@ -208,7 +208,7 @@ class _PersonalizedExerciseScreenState
                                                     .isPlanSelected(index)
                                                 ? Icon(
                                                     Icons.check,
-                                                    size: context.h(16),
+                                                    size: context.sh(16),
                                                     color:
                                                         AppColors.pimaryColor,
                                                   )
@@ -218,14 +218,14 @@ class _PersonalizedExerciseScreenState
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: context.w(9)),
+                                      SizedBox(width: context.sw(9)),
                                       NormalText(
                                         titleText: item['time'],
-                                        titleSize: context.text(14),
+                                        titleSize: context.sp(14),
                                         titleWeight: FontWeight.w500,
                                         titleColor: AppColors.subHeadingColor,
                                         subText: item['activity'],
-                                        subSize: context.text(10),
+                                        subSize: context.sp(10),
                                         subWeight: FontWeight.w400,
                                         subColor: AppColors.subHeadingColor,
                                       ),
@@ -241,7 +241,7 @@ class _PersonalizedExerciseScreenState
                                               .isExpanded(index)
                                           ? Icons.keyboard_arrow_up
                                           : Icons.keyboard_arrow_down,
-                                      size: context.h(24),
+                                      size: context.sh(24),
                                     ),
                                   ),
                                 ],
@@ -253,24 +253,24 @@ class _PersonalizedExerciseScreenState
                                 secondChild: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(height: context.h(12)),
+                                    SizedBox(height: context.sh(12)),
                                     NormalText(
                                       titleText: '• ' + item['details'],
-                                      titleSize: context.text(12),
+                                      titleSize: context.sp(12),
                                       titleWeight: FontWeight.w600,
                                       titleColor: AppColors.iconColor,
                                     ),
-                                    SizedBox(height: context.h(6)),
+                                    SizedBox(height: context.sh(6)),
                                     NormalText(
                                       titleText: "• Do exercises slowly",
-                                      titleSize: context.text(12),
+                                      titleSize: context.sp(12),
                                       titleWeight: FontWeight.w600,
                                       titleColor: AppColors.iconColor,
                                     ),
-                                    SizedBox(height: context.h(6)),
+                                    SizedBox(height: context.sh(6)),
                                     NormalText(
                                       titleText: "• Maintain proper breathing",
-                                      titleSize: context.text(12),
+                                      titleSize: context.sp(12),
                                       titleWeight: FontWeight.w600,
                                       titleColor: AppColors.iconColor,
                                     ),
@@ -293,7 +293,7 @@ class _PersonalizedExerciseScreenState
               ),
             ),
 
-            SizedBox(height: context.h(30)),
+            SizedBox(height: context.sh(30)),
           ],
         ),
       ),

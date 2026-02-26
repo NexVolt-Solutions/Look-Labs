@@ -37,20 +37,20 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
             /// 🔹 HEADER (Settings screen me hide)
             if (bottomSheetBarViewModel.selectedIndex != 2)
               Padding(
-                padding: context.padSym(h: 20, v: 20),
+                padding: context.paddingSymmetricR(horizontal: 20, vertical: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
                         Container(
-                          height: context.h(40),
-                          width: context.w(40),
+                          height: context.sh(40),
+                          width: context.sw(40),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: AppColors.white,
-                              width: context.w(1.5),
+                              width: context.sw(1.5),
                             ),
                             image: const DecorationImage(
                               image: AssetImage(AppAssets.circleIcon),
@@ -58,14 +58,14 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: context.w(12)),
+                        SizedBox(width: context.sw(12)),
                         NormalText(
                           titleText: greeting,
-                          titleSize: context.text(16),
+                          titleSize: context.sp(16),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
                           subText: AppText.goodMorning,
-                          subSize: context.text(14),
+                          subSize: context.sp(14),
                           subColor: AppColors.notSelectedColor,
                         ),
                       ],
@@ -73,34 +73,34 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                     Row(
                       children: [
                         // CustomContainer(
-                        //   radius: context.radius(32),
-                        //   padding: context.padSym(h: 11, v: 3),
+                        //   radius: context.radiusR(32),
+                        //   padding: context.paddingSymmetricR(horizontal: 11, vertical: 3),
                         //   child: Row(
                         //     children: [
                         //       SvgPicture.asset(
                         //         AppAssets.fireIcon,
-                        //         height: context.h(20),
+                        //         height: context.sh(20),
                         //         color: AppColors.fireColor,
                         //       ),
-                        //       SizedBox(width: context.w(4)),
+                        //       SizedBox(width: context.sw(4)),
                         //       Text(
                         //         '12',
                         //         style: TextStyle(
-                        //           fontSize: context.text(15),
+                        //           fontSize: context.sp(15),
                         //           fontWeight: FontWeight.w600,
                         //         ),
                         //       ),
                         //     ],
                         //   ),
                         // ),
-                        // SizedBox(width: context.w(10)),
+                        // SizedBox(width: context.sw(10)),
                         CustomContainer(
-                          radius: context.radius(30),
-                          padding: context.padSym(h: 6, v: 6),
+                          radius: context.radiusR(30),
+                          padding: context.paddingSymmetricR(horizontal: 6, vertical: 6),
                           child: SvgPicture.asset(
                             AppAssets.notificationIcon,
                             fit: BoxFit.scaleDown,
-                            // height: context.h(24),
+                            // height: context.sh(24),
                             color: AppColors.notSelectedColor,
                           ),
                         ),

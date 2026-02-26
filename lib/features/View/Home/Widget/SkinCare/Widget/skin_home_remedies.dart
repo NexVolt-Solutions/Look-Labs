@@ -20,7 +20,7 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Skin Home Remedies',
@@ -28,22 +28,22 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Recommended Home Remedies',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             PlanContainer(
               isSelected: false,
               onTap: () {},
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(bottom: context.h(10)),
+                    padding: EdgeInsets.only(bottom: context.sh(10)),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -54,16 +54,16 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                               Text(
                                 '1. Aloe Vera Gel',
                                 style: TextStyle(
-                                  fontSize: context.text(18),
+                                  fontSize: context.sp(18),
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.subHeadingColor,
                                 ),
                               ),
-                              SizedBox(height: context.h(4)),
+                              SizedBox(height: context.sh(4)),
                               ...List.generate(2, (index) {
                                 return Padding(
                                   padding: EdgeInsets.only(
-                                    bottom: context.h(6),
+                                    bottom: context.sh(6),
                                   ),
                                   child: Row(
                                     crossAxisAlignment:
@@ -72,7 +72,7 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                                       Text(
                                         '• ', // Dot bullet
                                         style: TextStyle(
-                                          fontSize: context.text(12),
+                                          fontSize: context.sp(12),
                                           fontWeight: FontWeight.w500,
                                           color: AppColors.iconColor,
                                         ),
@@ -81,7 +81,7 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                                         child: Text(
                                           'AM or PM (during hair wash)',
                                           style: TextStyle(
-                                            fontSize: context.text(12),
+                                            fontSize: context.sp(12),
                                             fontWeight: FontWeight.w400,
                                             color: AppColors.iconColor,
                                           ),
@@ -100,25 +100,25 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(16)),
+            SizedBox(height: context.sh(16)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Saftey Tips:',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
             ...List.generate(2, (index) {
               return Padding(
-                padding: EdgeInsets.only(bottom: context.h(6)),
+                padding: EdgeInsets.only(bottom: context.sh(6)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '• ', // Dot bullet
                       style: TextStyle(
-                        fontSize: context.text(12),
+                        fontSize: context.sp(12),
                         fontWeight: FontWeight.w500,
                         color: AppColors.subHeadingColor,
                       ),
@@ -127,7 +127,7 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                       child: Text(
                         'AM or PM (during hair wash)',
                         style: TextStyle(
-                          fontSize: context.text(16),
+                          fontSize: context.sp(16),
                           fontWeight: FontWeight.w400,
                           color: AppColors.subHeadingColor,
                         ),

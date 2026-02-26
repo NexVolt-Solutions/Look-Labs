@@ -19,14 +19,14 @@ class SettingContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: context.padSym(h: 20),
+      padding: context.paddingSymmetricR(horizontal: 20),
       child: Container(
-        padding: context.padSym(h: 17.5, v: 10),
+        padding: context.paddingSymmetricR(horizontal: 17.5, vertical: 10),
         decoration: BoxDecoration(
           color: AppColors.backGroundColor,
           border: Border.all(
             color: AppColors.backGroundColor,
-            width: context.w(1.5),
+            width: context.sw(1.5),
           ),
           boxShadow: [
             BoxShadow(
@@ -60,7 +60,7 @@ class SettingContainer extends StatelessWidget {
 
                   leading: CustomContainer(
                     color: AppColors.backGroundColor,
-                    padding: context.padSym(h: 8, v: 8),
+                    padding: context.paddingSymmetricR(horizontal: 8, vertical: 8),
                     child: SvgPicture.asset(
                       item['icon'],
                       color: AppColors.iconColor,
@@ -69,7 +69,7 @@ class SettingContainer extends StatelessWidget {
 
                   title: NormalText(
                     titleText: item['title'],
-                    titleSize: context.text(14),
+                    titleSize: context.sp(14),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
                   ),
@@ -118,7 +118,7 @@ class SettingContainer extends StatelessWidget {
     /// 🔹 SUBTITLE TEXT
     return NormalText(
       titleText: item['value'] ?? '',
-      titleSize: context.text(14),
+      titleSize: context.sp(14),
       titleWeight: FontWeight.w400,
       titleColor: AppColors.subHeadingColor,
     );

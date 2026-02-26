@@ -28,7 +28,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Recovery Path',
@@ -36,10 +36,10 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
             PlanContainer(
-              margin: context.padSym(v: 0),
-              padding: context.padSym(h: 12, v: 20),
+              margin: context.paddingSymmetricR(vertical: 0),
+              padding: context.paddingSymmetricR(horizontal: 12, vertical: 20),
               isSelected: false,
               onTap: () {},
               child: Column(
@@ -48,32 +48,32 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                   StreakWidget(
                     image: AppAssets.fatLossIcon,
                     title: 'Current Streak',
-                    titleSize: context.text(16),
+                    titleSize: context.sp(16),
                     titleColor: AppColors.iconColor,
                     titleWeight: FontWeight.w500,
                     richTitle: '10',
                     richSubTitle: ' days',
-                    richTitleSize: context.text(24),
+                    richTitleSize: context.sp(24),
                     richTitleWeight: FontWeight.w600,
                     richTitleColor: AppColors.subHeadingColor,
-                    richSubTitleSize: context.text(14),
+                    richSubTitleSize: context.sp(14),
                     richSubTitleWeight: FontWeight.w600,
                     richSubTitleColor: AppColors.subHeadingColor,
                   ),
-                  SizedBox(height: context.h(5)),
+                  SizedBox(height: context.sh(5)),
                   Divider(
                     color: AppColors.iconColor,
                     thickness: 0.5,
-                    height: context.h(0.5),
+                    height: context.sh(0.5),
                   ),
-                  SizedBox(height: context.h(5)),
+                  SizedBox(height: context.sh(5)),
                   NormalText(
                     titleText: 'Today is day one. Let\'s make it count! 🌱',
-                    titleSize: context.text(12),
+                    titleSize: context.sp(12),
                     titleWeight: FontWeight.w400,
                     titleColor: AppColors.iconColor,
                   ),
-                  // SizedBox(height: context.h(18)),
+                  // SizedBox(height: context.sh(18)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
@@ -81,9 +81,9 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                       (index) {
                         return Expanded(
                           child: PlanContainer(
-                            margin: context.padSym(v: 8, h: 6),
-                            radius: BorderRadius.circular(context.radius(10)),
-                            padding: context.padSym(h: 12, v: 12),
+                            margin: context.paddingSymmetricR(vertical: 8, horizontal: 6),
+                            radius: BorderRadius.circular(context.radiusR(10)),
+                            padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
                             isSelected: false,
                             onTap: () {},
                             child: StreakWidget(
@@ -92,16 +92,16 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                               title: recoveryPathScreenViewModel
                                   .richTextName[index]['text'],
                               titleColor: AppColors.iconColor,
-                              titleSize: context.text(12),
+                              titleSize: context.sp(12),
                               titleWeight: FontWeight.w500,
                               richTitle: recoveryPathScreenViewModel
                                   .richTextName[index]['richtitle'],
                               richSubTitle: recoveryPathScreenViewModel
                                   .richTextName[index]['richsubtitle'],
-                              richTitleSize: context.text(14),
+                              richTitleSize: context.sp(14),
                               richTitleWeight: FontWeight.w500,
                               richTitleColor: AppColors.subHeadingColor,
-                              richSubTitleSize: context.text(14),
+                              richSubTitleSize: context.sp(14),
                               richSubTitleWeight: FontWeight.w600,
                               richSubTitleColor: AppColors.subHeadingColor,
                             ),
@@ -113,14 +113,14 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 ],
               ),
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             NormalText(
               titleText: 'Your Progress',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(
@@ -130,7 +130,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                       recoveryPathScreenViewModel.selectedIndex ==
                       recoveryPathScreenViewModel.buttonName[index];
                   return CustomContainer(
-                    radius: context.radius(10),
+                    radius: context.radiusR(10),
                     onTap: () {
                       recoveryPathScreenViewModel.selectIndex(index);
                     },
@@ -140,13 +140,13 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                     border: isSelected
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)
                         : null,
-                    padding: context.padSym(h: 38, v: 12),
-                    margin: context.padSym(h: 0, v: 0),
+                    padding: context.paddingSymmetricR(horizontal: 38, vertical: 12),
+                    margin: context.paddingSymmetricR(horizontal: 0, vertical: 0),
                     child: Center(
                       child: Text(
                         recoveryPathScreenViewModel.buttonName[index],
                         style: TextStyle(
-                          fontSize: context.text(14),
+                          fontSize: context.sp(14),
                           fontWeight: FontWeight.w700,
                           color: AppColors.seconderyColor,
                         ),
@@ -156,30 +156,30 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 },
               ),
             ),
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             PlanContainer(
-              padding: context.padSym(h: 10, v: 10),
-              radius: BorderRadius.circular(context.radius(10)),
+              padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
+              radius: BorderRadius.circular(context.radiusR(10)),
               isSelected: false,
               onTap: () {},
               child: LineChartWidget(),
             ),
 
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
             SizedBox(
               height: 80,
               child: ListView.separated(
                 separatorBuilder: (context, index) =>
-                    SizedBox(width: context.w(12)),
+                    SizedBox(width: context.sw(12)),
                 scrollDirection: Axis.horizontal,
                 itemCount: 2,
                 itemBuilder: (_, index) {
                   final item = recoveryPathScreenViewModel.repButtonName[index];
 
                   return PlanContainer(
-                    margin: context.padSym(v: 0),
-                    padding: context.padSym(h: 45),
-                    radius: BorderRadius.circular(context.radius(10)),
+                    margin: context.paddingSymmetricR(vertical: 0),
+                    padding: context.paddingSymmetricR(horizontal: 45),
+                    radius: BorderRadius.circular(context.radiusR(10)),
                     isSelected:
                         recoveryPathScreenViewModel.selectedRepIndex == index,
                     onTap: () {
@@ -189,18 +189,18 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: context.h(24),
-                          width: context.w(24),
+                          height: context.sh(24),
+                          width: context.sw(24),
                           child: SvgPicture.asset(
                             item['image'],
                             color: AppColors.pimaryColor,
                             fit: BoxFit.scaleDown,
                           ),
                         ),
-                        SizedBox(height: context.h(6)),
+                        SizedBox(height: context.sh(6)),
                         NormalText(
                           titleText: item['text'],
-                          titleSize: context.text(12),
+                          titleSize: context.sp(12),
                           titleWeight: FontWeight.w500,
                           titleColor: AppColors.subHeadingColor,
                         ),
@@ -211,26 +211,26 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
               ),
             ),
 
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             LightCardWidget(
               text:
                   'Consistency improves stamina, strength & posture over time.',
             ),
-            SizedBox(height: context.h(18)),
+            SizedBox(height: context.sh(18)),
             SizedBox(
               height: 70,
               child: ListView.separated(
                 separatorBuilder: (context, index) =>
-                    SizedBox(width: context.w(12)),
+                    SizedBox(width: context.sw(12)),
                 scrollDirection: Axis.horizontal,
                 itemCount: 2,
                 itemBuilder: (_, index) {
                   final item =
                       recoveryPathScreenViewModel.recordButtonName[index];
                   return PlanContainer(
-                    margin: context.padSym(v: 0),
-                    padding: context.padSym(h: 38, v: 6),
-                    radius: BorderRadius.circular(context.radius(10)),
+                    margin: context.paddingSymmetricR(vertical: 0),
+                    padding: context.paddingSymmetricR(horizontal: 38, vertical: 6),
+                    radius: BorderRadius.circular(context.radiusR(10)),
                     isSelected:
                         recoveryPathScreenViewModel.selectedRecIndex == index,
                     onTap: () {
@@ -248,7 +248,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                     child: Row(
                       children: [
                         SvgPicture.asset(item['image']),
-                        SizedBox(width: context.w(6)),
+                        SizedBox(width: context.sw(6)),
                         NormalText(titleText: item['text']),
                       ],
                     ),
@@ -257,7 +257,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
               ),
             ),
 
-            SizedBox(height: context.h(8)),
+            SizedBox(height: context.sh(8)),
 
             if (recoveryPathScreenViewModel.selectedSection == 'Daily Tasks')
               Column(
@@ -265,14 +265,14 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 children: [
                   NormalText(
                     titleText: 'Your Daily Tasks',
-                    titleSize: context.text(18),
+                    titleSize: context.sp(18),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.subHeadingColor,
                   ),
-                  SizedBox(height: context.h(15)),
+                  SizedBox(height: context.sh(15)),
                   PlanContainer(
-                    margin: context.padSym(v: 0),
-                    padding: context.padSym(v: 5, h: 14),
+                    margin: context.paddingSymmetricR(vertical: 0),
+                    padding: context.paddingSymmetricR(vertical: 5, horizontal: 14),
                     isSelected: false,
                     onTap: () {},
                     child: Column(
@@ -283,7 +283,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                               .selectedChecklist[index];
 
                           return Padding(
-                            padding: context.padSym(v: 10),
+                            padding: context.paddingSymmetricR(vertical: 10),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -294,8 +294,8 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                                     );
                                   },
                                   child: Container(
-                                    height: context.h(28),
-                                    width: context.w(28),
+                                    height: context.sh(28),
+                                    width: context.sw(28),
                                     decoration: BoxDecoration(
                                       color: isChecked
                                           ? AppColors.pimaryColor
@@ -323,23 +323,23 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                                     child: isChecked
                                         ? Icon(
                                             Icons.check,
-                                            size: context.h(16),
+                                            size: context.sh(16),
                                             color: AppColors.white,
                                           )
                                         : null,
                                   ),
                                 ),
-                                SizedBox(width: context.w(12)),
+                                SizedBox(width: context.sw(12)),
                                 Expanded(
                                   child: NormalText(
                                     titleText: recoveryPathScreenViewModel
                                         .checkBoxName[index]['text'],
-                                    titleSize: context.text(14),
+                                    titleSize: context.sp(14),
                                     titleWeight: FontWeight.w500,
                                     titleColor: AppColors.subHeadingColor,
                                     subText: recoveryPathScreenViewModel
                                         .checkBoxName[index]['subTitle'],
-                                    subSize: context.text(10),
+                                    subSize: context.sp(10),
                                     subColor: AppColors.subHeadingColor,
                                     subWeight: FontWeight.w400,
                                   ),
@@ -359,7 +359,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                 children: [
                   NormalText(
                     titleText: 'Mental & Physical Exercises',
-                    titleSize: context.text(18),
+                    titleSize: context.sp(18),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.subHeadingColor,
                   ),
@@ -380,14 +380,14 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               PlanContainer(
-                                margin: context.padSym(v: 1),
-                                padding: context.padSym(h: 4, v: 4),
+                                margin: context.paddingSymmetricR(vertical: 1),
+                                padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
                                 isSelected: false,
                                 onTap: () {},
                                 child: Center(
                                   child: SizedBox(
-                                    height: context.h(32),
-                                    width: context.w(32),
+                                    height: context.sh(32),
+                                    width: context.sw(32),
                                     child: SvgPicture.asset(
                                       AppAssets.lightBulbIcon,
                                       fit: BoxFit.scaleDown,
@@ -395,17 +395,17 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: context.w(12)),
+                              SizedBox(width: context.sw(12)),
                               Expanded(
                                 child: NormalText(
                                   titleText: recoveryPathScreenViewModel
                                       .checkBoxName[index]['text'],
-                                  titleSize: context.text(14),
+                                  titleSize: context.sp(14),
                                   titleWeight: FontWeight.w500,
                                   titleColor: AppColors.subHeadingColor,
                                   subText: recoveryPathScreenViewModel
                                       .checkBoxName[index]['subTitle'],
-                                  subSize: context.text(10),
+                                  subSize: context.sp(10),
                                   subColor: AppColors.subHeadingColor,
                                   subWeight: FontWeight.w400,
                                 ),
@@ -417,8 +417,8 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                                   );
                                 },
                                 child: Container(
-                                  height: context.h(28),
-                                  width: context.w(28),
+                                  height: context.sh(28),
+                                  width: context.sw(28),
                                   decoration: BoxDecoration(
                                     color: isChecked
                                         ? AppColors.pimaryColor
@@ -444,7 +444,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                                   child: isChecked
                                       ? Icon(
                                           Icons.check,
-                                          size: context.h(16),
+                                          size: context.sh(16),
                                           color: AppColors.white,
                                         )
                                       : null,
@@ -458,7 +458,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
                   ),
                 ],
               ),
-            SizedBox(height: context.h(30)),
+            SizedBox(height: context.sh(30)),
           ],
         ),
       ),

@@ -28,22 +28,22 @@ class GoalActivityGraph extends StatelessWidget {
           children: [
             NormalText(
               titleText: '$currentHeight cm',
-              titleSize: context.text(12),
+              titleSize: context.sp(12),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(15)),
+            SizedBox(height: context.sh(15)),
             Container(
-              width: context.w(55),
-              height: context.h(197),
+              width: context.sw(55),
+              height: context.sh(197),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(context.radius(10)),
-                  topRight: Radius.circular(context.radius(10)),
+                  topLeft: Radius.circular(context.radiusR(10)),
+                  topRight: Radius.circular(context.radiusR(10)),
                 ),
                 border: Border.all(
                   color: AppColors.backGroundColor,
-                  width: context.w(1.5),
+                  width: context.sw(1.5),
                 ),
                 color: AppColors.backGroundColor,
                 boxShadow: [
@@ -60,39 +60,39 @@ class GoalActivityGraph extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: context.h(15)),
+            SizedBox(height: context.sh(15)),
             NormalText(
               titleText: title1 ?? '',
-              titleSize: context.text(14),
+              titleSize: context.sp(14),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
           ],
         ),
 
-        SizedBox(width: context.w(16)),
+        SizedBox(width: context.sw(16)),
 
         // 🔹 Goal Container
         Column(
           children: [
             NormalText(
               titleText: '$desiredHeight cm',
-              titleSize: context.text(12),
+              titleSize: context.sp(12),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(15)),
+            SizedBox(height: context.sh(15)),
             Container(
-              width: context.w(55),
-              height: context.h(220),
+              width: context.sw(55),
+              height: context.sh(220),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(context.radius(10)),
-                  topRight: Radius.circular(context.radius(10)),
+                  topLeft: Radius.circular(context.radiusR(10)),
+                  topRight: Radius.circular(context.radiusR(10)),
                 ),
                 border: Border.all(
                   color: AppColors.pimaryColor,
-                  width: context.w(1.5),
+                  width: context.sw(1.5),
                 ),
                 color: AppColors.pimaryColor,
                 boxShadow: [
@@ -109,10 +109,10 @@ class GoalActivityGraph extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: context.h(15)),
+            SizedBox(height: context.sh(15)),
             NormalText(
               titleText: title2 ?? '',
-              titleSize: context.text(14),
+              titleSize: context.sp(14),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),

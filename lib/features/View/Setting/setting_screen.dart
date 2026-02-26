@@ -46,22 +46,22 @@ class _SettingScreenState extends State<SettingScreen> {
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
               titleText: AppText.setting,
-              titleSize: context.text(20),
+              titleSize: context.sp(20),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(height: context.h(29)),
+            SizedBox(height: context.sh(29)),
             Container(
-              padding: context.padSym(h: 137.5, v: 37.5),
+              padding: context.paddingSymmetricR(horizontal: 137.5, vertical: 37.5),
               decoration: BoxDecoration(color: AppColors.white),
               child: Container(
-                padding: context.padAll(38),
+                padding: context.paddingAllR(38),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  // borderRadius: ra BorderRadius.circular(context.radius(10)),
+                  // borderRadius: ra BorderRadius.circular(context.radiusR(10)),
                   border: Border.all(
                     color: AppColors.backGroundColor,
-                    width: context.w(1.5),
+                    width: context.sw(1.5),
                   ),
                   color: AppColors.backGroundColor,
                   boxShadow: [
@@ -80,7 +80,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 child: NormalText(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   titleText: avatarLabel,
-                  titleSize: context.text(20),
+                  titleSize: context.sp(20),
                   titleWeight: FontWeight.w600,
                   titleColor: AppColors.iconColor,
                 ),
@@ -88,21 +88,21 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
 
             Padding(
-              padding: context.padSym(h: 20, v: 12),
+              padding: context.paddingSymmetricR(horizontal: 20, vertical: 12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   NormalText(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     titleText: AppText.personalInformation,
-                    titleSize: context.text(18),
+                    titleSize: context.sp(18),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.subHeadingColor,
                   ),
                   SvgPicture.asset(
                     AppAssets.editIcon,
-                    height: context.h(24),
-                    width: context.w(24),
+                    height: context.sh(24),
+                    width: context.sw(24),
                     fit: BoxFit.contain,
                   ),
                 ],
@@ -112,39 +112,39 @@ class _SettingScreenState extends State<SettingScreen> {
               items: settingVM.personalInfo,
               viewModel: settingVM,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
             Padding(
-              padding: context.padSym(h: 20),
+              padding: context.paddingSymmetricR(horizontal: 20),
               child: NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 titleText: AppText.account,
-                titleSize: context.text(18),
+                titleSize: context.sp(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
               ),
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
             SettingContainer(
               items: settingVM.paymentInfo,
               viewModel: settingVM,
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
             Padding(
-              padding: context.padSym(h: 20),
+              padding: context.paddingSymmetricR(horizontal: 20),
               child: NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 titleText: AppText.preferencesAndSupport,
-                titleSize: context.text(18),
+                titleSize: context.sp(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
               ),
             ),
-            SizedBox(height: context.h(12)),
+            SizedBox(height: context.sh(12)),
             SettingContainer(
               items: settingVM.appSettings,
               viewModel: settingVM,
             ),
-            SizedBox(height: context.h(250)),
+            SizedBox(height: context.sh(250)),
           ],
         ),
       ),

@@ -33,21 +33,21 @@ class NeuTextField extends StatelessWidget {
             label ?? "label",
             style: TextStyle(
               color: AppColors.headingColor,
-              fontSize: context.text(14),
+              fontSize: context.sp(14),
               fontWeight: FontWeight.w600,
             ),
           ),
-        SizedBox(height: context.h(8)),
+        SizedBox(height: context.sh(8)),
         Container(
-          height: context.h(54),
-          // padding: context.padSym(v: 8, h: 2),
-          // margin: context.padSym(v: 8, h: 2),
+          height: context.sh(54),
+          // padding: context.paddingSymmetricR(vertical: 8, horizontal: 2),
+          // margin: context.paddingSymmetricR(vertical: 8, horizontal: 2),
           decoration: BoxDecoration(
             color: AppColors.backGroundColor,
-            borderRadius: BorderRadius.circular(context.radius(16)),
+            borderRadius: BorderRadius.circular(context.radiusR(16)),
             border: Border.all(
               color: Colors.white.withOpacity(0.4),
-              width: context.w(0.5),
+              width: context.sw(0.5),
             ),
             boxShadow: const [
               BoxShadow(
@@ -93,29 +93,29 @@ class NeuTextField extends StatelessWidget {
             decoration: InputDecoration(
               fillColor: AppColors.white,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(context.radius(16)),
+                borderRadius: BorderRadius.circular(context.radiusR(16)),
                 borderSide: BorderSide(
                   color: Colors.white.withOpacity(0.4),
-                  width: context.w(0.5),
+                  width: context.sw(0.5),
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(context.radius(16)),
+                borderRadius: BorderRadius.circular(context.radiusR(16)),
                 borderSide: BorderSide(
                   color: Colors.white.withOpacity(0.4),
-                  width: context.w(0.5),
+                  width: context.sw(0.5),
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(context.radius(16)),
+                borderRadius: BorderRadius.circular(context.radiusR(16)),
                 borderSide: BorderSide(
                   color: Colors.white.withOpacity(0.4),
-                  width: context.w(0.5),
+                  width: context.sw(0.5),
                 ),
               ),
               hintText: hintText,
               hintStyle: TextStyle(
-                fontSize: context.text(14),
+                fontSize: context.sp(14),
                 fontWeight: FontWeight.w400,
                 color: AppColors.iconColor,
               ),

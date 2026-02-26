@@ -27,14 +27,14 @@ class _CameraWidgetState extends State<CameraWidget> {
     return Column(
       children: [
         PlanContainer(
-          padding: context.padSym(h: 28, v: 24),
-          margin: context.padSym(h: 0, v: 0),
-          radius: BorderRadius.circular(context.radius(10)),
+          padding: context.paddingSymmetricR(horizontal: 28, vertical: 24),
+          margin: context.paddingSymmetricR(horizontal: 0, vertical: 0),
+          radius: BorderRadius.circular(context.radiusR(10)),
           isSelected: widget.isSelected,
           onTap: widget.onTapFun,
-          // padding: context.padSym(h: 28, v: 24),
-          // margin: context.padSym(h: 0, v: 0),
-          // radius: BorderRadius.circular(context.radius(10)),
+          // padding: context.paddingSymmetricR(horizontal: 28, vertical: 24),
+          // margin: context.paddingSymmetricR(horizontal: 0, vertical: 0),
+          // radius: BorderRadius.circular(context.radiusR(10)),
           // isSelected: isSelected,
           // onTap: () {
           //   setState(() {
@@ -44,12 +44,12 @@ class _CameraWidgetState extends State<CameraWidget> {
           child: Column(
             children: [
               Container(
-                padding: context.padSym(h: 10.72, v: 12.92),
+                padding: context.paddingSymmetricR(horizontal: 10.72, vertical: 12.92),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: AppColors.backGroundColor,
-                    width: context.w(2),
+                    width: context.sw(2),
                   ),
                   color: AppColors.backGroundColor,
                   boxShadow: [
@@ -67,19 +67,19 @@ class _CameraWidgetState extends State<CameraWidget> {
                 ),
                 child: SvgPicture.asset(
                   AppAssets.cameraIcon,
-                  height: context.h(18.05),
-                  width: context.w(22.56),
+                  height: context.sh(18.05),
+                  width: context.sw(22.56),
                   color: isSelected
                       ? AppColors.pimaryColor
                       : AppColors.notSelectedColor,
                   fit: BoxFit.contain,
                 ),
               ),
-              SizedBox(height: context.h(4)),
+              SizedBox(height: context.sh(4)),
               Text(
                 'Tap to Capture',
                 style: TextStyle(
-                  fontSize: context.text(12),
+                  fontSize: context.sp(12),
                   color: isSelected
                       ? AppColors.pimaryColor
                       : AppColors.notSelectedColor,
@@ -89,16 +89,16 @@ class _CameraWidgetState extends State<CameraWidget> {
             ],
           ),
         ),
-        SizedBox(height: context.h(8)),
+        SizedBox(height: context.sh(8)),
         NormalText(
           crossAxisAlignment: CrossAxisAlignment.center,
           titleText: 'Right View',
           titleColor: AppColors.subHeadingColor,
-          titleSize: context.text(14),
+          titleSize: context.sp(14),
           titleWeight: FontWeight.w600,
           subText: 'Right View',
           subColor: AppColors.notSelectedColor,
-          subSize: context.text(10),
+          subSize: context.sp(10),
           subWeight: FontWeight.w500,
         ),
       ],

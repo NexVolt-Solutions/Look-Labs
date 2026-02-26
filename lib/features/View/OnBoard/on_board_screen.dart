@@ -19,7 +19,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
-        padding: context.padSym(h: 20, v: 30),
+        padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
         child: CustomButton(
           isEnabled: true,
           onTap: () =>
@@ -30,23 +30,23 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
       ),
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 24),
+          padding: context.paddingSymmetricR(horizontal: 24),
           clipBehavior: Clip.hardEdge,
           children: [
-            SizedBox(height: context.h(7.11)),
+            SizedBox(height: context.sh(7.11)),
             AppBarContainer(
               title: AppText.onBoard,
               onTap: () => Navigator.pop(context),
             ),
-            SizedBox(height: context.h(20)),
+            SizedBox(height: context.sh(20)),
             ClipRRect(
-              borderRadius: BorderRadiusGeometry.circular(context.radius(10)),
+              borderRadius: BorderRadiusGeometry.circular(context.radiusR(10)),
               child: Container(
-                height: context.h(550),
-                width: context.w(335),
+                height: context.sh(550),
+                width: context.sw(335),
                 decoration: BoxDecoration(
                   color: AppColors.blurBottomColor,
-                  borderRadius: BorderRadius.circular(context.radius(12)),
+                  borderRadius: BorderRadius.circular(context.radiusR(12)),
                   shape: BoxShape.rectangle,
                 ),
               ),

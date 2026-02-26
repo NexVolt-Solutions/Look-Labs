@@ -26,7 +26,7 @@ class _TrackYourNutritionScreenState extends State<TrackYourNutritionScreen> {
 
       body: SafeArea(
         child: ListView(
-          padding: context.padSym(h: 20),
+          padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
               title: 'Track Your Nutrition',
@@ -34,27 +34,27 @@ class _TrackYourNutritionScreenState extends State<TrackYourNutritionScreen> {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: context.h(24)),
+            SizedBox(height: context.sh(24)),
 
             NormalText(
               titleText: 'Today’s Progress',
-              titleSize: context.text(18),
+              titleSize: context.sp(18),
               titleColor: AppColors.subHeadingColor,
               titleWeight: FontWeight.w600,
             ),
-            SizedBox(height: context.h(2)),
+            SizedBox(height: context.sh(2)),
             ActivityConsistencyWidget(
               title: 'Workout Consistency',
               subtitle: '14 / 20',
               pressentage: 10,
             ),
-            SizedBox(height: context.h(14)),
+            SizedBox(height: context.sh(14)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 NormalText(
                   titleText: 'Recent Foods',
-                  titleSize: context.text(18),
+                  titleSize: context.sp(18),
                   titleColor: AppColors.subHeadingColor,
                   titleWeight: FontWeight.w600,
                 ),
@@ -66,10 +66,10 @@ class _TrackYourNutritionScreenState extends State<TrackYourNutritionScreen> {
                 ),
               ],
             ),
-            SizedBox(height: context.h(2)),
+            SizedBox(height: context.sh(2)),
             ...List.generate(3, (index) {
               return PlanContainer(
-                padding: context.padSym(h: 12, v: 12),
+                padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
                 isSelected: false,
                 onTap: () {},
                 child: Row(
@@ -77,17 +77,17 @@ class _TrackYourNutritionScreenState extends State<TrackYourNutritionScreen> {
                   children: [
                     NormalText(
                       titleText: 'Greek Yogurt',
-                      titleSize: context.text(16),
+                      titleSize: context.sp(16),
                       titleColor: AppColors.subHeadingColor,
                       titleWeight: FontWeight.w500,
                       subText: 'Breakfast',
-                      subSize: context.text(12),
+                      subSize: context.sp(12),
                       subWeight: FontWeight.w600,
                       subColor: AppColors.iconColor,
                     ),
                     NormalText(
                       titleText: '150 kcal',
-                      titleSize: context.text(16),
+                      titleSize: context.sp(16),
                       titleColor: AppColors.redColor,
                       titleWeight: FontWeight.w600,
                     ),
@@ -95,12 +95,12 @@ class _TrackYourNutritionScreenState extends State<TrackYourNutritionScreen> {
                 ),
               );
             }),
-            SizedBox(height: context.h(6)),
+            SizedBox(height: context.sh(6)),
             LightCardWidget(
               text:
                   'Consistency improves stamina, strength & posture over time.',
             ),
-            SizedBox(height: context.h(30)),
+            SizedBox(height: context.sh(30)),
           ],
         ),
       ),
