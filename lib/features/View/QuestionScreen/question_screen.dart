@@ -106,8 +106,19 @@ class _QuestionScreenState extends State<QuestionScreen> {
         child: CustomButton(
           text: isLastStep ? 'Complete' : 'Next',
           color: AppColors.pimaryColor,
-          isEnabled: !vm.isLoadingFlow,
+          isEnabled: !vm.isLoadingFlow && vm.isCurrentStepComplete,
           onTap: () async {
+            if (!vm.isCurrentStepComplete) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Please answer all questions before continuing.',
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+              return;
+            }
             if (isLastStep) {
               setState(() => _isCompleting = true);
               await Future.delayed(const Duration(milliseconds: 400));

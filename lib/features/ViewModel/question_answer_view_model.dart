@@ -21,8 +21,27 @@ class QuestionAnswerViewModel extends ChangeNotifier {
   /// Complete = we're on the last step (Planning); button shows "Complete" and navigates.
   bool get isFlowComplete => currentStepIndex >= flowStepperLabels.length - 1;
 
-  /// Flow API: questionId -> selected option index
+  /// True when every question on the current step has a valid answer (required for Next/Complete).
+  bool get isCurrentStepComplete {
+    for (final q in currentStepQuestions) {
+      if (q.type == 'text' || q.type == 'number') {
+        if (flowTextAnswers[q.id]?.trim().isEmpty ?? true) return false;
+      } else if (q.type == 'multi_choice') {
+        final selected = flowMultiAnswers[q.id];
+        if (selected == null || selected.isEmpty) return false;
+      } else {
+        if (!flowAnswers.containsKey(q.id)) return false;
+      }
+    }
+    return true;
+  }
+
+  /// Flow API: questionId -> selected option index (single choice)
   final Map<int, int> flowAnswers = {};
+  /// questionId -> answer text (for type text or number)
+  final Map<int, String> flowTextAnswers = {};
+  /// questionId -> list of selected option indices (multi_choice)
+  final Map<int, List<int>> flowMultiAnswers = {};
 
   static const List<String> flowStepperLabels = [
     'Profile',
@@ -136,5 +155,24 @@ class QuestionAnswerViewModel extends ChangeNotifier {
 
   bool isFlowOptionSelected(int questionId, int optionIndex) {
     return flowAnswers[questionId] == optionIndex;
+  }
+
+  void setFlowTextAnswer(int questionId, String value) {
+    flowTextAnswers[questionId] = value;
+    notifyListeners();
+  }
+
+  void toggleFlowMultiOption(int questionId, int optionIndex) {
+    final list = flowMultiAnswers.putIfAbsent(questionId, () => []);
+    if (list.contains(optionIndex)) {
+      list.remove(optionIndex);
+    } else {
+      list.add(optionIndex);
+    }
+    notifyListeners();
+  }
+
+  bool isFlowMultiOptionSelected(int questionId, int optionIndex) {
+    return flowMultiAnswers[questionId]?.contains(optionIndex) ?? false;
   }
 }

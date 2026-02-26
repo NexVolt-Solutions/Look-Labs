@@ -12,6 +12,7 @@ class NeuTextField extends StatelessWidget {
 
   final TextEditingController? controller;
   final TextInputType? keyboard;
+  final ValueChanged<String>? onChanged;
 
   const NeuTextField({
     super.key,
@@ -21,6 +22,7 @@ class NeuTextField extends StatelessWidget {
     this.label,
     this.controller,
     this.keyboard,
+    this.onChanged,
   });
 
   @override
@@ -67,7 +69,7 @@ class NeuTextField extends StatelessWidget {
           child: TextFormField(
             controller: controller,
             obscureText: obscure,
-
+            onChanged: onChanged,
             keyboardType: keyboard,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
