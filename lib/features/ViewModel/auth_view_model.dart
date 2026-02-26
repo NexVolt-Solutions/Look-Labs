@@ -1,18 +1,17 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:looklabs/Core/Config/env_loader.dart';
 import 'package:looklabs/Model/user_model.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 
-/// Web client ID from Google Cloud Console (Credentials → Web client).
-/// Required on Android for idToken. Set in api.env as GOOGLE_WEB_CLIENT_ID=...
-/// Or paste below and rebuild (e.g. '599895027153-xxx.apps.googleusercontent.com').
 const String? _kWebClientIdOverride = null;
 
-String? get _googleWebClientId => _kWebClientIdOverride ?? env('GOOGLE_WEB_CLIENT_ID');
+String? get _googleWebClientId =>
+    _kWebClientIdOverride ?? env('GOOGLE_WEB_CLIENT_ID');
 
 class AuthViewModel extends ChangeNotifier {
   final AuthRepository _authRepo = AuthRepository.instance;
@@ -20,9 +19,13 @@ class AuthViewModel extends ChangeNotifier {
     final serverClientId = _googleWebClientId;
     if (kDebugMode) {
       if (serverClientId != null) {
-        debugPrint('[AuthViewModel] GoogleSignIn with serverClientId (required on Android for idToken)');
+        debugPrint(
+          '[AuthViewModel] GoogleSignIn with serverClientId (required on Android for idToken)',
+        );
       } else {
-        debugPrint('[AuthViewModel] GoogleSignIn without serverClientId - idToken may be null on Android. Add GOOGLE_WEB_CLIENT_ID to api.env');
+        debugPrint(
+          '[AuthViewModel] GoogleSignIn without serverClientId - idToken may be null on Android. Add GOOGLE_WEB_CLIENT_ID to api.env',
+        );
       }
     }
     return GoogleSignIn(
@@ -37,6 +40,29 @@ class AuthViewModel extends ChangeNotifier {
     debugPrint('[AuthViewModel] $message');
     if (error != null) debugPrint('[AuthViewModel] error: $error');
     if (st != null) debugPrint('[AuthViewModel] stack: $st');
+  }
+
+  /// In debug, log id_token aud/iss so backend can be configured to accept this client ID.
+  static void _logGoogleTokenAudience(String idToken) {
+    try {
+      final parts = idToken.split('.');
+      if (parts.length != 3) return;
+      String payloadB64 = parts[1];
+      payloadB64 += ('=' * ((4 - payloadB64.length % 4) % 4));
+      final payload = utf8.decode(base64Url.decode(payloadB64));
+      final map = jsonDecode(payload) as Map<String, dynamic>?;
+      if (map != null) {
+        final aud = map['aud'];
+        final iss = map['iss'];
+        final exp = map['exp'];
+        debugPrint(
+          '[AuthViewModel] Google id_token payload: aud=$aud iss=$iss exp=$exp',
+        );
+        debugPrint(
+          '[AuthViewModel] Backend must verify token with this client ID (aud): $aud',
+        );
+      }
+    } catch (_) {}
   }
 
   bool _isLoading = false;
@@ -82,10 +108,15 @@ class AuthViewModel extends ChangeNotifier {
       final idToken = auth.idToken;
       final accessToken = auth.accessToken;
 
-      _log('auth result: idToken=${idToken != null ? "present (${idToken.length} chars)" : "NULL"}, accessToken=${accessToken != null ? "present" : "null"}');
+      _log(
+        'auth result: idToken=${idToken != null ? "present (${idToken.length} chars)" : "NULL"}, accessToken=${accessToken != null ? "present" : "null"}',
+      );
       if (idToken == null) {
-        _log('idToken is null - on Android add GOOGLE_WEB_CLIENT_ID (Web client ID) to api.env and rebuild');
-        _errorMessage = 'Failed to get Google credentials. On Android, add Web client ID to api.env (see README).';
+        _log(
+          'idToken is null - on Android add GOOGLE_WEB_CLIENT_ID (Web client ID) to api.env and rebuild',
+        );
+        _errorMessage =
+            'Failed to get Google credentials. On Android, add Web client ID to api.env (see README).';
         _isLoading = false;
         notifyListeners();
         return false;
@@ -100,38 +131,15 @@ class AuthViewModel extends ChangeNotifier {
       await _firebaseAuth.signInWithCredential(credential);
       _log('Firebase signInWithCredential success');
 
-      final firebaseUser = _firebaseAuth.currentUser;
-      final token = await firebaseUser?.getIdToken();
-
-      if (token != null) {
-        _log('Firebase token present, calling backend signInWithGoogle with Firebase idToken');
-        final response = await _authRepo.signInWithGoogle(
-          idToken: token,
-          accessToken: accessToken,
-        );
-        _log('backend response: success=${response.success}, statusCode=${response.statusCode}, message=${response.message}');
-
-        if (response.success && response.data != null) {
-          _user = _parseUser(response.data);
-          OnboardingRepository.clearSession();
-          _errorMessage = null;
-          _isLoading = false;
-          notifyListeners();
-          _log('signInWithGoogle completed successfully');
-          return true;
-        } else {
-          _errorMessage = response.message ?? 'Sign in failed';
-          _log('backend sign-in failed: $_errorMessage');
-          _isLoading = false;
-          notifyListeners();
-          return false;
-        }
-      }
-
-      _log('Firebase getIdToken returned null, trying backend with Google idToken');
+      // Backend expects Google id_token (not Firebase token). Firebase token has different aud and fails backend validation.
+      if (kDebugMode) _logGoogleTokenAudience(idToken);
+      _log('calling backend with Google id_token');
       final response = await _authRepo.signInWithGoogle(
         idToken: idToken,
         accessToken: accessToken,
+      );
+      _log(
+        'backend response: success=${response.success}, statusCode=${response.statusCode}, message=${response.message}',
       );
 
       if (response.success && response.data != null) {
@@ -140,11 +148,12 @@ class AuthViewModel extends ChangeNotifier {
         _errorMessage = null;
         _isLoading = false;
         notifyListeners();
-        _log('signInWithGoogle completed successfully (with idToken)');
+        _log('signInWithGoogle completed successfully');
         return true;
       }
 
       _errorMessage = response.message ?? 'Sign in failed';
+      _log('backend sign-in failed: $_errorMessage');
       _isLoading = false;
       notifyListeners();
       return false;
@@ -152,7 +161,8 @@ class AuthViewModel extends ChangeNotifier {
       _log('signInWithGoogle exception', e, st);
       final msg = e.toString();
       if (msg.contains('ApiException: 10') || msg.contains('sign_in_failed')) {
-        _errorMessage = 'Google Sign-In config error. Use a Web application client ID (not Android) in api.env as GOOGLE_WEB_CLIENT_ID. Create one in Google Cloud Console → Credentials → OAuth client ID → Web application.';
+        _errorMessage =
+            'Google Sign-In config error. Use a Web application client ID (not Android) in api.env as GOOGLE_WEB_CLIENT_ID. Create one in Google Cloud Console → Credentials → OAuth client ID → Web application.';
       } else {
         _errorMessage = msg.replaceFirst('Exception: ', '');
       }

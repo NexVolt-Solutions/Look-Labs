@@ -12,10 +12,14 @@ class AuthRepository {
   static AuthRepository get instance => _instance;
 
   static void _log(String method, String endpoint, ApiResponse response) {
-    debugPrint('[AuthRepository] $method $endpoint → success=${response.success} statusCode=${response.statusCode} message=${response.message}');
+    debugPrint(
+      '[AuthRepository] $method $endpoint → success=${response.success} statusCode=${response.statusCode} message=${response.message}',
+    );
     if (!response.success && response.data != null) {
       final dataStr = response.data.toString();
-      debugPrint('[AuthRepository] failure body: ${dataStr.length > 400 ? "${dataStr.substring(0, 400)}..." : dataStr}');
+      debugPrint(
+        '[AuthRepository] failure body: ${dataStr.length > 400 ? "${dataStr.substring(0, 400)}..." : dataStr}',
+      );
     }
   }
 
@@ -27,11 +31,13 @@ class AuthRepository {
   }) async {
     final endpoint = ApiEndpoints.googleSignIn;
     final fullUrl = ApiConfig.getFullUrl(endpoint);
-    debugPrint('[AuthRepository] POST $endpoint (idToken length=${idToken.length}, accessToken=${accessToken != null})');
+    debugPrint(
+      '[AuthRepository] POST $endpoint (idToken length=${idToken.length}, accessToken=${accessToken != null})',
+    );
     debugPrint('[AuthRepository] URL: $fullUrl');
     final body = <String, dynamic>{
-      'idToken': idToken,
-      if (accessToken != null) 'accessToken': accessToken,
+      'id_token': idToken,
+      if (accessToken != null) 'access_token': accessToken,
     };
     final response = await ApiServices.post(endpoint, body: body);
     _log('POST', endpoint, response);

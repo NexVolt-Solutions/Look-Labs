@@ -19,6 +19,8 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen> {
+  bool _isCompleting = false;
+
   @override
   void initState() {
     super.initState();
@@ -107,8 +109,12 @@ class _QuestionScreenState extends State<QuestionScreen> {
           isEnabled: !vm.isLoadingFlow,
           onTap: () async {
             if (isLastStep) {
+              setState(() => _isCompleting = true);
+              await Future.delayed(const Duration(milliseconds: 400));
               if (context.mounted) {
-                Navigator.pushNamed(context, RoutesName.GaolScreen);
+                Navigator.pushNamed(context, RoutesName.GaolScreen).then((_) {
+                  if (mounted) setState(() => _isCompleting = false);
+                });
               }
               return;
             }
@@ -126,30 +132,43 @@ class _QuestionScreenState extends State<QuestionScreen> {
         child: Column(
           children: [
             SizedBox(height: context.sh(12)),
-            if (vm.currentStepIndex > 0)
-              Padding(
-                padding: context.paddingSymmetricR(horizontal: 20),
-                child: AppBarContainer(
-                  title: vm.flowStepTitle,
-                  onTap: () => vm.backStep(),
-                ),
-              )
-            else
-              Padding(
-                padding: context.paddingSymmetricR(horizontal: 20),
-                child: NormalText(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  titleText: vm.flowStepTitle,
-                  titleSize: context.sp(20),
-                  titleWeight: FontWeight.w600,
-                  titleColor: AppColors.headingColor,
-                ),
-              ),
+            Padding(
+              padding: context.paddingSymmetricR(horizontal: 20),
+              child: vm.currentStepIndex > 0
+                  ? AppBarContainer(
+                      title: vm.flowStepTitle,
+                      onTap: () => vm.backStep(),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: context.sh(48),
+
+                          color: Colors.transparent,
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: NormalText(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              titleText: vm.flowStepTitle,
+                              titleSize: context.sp(20),
+                              titleWeight: FontWeight.w600,
+                              titleColor: AppColors.headingColor,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: context.sh(40), width: context.sw(40)),
+                      ],
+                    ),
+            ),
             SizedBox(height: context.sh(20)),
             Padding(
               padding: context.paddingSymmetricR(horizontal: 20),
               child: CustomStepper(
-                currentStep: vm.flowStepperIndex,
+                currentStep: _isCompleting
+                    ? QuestionAnswerViewModel.flowStepperLabels.length
+                    : vm.flowStepperIndex,
                 steps: QuestionAnswerViewModel.flowStepperLabels,
               ),
             ),
@@ -158,23 +177,26 @@ class _QuestionScreenState extends State<QuestionScreen> {
               child: vm.isLoadingFlow
                   ? const Center(child: CircularProgressIndicator())
                   : vm.hasFlowQuestions
-                      ? SingleChildScrollView(
-                          padding: context.paddingSymmetricR(horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              for (int i = 0;
-                                  i < vm.currentStepQuestions.length;
-                                  i++) ...[
-                                FlowQuestionContent(
-                                    question: vm.currentStepQuestions[i]),
-                                if (i < vm.currentStepQuestions.length - 1)
-                                  SizedBox(height: context.sh(24)),
-                              ],
-                            ],
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+                  ? SingleChildScrollView(
+                      padding: context.paddingSymmetricR(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (
+                            int i = 0;
+                            i < vm.currentStepQuestions.length;
+                            i++
+                          ) ...[
+                            FlowQuestionContent(
+                              question: vm.currentStepQuestions[i],
+                            ),
+                            if (i < vm.currentStepQuestions.length - 1)
+                              SizedBox(height: context.sh(24)),
+                          ],
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ),
           ],
         ),
