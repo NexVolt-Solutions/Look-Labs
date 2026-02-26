@@ -60,27 +60,62 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
           if (error != null) ...[
-            SizedBox(height: context.sh(24)),
+            SizedBox(height: context.sh(28)),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: context.sw(24)),
+              padding: EdgeInsets.symmetric(horizontal: context.sw(32)),
               child: Text(
                 error,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: AppColors.white,
+                  color: AppColors.white.withOpacity(0.95),
                   fontSize: context.sp(14),
+                  height: 1.4,
                 ),
               ),
             ),
-            SizedBox(height: context.sh(16)),
-            TextButton(
-              onPressed: () => splashScreenViewModel.goTo(context),
-              child: Text(
-                'Retry',
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: context.sp(16),
-                  fontWeight: FontWeight.w600,
+            SizedBox(height: context.sh(12)),
+            Text(
+              'Give it another try',
+              style: TextStyle(
+                color: AppColors.white.withOpacity(0.8),
+                fontSize: context.sp(13),
+              ),
+            ),
+            SizedBox(height: context.sh(24)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: context.sw(48)),
+              child: Material(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(context.radiusR(16)),
+                child: InkWell(
+                  onTap: () => splashScreenViewModel.goTo(context),
+                  borderRadius: BorderRadius.circular(context.radiusR(16)),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: context.sh(14),
+                      horizontal: context.sw(24),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.refresh_rounded,
+                          size: context.sp(20),
+                          color: AppColors.pimaryColor,
+                        ),
+                        SizedBox(width: context.sw(10)),
+                        Text(
+                          'Retry',
+                          style: TextStyle(
+                            color: AppColors.pimaryColor,
+                            fontSize: context.sp(16),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),

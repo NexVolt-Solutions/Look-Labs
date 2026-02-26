@@ -71,25 +71,44 @@ class _QuestionScreenState extends State<QuestionScreen> {
   Widget _buildErrorUi(BuildContext context, QuestionAnswerViewModel vm) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      body: Center(
-        child: Padding(
-          padding: context.paddingSymmetricR(horizontal: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              NormalText(
-                titleText: vm.flowError ?? 'Something went wrong',
-                titleSize: context.sp(16),
-                titleColor: AppColors.subHeadingColor,
-              ),
-              SizedBox(height: context.sh(16)),
-              CustomButton(
-                text: 'Retry',
-                color: AppColors.pimaryColor,
-                isEnabled: true,
-                onTap: () => vm.loadAllQuestionsForCurrentStep(),
-              ),
-            ],
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: context.paddingSymmetricR(horizontal: 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.cloud_off_rounded,
+                  size: context.sw(64),
+                  color: AppColors.subHeadingColor.withOpacity(0.6),
+                ),
+                SizedBox(height: context.sh(20)),
+                NormalText(
+                  titleText: 'Couldn\'t load questions',
+                  titleSize: context.sp(18),
+                  titleWeight: FontWeight.w600,
+                  titleColor: AppColors.headingColor,
+                ),
+                SizedBox(height: context.sh(12)),
+                NormalText(
+                  titleText:
+                      vm.flowError ?? 'Something went wrong. Please try again.',
+                  titleSize: context.sp(14),
+                  titleColor: AppColors.subHeadingColor,
+                ),
+                SizedBox(height: context.sh(28)),
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomButton(
+                    text: 'Try again',
+                    color: AppColors.pimaryColor,
+                    isEnabled: true,
+                    onTap: () => vm.loadAllQuestionsForCurrentStep(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -147,11 +166,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
               return;
             }
             await vm.nextStep();
-            if (context.mounted) {
-              if (vm.isFlowComplete && !vm.hasFlowQuestions) {
-                Navigator.pushReplacementNamed(context, RoutesName.GaolScreen);
-              }
-            }
+            // Do not auto-navigate to Goal when API returns completed with no questions.
+            // Show Planning step (with empty content if completed); user taps Complete to go to Goal.
           },
         ),
       ),

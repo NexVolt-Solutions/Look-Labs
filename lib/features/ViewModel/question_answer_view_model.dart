@@ -81,6 +81,8 @@ class QuestionAnswerViewModel extends ChangeNotifier {
   }
 
   Future<void> loadAllQuestionsForCurrentStep() async {
+    if (isLoadingFlow) return;
+
     final sessionId = OnboardingRepository.sessionId;
     if (sessionId == null || sessionId.isEmpty) {
       flowError = 'No session';
@@ -100,10 +102,12 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     final seenIds = <int>{};
     int stepTotal = 15;
     const int maxCalls = 15;
+    String responseStep = step;
+    String requestStep = step;
 
     void addIfNew(FlowQuestion? q) {
       if (q == null || seenIds.contains(q.id)) return;
-      if (q.step.isNotEmpty && q.step != step) return;
+      if (q.step.isNotEmpty && q.step != responseStep) return;
       seenIds.add(q.id);
       list.add(q);
     }
@@ -111,7 +115,7 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     for (int index = 0; index < maxCalls; index++) {
       final response = await repo.getFlow(
         sessionId: sessionId,
-        step: step,
+        step: requestStep,
         index: index,
       );
 
@@ -130,9 +134,16 @@ class QuestionAnswerViewModel extends ChangeNotifier {
       final flow = response.data as OnboardingFlowResponse;
       flowResponse = flow;
 
+      responseStep = flow.current?.step ?? flow.progress?.step ?? responseStep;
+      requestStep = responseStep;
+      final stepIndex = flowStepKeys.indexOf(responseStep);
+      if (stepIndex >= 0 && stepIndex != currentStepIndex) {
+        currentStepIndex = stepIndex;
+      }
+
       if (flow.progress != null) {
         stepTotal = flow.progress!.totalQuestions;
-        final section = flow.progress!.progress?.sections?[step];
+        final section = flow.progress!.progress?.sections?[responseStep];
         if (section is Map && section['total'] != null) {
           stepTotal = (section['total'] as num).toInt();
         }
