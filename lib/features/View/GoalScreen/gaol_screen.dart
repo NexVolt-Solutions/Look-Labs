@@ -7,6 +7,7 @@ import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/gaol_screen_view_model.dart';
+import 'package:looklabs/Repository/onboarding_repository.dart';
 import 'package:provider/provider.dart';
 
 class GaolScreen extends StatefulWidget {
@@ -17,6 +18,54 @@ class GaolScreen extends StatefulWidget {
 }
 
 class _GaolScreenState extends State<GaolScreen> {
+  Future<void> _onGetStarted(
+    BuildContext context,
+    GaolScreenViewModel vm,
+  ) async {
+    final domain = vm.selectedDomain;
+    if (domain == null || domain.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a goal to start your journey.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final sessionId = OnboardingRepository.sessionId;
+    if (sessionId == null || sessionId.isEmpty) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Session expired. Please start again.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final response = await OnboardingRepository.instance.selectDomain(
+      sessionId: sessionId,
+      domain: domain,
+    );
+
+    if (!context.mounted) return;
+    if (!response.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            response.message ?? 'Failed to save goal. Please try again.',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    Navigator.pushNamed(context, RoutesName.OnBoardScreen);
+  }
+
   @override
   Widget build(BuildContext context) {
     final gaolScreenViewModel = Provider.of<GaolScreenViewModel>(context);
@@ -29,7 +78,7 @@ class _GaolScreenState extends State<GaolScreen> {
           padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
           child: CustomButton(
             isEnabled: true,
-            onTap: () => Navigator.pushNamed(context, RoutesName.OnBoardScreen),
+            onTap: () => _onGetStarted(context, gaolScreenViewModel),
             text: AppText.getStarted,
             color: AppColors.pimaryColor,
           ),

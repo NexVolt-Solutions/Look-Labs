@@ -19,11 +19,22 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    splashScreenViewModel.addListener(_onViewModelUpdate);
     splashScreenViewModel.goTo(context);
   }
 
   @override
+  void dispose() {
+    splashScreenViewModel.removeListener(_onViewModelUpdate);
+    super.dispose();
+  }
+
+  void _onViewModelUpdate() => setState(() {});
+
+  @override
   Widget build(BuildContext context) {
+    final error = splashScreenViewModel.sessionError;
+
     return Scaffold(
       backgroundColor: AppColors.pimaryColor,
       body: Column(
@@ -48,6 +59,32 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
           ),
+          if (error != null) ...[
+            SizedBox(height: context.sh(24)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: context.sw(24)),
+              child: Text(
+                error,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: context.sp(14),
+                ),
+              ),
+            ),
+            SizedBox(height: context.sh(16)),
+            TextButton(
+              onPressed: () => splashScreenViewModel.goTo(context),
+              child: Text(
+                'Retry',
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: context.sp(16),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

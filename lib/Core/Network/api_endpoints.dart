@@ -4,15 +4,19 @@ class ApiEndpoints {
 
   // Onboarding (anonymous – no auth token required)
   static const String onboardingSessions = 'onboarding/sessions';
+
   /// GET onboarding/sessions/{session_id}/flow?step=...&index=...
   static String onboardingSessionFlow(String sessionId) =>
       'onboarding/sessions/$sessionId/flow';
+
   /// POST onboarding/sessions/{session_id}/answers
   static String onboardingSessionAnswers(String sessionId) =>
       'onboarding/sessions/$sessionId/answers';
+
   /// PATCH onboarding/sessions/{session_id}/domain?domain=skincare
-  static String onboardingSessionDomain(String sessionId) =>
-      'onboarding/sessions/$sessionId/domain';
+  static String onboardingSessionDomain(String sessionId) {
+    return 'onboarding/sessions/$sessionId/domain';
+  }
 
   // Auth (Google Sign-In only)
   static const String googleSignIn = 'auth/google';

@@ -5,38 +5,19 @@ class WeeklyPlanScreenViewModel extends ChangeNotifier {
   bool isBestClothingSelected = false;
   int selectedIndex = -1;
 
-  /// This list will be filled from API
+  /// Filled from API only; no mock fallback.
   List<String> clothingFits = [];
 
-  /// TEMP mock data (later replaced by API response)
-  final Map<int, List<String>> seasonalMockData = {
-    0: [
-      // Summer
-      'Light cotton shirts',
-      'Breathable trousers',
-      'Loafers',
-    ],
-    1: [
-      // Monsoon
-      'Quick-dry shirts',
-      'Ankle-length jeans',
-      'Water-resistant shoes',
-    ],
-    2: [
-      // Winter
-      'Wool jackets',
-      'Layered outfits',
-      'Leather boots',
-    ],
-  };
-
-  /// Call this on tap (or after API response)
+  /// Select season index. clothingFits must be set from API (no fallback data).
   void selectIndex(int index) {
     selectedIndex = index;
+    clothingFits = [];
+    notifyListeners();
+  }
 
-    /// 🔥 Later this will be API call
-    clothingFits = seasonalMockData[index] ?? [];
-
+  /// Call when API returns clothing fits for the selected season.
+  void setClothingFitsFromApi(List<String> fits) {
+    clothingFits = fits;
     notifyListeners();
   }
 

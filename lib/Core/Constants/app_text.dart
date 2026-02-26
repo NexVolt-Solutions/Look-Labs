@@ -40,6 +40,8 @@ class AppText {
   static const String chooseGoal = 'Choose Goal';
   static const String skincare = 'Skincare';
   static const String hairCare = 'Hair care';
+  static const String facial = 'Facial';
+
   static const String fashion = 'Fashion';
   static const String workout = 'Workout';
   static const String quitPorn = 'Quit Porn';

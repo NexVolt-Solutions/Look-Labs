@@ -187,12 +187,11 @@ class OnboardingRepository {
     required String sessionId,
     required String domain,
   }) async {
-    final endpoint = ApiEndpoints.onboardingSessionDomain(sessionId);
+    // Same path as ApiEndpoints.onboardingSessionDomain(sessionId)
+    final endpoint = 'onboarding/sessions/$sessionId/domain';
     final queryParams = <String, String>{'domain': domain};
     final fullUrl = ApiConfig.getFullUrl(endpoint);
-    debugPrint(
-      '[OnboardingRepository] PATCH $endpoint (domain=$domain)',
-    );
+    debugPrint('[OnboardingRepository] PATCH $endpoint (domain=$domain)');
     debugPrint('[OnboardingRepository] URL: $fullUrl');
     final response = await ApiServices.patch(
       endpoint,
