@@ -144,7 +144,7 @@ class AuthViewModel extends ChangeNotifier {
 
       if (response.success && response.data != null) {
         _user = _parseUser(response.data);
-        OnboardingRepository.clearSession();
+        await OnboardingRepository.clearSession();
         _errorMessage = null;
         _isLoading = false;
         notifyListeners();

@@ -132,6 +132,79 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Submit all answers for the current step to the API. Call before Next/Complete.
+  /// Returns true if all submissions succeeded.
+  Future<bool> submitCurrentStepAnswers() async {
+    final sessionId = OnboardingRepository.sessionId;
+    if (sessionId == null || sessionId.isEmpty) return false;
+
+    isLoadingFlow = true;
+    flowError = null;
+    notifyListeners();
+
+    final repo = OnboardingRepository.instance;
+    for (final q in currentStepQuestions) {
+      final body = _buildAnswerBody(q);
+      if (body == null) continue;
+      final response = await repo.submitAnswer(
+        sessionId: sessionId,
+        questionId: body['question_id'] as int,
+        answer: body['answer'],
+        questionType: body['question_type'] as String,
+        questionOptions: body['question_options'] as List<dynamic>?,
+        constraints: body['constraints'] as Map<String, dynamic>?,
+      );
+      if (!response.success) {
+        isLoadingFlow = false;
+        flowError = response.message ?? 'Failed to submit answer';
+        notifyListeners();
+        return false;
+      }
+      if (response.data is OnboardingFlowResponse) {
+        flowResponse = response.data as OnboardingFlowResponse;
+      }
+    }
+    isLoadingFlow = false;
+    flowError = null;
+    notifyListeners();
+    return true;
+  }
+
+  Map<String, dynamic>? _buildAnswerBody(FlowQuestion q) {
+    final questionType = q.type == 'number' ? 'numeric' : q.type;
+    if (q.type == 'text' || q.type == 'number') {
+      final text = flowTextAnswers[q.id]?.trim();
+      if (text == null || text.isEmpty) return null;
+      final answer = q.type == 'number' ? (num.tryParse(text) ?? 0) : text;
+      return {
+        'question_id': q.id,
+        'answer': answer,
+        'question_type': questionType,
+        'question_options': null,
+        'constraints': q.constraints,
+      };
+    }
+    if (q.type == 'multi_choice') {
+      final selected = flowMultiAnswers[q.id];
+      if (selected == null || selected.isEmpty) return null;
+      return {
+        'question_id': q.id,
+        'answer': selected,
+        'question_type': questionType,
+        'question_options': q.options,
+        'constraints': q.constraints,
+      };
+    }
+    if (!flowAnswers.containsKey(q.id)) return null;
+    return {
+      'question_id': q.id,
+      'answer': flowAnswers[q.id],
+      'question_type': questionType,
+      'question_options': q.options,
+      'constraints': q.constraints,
+    };
+  }
+
   /// Go to next step (e.g. Profile → LifeStyle). Loads all questions for the new step.
   Future<void> nextStep() async {
     if (currentStepIndex >= flowStepperLabels.length - 1) {

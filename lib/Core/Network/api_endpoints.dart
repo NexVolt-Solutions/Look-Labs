@@ -7,6 +7,9 @@ class ApiEndpoints {
   /// GET onboarding/sessions/{session_id}/flow?step=...&index=...
   static String onboardingSessionFlow(String sessionId) =>
       'onboarding/sessions/$sessionId/flow';
+  /// POST onboarding/sessions/{session_id}/answers
+  static String onboardingSessionAnswers(String sessionId) =>
+      'onboarding/sessions/$sessionId/answers';
 
   // Auth (Google Sign-In only)
   static const String googleSignIn = 'auth/google';

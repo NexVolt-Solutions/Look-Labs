@@ -119,6 +119,19 @@ class _QuestionScreenState extends State<QuestionScreen> {
               );
               return;
             }
+            final submitted = await vm.submitCurrentStepAnswers();
+            if (!context.mounted) return;
+            if (!submitted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    vm.flowError ?? 'Failed to submit answers. Please try again.',
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+              return;
+            }
             if (isLastStep) {
               setState(() => _isCompleting = true);
               await Future.delayed(const Duration(milliseconds: 400));

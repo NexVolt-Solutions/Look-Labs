@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:looklabs/Core/Network/api_config.dart';
 import 'package:looklabs/Core/Network/api_endpoints.dart';
 import 'package:looklabs/Core/Network/api_response.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 import 'package:looklabs/Core/Network/models/onboarding_session.dart';
+
+const _kStorageKeySession = 'onboarding_session';
 
 /// Repository for anonymous onboarding (no auth token).
 class OnboardingRepository {
@@ -13,14 +18,58 @@ class OnboardingRepository {
   static final OnboardingRepository _instance = OnboardingRepository._();
   static OnboardingRepository get instance => _instance;
 
-  /// Current anonymous session (set after createAnonymousSession succeeds).
-  /// Use [sessionId] for API headers (e.g. X-Session-Id) if backend requires it.
+  static const FlutterSecureStorage _storage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
+
+  /// In-memory cache: key = "$sessionId\_$step", value = flow response. Reduces GET when user goes back.
+  static final Map<String, OnboardingFlowResponse> _flowCache = {};
+
+  /// Current anonymous session (set after createAnonymousSession or loadStoredSession).
   static OnboardingSession? currentSession;
   static String? get sessionId => currentSession?.id;
 
+  /// Restore session from SecureStorage. Call on app start to skip POST if we have a valid session.
+  /// Returns true if session was restored.
+  static Future<bool> loadStoredSession() async {
+    try {
+      final json = await _storage.read(key: _kStorageKeySession);
+      if (json == null || json.isEmpty) return false;
+      final map = jsonDecode(json) as Map<String, dynamic>?;
+      if (map == null) return false;
+      currentSession = OnboardingSession.fromJson(map);
+      debugPrint(
+        '[OnboardingRepository] Session restored from storage: ${currentSession!.id}',
+      );
+      return true;
+    } catch (e) {
+      debugPrint('[OnboardingRepository] loadStoredSession error: $e');
+      return false;
+    }
+  }
+
+  static Future<void> _saveSessionToStorage(OnboardingSession session) async {
+    try {
+      await _storage.write(
+        key: _kStorageKeySession,
+        value: jsonEncode(session.toJson()),
+      );
+    } catch (e) {
+      debugPrint('[OnboardingRepository] _saveSessionToStorage error: $e');
+    }
+  }
+
+  static Future<void> _clearStoredSession() async {
+    try {
+      await _storage.delete(key: _kStorageKeySession);
+    } catch (e) {
+      debugPrint('[OnboardingRepository] _clearStoredSession error: $e');
+    }
+  }
+
   /// Creates an anonymous onboarding session. No token required.
   /// POST {{base_url}}/api/v1/onboarding/sessions
-  /// On success, sets [currentSession] so the app can use [sessionId] in later requests.
+  /// On success, sets [currentSession] and saves to SecureStorage.
   Future<ApiResponse> createAnonymousSession() async {
     final endpoint = ApiEndpoints.onboardingSessions;
     final fullUrl = ApiConfig.getFullUrl(endpoint);
@@ -46,8 +95,10 @@ class OnboardingRepository {
         Map<String, dynamic>.from(response.data as Map),
       );
       currentSession = session;
+      await _saveSessionToStorage(session);
+      _flowCache.clear();
       debugPrint(
-        '[OnboardingRepository] Session created: id=${session.id} isPaid=${session.isPaid}',
+        '[OnboardingRepository] Session created and saved: id=${session.id} isPaid=${session.isPaid}',
       );
       return ApiResponse(
         success: true,
@@ -59,19 +110,35 @@ class OnboardingRepository {
     return response;
   }
 
-  /// Clear session (e.g. after user signs in).
-  static void clearSession() {
+  /// Clear session (e.g. after user signs in). Removes from memory and SecureStorage.
+  static Future<void> clearSession() async {
     debugPrint('[OnboardingRepository] clearSession()');
     currentSession = null;
+    _flowCache.clear();
+    await _clearStoredSession();
   }
 
   /// GET onboarding/sessions/{session_id}/flow?step=...&index=...
-  /// Returns current question, next question, and progress. No auth.
+  /// Returns current question, next question, and progress. Uses in-memory cache when available (e.g. when user goes back).
   Future<ApiResponse> getFlow({
     required String sessionId,
     required String step,
     required int index,
   }) async {
+    final cacheKey = '${sessionId}_${step}_$index';
+    final cached = _flowCache[cacheKey];
+    if (cached != null) {
+      debugPrint(
+        '[OnboardingRepository] GET flow (step=$step index=$index) → cache hit',
+      );
+      return ApiResponse(
+        success: true,
+        statusCode: 200,
+        data: cached,
+        message: null,
+      );
+    }
+
     final endpoint = ApiEndpoints.onboardingSessionFlow(sessionId);
     final queryParams = <String, String>{
       'step': step,
@@ -102,7 +169,62 @@ class OnboardingRepository {
       final flow = OnboardingFlowResponse.fromJson(
         Map<String, dynamic>.from(response.data as Map),
       );
+      _flowCache[cacheKey] = flow;
       _logFlowResponse(flow);
+      return ApiResponse(
+        success: true,
+        statusCode: response.statusCode,
+        data: flow,
+        message: response.message,
+      );
+    }
+    return response;
+  }
+
+  /// POST onboarding/sessions/{session_id}/answers
+  /// Body: question_id, answer, question_type, question_options?, constraints?
+  /// Response: same shape as flow (status, current, next, progress, redirect).
+  Future<ApiResponse> submitAnswer({
+    required String sessionId,
+    required int questionId,
+    required dynamic answer,
+    required String questionType,
+    List<dynamic>? questionOptions,
+    Map<String, dynamic>? constraints,
+  }) async {
+    final endpoint = ApiEndpoints.onboardingSessionAnswers(sessionId);
+    final fullUrl = ApiConfig.getFullUrl(endpoint);
+    final body = <String, dynamic>{
+      'question_id': questionId,
+      'answer': answer,
+      'question_type': questionType,
+      'question_options': questionOptions,
+      'constraints': constraints,
+    };
+    debugPrint(
+      '[OnboardingRepository] POST $endpoint (question_id=$questionId type=$questionType)',
+    );
+    debugPrint('[OnboardingRepository] URL: $fullUrl');
+    final response = await ApiServices.post(
+      endpoint,
+      body: body,
+      headers: ApiConfig.defaultHeaders,
+    );
+    debugPrint(
+      '[OnboardingRepository] POST $endpoint → success=${response.success} statusCode=${response.statusCode}',
+    );
+    if (!response.success && response.data != null) {
+      final dataStr = response.data.toString();
+      debugPrint(
+        '[OnboardingRepository] failure body: ${dataStr.length > 300 ? "${dataStr.substring(0, 300)}..." : dataStr}',
+      );
+    }
+    if (response.success &&
+        response.data != null &&
+        response.data is Map<String, dynamic>) {
+      final flow = OnboardingFlowResponse.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
