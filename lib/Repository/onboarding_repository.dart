@@ -181,6 +181,30 @@ class OnboardingRepository {
     return response;
   }
 
+  /// PATCH onboarding/sessions/{session_id}/domain?domain=skincare
+  /// Domain must be one of: skincare, haircare, facial, diet, height, workout, quit_porn, fashion.
+  Future<ApiResponse> selectDomain({
+    required String sessionId,
+    required String domain,
+  }) async {
+    final endpoint = ApiEndpoints.onboardingSessionDomain(sessionId);
+    final queryParams = <String, String>{'domain': domain};
+    final fullUrl = ApiConfig.getFullUrl(endpoint);
+    debugPrint(
+      '[OnboardingRepository] PATCH $endpoint (domain=$domain)',
+    );
+    debugPrint('[OnboardingRepository] URL: $fullUrl');
+    final response = await ApiServices.patch(
+      endpoint,
+      queryParams: queryParams,
+      headers: ApiConfig.defaultHeaders,
+    );
+    debugPrint(
+      '[OnboardingRepository] PATCH $endpoint → success=${response.success} statusCode=${response.statusCode}',
+    );
+    return response;
+  }
+
   /// POST onboarding/sessions/{session_id}/answers
   /// Body: question_id, answer, question_type, question_options?, constraints?
   /// Response: same shape as flow (status, current, next, progress, redirect).

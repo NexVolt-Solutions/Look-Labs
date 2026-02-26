@@ -38,8 +38,10 @@ class QuestionAnswerViewModel extends ChangeNotifier {
 
   /// Flow API: questionId -> selected option index (single choice)
   final Map<int, int> flowAnswers = {};
+
   /// questionId -> answer text (for type text or number)
   final Map<int, String> flowTextAnswers = {};
+
   /// questionId -> list of selected option indices (multi_choice)
   final Map<int, List<int>> flowMultiAnswers = {};
 
@@ -78,9 +80,6 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     return titles[flowStepKeys[currentStepIndex]] ?? 'Onboarding';
   }
 
-  /// Load questions for the current step. Calls the flow API once (step + index=0).
-  /// The backend returns one "current" (and optionally "next") per call; we do not loop
-  /// to avoid infinite requests and rate limiting (429).
   Future<void> loadAllQuestionsForCurrentStep() async {
     final sessionId = OnboardingRepository.sessionId;
     if (sessionId == null || sessionId.isEmpty) {
@@ -97,36 +96,58 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     notifyListeners();
 
     final repo = OnboardingRepository.instance;
-    final response = await repo.getFlow(
-      sessionId: sessionId,
-      step: step,
-      index: 0,
-    );
-
-    _flowLoadedOnce = true;
-    isLoadingFlow = false;
-
-    if (!response.success || response.data is! OnboardingFlowResponse) {
-      flowError = response.message ?? 'Failed to load questions';
-      currentStepQuestions = [];
-      flowResponse = null;
-      notifyListeners();
-      return;
-    }
-
-    final flow = response.data as OnboardingFlowResponse;
-    flowResponse = flow;
-
     final list = <FlowQuestion>[];
     final seenIds = <int>{};
+    int stepTotal = 15;
+    const int maxCalls = 15;
+
     void addIfNew(FlowQuestion? q) {
-      if (q == null || q.step != step || seenIds.contains(q.id)) return;
+      if (q == null || seenIds.contains(q.id)) return;
+      if (q.step.isNotEmpty && q.step != step) return;
       seenIds.add(q.id);
       list.add(q);
     }
-    addIfNew(flow.current);
-    addIfNew(flow.next);
 
+    for (int index = 0; index < maxCalls; index++) {
+      final response = await repo.getFlow(
+        sessionId: sessionId,
+        step: step,
+        index: index,
+      );
+
+      if (!response.success || response.data is! OnboardingFlowResponse) {
+        if (list.isEmpty) {
+          _flowLoadedOnce = true;
+          isLoadingFlow = false;
+          flowError = response.message ?? 'Failed to load questions';
+          currentStepQuestions = [];
+          flowResponse = null;
+          notifyListeners();
+        }
+        break;
+      }
+
+      final flow = response.data as OnboardingFlowResponse;
+      flowResponse = flow;
+
+      if (flow.progress != null) {
+        stepTotal = flow.progress!.totalQuestions;
+        final section = flow.progress!.progress?.sections?[step];
+        if (section is Map && section['total'] != null) {
+          stepTotal = (section['total'] as num).toInt();
+        }
+      }
+
+      final before = list.length;
+      addIfNew(flow.current);
+      addIfNew(flow.next);
+
+      if (list.length >= stepTotal) break;
+      if (list.length == before && index > 0) break;
+    }
+
+    _flowLoadedOnce = true;
+    isLoadingFlow = false;
     currentStepQuestions = list;
     flowError = list.isEmpty ? 'No questions for this step' : null;
     notifyListeners();
@@ -156,7 +177,7 @@ class QuestionAnswerViewModel extends ChangeNotifier {
       );
       if (!response.success) {
         isLoadingFlow = false;
-        flowError = response.message ?? 'Failed to submit answer';
+        flowError = _extractSubmitError(response);
         notifyListeners();
         return false;
       }
@@ -168,6 +189,22 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     flowError = null;
     notifyListeners();
     return true;
+  }
+
+  /// Extract user-facing error from submit answer API response (e.g. 422 validation).
+  String _extractSubmitError(dynamic response) {
+    final data = response.data;
+    if (data is Map<String, dynamic>) {
+      final errors = data['errors'];
+      if (errors is List && errors.isNotEmpty && errors.first is Map) {
+        final first = errors.first as Map;
+        final msg = first['message']?.toString();
+        if (msg != null && msg.isNotEmpty) return msg;
+      }
+      final detail = data['detail']?.toString();
+      if (detail != null && detail.isNotEmpty) return detail;
+    }
+    return response.message ?? 'Failed to submit answers. Please try again.';
   }
 
   Map<String, dynamic>? _buildAnswerBody(FlowQuestion q) {
@@ -187,18 +224,28 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     if (q.type == 'multi_choice') {
       final selected = flowMultiAnswers[q.id];
       if (selected == null || selected.isEmpty) return null;
+      final optionStrings = q.optionsAsStrings;
+      final answerList = selected
+          .where((i) => i >= 0 && i < optionStrings.length)
+          .map((i) => optionStrings[i])
+          .toList();
+      if (answerList.isEmpty) return null;
       return {
         'question_id': q.id,
-        'answer': selected,
+        'answer': answerList,
         'question_type': questionType,
         'question_options': q.options,
         'constraints': q.constraints,
       };
     }
     if (!flowAnswers.containsKey(q.id)) return null;
+    final optionIndex = flowAnswers[q.id]!;
+    final optionStrings = q.optionsAsStrings;
+    if (optionIndex < 0 || optionIndex >= optionStrings.length) return null;
+    final answerText = optionStrings[optionIndex];
     return {
       'question_id': q.id,
-      'answer': flowAnswers[q.id],
+      'answer': answerText,
       'question_type': questionType,
       'question_options': q.options,
       'constraints': q.constraints,

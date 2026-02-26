@@ -102,17 +102,21 @@ class _QuestionScreenState extends State<QuestionScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
-        padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
+        padding: context.paddingOnly(top: 20, left: 20, right: 20, bottom: 20),
         child: CustomButton(
           text: isLastStep ? 'Complete' : 'Next',
           color: AppColors.pimaryColor,
-          isEnabled: !vm.isLoadingFlow && vm.isCurrentStepComplete,
+          isEnabled: !vm.isLoadingFlow,
           onTap: () async {
             if (!vm.isCurrentStepComplete) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
+                SnackBar(
                   content: Text(
-                    'Please answer all questions before continuing.',
+                    vm.currentStepQuestions.any(
+                          (q) => q.type == 'choice' || q.type == 'multi_choice',
+                        )
+                        ? 'Please select all options before continuing.'
+                        : 'Please answer all questions before continuing.',
                   ),
                   behavior: SnackBarBehavior.floating,
                 ),
@@ -125,7 +129,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    vm.flowError ?? 'Failed to submit answers. Please try again.',
+                    vm.flowError ??
+                        'Failed to submit answers. Please try again.',
                   ),
                   behavior: SnackBarBehavior.floating,
                 ),
@@ -136,17 +141,15 @@ class _QuestionScreenState extends State<QuestionScreen> {
               setState(() => _isCompleting = true);
               await Future.delayed(const Duration(milliseconds: 400));
               if (context.mounted) {
-                Navigator.pushNamed(context, RoutesName.GaolScreen).then((_) {
-                  if (mounted) setState(() => _isCompleting = false);
-                });
+                Navigator.pushReplacementNamed(context, RoutesName.GaolScreen);
+                if (mounted) setState(() => _isCompleting = false);
               }
               return;
             }
             await vm.nextStep();
             if (context.mounted) {
-              // If we moved to last step and it has no questions, still show Complete
               if (vm.isFlowComplete && !vm.hasFlowQuestions) {
-                Navigator.pushNamed(context, RoutesName.GaolScreen);
+                Navigator.pushReplacementNamed(context, RoutesName.GaolScreen);
               }
             }
           },
@@ -161,14 +164,22 @@ class _QuestionScreenState extends State<QuestionScreen> {
               child: vm.currentStepIndex > 0
                   ? AppBarContainer(
                       title: vm.flowStepTitle,
-                      onTap: () => vm.backStep(),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "You can't go back after submitting a step.",
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
                     )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           height: context.sh(48),
-
                           color: Colors.transparent,
                         ),
                         Expanded(

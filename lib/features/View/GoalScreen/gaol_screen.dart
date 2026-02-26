@@ -20,110 +20,122 @@ class _GaolScreenState extends State<GaolScreen> {
   @override
   Widget build(BuildContext context) {
     final gaolScreenViewModel = Provider.of<GaolScreenViewModel>(context);
-    return Scaffold(
-      backgroundColor: AppColors.backGroundColor,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: AppColors.backGroundColor,
 
-      bottomNavigationBar: Padding(
-        padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
-        child: CustomButton(
-          isEnabled: true,
-          onTap: () => Navigator.pushNamed(context, RoutesName.OnBoardScreen),
-          text: AppText.getStarted,
-          color: AppColors.pimaryColor,
+        bottomNavigationBar: Padding(
+          padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
+          child: CustomButton(
+            isEnabled: true,
+            onTap: () => Navigator.pushNamed(context, RoutesName.OnBoardScreen),
+            text: AppText.getStarted,
+            color: AppColors.pimaryColor,
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: context.paddingSymmetricR(horizontal: 20),
-          clipBehavior: Clip.none,
-          children: [
-            SizedBox(height: context.sh(20)),
+        body: SafeArea(
+          child: ListView(
+            padding: context.paddingSymmetricR(horizontal: 20),
+            clipBehavior: Clip.none,
+            children: [
+              SizedBox(height: context.sh(20)),
 
-            NormalText(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: AppText.chooseGoal,
-              titleSize: context.sp(20),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.headingColor,
-            ),
-            SizedBox(height: context.sh(20)),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: context.sw(16),
-                crossAxisSpacing: context.sw(16),
-                childAspectRatio: 2.5,
+              NormalText(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                titleText: AppText.chooseGoal,
+                titleSize: context.sp(20),
+                titleWeight: FontWeight.w600,
+                titleColor: AppColors.headingColor,
               ),
-              itemCount: gaolScreenViewModel.buttonName.length,
-              itemBuilder: (context, index) {
-                final bool isSelected =
-                    gaolScreenViewModel.selectedIndex ==
-                    gaolScreenViewModel.buttonName[index];
+              SizedBox(height: context.sh(20)),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: context.sw(16),
+                  crossAxisSpacing: context.sw(16),
+                  childAspectRatio: 2.5,
+                ),
+                itemCount: gaolScreenViewModel.buttonName.length,
+                itemBuilder: (context, index) {
+                  final bool isSelected =
+                      gaolScreenViewModel.selectedIndex ==
+                      gaolScreenViewModel.buttonName[index];
 
-                return GestureDetector(
-                  onTap: () {
-                    gaolScreenViewModel.selectIndex(index);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppColors.buttonColor.withOpacity(
-                              0.11,
-                            ) // selected bg
-                          : AppColors.backGroundColor,
-                      borderRadius: BorderRadius.circular(context.radiusR(16)),
-                      border: isSelected
-                          ? Border.all(color: AppColors.pimaryColor, width: 1.5)
-                          : null,
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: AppColors.buttonColor.withOpacity(0.15),
-                                offset: const Offset(5, 5),
-                                blurRadius: 20,
-                                inset: true,
-                              ),
-                              BoxShadow(
-                                color: AppColors.buttonColor.withOpacity(0.15),
-                                offset: const Offset(-5, -5),
-                                blurRadius: 20,
-                                inset: true,
-                              ),
-                            ]
-                          : [
-                              BoxShadow(
-                                color: AppColors.customContainerColorUp
-                                    .withOpacity(0.5),
-                                offset: const Offset(5, 5),
-                                blurRadius: 20,
-                              ),
-                              BoxShadow(
-                                color: AppColors.customContinerColorDown,
-                                offset: const Offset(-5, -5),
-                                blurRadius: 20,
-                              ),
-                            ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        gaolScreenViewModel.buttonName[index],
-                        style: TextStyle(
-                          fontSize: context.sp(14),
-                          fontWeight: FontWeight.w700,
-                          color: isSelected
-                              ? AppColors.headingColor
-                              : AppColors.seconderyColor,
+                  return GestureDetector(
+                    onTap: () {
+                      gaolScreenViewModel.selectIndex(index);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppColors.buttonColor.withOpacity(
+                                0.11,
+                              ) // selected bg
+                            : AppColors.backGroundColor,
+                        borderRadius: BorderRadius.circular(
+                          context.radiusR(16),
+                        ),
+                        border: isSelected
+                            ? Border.all(
+                                color: AppColors.pimaryColor,
+                                width: 1.5,
+                              )
+                            : null,
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: AppColors.buttonColor.withOpacity(
+                                    0.15,
+                                  ),
+                                  offset: const Offset(5, 5),
+                                  blurRadius: 20,
+                                  inset: true,
+                                ),
+                                BoxShadow(
+                                  color: AppColors.buttonColor.withOpacity(
+                                    0.15,
+                                  ),
+                                  offset: const Offset(-5, -5),
+                                  blurRadius: 20,
+                                  inset: true,
+                                ),
+                              ]
+                            : [
+                                BoxShadow(
+                                  color: AppColors.customContainerColorUp
+                                      .withOpacity(0.5),
+                                  offset: const Offset(5, 5),
+                                  blurRadius: 20,
+                                ),
+                                BoxShadow(
+                                  color: AppColors.customContinerColorDown,
+                                  offset: const Offset(-5, -5),
+                                  blurRadius: 20,
+                                ),
+                              ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          gaolScreenViewModel.buttonName[index],
+                          style: TextStyle(
+                            fontSize: context.sp(14),
+                            fontWeight: FontWeight.w700,
+                            color: isSelected
+                                ? AppColors.headingColor
+                                : AppColors.seconderyColor,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: context.sh(223)),
-          ],
+                  );
+                },
+              ),
+              SizedBox(height: context.sh(223)),
+            ],
+          ),
         ),
       ),
     );

@@ -10,6 +10,9 @@ class ApiEndpoints {
   /// POST onboarding/sessions/{session_id}/answers
   static String onboardingSessionAnswers(String sessionId) =>
       'onboarding/sessions/$sessionId/answers';
+  /// PATCH onboarding/sessions/{session_id}/domain?domain=skincare
+  static String onboardingSessionDomain(String sessionId) =>
+      'onboarding/sessions/$sessionId/domain';
 
   // Auth (Google Sign-In only)
   static const String googleSignIn = 'auth/google';
