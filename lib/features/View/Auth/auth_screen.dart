@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
-import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Features/Widget/simple_check_box.dart';
@@ -21,13 +19,21 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Clear focus so the system doesn't request keyboard (avoids "view is not EditText" IME churn).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    });
+  }
+
   Future<void> _handleSignIn(AuthViewModel vm) async {
     vm.clearError();
     try {
       final success = await vm.signInWithGoogle();
       if (!mounted) return;
       if (success) {
-        debugPrint('[AuthScreen] Sign-in success, navigating to dashboard');
         Navigator.pushNamedAndRemoveUntil(
           context,
           RoutesName.BottomSheetBarScreen,
@@ -35,14 +41,12 @@ class _AuthScreenState extends State<AuthScreen> {
         );
       } else if (vm.errorMessage != null) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(vm.errorMessage!)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(vm.errorMessage!)));
         }
       }
-    } catch (e, st) {
-      debugPrint('[AuthScreen] _handleSignIn error: $e');
-      debugPrint('[AuthScreen] $st');
+    } catch (e, _) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Something went wrong: ${e.toString()}')),
@@ -56,15 +60,7 @@ class _AuthScreenState extends State<AuthScreen> {
     final authVm = Provider.of<AuthViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: Padding(
-        padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
-        child: CustomButton(
-          isEnabled: !authVm.isLoading,
-          onTap: () => _handleSignIn(authVm),
-          text: AppText.signIn,
-          color: AppColors.buttonColor,
-        ),
-      ),
+
       body: Stack(
         children: [
           SafeArea(
@@ -88,7 +84,10 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
                 SizedBox(height: context.sh(2)),
                 PlanContainer(
-                  padding: context.paddingSymmetricR(vertical: 12, horizontal: 65),
+                  padding: context.paddingSymmetricR(
+                    vertical: 12,
+                    horizontal: 65,
+                  ),
                   margin: context.paddingSymmetricR(vertical: 10),
                   isSelected: false,
                   onTap: authVm.isLoading ? null : () => _handleSignIn(authVm),

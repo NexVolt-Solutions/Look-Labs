@@ -21,27 +21,42 @@ class _SettingScreenState extends State<SettingScreen> {
   final SettingViewModel settingVM = SettingViewModel();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final authVm = context.read<AuthViewModel>();
+      if (authVm.isLoggedIn && authVm.profile == null) {
+        authVm.fetchProfile();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final authVm = context.watch<AuthViewModel>();
     final user = authVm.user;
+    final profile = authVm.profile;
     settingVM.updateFromUser(
-      name: user?.name,
-      email: user?.email,
+      name: user?.name ?? profile?.name,
+      email: user?.email ?? profile?.email,
+      age: profile?.age?.toString(),
+      gender: profile?.gender,
     );
 
-    final name = user?.name;
-    final email = user?.email;
+    final name = user?.name ?? profile?.name;
+    final email = user?.email ?? profile?.email;
+    final profileImage = user?.profileImage ?? profile?.profileImage;
     final avatarLabel = (name != null && name.isNotEmpty)
         ? name.substring(0, 1).toUpperCase()
         : (email != null && email.isNotEmpty)
-            ? email.substring(0, 1).toUpperCase()
-            : '—';
+        ? email.substring(0, 1).toUpperCase()
+        : '—';
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
         child: ListView(
-          scrollDirection: Axis.vertical,
           children: [
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,19 +66,15 @@ class _SettingScreenState extends State<SettingScreen> {
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(height: context.sh(29)),
-            Container(
-              padding: context.paddingSymmetricR(horizontal: 137.5, vertical: 37.5),
-              decoration: BoxDecoration(color: AppColors.white),
+            Center(
               child: Container(
-                padding: context.paddingAllR(38),
+                padding: EdgeInsets.all(context.sw(4)),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  // borderRadius: ra BorderRadius.circular(context.radiusR(10)),
                   border: Border.all(
                     color: AppColors.backGroundColor,
                     width: context.sw(1.5),
                   ),
-                  color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.customContainerColorUp.withOpacity(0.4),
@@ -77,12 +88,21 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                   ],
                 ),
-                child: NormalText(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  titleText: avatarLabel,
-                  titleSize: context.sp(20),
-                  titleWeight: FontWeight.w600,
-                  titleColor: AppColors.iconColor,
+                child: SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: ClipOval(
+                    child: profileImage != null && profileImage.isNotEmpty
+                        ? Image.network(
+                            profileImage,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) =>
+                                _avatarLetter(avatarLabel),
+                          )
+                        : _avatarLetter(avatarLabel),
+                  ),
                 ),
               ),
             ),
@@ -112,34 +132,12 @@ class _SettingScreenState extends State<SettingScreen> {
               items: settingVM.personalInfo,
               viewModel: settingVM,
             ),
-            SizedBox(height: context.sh(12)),
-            Padding(
-              padding: context.paddingSymmetricR(horizontal: 20),
-              child: NormalText(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: AppText.account,
-                titleSize: context.sp(18),
-                titleWeight: FontWeight.w600,
-                titleColor: AppColors.subHeadingColor,
-              ),
-            ),
-            SizedBox(height: context.sh(12)),
+            _sectionHeader(context, AppText.account),
             SettingContainer(
               items: settingVM.paymentInfo,
               viewModel: settingVM,
             ),
-            SizedBox(height: context.sh(12)),
-            Padding(
-              padding: context.paddingSymmetricR(horizontal: 20),
-              child: NormalText(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: AppText.preferencesAndSupport,
-                titleSize: context.sp(18),
-                titleWeight: FontWeight.w600,
-                titleColor: AppColors.subHeadingColor,
-              ),
-            ),
-            SizedBox(height: context.sh(12)),
+            _sectionHeader(context, AppText.preferencesAndSupport),
             SettingContainer(
               items: settingVM.appSettings,
               viewModel: settingVM,
@@ -147,6 +145,40 @@ class _SettingScreenState extends State<SettingScreen> {
             SizedBox(height: context.sh(250)),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _avatarLetter(String label) {
+    return Container(
+      width: 100,
+      height: 100,
+      alignment: Alignment.center,
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 40,
+          fontWeight: FontWeight.w600,
+          color: AppColors.iconColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _sectionHeader(BuildContext context, String title) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: context.sw(20),
+        right: context.sw(20),
+        top: context.sh(12),
+        bottom: context.sh(12),
+      ),
+      child: NormalText(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        titleText: title,
+        titleSize: context.sp(18),
+        titleWeight: FontWeight.w600,
+        titleColor: AppColors.subHeadingColor,
       ),
     );
   }

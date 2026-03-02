@@ -24,31 +24,37 @@ class _QuestionScreenState extends State<QuestionScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<QuestionAnswerViewModel>().loadAllQuestionsForCurrentStep();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final vm = context.read<QuestionAnswerViewModel>();
+      if (vm.onboardingComplete) {
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, RoutesName.GaolScreen);
+        }
+        return;
+      }
+      await vm.loadAllQuestionsForCurrentStep();
+      if (!mounted) return;
+      if (context.read<QuestionAnswerViewModel>().onboardingComplete) {
+        Navigator.pushReplacementNamed(context, RoutesName.GaolScreen);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<QuestionAnswerViewModel>(context);
-    final hasSession = OnboardingRepository.sessionId != null;
-
-    if (!hasSession) {
+    if (OnboardingRepository.sessionId == null) {
       return _buildNoSessionUi(context);
     }
-
-    if (vm.isLoadingFlow && !vm.flowLoadAttempted) {
+    if (vm.onboardingComplete) {
       return Scaffold(
         backgroundColor: AppColors.backGroundColor,
         body: const Center(child: CircularProgressIndicator()),
       );
     }
-
     if (vm.flowError != null && !vm.hasFlowQuestions) {
       return _buildErrorUi(context, vm);
     }
-
     return _buildFlowUi(context, vm);
   }
 
@@ -158,6 +164,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
             }
             if (isLastStep) {
               setState(() => _isCompleting = true);
+              vm.markOnboardingComplete();
               await Future.delayed(const Duration(milliseconds: 400));
               if (context.mounted) {
                 Navigator.pushReplacementNamed(context, RoutesName.GaolScreen);
@@ -225,7 +232,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
             ),
             SizedBox(height: context.sh(20)),
             Expanded(
-              child: vm.isLoadingFlow
+              child: (vm.isLoadingFlow && !vm.hasFlowQuestions)
                   ? const Center(child: CircularProgressIndicator())
                   : vm.hasFlowQuestions
                   ? SingleChildScrollView(

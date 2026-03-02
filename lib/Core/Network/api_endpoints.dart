@@ -5,18 +5,28 @@ class ApiEndpoints {
   // Onboarding (anonymous – no auth token required)
   static const String onboardingSessions = 'onboarding/sessions';
 
-  /// GET onboarding/sessions/{session_id}/flow?step=...&index=...
-  static String onboardingSessionFlow(String sessionId) =>
-      'onboarding/sessions/$sessionId/flow';
+  /// GET all onboarding questions (steps + questions). Optional ?session_id=...
+  static const String onboardingQuestions = 'onboarding/questions';
+
+  /// GET available domains for goal screen (returns { "domains": [ "skincare", ... ] }).
+  static const String onboardingDomains = 'onboarding/domains';
 
   /// POST onboarding/sessions/{session_id}/answers
   static String onboardingSessionAnswers(String sessionId) =>
       'onboarding/sessions/$sessionId/answers';
 
-  /// PATCH onboarding/sessions/{session_id}/domain?domain=skincare
+  /// POST onboarding/sessions/{session_id}/domain?domain=...
   static String onboardingSessionDomain(String sessionId) {
     return 'onboarding/sessions/$sessionId/domain';
   }
+
+  /// PATCH onboarding/sessions/{session_id}/link – link anonymous session to authenticated user (requires Bearer token).
+  static String onboardingSessionLink(String sessionId) =>
+      'onboarding/sessions/$sessionId/link';
+
+  /// GET onboarding/users/me/wellness – wellness metrics (requires Bearer token).
+  static const String onboardingUsersMeWellness =
+      'onboarding/users/me/wellness';
 
   // Auth (Google Sign-In only)
   static const String googleSignIn = 'auth/google';
@@ -29,6 +39,10 @@ class ApiEndpoints {
   static const String user = '/user';
   static String userById(String id) => '/user/$id';
   static const String userSettings = '/user/settings';
+  /// GET users/me – current user profile (requires Bearer token).
+  static const String usersMe = 'users/me';
+  /// GET users/me/progress/weekly – weekly progress for Home chart (requires Bearer token).
+  static const String usersMeProgressWeekly = 'users/me/progress/weekly';
 
   // Subscription
   static const String subscription = '/subscription';

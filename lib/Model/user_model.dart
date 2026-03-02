@@ -14,8 +14,14 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final idVal = json['id'];
+    final id = idVal is String
+        ? idVal
+        : idVal is int
+            ? idVal.toString()
+            : json['_id'] as String? ?? '';
     return UserModel(
-      id: json['id'] as String? ?? json['_id'] as String? ?? '',
+      id: id.isNotEmpty ? id : (json['_id']?.toString() ?? ''),
       email: json['email'] as String?,
       name: json['name'] as String? ?? json['displayName'] as String?,
       profileImage: json['profileImage'] as String? ??

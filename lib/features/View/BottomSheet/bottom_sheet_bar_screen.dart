@@ -52,11 +52,24 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                               color: AppColors.white,
                               width: context.sw(1.5),
                             ),
-                            image: const DecorationImage(
-                              image: AssetImage(AppAssets.circleIcon),
-                              fit: BoxFit.cover,
-                            ),
                           ),
+                          clipBehavior: Clip.antiAlias,
+                          child: authViewModel.user?.profileImage != null &&
+                                  authViewModel.user!.profileImage!.isNotEmpty
+                              ? Image.network(
+                                  authViewModel.user!.profileImage!,
+                                  fit: BoxFit.cover,
+                                  width: context.sw(40),
+                                  height: context.sh(40),
+                                  errorBuilder: (_, __, ___) => Image.asset(
+                                    AppAssets.circleIcon,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Image.asset(
+                                  AppAssets.circleIcon,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                         SizedBox(width: context.sw(12)),
                         NormalText(

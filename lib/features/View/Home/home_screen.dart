@@ -21,8 +21,24 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final vm = context.read<HomeViewModel>();
+      vm.loadWellness();
+      vm.loadWeeklyProgress();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final homeViewModel = Provider.of<HomeViewModel>(context);
+    final overviewLoading =
+        homeViewModel.wellnessLoading && homeViewModel.wellness == null;
+    final overviewError =
+        homeViewModel.wellnessError != null && homeViewModel.wellness == null;
+
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
@@ -38,28 +54,65 @@ class _HomeScreenState extends State<HomeScreen> {
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(height: context.sh(10)),
-            SizedBox(
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 2.2,
+            if (overviewError)
+              Padding(
+                padding: EdgeInsets.only(bottom: context.sh(12)),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        homeViewModel.wellnessError ??
+                            'Couldn\'t load wellness',
+                        style: TextStyle(
+                          fontSize: context.sp(13),
+                          color: AppColors.notSelectedColor,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => homeViewModel.loadWellness(),
+                      child: const Text('Retry'),
+                    ),
+                  ],
                 ),
-                itemCount: homeViewModel.homeOverViewData.length,
-                itemBuilder: (context, index) {
-                  final item = homeViewModel.homeOverViewData[index];
-                  return GridData(
-                    title: item['title'],
-                    subTitle: item['subTitle'],
-                    image: item['image'],
-                  );
-                },
               ),
-            ),
+            if (overviewLoading)
+              SizedBox(
+                height: context.sh(120),
+                child: Center(
+                  child: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.subHeadingColor,
+                    ),
+                  ),
+                ),
+              )
+            else
+              SizedBox(
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 2.2,
+                  ),
+                  itemCount: homeViewModel.homeOverViewData.length,
+                  itemBuilder: (context, index) {
+                    final item = homeViewModel.homeOverViewData[index];
+                    return GridData(
+                      title: item['title'],
+                      subTitle: item['subTitle'],
+                      image: item['image'],
+                    );
+                  },
+                ),
+              ),
             SizedBox(height: context.sh(24)),
             Container(
               padding: context.paddingSymmetricR(horizontal: 8, vertical: 8),
@@ -79,7 +132,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              child: Image.asset(AppAssets.homeConIcon, fit: BoxFit.contain),
+              child: Container(
+                padding: context.paddingSymmetricR(horizontal: 12, vertical: 8),
+
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(context.radiusR(14)),
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF000000).withOpacity(0.9),
+                      Color(0xFF000000).withOpacity(0.7),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: Text(
+                  homeViewModel.wellness?.dailyQuote ?? '',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: context.sp(24),
+                    fontStyle: FontStyle.italic,
+                    color: AppColors.white,
+                  ),
+                ),
+              ),
             ),
             SizedBox(height: context.sh(24)),
             NormalText(
@@ -89,12 +165,50 @@ class _HomeScreenState extends State<HomeScreen> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
-            SizedBox(
-              height: context.sh(170),
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                scrollDirection: Axis.horizontal,
-                itemCount: homeViewModel.listViewData.length,
+            if (homeViewModel.weeklyProgressError != null &&
+                homeViewModel.weeklyProgress == null)
+              Padding(
+                padding: EdgeInsets.only(bottom: context.sh(8)),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        homeViewModel.weeklyProgressError ?? '',
+                        style: TextStyle(
+                          fontSize: context.sp(12),
+                          color: AppColors.notSelectedColor,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => homeViewModel.loadWeeklyProgress(),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              ),
+            if (homeViewModel.weeklyProgressLoading &&
+                homeViewModel.weeklyProgress == null)
+              SizedBox(
+                height: context.sh(80),
+                child: Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.subHeadingColor,
+                    ),
+                  ),
+                ),
+              )
+            else
+              SizedBox(
+                height: context.sh(170),
+                child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: homeViewModel.listViewData.length,
                 itemBuilder: (context, index) {
                   final item = homeViewModel.listViewData[index];
                   return Container(

@@ -20,15 +20,20 @@ class OnboardingSession {
 
   factory OnboardingSession.fromJson(Map<String, dynamic> json) {
     return OnboardingSession(
-      id: json['id'] as String? ?? '',
-      userId: json['user_id'] as String?,
-      createdAt: json['created_at'] as String? ?? '',
-      updatedAt: json['updated_at'] as String? ?? '',
-      selectedDomain: json['selected_domain'] as String?,
-      isPaid: json['is_paid'] as bool? ?? false,
-      paymentConfirmedAt: json['payment_confirmed_at'] as String?,
+      id: _string(json['id']),
+      userId: _stringOrNull(json['user_id']),
+      createdAt: _string(json['created_at']),
+      updatedAt: _string(json['updated_at']),
+      selectedDomain: _stringOrNull(json['selected_domain']),
+      isPaid: json['is_paid'] == true,
+      paymentConfirmedAt: _stringOrNull(json['payment_confirmed_at']),
     );
   }
+
+  static String _string(dynamic v) =>
+      v == null ? '' : v is String ? v : v.toString();
+  static String? _stringOrNull(dynamic v) =>
+      v == null ? null : v is String ? v : v.toString();
 
   Map<String, dynamic> toJson() => {
         'id': id,

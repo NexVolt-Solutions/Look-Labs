@@ -1,99 +1,109 @@
 import 'package:flutter/foundation.dart';
-import 'package:looklabs/Core/Network/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:looklabs/Core/Network/api_endpoints.dart';
 import 'package:looklabs/Core/Network/api_response.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
+import 'package:looklabs/Core/Network/models/user_profile_response.dart';
 
-/// Authentication repository - Google Sign-In only
+const _kStorageKeyAuthToken = 'api_auth_token';
+
 class AuthRepository {
   AuthRepository._();
 
   static final AuthRepository _instance = AuthRepository._();
   static AuthRepository get instance => _instance;
 
-  static void _log(String method, String endpoint, ApiResponse response) {
-    debugPrint(
-      '[AuthRepository] $method $endpoint → success=${response.success} statusCode=${response.statusCode} message=${response.message}',
-    );
-    if (!response.success && response.data != null) {
-      final dataStr = response.data.toString();
-      debugPrint(
-        '[AuthRepository] failure body: ${dataStr.length > 400 ? "${dataStr.substring(0, 400)}..." : dataStr}',
-      );
+  static const FlutterSecureStorage _storage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
+
+  /// Restore API token from storage and set on [ApiServices]. Call at app start.
+  /// Returns true if a token was restored.
+  static Future<bool> restoreAuthToken() async {
+    try {
+      final token = await _storage.read(key: _kStorageKeyAuthToken);
+      if (token == null || token.isEmpty) return false;
+      ApiServices.setAuthToken(token);
+      if (kDebugMode) {
+        debugPrint('[Auth] restored token: $token');
+      }
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 
-  /// Sign in with Google - pass the idToken from google_sign_in package
-  /// Backend validates the token and returns app JWT
   Future<ApiResponse> signInWithGoogle({
     required String idToken,
     String? accessToken,
+    String? name,
+    String? profileImage,
   }) async {
-    final endpoint = ApiEndpoints.googleSignIn;
-    final fullUrl = ApiConfig.getFullUrl(endpoint);
-    debugPrint(
-      '[AuthRepository] POST $endpoint (idToken length=${idToken.length}, accessToken=${accessToken != null})',
+    final response = await ApiServices.post(
+      ApiEndpoints.googleSignIn,
+      body: {
+        'id_token': idToken,
+        if (accessToken != null) 'access_token': accessToken,
+        if (name != null && name.isNotEmpty) 'name': name,
+        if (profileImage != null && profileImage.isNotEmpty) 'profile_image': profileImage,
+      },
     );
-    debugPrint('[AuthRepository] URL: $fullUrl');
-    final body = <String, dynamic>{
-      'id_token': idToken,
-      if (accessToken != null) 'access_token': accessToken,
-    };
-    final response = await ApiServices.post(endpoint, body: body);
-    _log('POST', endpoint, response);
     if (response.success && response.data != null) {
       final token = _extractToken(response.data);
       if (token != null) {
         ApiServices.setAuthToken(token);
-        debugPrint('[AuthRepository] Auth token set (length=${token.length})');
+        await _storage.write(key: _kStorageKeyAuthToken, value: token);
       }
     }
     return response;
   }
 
-  /// Logout - clears token and calls logout endpoint
   Future<ApiResponse> logout() async {
-    final endpoint = ApiEndpoints.logout;
-    debugPrint('[AuthRepository] POST $endpoint');
-    final response = await ApiServices.post(endpoint);
-    _log('POST', endpoint, response);
+    final response = await ApiServices.post(ApiEndpoints.logout);
     ApiServices.setAuthToken(null);
-    debugPrint('[AuthRepository] Auth token cleared');
+    try {
+      await _storage.delete(key: _kStorageKeyAuthToken);
+    } catch (_) {}
     return response;
   }
 
-  /// Refresh auth token
   Future<ApiResponse> refreshToken() async {
-    final endpoint = ApiEndpoints.refreshToken;
-    debugPrint('[AuthRepository] POST $endpoint');
-    final response = await ApiServices.post(endpoint);
-    _log('POST', endpoint, response);
+    final response = await ApiServices.post(ApiEndpoints.refreshToken);
     if (response.success && response.data != null) {
       final token = _extractToken(response.data);
       if (token != null) {
         ApiServices.setAuthToken(token);
-        debugPrint('[AuthRepository] Auth token refreshed');
+        await _storage.write(key: _kStorageKeyAuthToken, value: token);
       }
     }
     return response;
   }
 
-  /// Get current user profile
-  Future<ApiResponse> getProfile() async {
-    final endpoint = ApiEndpoints.profile;
-    debugPrint('[AuthRepository] GET $endpoint');
-    final response = await ApiServices.get(endpoint);
-    _log('GET', endpoint, response);
+  /// GET users/me – current user profile (Bearer token).
+  Future<ApiResponse> getMe() async {
+    final response = await ApiServices.get(ApiEndpoints.usersMe);
+    if (response.success && response.data != null && response.data is Map) {
+      final raw = Map<String, dynamic>.from(response.data as Map);
+      final json = raw.containsKey('data') && raw['data'] is Map
+          ? Map<String, dynamic>.from(raw['data'] as Map)
+          : raw;
+      final profile = UserProfileResponse.fromJson(json);
+      return ApiResponse(
+        success: true,
+        statusCode: response.statusCode,
+        data: profile,
+        message: response.message,
+      );
+    }
     return response;
   }
 
-  /// Update profile (if your API supports PATCH/PUT on profile)
+  Future<ApiResponse> getProfile() async {
+    return getMe();
+  }
+
   Future<ApiResponse> updateProfile(Map<String, dynamic> body) async {
-    final endpoint = ApiEndpoints.profile;
-    debugPrint('[AuthRepository] PUT $endpoint');
-    final response = await ApiServices.put(endpoint, body: body);
-    _log('PUT', endpoint, response);
-    return response;
+    return ApiServices.put(ApiEndpoints.usersMe, body: body);
   }
 
   /// Extract token from API response (supports common formats)

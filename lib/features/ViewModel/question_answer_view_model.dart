@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
+import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 
 class QuestionAnswerViewModel extends ChangeNotifier {
@@ -14,12 +15,22 @@ class QuestionAnswerViewModel extends ChangeNotifier {
   String? flowError;
   bool _flowLoadedOnce = false;
 
-  bool get flowLoadAttempted => _flowLoadedOnce;
+  /// When backend returns a "steps" list, we cache by step name so Next/Back don't need more API calls.
+  final Map<String, List<FlowQuestion>> _stepsCache = {};
+
   bool get hasFlowQuestions => currentStepQuestions.isNotEmpty;
   FlowProgress? get flowProgress => flowResponse?.progress;
 
+  /// Set when user completed the last step and we navigated to Goal. Avoids showing Planning again if they re-enter the flow.
+  bool onboardingComplete = false;
+
   /// Complete = we're on the last step (Planning); button shows "Complete" and navigates.
   bool get isFlowComplete => currentStepIndex >= flowStepperLabels.length - 1;
+
+  void markOnboardingComplete() {
+    onboardingComplete = true;
+    notifyListeners();
+  }
 
   /// True when every question on the current step has a valid answer (required for Next/Complete).
   bool get isCurrentStepComplete {
@@ -93,74 +104,68 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     }
 
     final step = flowStep;
+
+    // Use cached questions when we already have them (e.g. from GET onboarding/questions)
+    if (_stepsCache.containsKey(step)) {
+      _flowLoadedOnce = true;
+      currentStepQuestions = _stepsCache[step]!;
+      flowError = currentStepQuestions.isEmpty
+          ? 'No questions for this step'
+          : null;
+      notifyListeners();
+      return;
+    }
+
     isLoadingFlow = true;
     flowError = null;
     notifyListeners();
 
     final repo = OnboardingRepository.instance;
-    final list = <FlowQuestion>[];
-    final seenIds = <int>{};
-    int stepTotal = 15;
-    const int maxCalls = 15;
-    String responseStep = step;
-    String requestStep = step;
 
-    void addIfNew(FlowQuestion? q) {
-      if (q == null || seenIds.contains(q.id)) return;
-      if (q.step.isNotEmpty && q.step != responseStep) return;
-      seenIds.add(q.id);
-      list.add(q);
-    }
-
-    for (int index = 0; index < maxCalls; index++) {
-      final response = await repo.getFlow(
-        sessionId: sessionId,
-        step: requestStep,
-        index: index,
-      );
-
-      if (!response.success || response.data is! OnboardingFlowResponse) {
-        if (list.isEmpty) {
-          _flowLoadedOnce = true;
-          isLoadingFlow = false;
-          flowError = response.message ?? 'Failed to load questions';
-          currentStepQuestions = [];
-          flowResponse = null;
-          notifyListeners();
-        }
-        break;
-      }
-
-      final flow = response.data as OnboardingFlowResponse;
+    // Prefer new API: GET onboarding/questions (all steps in one call)
+    final questionsResponse = await repo.getOnboardingQuestions(
+      sessionId: sessionId,
+    );
+    if (questionsResponse.success &&
+        questionsResponse.data is OnboardingFlowResponse) {
+      final flow = questionsResponse.data as OnboardingFlowResponse;
       flowResponse = flow;
-
-      responseStep = flow.current?.step ?? flow.progress?.step ?? responseStep;
-      requestStep = responseStep;
-      final stepIndex = flowStepKeys.indexOf(responseStep);
-      if (stepIndex >= 0 && stepIndex != currentStepIndex) {
-        currentStepIndex = stepIndex;
-      }
-
-      if (flow.progress != null) {
-        stepTotal = flow.progress!.totalQuestions;
-        final section = flow.progress!.progress?.sections?[responseStep];
-        if (section is Map && section['total'] != null) {
-          stepTotal = (section['total'] as num).toInt();
+      if (flow.steps != null && flow.steps!.isNotEmpty) {
+        for (final s in flow.steps!) {
+          if (s.step.isNotEmpty) {
+            _stepsCache[s.step] = s.questions;
+          }
         }
+        final cached = _stepsCache[step];
+        _flowLoadedOnce = true;
+        isLoadingFlow = false;
+        currentStepQuestions = cached ?? [];
+        flowError = currentStepQuestions.isEmpty
+            ? 'No questions for this step'
+            : null;
+        notifyListeners();
+        return;
       }
-
-      final before = list.length;
-      addIfNew(flow.current);
-      addIfNew(flow.next);
-
-      if (list.length >= stepTotal) break;
-      if (list.length == before && index > 0) break;
+      // Backend returned top-level "questions" array (no "steps") – treat as profile_setup
+      if (flow.questions != null && flow.questions!.isNotEmpty) {
+        _stepsCache['profile_setup'] = flow.questions!;
+        final cached = _stepsCache[step];
+        _flowLoadedOnce = true;
+        isLoadingFlow = false;
+        currentStepQuestions = cached ?? [];
+        flowError = currentStepQuestions.isEmpty
+            ? 'No questions for this step'
+            : null;
+        notifyListeners();
+        return;
+      }
     }
 
     _flowLoadedOnce = true;
     isLoadingFlow = false;
-    currentStepQuestions = list;
-    flowError = list.isEmpty ? 'No questions for this step' : null;
+    flowError = _extractFlowLoadError(questionsResponse);
+    currentStepQuestions = [];
+    flowResponse = null;
     notifyListeners();
   }
 
@@ -180,6 +185,7 @@ class QuestionAnswerViewModel extends ChangeNotifier {
       if (body == null) continue;
       final response = await repo.submitAnswer(
         sessionId: sessionId,
+        step: flowStep,
         questionId: body['question_id'] as int,
         answer: body['answer'],
         questionType: body['question_type'] as String,
@@ -199,7 +205,55 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     isLoadingFlow = false;
     flowError = null;
     notifyListeners();
+
+    // If this was profile_setup, try to sync name/age/gender to user profile (when logged in).
+    if (flowStep == 'profile_setup') {
+      _syncProfileSetupToUser();
+    }
     return true;
+  }
+
+  /// Build profile payload from profile_setup answers and PATCH users/me (no-op if not logged in).
+  void _syncProfileSetupToUser() {
+    final payload = <String, dynamic>{};
+    final qLower = (String s) => s.toLowerCase();
+    for (final q in currentStepQuestions) {
+      final question = q.question;
+      if (qLower(question).contains('name') && (q.type == 'text' || q.type == 'number')) {
+        final v = flowTextAnswers[q.id]?.trim();
+        if (v != null && v.isNotEmpty) payload['name'] = v;
+      } else if (qLower(question).contains('age') && (q.type == 'text' || q.type == 'number')) {
+        final v = flowTextAnswers[q.id]?.trim();
+        if (v != null && v.isNotEmpty) {
+          final n = int.tryParse(v);
+          if (n != null) payload['age'] = n;
+        }
+      } else if (qLower(question).contains('gender') && q.type == 'choice') {
+        if (flowAnswers.containsKey(q.id)) {
+          final idx = flowAnswers[q.id]!;
+          final opts = q.optionsAsStrings;
+          if (idx >= 0 && idx < opts.length) payload['gender'] = opts[idx];
+        }
+      }
+    }
+    if (payload.isEmpty) return;
+    AuthRepository.instance.updateProfile(payload);
+  }
+
+  /// Extract user-facing error when GET flow fails (e.g. 500 server error).
+  String _extractFlowLoadError(dynamic response) {
+    final msg = response.message?.toString().trim();
+    if (msg != null && msg.isNotEmpty) return msg;
+    final data = response.data;
+    if (data is Map<String, dynamic>) {
+      final apiMsg = data['message']?.toString().trim();
+      if (apiMsg != null && apiMsg.isNotEmpty) return apiMsg;
+      final detail = data['detail']?.toString().trim();
+      if (detail != null && detail.isNotEmpty) return detail;
+    }
+    return response.statusCode >= 500
+        ? 'Server error. Please try again in a moment.'
+        : 'Failed to load questions. Please try again.';
   }
 
   /// Extract user-facing error from submit answer API response (e.g. 422 validation).

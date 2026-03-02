@@ -21,6 +21,10 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     splashScreenViewModel.addListener(_onViewModelUpdate);
     splashScreenViewModel.goTo(context);
+    // Prevent IME from being requested at startup (avoids "view is not EditText" log spam).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    });
   }
 
   @override
