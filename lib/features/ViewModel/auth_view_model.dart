@@ -176,6 +176,7 @@ class AuthViewModel extends ChangeNotifier {
       await _authRepo.logout();
       await OnboardingRepository.clearSession();
       await OnboardingRepository.clearQuestionsCache();
+      await OnboardingRepository.clearDomainsCache();
       _user = null;
       _profile = null;
       _errorMessage = null;
@@ -194,6 +195,7 @@ class AuthViewModel extends ChangeNotifier {
       await _firebaseAuth.signOut();
       await OnboardingRepository.clearSession();
       await OnboardingRepository.clearQuestionsCache();
+      await OnboardingRepository.clearDomainsCache();
       _user = null;
       _profile = null;
       _errorMessage = null;

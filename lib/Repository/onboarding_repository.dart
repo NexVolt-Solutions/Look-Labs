@@ -12,6 +12,7 @@ import 'package:looklabs/Core/Network/models/wellness_metrics.dart';
 
 const _kStorageKeySession = 'onboarding_session';
 const _kStorageKeyQuestionsCache = 'onboarding_questions_cache';
+const _kStorageKeyDomainsCache = 'onboarding_domains_cache';
 
 /// Repository for anonymous onboarding (no auth token).
 /// Questions: GET onboarding/questions. Answers: POST onboarding/sessions/{id}/answers.
@@ -109,11 +110,49 @@ class OnboardingRepository {
     } catch (_) {}
   }
 
+  /// Saves domains list to secure storage so home/explore and goal screen can use cache and API is called only once.
+  static Future<void> _saveDomainsToStorage(List<String> domains) async {
+    try {
+      await _storage.write(
+        key: _kStorageKeyDomainsCache,
+        value: jsonEncode(domains),
+      );
+    } catch (_) {}
+  }
+
+  /// Loads cached domains from secure storage. Returns null if missing or invalid.
+  static Future<List<String>?> loadCachedDomains() async {
+    try {
+      final jsonStr = await _storage.read(key: _kStorageKeyDomainsCache);
+      if (jsonStr == null || jsonStr.isEmpty) return null;
+      final decoded = jsonDecode(jsonStr);
+      if (decoded is List) {
+        return decoded
+            .map<String>((e) => (e?.toString().trim() ?? ''))
+            .where((s) => s.isNotEmpty)
+            .toList();
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Clears cached domains. Call after logout or when backend updates domains.
+  static Future<void> clearDomainsCache() async {
+    try {
+      await _storage.delete(key: _kStorageKeyDomainsCache);
+    } catch (_) {}
+  }
+
   /// Saves raw questions response to secure storage so domain/section questions can be read without calling API again.
   static Future<void> _saveQuestionsToStorage(dynamic rawData) async {
     try {
       if (rawData is List || rawData is Map) {
-        await _storage.write(key: _kStorageKeyQuestionsCache, value: jsonEncode(rawData));
+        await _storage.write(
+          key: _kStorageKeyQuestionsCache,
+          value: jsonEncode(rawData),
+        );
       }
     } catch (_) {}
   }
@@ -131,7 +170,10 @@ class OnboardingRepository {
           try {
             final q = FlowQuestion.fromJson(Map<String, dynamic>.from(e));
             stepsMap
-                .putIfAbsent(q.step.isEmpty ? 'profile_setup' : q.step, () => [])
+                .putIfAbsent(
+                  q.step.isEmpty ? 'profile_setup' : q.step,
+                  () => [],
+                )
                 .add(q);
           } catch (_) {}
         }
@@ -232,7 +274,7 @@ class OnboardingRepository {
     return response;
   }
 
-  /// GET onboarding/domains – list of domain strings for the goal screen.
+  /// GET onboarding/domains – list of domain strings. Saves to secure storage so home/explore and goal screen use cache and API is called only once.
   Future<ApiResponse> getOnboardingDomains() async {
     final response = await ApiServices.get(
       ApiEndpoints.onboardingDomains,
@@ -257,6 +299,7 @@ class OnboardingRepository {
         }
       }
     }
+    if (domains.isNotEmpty) await _saveDomainsToStorage(domains);
     return ApiResponse(
       success: true,
       statusCode: response.statusCode,
@@ -333,12 +376,15 @@ class OnboardingRepository {
       ApiEndpoints.onboardingUsersMeWellness,
     );
     if (kDebugMode) {
-      debugPrint('[Wellness API] statusCode=${response.statusCode}, success=${response.success}, dataType=${response.data?.runtimeType}');
+      debugPrint(
+        '[Wellness API] statusCode=${response.statusCode}, success=${response.success}, dataType=${response.data?.runtimeType}',
+      );
     }
     if (response.success && response.data != null && response.data is Map) {
       final raw = Map<String, dynamic>.from(response.data as Map);
       // Support both { height, weight, ... } and { data: { height, weight, ... } }
-      final Map<String, dynamic> json = raw.containsKey('data') && raw['data'] is Map
+      final Map<String, dynamic> json =
+          raw.containsKey('data') && raw['data'] is Map
           ? Map<String, dynamic>.from(raw['data'] as Map)
           : raw;
       final metrics = WellnessMetrics.fromJson(json);
@@ -354,12 +400,11 @@ class OnboardingRepository {
 
   /// GET users/me/progress/weekly. Requires Bearer token.
   Future<ApiResponse> getWeeklyProgress() async {
-    final response = await ApiServices.get(
-      ApiEndpoints.usersMeProgressWeekly,
-    );
+    final response = await ApiServices.get(ApiEndpoints.usersMeProgressWeekly);
     if (response.success && response.data != null && response.data is Map) {
       final raw = Map<String, dynamic>.from(response.data as Map);
-      final Map<String, dynamic> json = raw.containsKey('data') && raw['data'] is Map
+      final Map<String, dynamic> json =
+          raw.containsKey('data') && raw['data'] is Map
           ? Map<String, dynamic>.from(raw['data'] as Map)
           : raw;
       final progress = WeeklyProgressResponse.fromJson(json);

@@ -20,20 +20,30 @@ class GaolScreenViewModel extends ChangeNotifier {
     if (s.isEmpty) return s;
     final parts = s.split(RegExp(r'\s+'));
     return parts
-        .map((p) =>
-            p.isEmpty ? p : p[0].toUpperCase() + p.substring(1).toLowerCase())
+        .map(
+          (p) =>
+              p.isEmpty ? p : p[0].toUpperCase() + p.substring(1).toLowerCase(),
+        )
         .join(' ');
   }
 
   /// API domain value for the currently selected option, or null if none.
   String? get selectedDomain => _selectedDomain;
 
-  /// Load domains from GET onboarding/domains. Call when the goal screen is shown.
   Future<void> loadDomains() async {
     if (_isLoading) return;
     _isLoading = true;
     _error = null;
     notifyListeners();
+
+    final cached = await OnboardingRepository.loadCachedDomains();
+    if (cached != null && cached.isNotEmpty) {
+      _domains = cached;
+      _error = null;
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
 
     final response = await OnboardingRepository.instance.getOnboardingDomains();
 

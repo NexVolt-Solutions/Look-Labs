@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final vm = context.read<HomeViewModel>();
       vm.loadWellness();
       vm.loadWeeklyProgress();
+      vm.loadDomainsForExplore();
     });
   }
 
