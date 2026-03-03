@@ -52,7 +52,7 @@ class AppText {
   static const String diet = 'Diet';
 
   // Setting
-  static const String setting = 'Setting';
+  static const String setting = 'Profile & Setting';
   static const String personalInformation = 'Personal Information ';
   static const String account = 'Account';
   static const String preferencesAndSupport = 'Preferences & Support';
@@ -67,6 +67,13 @@ class AppText {
   static const String privacyPolicy = 'Privacy Policy';
   static const String termsOfService = 'Terms of Service';
   static const String signOut = 'Sign Out';
+  static const String deleteAccount = 'Delete account';
+  static const String deleteAccountConfirmTitle = 'Delete account?';
+  static const String deleteAccountConfirmMessage =
+      'Your account and all associated data will be permanently deleted. This cannot be undone.';
+  static const String deletingAccount = 'Deleting account...';
+  static const String save = 'Save';
+  static const String other = 'Other';
 
   // Profile
   static const String buildYourProfile = 'Build Your Profile';

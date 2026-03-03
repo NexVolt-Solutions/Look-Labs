@@ -21,8 +21,9 @@ class SettingContainer extends StatelessWidget {
     return Padding(
       padding: context.paddingSymmetricR(horizontal: 20),
       child: Container(
-        padding: context.paddingSymmetricR(horizontal: 17.5, vertical: 10),
+        padding: context.paddingSymmetricR(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(context.radiusR(8))),
           color: AppColors.backGroundColor,
           border: Border.all(
             color: AppColors.backGroundColor,
@@ -44,37 +45,46 @@ class SettingContainer extends StatelessWidget {
         child: Column(
           children: List.generate(items.length, (index) {
             final item = items[index];
+            final isTappable = item['isArrow'] == true;
 
             return Column(
               children: [
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-
-                  onTap: item['isArrow'] == true
-                      ? () {
-                          viewModel.onItemTap(item, context);
-                        }
+                InkWell(
+                  onTap: isTappable
+                      ? () => viewModel.onItemTap(item, context)
                       : null,
-
-                  enabled: item['isArrow'] == true,
-
-                  leading: CustomContainer(
-                    color: AppColors.backGroundColor,
-                    padding: context.paddingSymmetricR(horizontal: 8, vertical: 8),
-                    child: SvgPicture.asset(
-                      item['icon'],
-                      color: AppColors.iconColor,
+                  child: Padding(
+                    padding: context.paddingSymmetricR(vertical: 4),
+                    child: Row(
+                      children: [
+                        CustomContainer(
+                          color: AppColors.backGroundColor,
+                          padding: context.paddingSymmetricR(
+                            horizontal: 8,
+                            vertical: 8,
+                          ),
+                          child: SvgPicture.asset(
+                            item['icon'],
+                            color: AppColors.iconColor,
+                          ),
+                        ),
+                        SizedBox(width: context.sw(12)),
+                        Expanded(
+                          flex: 2,
+                          child: NormalText(
+                            titleText: item['title'],
+                            titleSize: context.sp(14),
+                            titleWeight: FontWeight.w500,
+                            titleColor: AppColors.subHeadingColor,
+                            maxLines: 2,
+                            overflow: TextOverflow.visible,
+                          ),
+                        ),
+                        // SizedBox(width: context.sw(8)),
+                        _buildTrailing(context, item, index),
+                      ],
                     ),
                   ),
-
-                  title: NormalText(
-                    titleText: item['title'],
-                    titleSize: context.sp(14),
-                    titleWeight: FontWeight.w500,
-                    titleColor: AppColors.subHeadingColor,
-                  ),
-
-                  trailing: _buildTrailing(context, item, index),
                 ),
 
                 /// DIVIDER
@@ -116,11 +126,14 @@ class SettingContainer extends StatelessWidget {
     }
 
     /// 🔹 SUBTITLE TEXT
-    return NormalText(
-      titleText: item['value'] ?? '',
-      titleSize: context.sp(14),
-      titleWeight: FontWeight.w400,
-      titleColor: AppColors.subHeadingColor,
+    return Expanded(
+      flex: 2,
+      child: NormalText(
+        titleText: item['value'] ?? '',
+        titleSize: context.sp(14),
+        titleWeight: FontWeight.w400,
+        titleColor: AppColors.subHeadingColor,
+      ),
     );
   }
 }

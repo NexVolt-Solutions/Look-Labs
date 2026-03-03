@@ -37,7 +37,10 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
             /// 🔹 HEADER (Settings screen me hide)
             if (bottomSheetBarViewModel.selectedIndex != 2)
               Padding(
-                padding: context.paddingSymmetricR(horizontal: 20, vertical: 20),
+                padding: context.paddingSymmetricR(
+                  horizontal: 20,
+                  vertical: 20,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -54,7 +57,8 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                             ),
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: authViewModel.user?.profileImage != null &&
+                          child:
+                              authViewModel.user?.profileImage != null &&
                                   authViewModel.user!.profileImage!.isNotEmpty
                               ? Image.network(
                                   authViewModel.user!.profileImage!,
@@ -109,7 +113,10 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                         // SizedBox(width: context.sw(10)),
                         CustomContainer(
                           radius: context.radiusR(30),
-                          padding: context.paddingSymmetricR(horizontal: 6, vertical: 6),
+                          padding: context.paddingSymmetricR(
+                            horizontal: 6,
+                            vertical: 6,
+                          ),
                           child: SvgPicture.asset(
                             AppAssets.notificationIcon,
                             fit: BoxFit.scaleDown,

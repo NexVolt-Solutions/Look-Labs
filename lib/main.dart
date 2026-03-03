@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:looklabs/Core/Config/env_loader.dart';
+import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/firebase_options.dart';
+import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Core/Routes/routes.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/View/BottomSheet/bottom_sheet_bar_screen.dart';
@@ -53,10 +55,15 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await loadEnv();
+
+  // When any request returns 401 (token expired ~60 min), refresh token and retry once.
+  ApiServices.onUnauthorized = () async {
+    final res = await AuthRepository.instance.refreshToken();
+    return res.success;
+  };
+
   runApp(
     MultiProvider(
       providers: [

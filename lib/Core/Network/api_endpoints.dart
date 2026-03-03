@@ -39,8 +39,10 @@ class ApiEndpoints {
   static const String user = '/user';
   static String userById(String id) => '/user/$id';
   static const String userSettings = '/user/settings';
+
   /// GET users/me – current user profile (requires Bearer token).
   static const String usersMe = 'users/me';
+
   /// GET users/me/progress/weekly – weekly progress for Home chart (requires Bearer token).
   static const String usersMeProgressWeekly = 'users/me/progress/weekly';
 

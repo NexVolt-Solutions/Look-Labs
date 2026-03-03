@@ -4,7 +4,6 @@ import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 
 class QuestionAnswerViewModel extends ChangeNotifier {
-  /// Which section we're on: 0=Profile, 1=LifeStyle, 2=Goals, 3=Motivations, 4=Planning
   int currentStepIndex = 0;
 
   /// All questions for the current step (loaded when entering that step)
@@ -219,10 +218,12 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     final qLower = (String s) => s.toLowerCase();
     for (final q in currentStepQuestions) {
       final question = q.question;
-      if (qLower(question).contains('name') && (q.type == 'text' || q.type == 'number')) {
+      if (qLower(question).contains('name') &&
+          (q.type == 'text' || q.type == 'number')) {
         final v = flowTextAnswers[q.id]?.trim();
         if (v != null && v.isNotEmpty) payload['name'] = v;
-      } else if (qLower(question).contains('age') && (q.type == 'text' || q.type == 'number')) {
+      } else if (qLower(question).contains('age') &&
+          (q.type == 'text' || q.type == 'number')) {
         final v = flowTextAnswers[q.id]?.trim();
         if (v != null && v.isNotEmpty) {
           final n = int.tryParse(v);

@@ -70,26 +70,12 @@ If the backend prefers to receive name/photo from the app instead of (or in addi
 
 ---
 
-## Why `GET /api/v1/users/me` returns `"age": null` and `"gender": null`
+## Age and gender on user profile (resolved)
 
-**TL;DR:** This is a **backend issue**. The app submits profile_setup answers (name, age, weight, height, gender) via **POST** `.../onboarding/sessions/{id}/answers` and receives `answer_saved`, but the backend does **not** copy those answers into the user profile. So `GET /api/v1/users/me` keeps returning `age: null` and `gender: null`.
+**Backend behavior (current):** The backend now syncs onboarding profile_setup answers into the user record.
 
-### What the app does
+- **UserCreate** includes `age` and `gender` (set directly or auto‑populated from onboarding answers).
+- **UserOut** (e.g. **GET /api/v1/users/me**) includes `name`, `age`, `gender`, `profile_image`, and `subscription`.
+- In **link_session_to_user**, name, age, and gender are auto‑populated from onboarding answers, so they appear in the user profile response immediately after sign-in.
 
-- During onboarding, the user answers profile_setup questions (e.g. “What is your name?”, “What is your age?”, “What is your gender?”).
-- Each answer is sent with **POST** `.../onboarding/sessions/{session_id}/answers?step=profile_setup` with `question_id`, `answer`, `question_type`, etc. The backend responds with `{"status":"answer_saved"}` (or flow response).
-- After Google sign-in and session link, the app calls **GET** `/api/v1/users/me` and expects to show name, age, gender on profile/settings. Those fields stay `null` because they were never written to the user record.
-
-### What the backend should do
-
-1. **When saving profile_setup answers** (POST sessions/…/answers with step=profile_setup):  
-   If the session is linked to a user (or will be after sign-in), update that user’s profile with the submitted values, e.g.:
-   - “What is your name?” → `user.name`
-   - “What is your age?” → `user.age` (numeric)
-   - “What is your gender?” → `user.gender` (string, e.g. "Male", "Female", "Other")
-   - Optionally weight/height if you store them on the user.
-
-2. **When linking an anonymous session to a user** (e.g. after Google sign-in):  
-   Copy profile_setup answers from the session/onboarding store into the user’s `name`, `age`, `gender` (and any other profile fields you persist) so that **GET /api/v1/users/me** returns them.
-
-3. **Ensure PATCH/PUT /api/v1/users/me** (if you have it) accepts `age` and `gender` so the app (or other clients) can update the profile when the user edits it later.
+The app already reads these from `GET /api/v1/users/me` and shows them on Settings and profile. If a logged-in user updates profile_setup answers, the app also sends **PATCH /api/v1/users/me** with name/age/gender so the profile stays in sync.

@@ -49,18 +49,20 @@ class NormalText extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (titleText != null)
-          Text(
-            titleText!,
-            softWrap: true,
-            maxLines: maxLines, // ✅ default = unlimited
-            overflow: overflow ?? TextOverflow.visible,
-            style: TextStyle(
-              color: titleColor ?? AppColors.headingColor,
-              fontSize: titleSize ?? context.sp(16),
-              fontWeight: titleWeight ?? FontWeight.w500,
-              fontFamily: 'Raleway',
+          Flexible(
+            child: Text(
+              titleText!,
+              softWrap: true,
+              maxLines: maxLines,
+              overflow: overflow ?? TextOverflow.visible,
+              style: TextStyle(
+                color: titleColor ?? AppColors.headingColor,
+                fontSize: titleSize ?? context.sp(16),
+                fontWeight: titleWeight ?? FontWeight.w500,
+                fontFamily: 'Raleway',
+              ),
+              textAlign: titleAlign ?? TextAlign.start,
             ),
-            textAlign: titleAlign ?? TextAlign.start,
           ),
 
         if (sizeBoxheight != null) SizedBox(height: sizeBoxheight),

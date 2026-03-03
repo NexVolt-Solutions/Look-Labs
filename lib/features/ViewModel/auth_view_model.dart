@@ -181,4 +181,25 @@ class AuthViewModel extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
+  /// Delete account – DELETE users/me, then sign out locally.
+  Future<bool> deleteAccount() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await _authRepo.deleteAccount();
+      await _googleSignIn.signOut();
+      await _firebaseAuth.signOut();
+      _user = null;
+      _profile = null;
+      _errorMessage = null;
+      _isLoading = false;
+      notifyListeners();
+      return response.success;
+    } catch (_) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
 }

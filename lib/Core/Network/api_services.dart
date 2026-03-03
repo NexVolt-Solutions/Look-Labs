@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:looklabs/Core/Network/api_config.dart';
+import 'package:looklabs/Core/Network/api_endpoints.dart';
 import 'package:looklabs/Core/Network/api_response.dart';
 
 /// Common API service - use for all HTTP requests across the app
@@ -18,6 +19,10 @@ class ApiServices {
   static String? _authToken;
   static void setAuthToken(String? token) => _authToken = token;
   static String? get authToken => _authToken;
+
+  /// When a request returns 401, this is called to refresh the token. If it returns true, the request is retried once.
+  /// Set from app init (e.g. main.dart) to AuthRepository.instance.refreshToken and check success.
+  static Future<bool> Function()? onUnauthorized;
 
   /// Optional: Custom headers merged with default headers
   static Map<String, String> _extraHeaders = {};
@@ -36,7 +41,14 @@ class ApiServices {
       final b = int.tryParse(parts[1]) ?? -1;
       final c = int.tryParse(parts[2]) ?? -1;
       final d = int.tryParse(parts[3]) ?? -1;
-      if (a >= 0 && a <= 255 && b >= 0 && b <= 255 && c >= 0 && c <= 255 && d >= 0 && d <= 255) {
+      if (a >= 0 &&
+          a <= 255 &&
+          b >= 0 &&
+          b <= 255 &&
+          c >= 0 &&
+          c <= 255 &&
+          d >= 0 &&
+          d <= 255) {
         if (a == 10) return true;
         if (a == 172 && b >= 16 && b <= 31) return true;
         if (a == 192 && b == 168) return true;
@@ -46,6 +58,7 @@ class ApiServices {
   }
 
   static http.Client? _httpClient;
+
   /// Reuse a single client. For dev hosts (localhost/private IP) use relaxed SSL to avoid hostname mismatch.
   static http.Client get _client {
     if (_httpClient != null) return _httpClient!;
@@ -82,8 +95,31 @@ class ApiServices {
     return url;
   }
 
+  /// On 401 (except for refresh endpoint), try onUnauthorized once and retry the request if it returns true.
+  static Future<ApiResponse> _retryOn401(
+    String endpoint,
+    Future<ApiResponse> Function() request,
+  ) async {
+    var res = await request();
+    if (res.statusCode == 401 &&
+        endpoint != ApiEndpoints.refreshToken &&
+        onUnauthorized != null) {
+      final ok = await onUnauthorized!();
+      if (ok) res = await request();
+    }
+    return res;
+  }
+
   /// GET request
   static Future<ApiResponse> get(
+    String endpoint, {
+    Map<String, String>? queryParams,
+    Map<String, String>? headers,
+  }) async {
+    return _retryOn401(endpoint, () => _get(endpoint, queryParams: queryParams, headers: headers));
+  }
+
+  static Future<ApiResponse> _get(
     String endpoint, {
     Map<String, String>? queryParams,
     Map<String, String>? headers,
@@ -110,7 +146,8 @@ class ApiServices {
       return ApiResponse(
         success: false,
         statusCode: 0,
-        message: 'SSL error: hostname does not match server certificate. Set BASE_URL in api.env to the exact URL whose certificate matches (e.g. https://api.yourdomain.com/v1). For local dev use https://localhost or https://YOUR_IP.',
+        message:
+            'SSL error: hostname does not match server certificate. Set BASE_URL in api.env to the exact URL whose certificate matches (e.g. https://api.yourdomain.com/v1). For local dev use https://localhost or https://YOUR_IP.',
       );
     } catch (e) {
       return ApiResponse(success: false, statusCode: 0, message: e.toString());
@@ -119,6 +156,18 @@ class ApiServices {
 
   /// POST request
   static Future<ApiResponse> post(
+    String endpoint, {
+    Object? body,
+    Map<String, String>? queryParams,
+    Map<String, String>? headers,
+  }) async {
+    return _retryOn401(
+      endpoint,
+      () => _post(endpoint, body: body, queryParams: queryParams, headers: headers),
+    );
+  }
+
+  static Future<ApiResponse> _post(
     String endpoint, {
     Object? body,
     Map<String, String>? queryParams,
@@ -152,7 +201,8 @@ class ApiServices {
       return ApiResponse(
         success: false,
         statusCode: 0,
-        message: 'SSL error: hostname does not match server certificate. Set BASE_URL in api.env to the exact URL whose certificate matches (e.g. https://api.yourdomain.com/v1). For local dev use https://localhost or https://YOUR_IP.',
+        message:
+            'SSL error: hostname does not match server certificate. Set BASE_URL in api.env to the exact URL whose certificate matches (e.g. https://api.yourdomain.com/v1). For local dev use https://localhost or https://YOUR_IP.',
       );
     } catch (e) {
       return ApiResponse(success: false, statusCode: 0, message: e.toString());
@@ -161,6 +211,18 @@ class ApiServices {
 
   /// PUT request
   static Future<ApiResponse> put(
+    String endpoint, {
+    Object? body,
+    Map<String, String>? queryParams,
+    Map<String, String>? headers,
+  }) async {
+    return _retryOn401(
+      endpoint,
+      () => _put(endpoint, body: body, queryParams: queryParams, headers: headers),
+    );
+  }
+
+  static Future<ApiResponse> _put(
     String endpoint, {
     Object? body,
     Map<String, String>? queryParams,
@@ -202,6 +264,18 @@ class ApiServices {
     Map<String, String>? queryParams,
     Map<String, String>? headers,
   }) async {
+    return _retryOn401(
+      endpoint,
+      () => _patch(endpoint, body: body, queryParams: queryParams, headers: headers),
+    );
+  }
+
+  static Future<ApiResponse> _patch(
+    String endpoint, {
+    Object? body,
+    Map<String, String>? queryParams,
+    Map<String, String>? headers,
+  }) async {
     try {
       final url = _buildUrl(endpoint, queryParams);
       final response = await _client
@@ -233,6 +307,18 @@ class ApiServices {
 
   /// DELETE request
   static Future<ApiResponse> delete(
+    String endpoint, {
+    Object? body,
+    Map<String, String>? queryParams,
+    Map<String, String>? headers,
+  }) async {
+    return _retryOn401(
+      endpoint,
+      () => _delete(endpoint, body: body, queryParams: queryParams, headers: headers),
+    );
+  }
+
+  static Future<ApiResponse> _delete(
     String endpoint, {
     Object? body,
     Map<String, String>? queryParams,
@@ -296,9 +382,9 @@ class ApiServices {
         );
       }
 
-      final streamedResponse = await _client.send(request).timeout(
-        Duration(seconds: ApiConfig.sendTimeout * 2),
-      );
+      final streamedResponse = await _client
+          .send(request)
+          .timeout(Duration(seconds: ApiConfig.sendTimeout * 2));
 
       final response = await http.Response.fromStream(streamedResponse);
       return ApiResponse.fromHttpResponse(response);
@@ -348,9 +434,9 @@ class ApiServices {
         );
       }
 
-      final streamedResponse = await _client.send(request).timeout(
-        Duration(seconds: ApiConfig.sendTimeout * 2),
-      );
+      final streamedResponse = await _client
+          .send(request)
+          .timeout(Duration(seconds: ApiConfig.sendTimeout * 2));
 
       final response = await http.Response.fromStream(streamedResponse);
       return ApiResponse.fromHttpResponse(response);

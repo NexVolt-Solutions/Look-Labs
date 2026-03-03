@@ -20,6 +20,8 @@ class AppAssets {
   static const String graphIcon = "assets/Icon/proiconsGraphIcon.svg";
   static const String backIcon = "assets/Icon/backIcon.svg";
   static const String image = "assets/Icon/image.jpg";
+  /// Custom tooltip bubble/cloud icon for chart tooltips.
+  static const String tooltipCloudIcon = "assets/Icon/tooltip_cloud.png";
   static const String cameraIcon = "assets/Icon/cameraIcon.svg";
   static const String editIcon = "assets/Icon/eiditIcon.svg";
   static const String starIcon = "assets/Icon/star.svg";
@@ -42,6 +44,7 @@ class AppAssets {
   static const String settingPrivacyIcon = "assets/settingIcon/privacyIcon.svg";
   static const String settingTermIcon = "assets/settingIcon/termIcon.svg";
   static const String signOutIcon = "assets/settingIcon/signOut.svg";
+  static const String deleteAccountIcon = "assets/Icon/waringIcon.svg";
   static const String farwordIcon = "assets/settingIcon/farwordIcon.svg";
   static const String nightIcon = "assets/Icon/nightIcon.svg";
   static const String icon = "assets/Icon/star.svg";
