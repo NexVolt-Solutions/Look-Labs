@@ -14,8 +14,6 @@ const _kStorageKeySession = 'onboarding_session';
 const _kStorageKeyQuestionsCache = 'onboarding_questions_cache';
 const _kStorageKeyDomainsCache = 'onboarding_domains_cache';
 
-/// Repository for anonymous onboarding (no auth token).
-/// Questions: GET onboarding/questions. Answers: POST onboarding/sessions/{id}/answers.
 class OnboardingRepository {
   OnboardingRepository._();
 
@@ -26,12 +24,9 @@ class OnboardingRepository {
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
-  /// Current anonymous session (set after createAnonymousSession or loadStoredSession).
   static OnboardingSession? currentSession;
   static String? get sessionId => currentSession?.id;
 
-  /// Restore session from SecureStorage. Call on app start to skip POST if we have a valid session.
-  /// Returns true if session was restored.
   static Future<bool> loadStoredSession() async {
     try {
       final json = await _storage.read(key: _kStorageKeySession);
@@ -60,7 +55,6 @@ class OnboardingRepository {
     } catch (_) {}
   }
 
-  /// Creates an anonymous onboarding session. On success, sets [currentSession] and saves to SecureStorage.
   Future<ApiResponse> createAnonymousSession() async {
     final response = await ApiServices.post(
       ApiEndpoints.onboardingSessions,
