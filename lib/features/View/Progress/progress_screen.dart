@@ -79,42 +79,16 @@ class _ProgressScreenState extends State<ProgressScreen> {
             },
           ),
         ),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            NormalText(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'Before Progress',
-              titleSize: context.sp(18),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.subHeadingColor,
-            ),
-            CustomContainer(
-              onTap: () {
-                Navigator.pushNamed(context, RoutesName.MyAlbumScreen);
-              },
-              radius: context.radiusR(10),
-              color: AppColors.backGroundColor,
-              padding: context.paddingSymmetricR(horizontal: 9, vertical: 9),
-              margin: EdgeInsets.only(
-                top: context.sh(20),
-                bottom: context.sh(12),
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  AppAssets.upLoadIcon,
-                  height: context.sh(24),
-                  width: context.sw(24),
-                  color: AppColors.pimaryColor,
-
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ],
-        ),
         SizedBox(height: context.sh(10)),
+
+        NormalText(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          titleText: 'Before Progress',
+          titleSize: context.sp(18),
+          titleWeight: FontWeight.w600,
+          titleColor: AppColors.subHeadingColor,
+        ),
+        SizedBox(height: context.sh(20)),
         CustomContainer(
           radius: context.radiusR(10),
           color: AppColors.backGroundColor,
@@ -260,9 +234,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
       color: AppColors.backGroundColor,
       padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
       child: Center(
-        child: WeeklyProgressLineChart(
-          days: progressVM.weeklyProgressDays,
-        ),
+        child: WeeklyProgressLineChart(days: progressVM.weeklyProgressDays),
       ),
     );
   }

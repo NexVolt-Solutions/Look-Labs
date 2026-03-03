@@ -165,7 +165,7 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Logout - clears Firebase and API token
+  /// Logout - clears Firebase, API token, onboarding session, and questions cache
   Future<void> logout() async {
     _isLoading = true;
     notifyListeners();
@@ -174,6 +174,8 @@ class AuthViewModel extends ChangeNotifier {
       await _googleSignIn.signOut();
       await _firebaseAuth.signOut();
       await _authRepo.logout();
+      await OnboardingRepository.clearSession();
+      await OnboardingRepository.clearQuestionsCache();
       _user = null;
       _profile = null;
       _errorMessage = null;
@@ -190,6 +192,8 @@ class AuthViewModel extends ChangeNotifier {
       final response = await _authRepo.deleteAccount();
       await _googleSignIn.signOut();
       await _firebaseAuth.signOut();
+      await OnboardingRepository.clearSession();
+      await OnboardingRepository.clearQuestionsCache();
       _user = null;
       _profile = null;
       _errorMessage = null;

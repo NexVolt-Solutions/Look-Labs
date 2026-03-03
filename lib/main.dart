@@ -33,7 +33,9 @@ import 'package:looklabs/Features/ViewModel/home_view_model.dart';
 import 'package:looklabs/Features/ViewModel/my_album_view_model.dart';
 import 'package:looklabs/Features/ViewModel/payment_details_vie_model.dart';
 import 'package:looklabs/Features/ViewModel/personalized_exercise_screen_view_model.dart';
+import 'package:looklabs/Features/ViewModel/privacy_policy_view_model.dart';
 import 'package:looklabs/Features/ViewModel/progress_view_model.dart';
+import 'package:looklabs/Features/ViewModel/terms_of_service_view_model.dart';
 import 'package:looklabs/Features/ViewModel/purchase_view_model.dart';
 import 'package:looklabs/Features/ViewModel/quit_porn_view_model.dart';
 import 'package:looklabs/Features/ViewModel/recommended_product_view_model.dart';
@@ -84,6 +86,8 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (context) => HomeViewModel()),
         ChangeNotifierProvider(create: (context) => ProgressViewModel()),
+        ChangeNotifierProvider(create: (context) => PrivacyPolicyViewModel()),
+        ChangeNotifierProvider(create: (context) => TermsOfServiceViewModel()),
         ChangeNotifierProvider(create: (context) => ChartViewModel()),
         ChangeNotifierProvider(create: (context) => MyAlbumViewModel()),
         ChangeNotifierProvider(create: (context) => GenderViewModel()),

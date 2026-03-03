@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Features/Widget/app_bar_container.dart';
-import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Features/ViewModel/terms_of_service_view_model.dart';
+import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:provider/provider.dart';
 
-class TermsScreen extends StatelessWidget {
+class TermsScreen extends StatefulWidget {
   const TermsScreen({super.key});
 
-  static List<Map<String, String>> get _sections => [
-        {'title': AppText.acceptanceOfTerms, 'body': AppText.termsAgeConfirm},
-        {'title': AppText.descriptionOfService, 'body': AppText.termsServiceDesc},
-        {'title': AppText.userAccounts, 'body': AppText.termsAccountInfo},
-        {'title': AppText.intellectualProperty, 'body': AppText.termsIpDesc},
-        {'title': AppText.termsSubscription, 'body': AppText.termsSubscriptionBody},
-        {'title': AppText.termsUserContent, 'body': AppText.termsUserContentBody},
-        {'title': AppText.termsDisclaimers, 'body': AppText.termsDisclaimersBody},
-        {'title': AppText.termsLimitation, 'body': AppText.termsLimitationBody},
-        {'title': AppText.termsTermination, 'body': AppText.termsTerminationBody},
-        {'title': AppText.termsGoverningLaw, 'body': AppText.termsGoverningLawBody},
-        {'title': AppText.termsContact, 'body': AppText.termsContactBody},
-      ];
+  @override
+  State<TermsScreen> createState() => _TermsScreenState();
+}
+
+class _TermsScreenState extends State<TermsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<TermsOfServiceViewModel>().load();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,23 +37,83 @@ class TermsScreen extends StatelessWidget {
               onTap: () => Navigator.pop(context),
             ),
             SizedBox(height: context.sh(20)),
-            _buildParagraph(
-              context,
-              AppText.termsLastUpdated,
-              fontWeight: FontWeight.w600,
-            ),
-            SizedBox(height: context.sh(8)),
-            _buildParagraph(context, AppText.termsWelcome),
-            SizedBox(height: context.sh(16)),
-            ..._sections.expand((section) => [
-                  _buildHeading(context, section['title']!),
-                  SizedBox(height: context.sh(8)),
-                  _buildParagraph(context, section['body']!),
-                  SizedBox(height: context.sh(16)),
-                ]),
+            _buildBody(context),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    final vm = context.watch<TermsOfServiceViewModel>();
+
+    if (vm.loading && vm.sections.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.only(top: context.sh(40)),
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (vm.error != null && vm.sections.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.only(top: context.sh(40)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              vm.error!,
+              style: TextStyle(
+                fontSize: context.sp(14),
+                color: AppColors.subHeadingColor,
+                height: 1.4,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: context.sh(16)),
+            TextButton(
+              onPressed: () => vm.retry(),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return _buildContent(context, vm);
+  }
+
+  Widget _buildContent(BuildContext context, TermsOfServiceViewModel vm) {
+    final lastUpdated = vm.terms?.lastUpdated ?? '';
+    final sections = vm.sections;
+    if (sections.isEmpty) return const SizedBox.shrink();
+
+    final children = <Widget>[];
+
+    if (lastUpdated.isNotEmpty) {
+      children.addAll([
+        _buildParagraph(context, 'Last updated: $lastUpdated',
+            fontWeight: FontWeight.w600),
+        SizedBox(height: context.sh(16)),
+      ]);
+    }
+
+    for (final section in sections) {
+      if (section.body.isEmpty) continue;
+      if (section.title.isNotEmpty) {
+        children.addAll([
+          _buildHeading(context, section.title),
+          SizedBox(height: context.sh(8)),
+        ]);
+      }
+      children.addAll([
+        _buildParagraph(context, section.body),
+        SizedBox(height: context.sh(16)),
+      ]);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
     );
   }
 

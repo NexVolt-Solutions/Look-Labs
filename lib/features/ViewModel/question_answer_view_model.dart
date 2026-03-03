@@ -104,7 +104,7 @@ class QuestionAnswerViewModel extends ChangeNotifier {
 
     final step = flowStep;
 
-    // Use cached questions when we already have them (e.g. from GET onboarding/questions)
+    // Use in-memory cache when we already have questions for this step
     if (_stepsCache.containsKey(step)) {
       _flowLoadedOnce = true;
       currentStepQuestions = _stepsCache[step]!;
@@ -115,13 +115,33 @@ class QuestionAnswerViewModel extends ChangeNotifier {
       return;
     }
 
+    // Try secure storage first so API is called only once; per section/domain we read from cache
+    final cachedFlow = await OnboardingRepository.loadCachedQuestionsFlow();
+    if (cachedFlow != null && (cachedFlow.steps != null || cachedFlow.questions != null)) {
+      if (cachedFlow.steps != null && cachedFlow.steps!.isNotEmpty) {
+        for (final s in cachedFlow.steps!) {
+          if (s.step.isNotEmpty) _stepsCache[s.step] = s.questions;
+        }
+      }
+      if (cachedFlow.questions != null && cachedFlow.questions!.isNotEmpty) {
+        _stepsCache['profile_setup'] = cachedFlow.questions!;
+      }
+      flowResponse = cachedFlow;
+      final cached = _stepsCache[step];
+      _flowLoadedOnce = true;
+      currentStepQuestions = cached ?? [];
+      flowError = currentStepQuestions.isEmpty ? 'No questions for this step' : null;
+      notifyListeners();
+      return;
+    }
+
     isLoadingFlow = true;
     flowError = null;
     notifyListeners();
 
     final repo = OnboardingRepository.instance;
 
-    // Prefer new API: GET onboarding/questions (all steps in one call)
+    // API called only when cache is empty; response is then saved to secure storage
     final questionsResponse = await repo.getOnboardingQuestions(
       sessionId: sessionId,
     );

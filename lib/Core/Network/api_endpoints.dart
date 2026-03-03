@@ -46,9 +46,22 @@ class ApiEndpoints {
   /// GET users/me/progress/weekly – weekly progress for Home chart (requires Bearer token).
   static const String usersMeProgressWeekly = 'users/me/progress/weekly';
 
-  // Subscription
-  static const String subscription = '/subscription';
-  static const String subscriptionPlans = '/subscription/plans';
+  // Subscriptions (requires auth unless noted)
+  static const String subscriptionPlans = 'subscriptions/plans';
+  static const String subscriptions = 'subscriptions';
+  static const String subscriptionsMe = 'subscriptions/me';
+  static String subscriptionById(String id) => 'subscriptions/$id';
+  static String subscriptionCancel(String id) => 'subscriptions/$id/cancel';
+  static String subscriptionReactivate(String id) =>
+      'subscriptions/$id/reactivate';
+  static const String subscriptionsMeStatus = 'subscriptions/me/status';
+
+  // In-App Purchase (validate, restore, products; webhooks are server-only)
+  static const String iapValidateReceipt = 'iap/validate-receipt';
+  static const String iapRestorePurchases = 'iap/restore-purchases';
+  static const String iapProducts = 'iap/products';
+  static const String iapWebhookApple = 'iap/webhooks/apple';
+  static const String iapWebhookGoogle = 'iap/webhooks/google';
 
   // Workout
   static const String workout = '/workout';
@@ -85,5 +98,5 @@ class ApiEndpoints {
 
   // Legal (e.g. privacy policy, terms – optional, for dynamic content from backend)
   static const String privacyPolicy = '/legal/privacy-policy';
-  static const String termsOfService = '/legal/terms';
+  static const String termsOfService = '/legal/terms-of-service';
 }

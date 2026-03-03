@@ -11,6 +11,7 @@ import 'package:looklabs/Core/Network/models/weekly_progress_response.dart';
 import 'package:looklabs/Core/Network/models/wellness_metrics.dart';
 
 const _kStorageKeySession = 'onboarding_session';
+const _kStorageKeyQuestionsCache = 'onboarding_questions_cache';
 
 /// Repository for anonymous onboarding (no auth token).
 /// Questions: GET onboarding/questions. Answers: POST onboarding/sessions/{id}/answers.
@@ -101,7 +102,62 @@ class OnboardingRepository {
     await _clearStoredSession();
   }
 
-  /// GET onboarding/questions – all steps and questions in one call.
+  /// Clears cached questions from secure storage. Call after logout or when backend updates questions so the next load fetches fresh data.
+  static Future<void> clearQuestionsCache() async {
+    try {
+      await _storage.delete(key: _kStorageKeyQuestionsCache);
+    } catch (_) {}
+  }
+
+  /// Saves raw questions response to secure storage so domain/section questions can be read without calling API again.
+  static Future<void> _saveQuestionsToStorage(dynamic rawData) async {
+    try {
+      if (rawData is List || rawData is Map) {
+        await _storage.write(key: _kStorageKeyQuestionsCache, value: jsonEncode(rawData));
+      }
+    } catch (_) {}
+  }
+
+  /// Loads cached questions from secure storage (per section/domain). Returns null if missing or invalid.
+  static Future<OnboardingFlowResponse?> loadCachedQuestionsFlow() async {
+    try {
+      final jsonStr = await _storage.read(key: _kStorageKeyQuestionsCache);
+      if (jsonStr == null || jsonStr.isEmpty) return null;
+      final decoded = jsonDecode(jsonStr);
+      if (decoded is List) {
+        final stepsMap = <String, List<FlowQuestion>>{};
+        for (final e in decoded) {
+          if (e is! Map) continue;
+          try {
+            final q = FlowQuestion.fromJson(Map<String, dynamic>.from(e));
+            stepsMap
+                .putIfAbsent(q.step.isEmpty ? 'profile_setup' : q.step, () => [])
+                .add(q);
+          } catch (_) {}
+        }
+        final stepsList = stepsMap.entries
+            .map((e) => FlowStepItem(step: e.key, questions: e.value))
+            .toList();
+        return OnboardingFlowResponse(
+          status: 'ok',
+          current: null,
+          next: null,
+          questions: null,
+          steps: stepsList,
+          progress: null,
+          redirect: null,
+        );
+      }
+      if (decoded is Map<String, dynamic>) {
+        return OnboardingFlowResponse.fromJson(decoded);
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// GET onboarding/questions – all steps and questions in one call. Saves response to secure storage so sections (e.g. Hair Care, Skincare) can use cache and API is called only once.
   Future<ApiResponse> getOnboardingQuestions({String? sessionId}) async {
     final queryParams = sessionId != null && sessionId.isNotEmpty
         ? <String, String>{'session_id': sessionId}
@@ -138,6 +194,7 @@ class OnboardingRepository {
         progress: null,
         redirect: null,
       );
+      await _saveQuestionsToStorage(response.data);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
@@ -164,6 +221,7 @@ class OnboardingRepository {
         }
       }
       final flow = OnboardingFlowResponse.fromJson(json);
+      await _saveQuestionsToStorage(json);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
