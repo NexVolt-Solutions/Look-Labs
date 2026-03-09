@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/setting_continer.dart';
@@ -6,6 +8,7 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
 import 'package:looklabs/Features/ViewModel/setting_view_model.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +65,7 @@ class _SettingScreenState extends State<SettingScreen> {
         ? name.substring(0, 1).toUpperCase()
         : (email != null && email.isNotEmpty)
         ? email.substring(0, 1).toUpperCase()
-        : '—';
+        : '';
 
     return SafeArea(
       child: ListView(
@@ -108,6 +111,18 @@ class _SettingScreenState extends State<SettingScreen> {
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
+                          loadingBuilder: (_, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: Center(
+                                child: CupertinoActivityIndicator(
+                                  color: AppColors.pimaryColor,
+                                ),
+                              ),
+                            );
+                          },
                           errorBuilder: (_, __, ___) =>
                               _avatarLetter(avatarLabel),
                         )
@@ -210,15 +225,19 @@ class _SettingScreenState extends State<SettingScreen> {
     settingVM.saveProfile(context).then((success) {
       if (!context.mounted) return;
       Navigator.of(context, rootNavigator: true).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? 'Profile updated.'
-                : 'Failed to update profile. Please try again.',
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile updated.'),
+            behavior: SnackBarBehavior.floating,
           ),
-        ),
-      );
+        );
+      } else {
+        ApiErrorHandler.showSnackBar(
+          context,
+          fallback: 'Failed to update profile. Please try again.',
+        );
+      }
     });
   }
 
@@ -232,7 +251,7 @@ class _SettingScreenState extends State<SettingScreen> {
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [const CircularProgressIndicator()],
+              children: [const CupertinoActivityIndicator()],
             ),
           ),
         ),
@@ -471,6 +490,7 @@ class _PersonalInfoEditFormState extends State<_PersonalInfoEditForm> {
   }) {
     return Container(
       height: context.sh(50),
+
       decoration: BoxDecoration(
         color: AppColors.backGroundColor,
         borderRadius: BorderRadius.circular(context.radiusR(16)),
@@ -479,11 +499,13 @@ class _PersonalInfoEditFormState extends State<_PersonalInfoEditForm> {
             color: AppColors.customContainerColorUp.withOpacity(0.4),
             offset: const Offset(5, 5),
             blurRadius: 5,
+            inset: true,
           ),
           BoxShadow(
             color: AppColors.customContinerColorDown.withOpacity(0.4),
             offset: const Offset(-5, -5),
             blurRadius: 5,
+            inset: true,
           ),
         ],
       ),

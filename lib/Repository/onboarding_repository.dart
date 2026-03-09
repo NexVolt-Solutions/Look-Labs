@@ -7,12 +7,15 @@ import 'package:looklabs/Core/Network/api_response.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 import 'package:looklabs/Core/Network/models/onboarding_session.dart';
+import 'package:looklabs/Core/Network/models/progress_graph_response.dart';
 import 'package:looklabs/Core/Network/models/weekly_progress_response.dart';
 import 'package:looklabs/Core/Network/models/wellness_metrics.dart';
 
 const _kStorageKeySession = 'onboarding_session';
 const _kStorageKeyQuestionsCache = 'onboarding_questions_cache';
 const _kStorageKeyDomainsCache = 'onboarding_domains_cache';
+const _kStorageKeyWellnessCache = 'wellness_cache';
+const _kStorageKeyWeeklyProgressCache = 'weekly_progress_cache';
 
 class OnboardingRepository {
   OnboardingRepository._();
@@ -364,7 +367,36 @@ class OnboardingRepository {
     return response;
   }
 
-  /// GET onboarding/users/me/wellness. Requires Bearer token (no headers = use ApiServices default with token).
+  /// Loads cached wellness from secure storage. Returns null if missing or invalid.
+  static Future<WellnessMetrics?> loadCachedWellness() async {
+    try {
+      final jsonStr = await _storage.read(key: _kStorageKeyWellnessCache);
+      if (jsonStr == null || jsonStr.isEmpty) return null;
+      final map = jsonDecode(jsonStr) as Map<String, dynamic>?;
+      if (map == null) return null;
+      return WellnessMetrics.fromJson(map);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Clears wellness cache. Call on logout.
+  static Future<void> clearWellnessCache() async {
+    try {
+      await _storage.delete(key: _kStorageKeyWellnessCache);
+    } catch (_) {}
+  }
+
+  static Future<void> _saveWellnessToStorage(Map<String, dynamic> json) async {
+    try {
+      await _storage.write(
+        key: _kStorageKeyWellnessCache,
+        value: jsonEncode(json),
+      );
+    } catch (_) {}
+  }
+
+  /// GET onboarding/users/me/wellness. Requires Bearer token. Caches on success.
   Future<ApiResponse> getWellnessMetrics() async {
     final response = await ApiServices.get(
       ApiEndpoints.onboardingUsersMeWellness,
@@ -376,12 +408,17 @@ class OnboardingRepository {
     }
     if (response.success && response.data != null && response.data is Map) {
       final raw = Map<String, dynamic>.from(response.data as Map);
-      // Support both { height, weight, ... } and { data: { height, weight, ... } }
       final Map<String, dynamic> json =
           raw.containsKey('data') && raw['data'] is Map
           ? Map<String, dynamic>.from(raw['data'] as Map)
           : raw;
       final metrics = WellnessMetrics.fromJson(json);
+      final hasData =
+          metrics.height.isNotEmpty ||
+          metrics.weight.isNotEmpty ||
+          metrics.sleepHours.isNotEmpty ||
+          metrics.waterIntake.isNotEmpty;
+      if (hasData) await _saveWellnessToStorage(json);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
@@ -392,7 +429,88 @@ class OnboardingRepository {
     return response;
   }
 
-  /// GET users/me/progress/weekly. Requires Bearer token.
+  /// Loads cached weekly progress. Returns null if missing or invalid.
+  static Future<WeeklyProgressResponse?> loadCachedWeeklyProgress() async {
+    try {
+      final jsonStr = await _storage.read(key: _kStorageKeyWeeklyProgressCache);
+      if (jsonStr == null || jsonStr.isEmpty) return null;
+      final map = jsonDecode(jsonStr) as Map<String, dynamic>?;
+      if (map == null) return null;
+      return WeeklyProgressResponse.fromJson(map);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Clears weekly progress cache. Call on logout.
+  static Future<void> clearWeeklyProgressCache() async {
+    try {
+      await _storage.delete(key: _kStorageKeyWeeklyProgressCache);
+    } catch (_) {}
+  }
+
+  static Future<void> _saveWeeklyProgressToStorage(
+    Map<String, dynamic> json,
+  ) async {
+    try {
+      await _storage.write(
+        key: _kStorageKeyWeeklyProgressCache,
+        value: jsonEncode(json),
+      );
+    } catch (_) {}
+  }
+
+  /// GET users/me/progress. Requires Bearer token.
+  /// [period] – week, month, or year.
+  Future<ApiResponse> getProgress({required String period}) async {
+    final response = await ApiServices.get(
+      ApiEndpoints.usersMeProgress,
+      queryParams: {'period': period},
+    );
+    if (response.success && response.data != null && response.data is Map) {
+      final raw = Map<String, dynamic>.from(response.data as Map);
+      final Map<String, dynamic> json =
+          raw.containsKey('data') && raw['data'] is Map
+          ? Map<String, dynamic>.from(raw['data'] as Map)
+          : raw;
+      final progress = WeeklyProgressResponse.fromJson(json);
+      return ApiResponse(
+        success: true,
+        statusCode: response.statusCode,
+        data: progress,
+        message: response.message,
+      );
+    }
+    return response;
+  }
+
+  /// GET users/me/progress/graph. Requires Bearer token.
+  /// [period] – weekly, monthly, or yearly (last 7 / 30 / 365 days).
+  /// Returns score history with first_score (Before Progress) and latest_score (After Progress).
+  Future<ApiResponse> getProgressGraph(
+      {required String period}) async {
+    final response = await ApiServices.get(
+      ApiEndpoints.usersMeProgressGraph,
+      queryParams: {'period': period},
+    );
+    if (response.success && response.data != null && response.data is Map) {
+      final raw = Map<String, dynamic>.from(response.data as Map);
+      final Map<String, dynamic> json =
+          raw.containsKey('data') && raw['data'] is Map
+              ? Map<String, dynamic>.from(raw['data'] as Map)
+              : raw;
+      final graph = ProgressGraphResponse.fromJson(json);
+      return ApiResponse(
+        success: true,
+        statusCode: response.statusCode,
+        data: graph,
+        message: response.message,
+      );
+    }
+    return response;
+  }
+
+  /// GET users/me/progress/weekly. For Home screen. Caches on success.
   Future<ApiResponse> getWeeklyProgress() async {
     final response = await ApiServices.get(ApiEndpoints.usersMeProgressWeekly);
     if (response.success && response.data != null && response.data is Map) {
@@ -402,6 +520,7 @@ class OnboardingRepository {
           ? Map<String, dynamic>.from(raw['data'] as Map)
           : raw;
       final progress = WeeklyProgressResponse.fromJson(json);
+      await _saveWeeklyProgressToStorage(json);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,

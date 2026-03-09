@@ -17,7 +17,6 @@ class BottomIconContainer extends StatelessWidget {
       height: context.sh(76),
       width: context.sw(double.infinity),
       margin: context.paddingSymmetricR(vertical: 14),
-
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.white),
         color: AppColors.backGroundColor,
@@ -44,65 +43,65 @@ class BottomIconContainer extends StatelessWidget {
           final item = bottomAppBarVModel.bottomAppBarData[index];
           final isSelected = bottomAppBarVModel.selectedIndex == index;
 
-          return GestureDetector(
-            onTap: () => bottomAppBarVModel.changeIndex(index),
-
-            child: Padding(
-              padding: context.paddingSymmetricR(horizontal: 40, vertical: 4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-
-                children: [
-                  Container(
-                    height: context.sh(36),
-                    width: context.sw(36),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => bottomAppBarVModel.changeIndex(index),
+              child: Padding(
+                padding: context.paddingSymmetricR(horizontal: 12, vertical: 4),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: context.sh(32),
+                      width: context.sw(32),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.backGroundColor,
+                          width: context.sw(1.5),
+                        ),
                         color: AppColors.backGroundColor,
-                        width: context.sw(1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.customContainerColorUp.withOpacity(
+                              0.4,
+                            ),
+                            offset: const Offset(5, 5),
+                            blurRadius: 5,
+                          ),
+                          BoxShadow(
+                            color: AppColors.customContinerColorDown
+                                .withOpacity(0.4),
+                            offset: const Offset(-5, -5),
+                            blurRadius: 5,
+                          ),
+                        ],
                       ),
-                      color: AppColors.backGroundColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.customContainerColorUp.withOpacity(
-                            0.4,
-                          ),
-                          offset: const Offset(5, 5),
-                          blurRadius: 5,
+                      child: Center(
+                        child: SvgPicture.asset(
+                          item['image'],
+                          height: context.sh(18),
+                          color: isSelected
+                              ? AppColors.pimaryColor
+                              : AppColors.iconColor,
                         ),
-                        BoxShadow(
-                          color: AppColors.customContinerColorDown.withOpacity(
-                            0.4,
-                          ),
-                          offset: const Offset(-5, -5),
-                          blurRadius: 5,
-                        ),
-                      ],
+                      ),
                     ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        item['image'],
-                        height: context.sh(20),
+                    SizedBox(height: context.sh(2)),
+                    Text(
+                      item['name'],
+                      style: TextStyle(
+                        fontFamily: 'Raleway',
+                        fontSize: context.sp(9),
+                        fontWeight: FontWeight.w600,
                         color: isSelected
                             ? AppColors.pimaryColor
                             : AppColors.iconColor,
                       ),
                     ),
-                  ),
-                  SizedBox(height: context.sh(4)),
-                  Text(
-                    item['name'],
-                    style: TextStyle(
-                      fontFamily: 'Raleway',
-                      fontSize: context.sp(10),
-                      fontWeight: FontWeight.w600,
-                      color: isSelected
-                          ? AppColors.pimaryColor
-                          : AppColors.iconColor,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

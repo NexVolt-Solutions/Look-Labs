@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:looklabs/Core/Config/env_loader.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Network/models/user_profile_response.dart';
 import 'package:looklabs/Model/user_model.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
+import 'package:looklabs/Repository/explore_domains_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 
 const String? _kWebClientIdOverride = null;
@@ -26,10 +28,13 @@ class AuthViewModel extends ChangeNotifier {
   UserModel? _user;
   UserProfileResponse? _profile;
   bool _isSelected = false;
+  /// From last sign-in response: true = new user (show onboarding), false = returning (go to Home, do not create session). Default true so first load is safe.
+  bool _isNewUser = true;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   UserModel? get user => _user;
+  bool get isNewUser => _isNewUser;
 
   /// Full profile from GET users/me (name, email, age, gender, profile_image, subscription, etc.).
   UserProfileResponse? get profile => _profile;
@@ -86,10 +91,24 @@ class AuthViewModel extends ChangeNotifier {
       );
 
       if (response.success && response.data != null) {
+        final data = response.data is Map ? response.data as Map : null;
         _user = _parseUser(response.data);
-        final sessionId = OnboardingRepository.sessionId;
-        if (sessionId != null && sessionId.isNotEmpty) {
-          await OnboardingRepository.instance.linkSessionToUser(sessionId);
+        _isNewUser = data?['is_new_user'] == true;
+        if (_isNewUser) {
+          final sessionId = OnboardingRepository.sessionId;
+          if (sessionId != null && sessionId.isNotEmpty) {
+            final linkResponse =
+                await OnboardingRepository.instance.linkSessionToUser(sessionId);
+            if (linkResponse.success &&
+                linkResponse.data != null &&
+                linkResponse.data is Map) {
+              final domain =
+                  (linkResponse.data as Map)['domain']?.toString().trim();
+              if (domain != null && domain.isNotEmpty) {
+                await AuthRepository.setSelectedDomain(domain);
+              }
+            }
+          }
         }
         await OnboardingRepository.clearSession();
         _errorMessage = null;
@@ -107,7 +126,7 @@ class AuthViewModel extends ChangeNotifier {
           detail.contains('await_only()');
       _errorMessage = isServerError
           ? 'Sign-in failed due to a server error. Please try again later.'
-          : (response.message ?? 'Sign in failed');
+          : ApiErrorHandler.userMessage(response, fallback: 'Sign in failed');
       _isLoading = false;
       notifyListeners();
       return false;
@@ -136,27 +155,28 @@ class AuthViewModel extends ChangeNotifier {
     return null;
   }
 
-  /// Fetch user profile from GET users/me. Sets [user] and [profile].
+  /// Fetch user profile: cache-first, then background refresh to detect backend changes.
   Future<void> fetchProfile() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
+      final cached = await AuthRepository.loadCachedProfile();
+      if (cached != null) {
+        _applyProfile(cached);
+        _isLoading = false;
+        notifyListeners();
+        _refreshProfileInBackground();
+        return;
+      }
+
       final response = await _authRepo.getMe();
       if (response.success && response.data is UserProfileResponse) {
-        final p = response.data as UserProfileResponse;
-        _profile = p;
-        _user = UserModel(
-          id: p.id?.toString() ?? '',
-          email: p.email,
-          name: p.name,
-          profileImage: p.profileImage,
-          phone: null,
-        );
+        _applyProfile(response.data as UserProfileResponse);
         _errorMessage = null;
       } else {
-        _errorMessage = response.message;
+        _errorMessage = ApiErrorHandler.userMessage(response, fallback: 'Could not load profile');
       }
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
@@ -165,7 +185,36 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Logout - clears Firebase, API token, onboarding session, and questions cache
+  void _applyProfile(UserProfileResponse p) {
+    _profile = p;
+    _user = UserModel(
+      id: p.id?.toString() ?? '',
+      email: p.email,
+      name: p.name,
+      profileImage: p.profileImage,
+      phone: null,
+    );
+  }
+
+  Future<void> _refreshProfileInBackground() async {
+    try {
+      final response = await _authRepo.getMe();
+      if (response.success && response.data is UserProfileResponse) {
+        final fresh = response.data as UserProfileResponse;
+        final changed = _profile == null ||
+            _profile!.name != fresh.name ||
+            _profile!.profileImage != fresh.profileImage ||
+            _profile!.age != fresh.age ||
+            _profile!.gender != fresh.gender;
+        if (changed) {
+          _applyProfile(fresh);
+          notifyListeners();
+        }
+      }
+    } catch (_) {}
+  }
+
+  /// Logout - clears Firebase, API token, onboarding session, and all caches
   Future<void> logout() async {
     _isLoading = true;
     notifyListeners();
@@ -177,6 +226,9 @@ class AuthViewModel extends ChangeNotifier {
       await OnboardingRepository.clearSession();
       await OnboardingRepository.clearQuestionsCache();
       await OnboardingRepository.clearDomainsCache();
+      await OnboardingRepository.clearWellnessCache();
+      await OnboardingRepository.clearWeeklyProgressCache();
+      await ExploreDomainsRepository.clearDomainsCache();
       _user = null;
       _profile = null;
       _errorMessage = null;
@@ -196,6 +248,9 @@ class AuthViewModel extends ChangeNotifier {
       await OnboardingRepository.clearSession();
       await OnboardingRepository.clearQuestionsCache();
       await OnboardingRepository.clearDomainsCache();
+      await OnboardingRepository.clearWellnessCache();
+      await OnboardingRepository.clearWeeklyProgressCache();
+      await ExploreDomainsRepository.clearDomainsCache();
       _user = null;
       _profile = null;
       _errorMessage = null;

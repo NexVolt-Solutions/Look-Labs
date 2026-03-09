@@ -18,6 +18,7 @@ class RoutesName {
   static const String GenderScreen = 'gender_screen';
   static const String StartScreen = 'start_screen';
   static const String QuestionScreen = 'question_screen';
+  static const String DomainQuestionScreen = 'domain_question_screen';
   static const String SkinCareScreen = 'skin_care_screen';
   static const String HairCareScreen = 'hair_care_screen';
 
@@ -68,4 +69,29 @@ class RoutesName {
   static const String HeightScreen = 'height_screen';
   static const String HeightResultScreen = 'height_result_screen';
   static const String DailyHeightRoutineScreen = 'daily_height_routine_screen';
+
+  /// Route for the main screen of a domain after completing domain questions. Returns null if unknown.
+  static String? routeForDomain(String domain) {
+    final d = domain.trim().toLowerCase();
+    switch (d) {
+      case 'facial':
+        return FacialScreen;
+      case 'skincare':
+        return SkinCareScreen;
+      case 'haircare':
+        return HairCareScreen;
+      case 'workout':
+        return WorkOutScreen;
+      case 'diet':
+        return DietScreen;
+      case 'fashion':
+        return FashionScreen;
+      case 'height':
+        return HeightScreen;
+      case 'quit_porn':
+        return QuitPornScreen;
+      default:
+        return null;
+    }
+  }
 }

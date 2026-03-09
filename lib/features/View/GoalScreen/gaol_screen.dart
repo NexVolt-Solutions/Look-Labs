@@ -1,12 +1,14 @@
-import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
-import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/gaol_screen_view_model.dart';
+import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 import 'package:provider/provider.dart';
 
@@ -32,10 +34,10 @@ class _GaolScreenState extends State<GaolScreen> {
   ) async {
     final domain = vm.selectedDomain;
     if (domain == null || domain.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+      material.ScaffoldMessenger.of(context).showSnackBar(
+        material.SnackBar(
           content: Text('Please select a goal to start your journey.'),
-          behavior: SnackBarBehavior.floating,
+          behavior: material.SnackBarBehavior.floating,
         ),
       );
       return;
@@ -44,10 +46,10 @@ class _GaolScreenState extends State<GaolScreen> {
     final sessionId = OnboardingRepository.sessionId;
     if (sessionId == null || sessionId.isEmpty) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Session expired. Please start again.'),
-          behavior: SnackBarBehavior.floating,
+      material.ScaffoldMessenger.of(context).showSnackBar(
+        material.SnackBar(
+          content: material.Text('Session expired. Please start again.'),
+          behavior: material.SnackBarBehavior.floating,
         ),
       );
       return;
@@ -60,15 +62,22 @@ class _GaolScreenState extends State<GaolScreen> {
 
     if (!context.mounted) return;
     if (!response.success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            response.message ?? 'Failed to save goal. Please try again.',
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
+      ApiErrorHandler.showSnackBar(
+        context,
+        response: response,
+        fallback: 'Failed to save goal. Please try again.',
       );
       return;
+    }
+
+    // Store selected domain from response (status: domain_selected, domain: "fashion") for later domain APIs.
+    if (response.data != null && response.data is Map) {
+      final domainFromResponse = (response.data as Map)['domain']
+          ?.toString()
+          ?.trim();
+      if (domainFromResponse != null && domainFromResponse.isNotEmpty) {
+        await AuthRepository.setSelectedDomain(domainFromResponse);
+      }
     }
 
     Navigator.pushNamed(context, RoutesName.OnBoardScreen);
@@ -79,7 +88,7 @@ class _GaolScreenState extends State<GaolScreen> {
     final vm = Provider.of<GaolScreenViewModel>(context);
     return PopScope(
       canPop: false,
-      child: Scaffold(
+      child: material.Scaffold(
         backgroundColor: AppColors.backGroundColor,
         bottomNavigationBar: Padding(
           padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
@@ -107,7 +116,11 @@ class _GaolScreenState extends State<GaolScreen> {
               if (vm.isLoading)
                 Padding(
                   padding: EdgeInsets.only(top: context.sh(40)),
-                  child: const Center(child: CircularProgressIndicator()),
+                  child: Center(
+                    child: CupertinoActivityIndicator(
+                      color: AppColors.pimaryColor,
+                    ),
+                  ),
                 )
               else if (vm.error != null)
                 Padding(
@@ -139,43 +152,44 @@ class _GaolScreenState extends State<GaolScreen> {
                     return GestureDetector(
                       onTap: () => vm.selectIndex(index),
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: material.BoxDecoration(
                           color: isSelected
                               ? AppColors.buttonColor.withOpacity(0.11)
                               : AppColors.backGroundColor,
-                          borderRadius:
-                              BorderRadius.circular(context.radiusR(16)),
+                          borderRadius: material.BorderRadius.circular(
+                            context.radiusR(16),
+                          ),
                           border: isSelected
-                              ? Border.all(
+                              ? material.Border.all(
                                   color: AppColors.pimaryColor,
                                   width: 1.5,
                                 )
                               : null,
                           boxShadow: isSelected
                               ? [
-                                  BoxShadow(
-                                    color: AppColors.buttonColor
-                                        .withOpacity(0.15),
+                                  material.BoxShadow(
+                                    color: AppColors.buttonColor.withOpacity(
+                                      0.15,
+                                    ),
                                     offset: const Offset(5, 5),
                                     blurRadius: 20,
-                                    inset: true,
                                   ),
-                                  BoxShadow(
-                                    color: AppColors.buttonColor
-                                        .withOpacity(0.15),
+                                  material.BoxShadow(
+                                    color: AppColors.buttonColor.withOpacity(
+                                      0.15,
+                                    ),
                                     offset: const Offset(-5, -5),
                                     blurRadius: 20,
-                                    inset: true,
                                   ),
                                 ]
                               : [
-                                  BoxShadow(
+                                  material.BoxShadow(
                                     color: AppColors.customContainerColorUp
                                         .withOpacity(0.5),
                                     offset: const Offset(5, 5),
                                     blurRadius: 20,
                                   ),
-                                  BoxShadow(
+                                  material.BoxShadow(
                                     color: AppColors.customContinerColorDown,
                                     offset: const Offset(-5, -5),
                                     blurRadius: 20,

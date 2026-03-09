@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
@@ -55,7 +56,9 @@ import 'package:looklabs/Features/View/Payment%20Details/payment_details_screen.
 import 'package:looklabs/Features/View/HealtDetailsScreen/healt_details_screen.dart';
 import 'package:looklabs/Features/View/Progress/progress_screen.dart';
 import 'package:looklabs/Features/View/Purchase/purchase_screen.dart';
+import 'package:looklabs/Features/View/DomainQuestion/domain_question_screen.dart';
 import 'package:looklabs/Features/View/QuestionScreen/question_screen.dart';
+import 'package:looklabs/Features/ViewModel/domain_question_view_model.dart';
 import 'package:looklabs/Features/View/SplahScreen/splash_screen.dart';
 import 'package:looklabs/Features/View/StartScreen/start_screen.dart';
 import 'package:looklabs/Features/View/Subscription%20Plan/subscription_plan_screen.dart';
@@ -137,6 +140,17 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => QuestionScreen(),
+        );
+      case RoutesName.DomainQuestionScreen:
+        final domain = settings.arguments is String
+            ? settings.arguments as String
+            : '';
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => DomainQuestionViewModel(domain: domain),
+            child: DomainQuestionScreen(domain: domain),
+          ),
         );
       case RoutesName.SkinCareScreen:
         return MaterialPageRoute(

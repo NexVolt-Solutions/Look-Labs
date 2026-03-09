@@ -4,6 +4,7 @@ import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
+import 'package:looklabs/Repository/explore_domains_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +30,14 @@ class SplashViewModel extends ChangeNotifier {
         debugPrint('[Splash] Has token → navigating to Home (BottomSheetBarScreen)');
       }
       try {
-        await context.read<AuthViewModel>().fetchProfile();
+        // Pre-fetch profile, domains, wellness, weekly progress in parallel so cache is warm when Home loads.
+        final authVm = context.read<AuthViewModel>();
+        await Future.wait([
+          authVm.fetchProfile(),
+          ExploreDomainsRepository.instance.getExploreDomains(),
+          OnboardingRepository.instance.getWellnessMetrics(),
+          OnboardingRepository.instance.getWeeklyProgress(),
+        ]);
       } catch (_) {}
       if (!context.mounted) return;
       Navigator.pushNamedAndRemoveUntil(
@@ -40,18 +48,13 @@ class SplashViewModel extends ChangeNotifier {
       return;
     }
 
-    // No token: anonymous flow – restore or create session, then StartScreen.
-    final restored = await OnboardingRepository.loadStoredSession();
-    if (!restored) {
-      final response = await OnboardingRepository.instance.createAnonymousSession();
-      if (!response.success || response.data == null) {
-        sessionError = response.message ?? 'Failed to start. Please try again.';
-        notifyListeners();
-        return;
-      }
-    }
-
+    // No token: go to Auth screen. Do not create a session – returning users (is_new_user: false) must not get a new session.
+    // New users will sign in, get is_new_user: true, then we create a session and go to onboarding from the auth screen.
     if (!context.mounted) return;
-    Navigator.pushNamed(context, RoutesName.StartScreen);
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      RoutesName.AuthScreen,
+      (route) => false,
+    );
   }
 }

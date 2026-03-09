@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
@@ -7,8 +8,12 @@ import 'package:looklabs/Features/Widget/simple_check_box.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
+import 'package:looklabs/Features/ViewModel/bottom_sheet_view_model.dart';
+import 'package:looklabs/Repository/explore_domains_repository.dart';
+import 'package:looklabs/Repository/onboarding_repository.dart';
 import 'package:provider/provider.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -34,22 +39,52 @@ class _AuthScreenState extends State<AuthScreen> {
       final success = await vm.signInWithGoogle();
       if (!mounted) return;
       if (success) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          RoutesName.BottomSheetBarScreen,
-          (route) => false,
-        );
-      } else if (vm.errorMessage != null) {
-        if (mounted) {
-          ScaffoldMessenger.of(
+        if (vm.isNewUser) {
+          // New user: create onboarding session and go to Start (onboarding flow).
+          final response = await OnboardingRepository.instance
+              .createAnonymousSession();
+          if (!mounted) return;
+          if (response.success && response.data != null) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              RoutesName.StartScreen,
+              (route) => false,
+            );
+          } else {
+            // Fallback: still go to Start so user isn't stuck.
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              RoutesName.StartScreen,
+              (route) => false,
+            );
+          }
+        } else {
+          // Returning user: pre-fetch and go straight to Home (no new session).
+          try {
+            await Future.wait([
+              ExploreDomainsRepository.instance.getExploreDomains(),
+              OnboardingRepository.instance.getWellnessMetrics(),
+              OnboardingRepository.instance.getWeeklyProgress(),
+            ]);
+          } catch (_) {}
+          if (!mounted) return;
+          try {
+            context.read<BottomSheetViewModel>().changeIndex(0);
+          } catch (_) {}
+          Navigator.pushNamedAndRemoveUntil(
             context,
-          ).showSnackBar(SnackBar(content: Text(vm.errorMessage!)));
+            RoutesName.BottomSheetBarScreen,
+            (route) => false,
+          );
         }
+      } else if (vm.errorMessage != null) {
+        if (mounted) ApiErrorHandler.showSnackBar(context, fallback: vm.errorMessage);
       }
     } catch (e, _) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Something went wrong: ${e.toString()}')),
+        ApiErrorHandler.showSnackBar(
+          context,
+          fallback: 'Something went wrong. Please try again.',
         );
       }
     }
@@ -153,7 +188,9 @@ class _AuthScreenState extends State<AuthScreen> {
           if (authVm.isLoading)
             Container(
               color: Colors.black26,
-              child: const Center(child: CircularProgressIndicator()),
+              child: Center(
+                child: CupertinoActivityIndicator(color: AppColors.pimaryColor),
+              ),
             ),
         ],
       ),

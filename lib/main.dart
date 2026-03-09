@@ -60,7 +60,6 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await loadEnv();
 
-  // When any request returns 401 (token expired ~60 min), refresh token and retry once.
   ApiServices.onUnauthorized = () async {
     final res = await AuthRepository.instance.refreshToken();
     return res.success;

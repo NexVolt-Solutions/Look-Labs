@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
@@ -20,6 +21,75 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Widget _buildProgressImage(
+    BuildContext context,
+    String? iconUrl,
+    double size,
+  ) {
+    if (iconUrl != null && iconUrl.isNotEmpty) {
+      return Image.network(
+        iconUrl,
+        height: context.sh(size),
+        width: context.sw(size),
+        fit: BoxFit.cover,
+        loadingBuilder: (_, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return SizedBox(
+            height: context.sh(size),
+            width: context.sw(size),
+            child: Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CupertinoActivityIndicator(color: AppColors.pimaryColor),
+              ),
+            ),
+          );
+        },
+        errorBuilder: (_, __, ___) => SizedBox(
+          height: context.sh(size),
+          width: context.sw(size),
+          child: Icon(Icons.image_not_supported, size: size * 0.5),
+        ),
+      );
+    }
+    return SizedBox(
+      height: context.sh(size),
+      width: context.sw(size),
+      child: Icon(Icons.image_not_supported, size: size * 0.5),
+    );
+  }
+
+  Widget _buildExploreImage(String? iconUrl) {
+    if (iconUrl != null && iconUrl.isNotEmpty) {
+      return Image.network(
+        iconUrl,
+        fit: BoxFit.cover,
+        loadingBuilder: (_, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: AppColors.backGroundColor,
+            child: Center(
+              child: SizedBox(
+                width: 32,
+                height: 32,
+                child: CupertinoActivityIndicator(color: AppColors.pimaryColor),
+              ),
+            ),
+          );
+        },
+        errorBuilder: (_, __, ___) => Container(
+          color: AppColors.backGroundColor,
+          child: const Center(child: Icon(Icons.image_not_supported, size: 48)),
+        ),
+      );
+    }
+    return Container(
+      color: AppColors.backGroundColor,
+      child: const Center(child: Icon(Icons.image_not_supported, size: 48)),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -80,8 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SizedBox(
                 width: 28,
                 height: 28,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
+                child: CupertinoActivityIndicator(
                   color: AppColors.subHeadingColor,
                 ),
               ),
@@ -105,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return GridData(
                   title: item['title'],
                   subTitle: item['subTitle'],
-                  image: item['image'],
+                  iconUrl: item['iconUrl'],
                 );
               },
             ),
@@ -192,9 +261,21 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SizedBox(
                 width: 24,
                 height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
+                child: CupertinoActivityIndicator(
                   color: AppColors.subHeadingColor,
+                ),
+              ),
+            ),
+          )
+        else if (homeViewModel.listViewData.isEmpty)
+          SizedBox(
+            height: context.sh(80),
+            child: Center(
+              child: Text(
+                'No data yet',
+                style: TextStyle(
+                  fontSize: context.sp(14),
+                  color: AppColors.notSelectedColor,
                 ),
               ),
             ),
@@ -280,11 +361,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(
                               context.radiusR(14),
                             ),
-                            child: Image.asset(
-                              item['image'],
-                              height: context.sh(45),
-                              width: context.sw(45),
-                              fit: BoxFit.scaleDown,
+                            child: _buildProgressImage(
+                              context,
+                              item['iconUrl'] as String?,
+                              45,
                             ),
                           ),
                         ),
@@ -322,9 +402,53 @@ class _HomeScreenState extends State<HomeScreen> {
           titleColor: AppColors.subHeadingColor,
         ),
         SizedBox(height: context.sh(12)),
-        SizedBox(
-          height: context.sh(1150),
-          child: GridView.builder(
+        if (homeViewModel.domainsError != null &&
+            !homeViewModel.hasExploreDomains)
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  homeViewModel.domainsError ?? 'Couldn\'t load plans',
+                  style: TextStyle(
+                    fontSize: context.sp(13),
+                    color: AppColors.notSelectedColor,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => homeViewModel.refreshDomainsForExplore(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        if (homeViewModel.domainsLoading && !homeViewModel.hasExploreDomains)
+          SizedBox(
+            height: context.sh(200),
+            child: Center(
+              child: SizedBox(
+                width: 28,
+                height: 28,
+                child: CupertinoActivityIndicator(
+                  color: AppColors.subHeadingColor,
+                ),
+              ),
+            ),
+          )
+        else if (homeViewModel.gridData.isEmpty)
+          SizedBox(
+            height: context.sh(200),
+            child: Center(
+              child: Text(
+                'No plans yet',
+                style: TextStyle(
+                  fontSize: context.sp(14),
+                  color: AppColors.notSelectedColor,
+                ),
+              ),
+            ),
+          )
+        else
+          GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
@@ -332,112 +456,137 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisCount: 2,
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
-              // mainAxisExtent: 2,
-              childAspectRatio: 3 / 4.3,
+              childAspectRatio: 3 / 4.5,
             ),
             itemCount: homeViewModel.gridData.length,
             itemBuilder: (context, index) {
               final item = homeViewModel.gridData[index];
+              final key = item['key'] as String? ?? '';
+              final isEnabled = homeViewModel.isDomainEnabled(key);
               return PlanContainer(
                 padding: EdgeInsets.zero,
-                isSelected: false,
+                isSelected: isEnabled,
                 onTap: () {
                   homeViewModel.onItemTap(index, context);
                 },
                 child: Column(
                   children: [
-                    CustomContainer(
-                      border: null,
-                      padding: EdgeInsets.zero,
-                      // margin: context.paddingSymmetricR(horizontal: 10, vertical: 10),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(10),
-                            child: Image.asset(
-                              item['image'],
-                              fit: BoxFit.scaleDown,
+                    Expanded(
+                      flex: 3,
+                      child: CustomContainer(
+                        padding: EdgeInsets.zero,
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadiusGeometry.circular(10),
+                              child: _buildExploreImage(
+                                item['iconUrl'] as String?,
+                              ),
                             ),
-                          ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                height: 28,
-                                width: 28,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                    context.radiusR(11),
-                                  ),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFFFFFFFF).withOpacity(0),
-                                      Color(0xFFDBE6F2).withOpacity(0.5),
-                                      Color(0xFF8b8c8c),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(
-                                        0xFF123D65,
-                                      ).withOpacity(0.15),
-                                      offset: const Offset(0, 7),
-                                      blurRadius: 17,
+                            if (!isEnabled)
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    height: 28,
+                                    width: 28,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        context.radiusR(11),
+                                      ),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xFFFFFFFF).withOpacity(0),
+                                          Color(0xFFDBE6F2).withOpacity(0.5),
+                                          Color(0xFF8b8c8c),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(
+                                            0xFF123D65,
+                                          ).withOpacity(0.15),
+                                          offset: const Offset(0, 7),
+                                          blurRadius: 17,
+                                        ),
+                                        BoxShadow(
+                                          color: AppColors.white.withOpacity(
+                                            0.18,
+                                          ),
+                                          offset: const Offset(-5, -4),
+                                          blurRadius: 58,
+                                        ),
+                                      ],
                                     ),
-                                    BoxShadow(
-                                      color: AppColors.white.withOpacity(0.18),
-                                      offset: const Offset(-5, -4),
-                                      blurRadius: 58,
-                                    ),
-                                  ],
-                                ),
-                                child: Container(
-                                  margin: EdgeInsets.all(
-                                    context.sw(1),
-                                  ), // Border width
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      context.radiusR(11),
-                                    ),
-                                    color: Color(0xFF8b8c8c),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                      context.radiusR(11),
-                                    ),
-                                    child: SvgPicture.asset(
-                                      AppAssets.crownIcon,
-                                      fit: BoxFit.scaleDown,
+                                    child: Container(
+                                      margin: EdgeInsets.all(context.sw(1)),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          context.radiusR(11),
+                                        ),
+                                        color: Color(0xFF8b8c8c),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                          context.radiusR(11),
+                                        ),
+                                        child: SvgPicture.asset(
+                                          AppAssets.crownIcon,
+                                          fit: BoxFit.scaleDown,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: context.sh(4)),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            item['title'] as String? ?? '',
+                            style: TextStyle(
+                              fontSize: context.sp(16),
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.subHeadingColor,
+                              fontFamily: 'Raleway',
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: context.sh(2)),
+                          Text(
+                            item['subTitle'] as String? ?? '',
+                            style: TextStyle(
+                              fontSize: context.sp(12),
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.subHeadingColor,
+                              fontFamily: 'Raleway',
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(height: context.sh(8)),
-                    NormalText(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      titleText: item['title'],
-                      titleSize: context.sp(16),
-                      titleWeight: FontWeight.w600,
-                      titleColor: AppColors.subHeadingColor,
-                      subText: item['subTitle'],
-                      subSize: context.sp(12),
-                      subColor: AppColors.subHeadingColor,
-                      subWeight: FontWeight.w400,
                     ),
                   ],
                 ),
               );
             },
           ),
-        ),
       ],
     );
   }

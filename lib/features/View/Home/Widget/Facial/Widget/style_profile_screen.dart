@@ -89,7 +89,10 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Container(
-                              padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
+                              padding: context.paddingSymmetricR(
+                                horizontal: 4,
+                                vertical: 4,
+                              ),
                               // margin: context.paddingSymmetricR(vertical: 14),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(

@@ -23,6 +23,8 @@ class NormalText extends StatelessWidget {
   /// 🔥 OPTIONAL CONTROL
   final int? maxLines;
   final TextOverflow? overflow;
+  final int? subMaxLines;
+  final TextOverflow? subOverflow;
 
   const NormalText({
     super.key,
@@ -40,6 +42,8 @@ class NormalText extends StatelessWidget {
     this.sizeBoxheight,
     this.maxLines,
     this.overflow,
+    this.subMaxLines,
+    this.subOverflow,
   });
 
   @override
@@ -71,8 +75,8 @@ class NormalText extends StatelessWidget {
           Text(
             subText!,
             softWrap: true,
-            maxLines: null,
-            overflow: TextOverflow.visible,
+            maxLines: subMaxLines,
+            overflow: subOverflow ?? TextOverflow.visible,
             style: TextStyle(
               color: subColor ?? AppColors.subHeadingColor,
               fontSize: subSize ?? context.sp(14),

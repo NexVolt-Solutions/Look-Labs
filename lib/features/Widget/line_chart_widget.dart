@@ -66,6 +66,9 @@ TooltipBehavior _customChartTooltip(BuildContext context) => TooltipBehavior(
         if (data is WeeklyProgressDay) {
           label = data.day;
           value = data.score;
+        } else if (data is WeeklyProgressDomain) {
+          label = data.domain;
+          value = data.score;
         } else if (data is SalesData) {
           label = data.month;
           value = data.sales;
@@ -106,36 +109,104 @@ class LineChartWidget extends StatelessWidget {
   }
 }
 
-/// Line chart for weekly progress (GET users/me/progress/weekly). Same style as [LineChartWidget].
+/// Placeholder domain used when there is no data so the chart frame (axes) still shows.
+const WeeklyProgressDomain _emptyChartPlaceholder = WeeklyProgressDomain(
+  domain: ' ',
+  score: 0,
+  hasData: false,
+);
+
+/// Line chart for weekly progress (GET users/me/progress/graph). Same style as [LineChartWidget].
+/// Supports both days (time series) and domains (skincare, hair, etc.) from API.
+/// When both are empty, the full chart frame (axes) is still shown with "No data yet" – only values are hidden.
 class WeeklyProgressLineChart extends StatelessWidget {
-  const WeeklyProgressLineChart({super.key, required this.days});
+  const WeeklyProgressLineChart({
+    super.key,
+    this.days = const [],
+    this.domains = const [],
+  });
 
   final List<WeeklyProgressDay> days;
+  final List<WeeklyProgressDomain> domains;
 
   @override
   Widget build(BuildContext context) {
-    if (days.isEmpty) {
-      return const SizedBox(
-        height: 120,
-        child: Center(child: Text('No data yet')),
+    if (domains.isNotEmpty) {
+      return SfCartesianChart(
+        primaryXAxis: CategoryAxis(),
+        tooltipBehavior: _customChartTooltip(context),
+        series: <LineSeries<WeeklyProgressDomain, String>>[
+          LineSeries<WeeklyProgressDomain, String>(
+            dataSource: domains,
+            xValueMapper: (data, _) => data.domain,
+            yValueMapper: (data, _) => data.score.toDouble(),
+            markerSettings: MarkerSettings(
+              isVisible: true,
+              image: AssetImage(AppAssets.masterCardIcon),
+            ),
+            dataLabelSettings: const DataLabelSettings(isVisible: true),
+            enableTooltip: true,
+          ),
+        ],
       );
     }
-    return SfCartesianChart(
-      primaryXAxis: CategoryAxis(),
-      tooltipBehavior: _customChartTooltip(context),
-      series: <LineSeries<WeeklyProgressDay, String>>[
-        LineSeries<WeeklyProgressDay, String>(
-          dataSource: days,
-          xValueMapper: (data, _) => data.day,
-          yValueMapper: (data, _) => data.score.toDouble(),
-          markerSettings: MarkerSettings(
-            isVisible: true,
-            image: AssetImage(AppAssets.masterCardIcon),
+    if (days.isNotEmpty) {
+      return SfCartesianChart(
+        primaryXAxis: CategoryAxis(),
+        tooltipBehavior: _customChartTooltip(context),
+        series: <LineSeries<WeeklyProgressDay, String>>[
+          LineSeries<WeeklyProgressDay, String>(
+            dataSource: days,
+            xValueMapper: (data, _) => data.day,
+            yValueMapper: (data, _) => data.score.toDouble(),
+            markerSettings: MarkerSettings(
+              isVisible: true,
+              image: AssetImage(AppAssets.masterCardIcon),
+            ),
+            dataLabelSettings: const DataLabelSettings(isVisible: true),
+            enableTooltip: true,
           ),
-          dataLabelSettings: const DataLabelSettings(isVisible: true),
-          enableTooltip: true,
-        ),
-      ],
+        ],
+      );
+    }
+    // No data: keep the full graph (chart frame with axes), show only "No data yet" inside – don't remove the chart.
+    return SizedBox(
+      height: 120,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          SfCartesianChart(
+            primaryXAxis: CategoryAxis(
+              maximumLabels: 1,
+              majorGridLines: MajorGridLines(width: 0),
+              axisLine: AxisLine(width: 1),
+            ),
+            primaryYAxis: NumericAxis(
+              minimum: 0,
+              maximum: 10,
+              majorGridLines: MajorGridLines(width: 0),
+              axisLine: AxisLine(width: 1),
+            ),
+            series: <LineSeries<WeeklyProgressDomain, String>>[
+              LineSeries<WeeklyProgressDomain, String>(
+                dataSource: const [_emptyChartPlaceholder],
+                xValueMapper: (_, __) => ' ',
+                yValueMapper: (_, __) => 0.0,
+                markerSettings: const MarkerSettings(isVisible: false),
+                dataLabelSettings: const DataLabelSettings(isVisible: false),
+                enableTooltip: false,
+              ),
+            ],
+          ),
+          Text(
+            'No data yet',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.subHeadingColor.withOpacity(0.7),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
+import 'package:looklabs/Core/Network/models/explore_domain.dart';
 import 'package:looklabs/Core/Network/models/weekly_progress_response.dart';
 import 'package:looklabs/Core/Network/models/wellness_metrics.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
+import 'package:looklabs/Repository/auth_repository.dart';
+import 'package:looklabs/Repository/explore_domains_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 
 class HomeViewModel extends ChangeNotifier {
@@ -24,48 +27,101 @@ class HomeViewModel extends ChangeNotifier {
   bool get weeklyProgressLoading => _weeklyProgressLoading;
   String? get weeklyProgressError => _weeklyProgressError;
 
-  List<String> _domains = [];
+  List<ExploreDomain> _domains = [];
   bool _domainsLoading = false;
+  String? _domainsError;
+  String? _selectedDomain;
 
   bool get domainsLoading => _domainsLoading;
+  String? get domainsError => _domainsError;
+  bool get hasExploreDomains => _domains.isNotEmpty;
 
-  /// Load domains for Explore your plans: from secure storage first (API only once), else GET onboarding/domains then cache.
+  /// User's goal/domain from onboarding (goal screen or link response). Only this domain is tappable on Home.
+  String? get selectedDomain => _selectedDomain;
+
+  /// True if this domain key is the user's selected goal (enabled to open domain questions).
+  bool isDomainEnabled(String key) {
+    if (_selectedDomain == null || _selectedDomain!.isEmpty) return false;
+    return key.trim().toLowerCase() == _selectedDomain!.trim().toLowerCase();
+  }
+
+  /// Load domains for Explore your plans: from cache first, then GET domains/explore (requires auth).
+  /// Restores selected domain from storage first so same-account re-login shows the correct plan as enabled.
   Future<void> loadDomainsForExplore() async {
     if (_domainsLoading) return;
     _domainsLoading = true;
+    _domainsError = null;
+    // Restore selected domain from storage immediately so UI is correct after re-login.
+    _selectedDomain = await AuthRepository.getSelectedDomain();
     notifyListeners();
 
-    final cached = await OnboardingRepository.loadCachedDomains();
+    final cached = await ExploreDomainsRepository.loadCachedDomains();
     if (cached != null && cached.isNotEmpty) {
       _domains = cached;
+      _selectedDomain = await AuthRepository.getSelectedDomain();
       _domainsLoading = false;
       notifyListeners();
+      _refreshDomainsInBackground();
       return;
     }
 
-    final response = await OnboardingRepository.instance.getOnboardingDomains();
+    final response = await ExploreDomainsRepository.instance
+        .getExploreDomains();
+    _domainsLoading = false;
     if (response.success && response.data is List) {
-      _domains = List<String>.from(response.data as List);
+      _domains = (response.data as List).whereType<ExploreDomain>().toList();
+      _domainsError = null;
     } else {
       _domains = [];
+      _domainsError = response.userMessageOrFallback('Could not load explore domains');
     }
-    _domainsLoading = false;
+    _selectedDomain = await AuthRepository.getSelectedDomain();
     notifyListeners();
   }
 
-  /// Domain key (e.g. skincare) -> grid entry and route for Explore your plans.
-  static Map<String, Map<String, dynamic>> get _domainConfig {
-    return {
-      'skincare': {'title': 'SkinCare', 'subTitle': 'Daily glow routine', 'image': AppAssets.skinCare, 'route': RoutesName.SkinCareScreen},
-      'hair': {'title': 'Hair', 'subTitle': 'Daily glow routine', 'image': AppAssets.hair, 'route': RoutesName.HairCareScreen},
-      'workout': {'title': 'WorkOut', 'subTitle': 'Daily glow routine', 'image': AppAssets.workOut, 'route': RoutesName.WorkOutScreen},
-      'diet': {'title': 'Diet', 'subTitle': 'Daily glow routine', 'image': AppAssets.diet, 'route': RoutesName.DietScreen},
-      'facial': {'title': 'Facial', 'subTitle': 'Daily glow routine', 'image': AppAssets.facial, 'route': RoutesName.FacialScreen},
-      'fashion': {'title': 'Fashion', 'subTitle': 'Daily glow routine', 'image': AppAssets.fashion, 'route': RoutesName.FashionScreen},
-      'height': {'title': 'Height', 'subTitle': 'Daily glow routine', 'image': AppAssets.height, 'route': RoutesName.HeightScreen},
-      'quit porn': {'title': 'QuitPorn', 'subTitle': 'Daily glow routine', 'image': AppAssets.quitPorn, 'route': RoutesName.QuitPornScreen},
-      'quitporn': {'title': 'QuitPorn', 'subTitle': 'Daily glow routine', 'image': AppAssets.quitPorn, 'route': RoutesName.QuitPornScreen},
-    };
+  /// Refresh domains from API (e.g. retry or pull-to-refresh).
+  Future<void> refreshDomainsForExplore() async {
+    _domainsError = null;
+    notifyListeners();
+
+    final response = await ExploreDomainsRepository.instance
+        .getExploreDomains();
+    if (response.success && response.data is List) {
+      _domains = (response.data as List).whereType<ExploreDomain>().toList();
+      _domainsError = null;
+    } else {
+      if (_domains.isEmpty) {
+        _domainsError = response.userMessageOrFallback('Could not load explore domains');
+      }
+    }
+    _selectedDomain = await AuthRepository.getSelectedDomain();
+    notifyListeners();
+  }
+
+  Future<void> _refreshDomainsInBackground() async {
+    final response = await ExploreDomainsRepository.instance
+        .getExploreDomains();
+    if (response.success && response.data is List) {
+      final fresh = (response.data as List).whereType<ExploreDomain>().toList();
+      if (fresh.isEmpty) return;
+      bool changed = _domains.length != fresh.length;
+      if (!changed) {
+        for (var i = 0; i < _domains.length && i < fresh.length; i++) {
+          final a = _domains[i];
+          final b = fresh[i];
+          if (a.key != b.key || a.name != b.name || a.iconUrl != b.iconUrl) {
+            changed = true;
+            break;
+          }
+        }
+      }
+      final selected = await AuthRepository.getSelectedDomain();
+      if (changed || _selectedDomain != selected) {
+        _domains = fresh;
+        _selectedDomain = selected;
+        notifyListeners();
+      }
+    }
   }
 
   static String _titleCase(String s) {
@@ -73,39 +129,60 @@ class HomeViewModel extends ChangeNotifier {
     return s[0].toUpperCase() + s.substring(1).toLowerCase();
   }
 
-  /// Wellness overview cards (height, weight, sleep, water). Uses API data when available.
+  /// Wellness overview cards (height, weight, sleep, water). API data only.
   List<Map<String, dynamic>> get homeOverViewData {
     final w = _wellness;
+    if (w == null) return [];
     return [
-      {
-        'title': 'Your Height',
-        'subTitle': w?.height.isNotEmpty == true ? w!.height : '—',
-        'image': AppAssets.heightIcon,
-      },
-      {
-        'title': 'Your Weight',
-        'subTitle': w?.weight.isNotEmpty == true ? w!.weight : '—',
-        'image': AppAssets.weightIcon,
-      },
-      {
-        'title': 'Sleep Hours',
-        'subTitle': w?.sleepHours.isNotEmpty == true ? w!.sleepHours : '—',
-        'image': AppAssets.sleepIcon,
-      },
-      {
-        'title': 'Water Intake',
-        'subTitle': w?.waterIntake.isNotEmpty == true ? w!.waterIntake : '—',
-        'image': AppAssets.waterIcon,
-      },
+      if (w.height.isNotEmpty || w.heightIconUrl != null)
+        {
+          'title': 'Your Height',
+          'subTitle': w.height,
+          'iconUrl': w.heightIconUrl,
+        },
+      if (w.weight.isNotEmpty || w.weightIconUrl != null)
+        {
+          'title': 'Your Weight',
+          'subTitle': w.weight,
+          'iconUrl': w.weightIconUrl,
+        },
+      if (w.sleepHours.isNotEmpty || w.sleepHoursIconUrl != null)
+        {
+          'title': 'Sleep Hours',
+          'subTitle': w.sleepHours,
+          'iconUrl': w.sleepHoursIconUrl,
+        },
+      if (w.waterIntake.isNotEmpty || w.waterIntakeIconUrl != null)
+        {
+          'title': 'Water Intake',
+          'subTitle': w.waterIntake,
+          'iconUrl': w.waterIntakeIconUrl,
+        },
     ];
   }
 
-  /// Load wellness from GET onboarding/users/me/wellness. No-op if already loading or already have data.
+  /// Load wellness: cache-first, then background refresh to detect backend changes.
   Future<void> loadWellness() async {
-    if (_wellnessLoading || _wellness != null) return;
+    if (_wellnessLoading) return;
     _wellnessLoading = true;
     _wellnessError = null;
     notifyListeners();
+
+    final cached = await OnboardingRepository.loadCachedWellness();
+    if (cached != null) {
+      final cachedHasData =
+          cached.height.isNotEmpty ||
+          cached.weight.isNotEmpty ||
+          cached.sleepHours.isNotEmpty ||
+          cached.waterIntake.isNotEmpty;
+      if (cachedHasData) {
+        _wellness = cached;
+        _wellnessLoading = false;
+        notifyListeners();
+        _refreshWellnessInBackground();
+        return;
+      }
+    }
 
     if (kDebugMode) {
       final t = ApiServices.authToken;
@@ -126,7 +203,7 @@ class HomeViewModel extends ChangeNotifier {
         );
       }
     } else {
-      _wellnessError = response.message ?? 'Could not load wellness';
+      _wellnessError = response.userMessageOrFallback('Could not load wellness');
       if (kDebugMode) {
         debugPrint(
           '[Wellness] failed: statusCode=${response.statusCode}, message=${response.message}',
@@ -136,12 +213,47 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Load weekly progress from GET users/me/progress/weekly. No-op if already loading or already have data.
+  Future<void> _refreshWellnessInBackground() async {
+    final response = await OnboardingRepository.instance.getWellnessMetrics();
+    if (response.success && response.data is WellnessMetrics) {
+      final fresh = response.data as WellnessMetrics;
+      final freshHasData =
+          fresh.height.isNotEmpty ||
+          fresh.weight.isNotEmpty ||
+          fresh.sleepHours.isNotEmpty ||
+          fresh.waterIntake.isNotEmpty;
+      if (!freshHasData && _wellness != null) {
+        return;
+      }
+      final changed =
+          _wellness == null ||
+          _wellness!.height != fresh.height ||
+          _wellness!.weight != fresh.weight ||
+          _wellness!.sleepHours != fresh.sleepHours ||
+          _wellness!.waterIntake != fresh.waterIntake ||
+          _wellness!.dailyQuote != fresh.dailyQuote;
+      if (changed) {
+        _wellness = fresh;
+        notifyListeners();
+      }
+    }
+  }
+
+  /// Load weekly progress: cache-first, then background refresh to detect backend changes.
   Future<void> loadWeeklyProgress() async {
-    if (_weeklyProgressLoading || _weeklyProgress != null) return;
+    if (_weeklyProgressLoading) return;
     _weeklyProgressLoading = true;
     _weeklyProgressError = null;
     notifyListeners();
+
+    final cached = await OnboardingRepository.loadCachedWeeklyProgress();
+    if (cached != null) {
+      _weeklyProgress = cached;
+      _weeklyProgressLoading = false;
+      notifyListeners();
+      _refreshWeeklyProgressInBackground();
+      return;
+    }
 
     final response = await OnboardingRepository.instance.getWeeklyProgress();
     _weeklyProgressLoading = false;
@@ -150,89 +262,81 @@ class HomeViewModel extends ChangeNotifier {
       _weeklyProgressError = null;
     } else {
       _weeklyProgressError =
-          response.message ?? 'Could not load weekly progress';
+          response.userMessageOrFallback('Could not load weekly progress');
     }
     notifyListeners();
   }
 
-  /// Weekly progress section: 7 days (Mon–Sun) from API when available, else fallback list with placeholder.
+  Future<void> _refreshWeeklyProgressInBackground() async {
+    final response = await OnboardingRepository.instance.getWeeklyProgress();
+    if (response.success && response.data is WeeklyProgressResponse) {
+      final fresh = response.data as WeeklyProgressResponse;
+      final changed =
+          _weeklyProgress == null ||
+          _weeklyProgress!.domains.length != fresh.domains.length ||
+          _weeklyProgress!.days.length != fresh.days.length ||
+          (_weeklyProgress!.weekAverage ?? 0) != (fresh.weekAverage ?? 0);
+      if (changed) {
+        _weeklyProgress = fresh;
+        notifyListeners();
+      }
+    }
+  }
+
+  /// Weekly progress section: domains or days from API only.
   List<Map<String, dynamic>> get listViewData {
     final wp = _weeklyProgress;
+    if (wp != null && wp.domains.isNotEmpty) {
+      return wp.domains.map((d) {
+        return {
+          'title': _titleCase(d.domain),
+          'subTitle': '${d.score}',
+          'iconUrl': d.iconUrl,
+        };
+      }).toList();
+    }
     if (wp != null && wp.days.isNotEmpty) {
       return wp.days
           .map(
-            (d) => {
-              'title': d.day,
-              'subTitle': '${d.score}',
-              'image': AppAssets.skinCare,
-            },
+            (d) => {'title': d.day, 'subTitle': '${d.score}', 'iconUrl': null},
           )
           .toList();
     }
-    return _listViewDataFallback;
+    return [];
   }
 
-  static final List<Map<String, dynamic>> _listViewDataFallback = [
-    {'title': 'Skin', 'subTitle': '34/100', 'image': AppAssets.skinCare},
-    {'title': 'Hair', 'subTitle': '34/100', 'image': AppAssets.hair},
-    {'title': 'Height', 'subTitle': '34/100', 'image': AppAssets.height},
-    {'title': 'Diet', 'subTitle': '34/100', 'image': AppAssets.diet},
-    {'title': 'facial', 'subTitle': '34/100', 'image': AppAssets.facial},
-    {'title': 'Fashion', 'subTitle': '34/100', 'image': AppAssets.fashion},
-    {'title': 'QuitPorn', 'subTitle': '34/100', 'image': AppAssets.quitPorn},
-    {'title': 'WorkOut', 'subTitle': '34/100', 'image': AppAssets.workOut},
-  ];
-
-  static final List<Map<String, dynamic>> _gridDataFallback = [
-    {'title': 'SkinCare', 'subTitle': 'Daily glow routine', 'image': AppAssets.skinCare},
-    {'title': 'Hair', 'subTitle': 'Daily glow routine', 'image': AppAssets.hair},
-    {'title': 'WorkOut', 'subTitle': 'Daily glow routine', 'image': AppAssets.workOut},
-    {'title': 'Diet', 'subTitle': 'Daily glow routine', 'image': AppAssets.diet},
-    {'title': 'Facial', 'subTitle': 'Daily glow routine', 'image': AppAssets.facial},
-    {'title': 'Fashion', 'subTitle': 'Daily glow routine', 'image': AppAssets.fashion},
-    {'title': 'Height', 'subTitle': 'Daily glow routine', 'image': AppAssets.height},
-    {'title': 'QuitPorn', 'subTitle': 'Daily glow routine', 'image': AppAssets.quitPorn},
-  ];
-
-  /// Explore your plans grid: from cached/API domains when available, else fallback list.
+  /// Explore your plans grid: API data only.
+  /// Each item: { title, subTitle, iconUrl, key }.
   List<Map<String, dynamic>> get gridData {
-    if (_domains.isEmpty) return _gridDataFallback;
-    final config = _domainConfig;
+    if (_domains.isEmpty) return [];
     return _domains.map((d) {
-      final key = d.toLowerCase().trim();
-      final entry = config[key];
-      if (entry != null) {
-        return {'title': entry['title'], 'subTitle': entry['subTitle']!, 'image': entry['image']};
-      }
-      return {'title': _titleCase(d), 'subTitle': 'Daily glow routine', 'image': AppAssets.skinCare};
+      return {
+        'title': d.name,
+        'subTitle': d.subtitle,
+        'iconUrl': d.iconUrl,
+        'key': d.key,
+      };
     }).toList();
   }
 
   void onItemTap(int index, BuildContext context) {
-    if (_domains.isNotEmpty && index >= 0 && index < _domains.length) {
-      final key = _domains[index].toLowerCase().trim();
-      final route = _domainConfig[key]?['route'] as String?;
-      if (route != null && route.isNotEmpty) {
-        Navigator.pushNamed(context, route);
-        return;
-      }
+    if (_domains.isEmpty || index < 0 || index >= _domains.length) return;
+    final key = _domains[index].key.toLowerCase().trim();
+    if (!isDomainEnabled(key)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'This plan is not your selected goal. Only your chosen goal is available to use.',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
     }
-    if (index == 0) {
-      Navigator.pushNamed(context, RoutesName.SkinCareScreen);
-    } else if (index == 1) {
-      Navigator.pushNamed(context, RoutesName.HairCareScreen);
-    } else if (index == 2) {
-      Navigator.pushNamed(context, RoutesName.WorkOutScreen);
-    } else if (index == 3) {
-      Navigator.pushNamed(context, RoutesName.DietScreen);
-    } else if (index == 4) {
-      Navigator.pushNamed(context, RoutesName.FacialScreen);
-    } else if (index == 5) {
-      Navigator.pushNamed(context, RoutesName.FashionScreen);
-    } else if (index == 6) {
-      Navigator.pushNamed(context, RoutesName.HeightScreen);
-    } else if (index == 7) {
-      Navigator.pushNamed(context, RoutesName.QuitPornScreen);
-    }
+    Navigator.pushNamed(
+      context,
+      RoutesName.DomainQuestionScreen,
+      arguments: key,
+    );
   }
 }

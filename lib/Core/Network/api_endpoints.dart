@@ -11,6 +11,16 @@ class ApiEndpoints {
   /// GET available domains for goal screen (returns { "domains": [ "skincare", ... ] }).
   static const String onboardingDomains = 'onboarding/domains';
 
+  /// GET domains/explore – explore plans for Home screen (requires Bearer token).
+  /// Returns list of domain strings, e.g. ["skincare", "hair", "workout", ...].
+  static const String domainsExplore = 'domains/explore';
+
+  /// GET domains/{domain}/questions – questions for a domain (requires Bearer token).
+  static String domainsQuestions(String domain) => 'domains/$domain/questions';
+
+  /// POST domains/{domain}/answers – submit one domain answer (requires Bearer token).
+  static String domainsAnswers(String domain) => 'domains/$domain/answers';
+
   /// POST onboarding/sessions/{session_id}/answers
   static String onboardingSessionAnswers(String sessionId) =>
       'onboarding/sessions/$sessionId/answers';
@@ -43,8 +53,14 @@ class ApiEndpoints {
   /// GET users/me – current user profile (requires Bearer token).
   static const String usersMe = 'users/me';
 
-  /// GET users/me/progress/weekly – weekly progress for Home chart (requires Bearer token).
+  /// GET users/me/progress/weekly – weekly progress for Home screen (requires Bearer token).
   static const String usersMeProgressWeekly = 'users/me/progress/weekly';
+
+  /// GET users/me/progress – progress with period param for Progress screen. Query: period=week|month|year.
+  static const String usersMeProgress = 'users/me/progress';
+
+  /// GET users/me/progress/graph – score history for all domains. Query: period=weekly|monthly|yearly.
+  static const String usersMeProgressGraph = 'users/me/progress/graph';
 
   // Subscriptions (requires auth unless noted)
   static const String subscriptionPlans = 'subscriptions/plans';
@@ -95,6 +111,12 @@ class ApiEndpoints {
   // Upload / Multipart
   static const String upload = '/upload';
   static const String uploadImage = '/upload/image';
+
+  /// POST images/upload/simple – simple image upload (profile, onboarding, etc.). Requires auth.
+  static const String imagesUploadSimple = 'images/upload/simple';
+
+  /// GET images/album – user's album images. Optional query: domain, view, status (pending|processed|failed).
+  static const String imagesAlbum = 'images/album';
 
   // Legal (e.g. privacy policy, terms – optional, for dynamic content from backend)
   static const String privacyPolicy = '/legal/privacy-policy';

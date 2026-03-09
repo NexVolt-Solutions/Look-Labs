@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
@@ -50,7 +51,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
     if (vm.loading && vm.sections.isEmpty) {
       return Padding(
         padding: EdgeInsets.only(top: context.sh(40)),
-        child: const Center(child: CircularProgressIndicator()),
+        child: Center(
+          child: CupertinoActivityIndicator(color: AppColors.pimaryColor),
+        ),
       );
     }
 
@@ -70,10 +73,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: context.sh(16)),
-            TextButton(
-              onPressed: () => vm.retry(),
-              child: const Text('Retry'),
-            ),
+            TextButton(onPressed: () => vm.retry(), child: const Text('Retry')),
           ],
         ),
       );
@@ -91,8 +91,11 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
 
     if (lastUpdated.isNotEmpty) {
       children.addAll([
-        _buildParagraph(context, 'Last updated: $lastUpdated',
-            fontWeight: FontWeight.w600),
+        _buildParagraph(
+          context,
+          'Last updated: $lastUpdated',
+          fontWeight: FontWeight.w600,
+        ),
         SizedBox(height: context.sh(16)),
       ]);
     }

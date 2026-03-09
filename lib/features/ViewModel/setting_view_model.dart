@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:provider/provider.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
+import 'package:looklabs/Features/ViewModel/bottom_sheet_view_model.dart';
 import 'package:looklabs/Features/View/Setting/PrivacyPolicyScreen/privacy_policy_screen.dart';
 import 'package:looklabs/Features/View/Setting/TermsScreen/terms_screen.dart';
 import 'package:looklabs/Features/Widget/delete_account_dialog.dart';
@@ -109,6 +112,10 @@ class SettingViewModel extends ChangeNotifier {
     BuildContext context,
   ) async {
     switch (item['title']) {
+      case AppText.myAlbum:
+        Navigator.pushNamed(context, RoutesName.MyAlbumScreen);
+        break;
+
       case AppText.privacyPolicy:
         Navigator.push(
           context,
@@ -138,6 +145,10 @@ class SettingViewModel extends ChangeNotifier {
     final authVm = Provider.of<AuthViewModel>(context, listen: false);
     _showLoadingDialog(context);
     await authVm.logout();
+    // Reset bottom tab to Home so next login lands on Home
+    try {
+      Provider.of<BottomSheetViewModel>(context, listen: false).changeIndex(0);
+    } catch (_) {}
     if (!context.mounted) return;
     Navigator.of(context, rootNavigator: true).pop();
     if (!context.mounted) return;
@@ -162,7 +173,10 @@ class SettingViewModel extends ChangeNotifier {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircularProgressIndicator(),
+                const CupertinoActivityIndicator(
+                  radius: 50,
+                  color: AppColors.pimaryColor,
+                ),
                 const SizedBox(height: 16),
                 Text(message),
               ],
@@ -187,6 +201,14 @@ class SettingViewModel extends ChangeNotifier {
     final success = await authVm.deleteAccount();
     if (!context.mounted) return;
     Navigator.of(context, rootNavigator: true).pop();
+    if (success) {
+      try {
+        Provider.of<BottomSheetViewModel>(
+          context,
+          listen: false,
+        ).changeIndex(0);
+      } catch (_) {}
+    }
     if (!success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -227,6 +249,7 @@ class SettingViewModel extends ChangeNotifier {
       'isSwitch': true,
       'value': false,
     },
+    {'icon': AppAssets.galleryIcon, 'title': AppText.myAlbum, 'isArrow': true},
     {
       'icon': AppAssets.settingPrivacyIcon,
       'title': AppText.privacyPolicy,

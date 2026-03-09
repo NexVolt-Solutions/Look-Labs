@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Network/models/privacy_policy_response.dart';
 import 'package:looklabs/Repository/legal_repository.dart';
 
@@ -26,7 +27,7 @@ class TermsOfServiceViewModel extends ChangeNotifier {
       _terms = response.data as PrivacyPolicyResponse;
       _error = null;
     } else {
-      _error = response.message ?? 'Could not load terms of service';
+      _error = response.userMessageOrFallback('Could not load terms of service');
     }
     notifyListeners();
   }

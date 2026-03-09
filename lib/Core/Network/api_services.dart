@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:http/io_client.dart';
 import 'package:looklabs/Core/Network/api_config.dart';
 import 'package:looklabs/Core/Network/api_endpoints.dart';
@@ -116,7 +117,10 @@ class ApiServices {
     Map<String, String>? queryParams,
     Map<String, String>? headers,
   }) async {
-    return _retryOn401(endpoint, () => _get(endpoint, queryParams: queryParams, headers: headers));
+    return _retryOn401(
+      endpoint,
+      () => _get(endpoint, queryParams: queryParams, headers: headers),
+    );
   }
 
   static Future<ApiResponse> _get(
@@ -163,7 +167,12 @@ class ApiServices {
   }) async {
     return _retryOn401(
       endpoint,
-      () => _post(endpoint, body: body, queryParams: queryParams, headers: headers),
+      () => _post(
+        endpoint,
+        body: body,
+        queryParams: queryParams,
+        headers: headers,
+      ),
     );
   }
 
@@ -218,7 +227,12 @@ class ApiServices {
   }) async {
     return _retryOn401(
       endpoint,
-      () => _put(endpoint, body: body, queryParams: queryParams, headers: headers),
+      () => _put(
+        endpoint,
+        body: body,
+        queryParams: queryParams,
+        headers: headers,
+      ),
     );
   }
 
@@ -266,7 +280,12 @@ class ApiServices {
   }) async {
     return _retryOn401(
       endpoint,
-      () => _patch(endpoint, body: body, queryParams: queryParams, headers: headers),
+      () => _patch(
+        endpoint,
+        body: body,
+        queryParams: queryParams,
+        headers: headers,
+      ),
     );
   }
 
@@ -314,7 +333,12 @@ class ApiServices {
   }) async {
     return _retryOn401(
       endpoint,
-      () => _delete(endpoint, body: body, queryParams: queryParams, headers: headers),
+      () => _delete(
+        endpoint,
+        body: body,
+        queryParams: queryParams,
+        headers: headers,
+      ),
     );
   }
 
@@ -353,8 +377,28 @@ class ApiServices {
     }
   }
 
-  /// Multipart POST - for file uploads (images, documents, etc.)
+  /// Multipart POST - for file uploads (images, documents, etc.).
+  /// Retries on 401 if onUnauthorized refreshes the token.
   static Future<ApiResponse> multipartPost(
+    String endpoint, {
+    required List<MultipartFileItem> files,
+    Map<String, String>? fields,
+    Map<String, String>? headers,
+    Map<String, String>? queryParams,
+  }) async {
+    return _retryOn401(
+      endpoint,
+      () => _multipartPostImpl(
+        endpoint,
+        files: files,
+        fields: fields,
+        headers: headers,
+        queryParams: queryParams,
+      ),
+    );
+  }
+
+  static Future<ApiResponse> _multipartPostImpl(
     String endpoint, {
     required List<MultipartFileItem> files,
     Map<String, String>? fields,
@@ -373,11 +417,15 @@ class ApiServices {
       }
 
       for (final file in files) {
+        final contentType = file.contentType != null
+            ? MediaType.parse(file.contentType!)
+            : null;
         request.files.add(
           await http.MultipartFile.fromPath(
             file.fieldName,
             file.filePath,
             filename: file.fileName,
+            contentType: contentType,
           ),
         );
       }
@@ -463,10 +511,13 @@ class MultipartFileItem {
   final String fieldName;
   final String filePath;
   final String? fileName;
+  /// MIME type (e.g. 'image/jpeg'). Required for APIs that reject application/octet-stream.
+  final String? contentType;
 
   MultipartFileItem({
     required this.fieldName,
     required this.filePath,
     this.fileName,
+    this.contentType,
   });
 }

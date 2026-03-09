@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 
 class GaolScreenViewModel extends ChangeNotifier {
@@ -53,7 +54,7 @@ class GaolScreenViewModel extends ChangeNotifier {
       _error = null;
     } else {
       _domains = [];
-      _error = response.message ?? 'Failed to load goals.';
+      _error = response.userMessageOrFallback('Failed to load goals.');
     }
     notifyListeners();
   }

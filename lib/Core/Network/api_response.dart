@@ -20,7 +20,9 @@ class ApiResponse {
   factory ApiResponse.fromHttpResponse(http.Response response) {
     if (kDebugMode) {
       final body = response.body;
-      final truncated = body.length > 2000 ? '${body.substring(0, 2000)}...[${body.length} chars]' : body;
+      final truncated = body.length > 2000
+          ? '${body.substring(0, 2000)}...[${body.length} chars]'
+          : body;
       debugPrint('[API] statusCode=${response.statusCode} body=$truncated');
     }
     final isSuccess = response.statusCode >= 200 && response.statusCode < 300;
@@ -30,11 +32,52 @@ class ApiResponse {
     } catch (_) {
       decoded = response.body;
     }
+    String? message = decoded is Map
+        ? (decoded['detail'] ?? decoded['message'])?.toString()
+        : null;
+    if (message == null || message.isEmpty) {
+      switch (response.statusCode) {
+        case 400:
+          message = 'Invalid request. Please check your input.';
+          break;
+        case 401:
+          message = 'Please sign in again.';
+          break;
+        case 403:
+          message = 'You don\'t have permission to do this.';
+          break;
+        case 404:
+          message = 'The requested item was not found.';
+          break;
+        case 408:
+          message = 'Request timed out. Please try again.';
+          break;
+        case 422:
+          message = 'Invalid data. Please check and try again.';
+          break;
+        case 429:
+          message = 'Too many requests. Please try again later.';
+          break;
+        case 502:
+          message = 'Server temporarily unavailable. Please try again.';
+          break;
+        case 503:
+          message = 'Service temporarily unavailable. Please try again.';
+          break;
+        case 504:
+          message = 'Request timed out. Please try again.';
+          break;
+        default:
+          if (response.statusCode >= 500) {
+            message = 'Something went wrong on our side. Please try again.';
+          }
+      }
+    }
     return ApiResponse(
       success: isSuccess,
       statusCode: response.statusCode,
       data: decoded,
-      message: decoded is Map ? decoded['message']?.toString() : null,
+      message: message,
     );
   }
 }

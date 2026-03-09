@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
@@ -5,6 +6,7 @@ import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Features/Widget/custom_stepper.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/View/QuestionScreen/flow_question_content.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
@@ -49,7 +51,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
     if (vm.onboardingComplete) {
       return Scaffold(
         backgroundColor: AppColors.backGroundColor,
-        body: const Center(child: CircularProgressIndicator()),
+        body: Center(
+          child: CupertinoActivityIndicator(color: AppColors.pimaryColor),
+        ),
       );
     }
     if (vm.flowError != null && !vm.hasFlowQuestions) {
@@ -151,14 +155,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
             final submitted = await vm.submitCurrentStepAnswers();
             if (!context.mounted) return;
             if (!submitted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    vm.flowError ??
-                        'Failed to submit answers. Please try again.',
-                  ),
-                  behavior: SnackBarBehavior.floating,
-                ),
+              ApiErrorHandler.showSnackBar(
+                context,
+                fallback: vm.flowError ?? 'Failed to submit answers. Please try again.',
               );
               return;
             }
@@ -233,7 +232,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
             SizedBox(height: context.sh(20)),
             Expanded(
               child: (vm.isLoadingFlow && !vm.hasFlowQuestions)
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(child: CupertinoActivityIndicator())
                   : vm.hasFlowQuestions
                   ? SingleChildScrollView(
                       padding: context.paddingSymmetricR(horizontal: 20),

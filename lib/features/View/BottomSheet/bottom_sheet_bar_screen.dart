@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide BoxShadow;
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/bottom_icon_container.dart';
@@ -30,7 +31,8 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomSheet: BottomIconContainer(),
+      extendBody: true,
+      bottomNavigationBar: SafeArea(top: false, child: BottomIconContainer()),
       body: SafeArea(
         child: Column(
           children: [
@@ -65,6 +67,18 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                                   fit: BoxFit.cover,
                                   width: context.sw(40),
                                   height: context.sh(40),
+                                  loadingBuilder: (_, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return SizedBox(
+                                      width: context.sw(40),
+                                      height: context.sh(40),
+                                      child: Center(
+                                        child: CupertinoActivityIndicator(
+                                          color: AppColors.pimaryColor,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                   errorBuilder: (_, __, ___) => Image.asset(
                                     AppAssets.circleIcon,
                                     fit: BoxFit.cover,

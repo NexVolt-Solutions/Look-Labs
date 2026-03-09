@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/custom_container.dart';
@@ -6,9 +7,10 @@ import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
+import 'package:looklabs/Features/ViewModel/my_album_view_model.dart';
 import 'package:looklabs/Features/ViewModel/progress_view_model.dart';
+import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:provider/provider.dart';
 
 class ProgressScreen extends StatefulWidget {
@@ -19,12 +21,30 @@ class ProgressScreen extends StatefulWidget {
 }
 
 class _ProgressScreenState extends State<ProgressScreen> {
+  Future<void> _onUploadTap(
+    BuildContext context,
+    ProgressViewModel progressVM,
+  ) async {
+    final success = await progressVM.pickAndUploadProgressImage();
+    if (!mounted) return;
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Image uploaded successfully'),
+          backgroundColor: AppColors.pimaryColor,
+        ),
+      );
+      context.read<MyAlbumViewModel>().loadAlbumImages();
+      Navigator.pushNamed(context, RoutesName.MyAlbumScreen);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      context.read<ProgressViewModel>().loadWeeklyProgress();
+      context.read<ProgressViewModel>().loadProgressForWeek();
     });
   }
 
@@ -47,31 +67,27 @@ class _ProgressScreenState extends State<ProgressScreen> {
             itemCount: progressViewModel.buttonName.length,
             itemBuilder: (context, index) {
               final bool isSelected =
-                  progressViewModel.selectedIndex ==
-                  progressViewModel.buttonName[index];
-              return Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: CustomContainer(
-                  radius: context.radiusR(10),
-                  onTap: () {
-                    progressViewModel.selectIndex(index);
-                  },
-                  color: isSelected
-                      ? AppColors.buttonColor.withOpacity(0.11)
-                      : AppColors.backGroundColor,
-                  border: isSelected
-                      ? Border.all(color: AppColors.pimaryColor, width: 1.5)
-                      : null,
-                  padding: context.paddingSymmetricR(horizontal: 38),
-                  margin: context.paddingSymmetricR(horizontal: 8, vertical: 8),
-                  child: Center(
-                    child: Text(
-                      progressViewModel.buttonName[index],
-                      style: TextStyle(
-                        fontSize: context.sp(14),
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.seconderyColor,
-                      ),
+                  progressViewModel.selectedTabIndex == index;
+              return CustomContainer(
+                radius: context.radiusR(10),
+                onTap: () {
+                  progressViewModel.selectTabAndLoad(index);
+                },
+                color: isSelected
+                    ? AppColors.buttonColor.withOpacity(0.11)
+                    : AppColors.backGroundColor,
+                border: isSelected
+                    ? Border.all(color: AppColors.pimaryColor, width: 1.5)
+                    : null,
+                padding: context.paddingSymmetricR(horizontal: 34, vertical: 8),
+                margin: context.paddingSymmetricR(horizontal: 8, vertical: 8),
+                child: Center(
+                  child: Text(
+                    progressViewModel.buttonName[index],
+                    style: TextStyle(
+                      fontSize: context.sp(14),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.seconderyColor,
                     ),
                   ),
                 ),
@@ -89,12 +105,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
           titleColor: AppColors.subHeadingColor,
         ),
         SizedBox(height: context.sh(20)),
-        CustomContainer(
-          radius: context.radiusR(10),
-          color: AppColors.backGroundColor,
-          padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
-          child: Center(child: LineChartWidget()),
-        ),
+        _buildBeforeProgressChart(context, progressViewModel),
         SizedBox(height: context.sh(10)),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -107,9 +118,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
               titleColor: AppColors.subHeadingColor,
             ),
             CustomContainer(
-              onTap: () {
-                Navigator.pushNamed(context, RoutesName.MyAlbumScreen);
-              },
+              onTap: progressViewModel.uploadLoading
+                  ? null
+                  : () => _onUploadTap(context, progressViewModel),
               radius: context.radiusR(10),
               color: AppColors.backGroundColor,
               padding: context.paddingSymmetricR(horizontal: 9, vertical: 9),
@@ -118,17 +129,46 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 bottom: context.sh(12),
               ),
               child: Center(
-                child: SvgPicture.asset(
-                  AppAssets.upLoadIcon,
-                  height: context.sh(24),
-                  color: AppColors.pimaryColor,
-                  width: context.sw(24),
-                  fit: BoxFit.contain,
-                ),
+                child: progressViewModel.uploadLoading
+                    ? SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CupertinoActivityIndicator(
+                          color: AppColors.pimaryColor,
+                        ),
+                      )
+                    : SvgPicture.asset(
+                        AppAssets.upLoadIcon,
+                        height: context.sh(24),
+                        color: AppColors.pimaryColor,
+                        width: context.sw(24),
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
           ],
         ),
+        if (progressViewModel.uploadError != null)
+          Padding(
+            padding: EdgeInsets.only(bottom: context.sh(8)),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    progressViewModel.uploadError ?? '',
+                    style: TextStyle(
+                      fontSize: context.sp(12),
+                      color: AppColors.notSelectedColor,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => progressViewModel.clearUploadError(),
+                  child: const Text('Dismiss'),
+                ),
+              ],
+            ),
+          ),
         SizedBox(height: context.sh(10)),
         _buildAfterProgressChart(context, progressViewModel),
         SizedBox(height: context.sh(20)),
@@ -179,11 +219,11 @@ class _ProgressScreenState extends State<ProgressScreen> {
     );
   }
 
-  Widget _buildAfterProgressChart(
+  Widget _buildBeforeProgressChart(
     BuildContext context,
     ProgressViewModel progressVM,
   ) {
-    if (progressVM.weeklyProgressLoading && progressVM.weeklyProgress == null) {
+    if (progressVM.progressLoading && progressVM.progressBeforeDomains.isEmpty && progressVM.progressDomains.isEmpty) {
       return CustomContainer(
         radius: context.radiusR(10),
         color: AppColors.backGroundColor,
@@ -194,8 +234,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
             child: SizedBox(
               width: 24,
               height: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
+              child: CupertinoActivityIndicator(
                 color: AppColors.subHeadingColor,
               ),
             ),
@@ -203,8 +242,45 @@ class _ProgressScreenState extends State<ProgressScreen> {
         ),
       );
     }
-    if (progressVM.weeklyProgressError != null &&
-        progressVM.weeklyProgress == null) {
+    return CustomContainer(
+      radius: context.radiusR(10),
+      color: AppColors.backGroundColor,
+      padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
+      child: Center(
+        child: WeeklyProgressLineChart(
+          days: const [],
+          domains: progressVM.progressBeforeDomains,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAfterProgressChart(
+    BuildContext context,
+    ProgressViewModel progressVM,
+  ) {
+    if (progressVM.progressLoading && progressVM.progressDomains.isEmpty && progressVM.progressDays.isEmpty) {
+      return CustomContainer(
+        radius: context.radiusR(10),
+        color: AppColors.backGroundColor,
+        padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
+        child: SizedBox(
+          height: context.sh(120),
+          child: Center(
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: CupertinoActivityIndicator(
+                color: AppColors.subHeadingColor,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    if (progressVM.progressError != null &&
+        progressVM.progressDomains.isEmpty &&
+        progressVM.progressDays.isEmpty) {
       return CustomContainer(
         radius: context.radiusR(10),
         color: AppColors.backGroundColor,
@@ -213,7 +289,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              progressVM.weeklyProgressError ?? '',
+              progressVM.progressError ?? '',
               style: TextStyle(
                 fontSize: context.sp(14),
                 color: AppColors.notSelectedColor,
@@ -222,7 +298,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
             ),
             SizedBox(height: context.sh(12)),
             TextButton(
-              onPressed: () => progressVM.retryWeeklyProgress(),
+              onPressed: () => progressVM.retryProgress(),
               child: const Text('Retry'),
             ),
           ],
@@ -234,7 +310,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
       color: AppColors.backGroundColor,
       padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
       child: Center(
-        child: WeeklyProgressLineChart(days: progressVM.weeklyProgressDays),
+        child: WeeklyProgressLineChart(
+          days: progressVM.progressDays,
+          domains: progressVM.progressDomains,
+        ),
       ),
     );
   }

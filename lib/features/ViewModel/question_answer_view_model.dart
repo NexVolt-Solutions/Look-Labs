@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
+import 'package:looklabs/Core/Network/api_response.dart';
+import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
@@ -232,8 +235,11 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     return true;
   }
 
-  /// Build profile payload from profile_setup answers and PATCH users/me (no-op if not logged in).
+  /// Build profile payload from profile_setup answers and PATCH users/me. No-op if not authenticated (anonymous onboarding).
   void _syncProfileSetupToUser() {
+    if (ApiServices.authToken == null || ApiServices.authToken!.isEmpty) {
+      return;
+    }
     final payload = <String, dynamic>{};
     final qLower = (String s) => s.toLowerCase();
     for (final q in currentStepQuestions) {
@@ -263,6 +269,12 @@ class QuestionAnswerViewModel extends ChangeNotifier {
 
   /// Extract user-facing error when GET flow fails (e.g. 500 server error).
   String _extractFlowLoadError(dynamic response) {
+    if (response is ApiResponse) {
+      return ApiErrorHandler.userMessage(
+        response,
+        fallback: 'Failed to load questions. Please try again.',
+      );
+    }
     final msg = response.message?.toString().trim();
     if (msg != null && msg.isNotEmpty) return msg;
     final data = response.data;
@@ -279,6 +291,12 @@ class QuestionAnswerViewModel extends ChangeNotifier {
 
   /// Extract user-facing error from submit answer API response (e.g. 422 validation).
   String _extractSubmitError(dynamic response) {
+    if (response is ApiResponse) {
+      return ApiErrorHandler.userMessage(
+        response,
+        fallback: 'Failed to submit answers. Please try again.',
+      );
+    }
     final data = response.data;
     if (data is Map<String, dynamic>) {
       final errors = data['errors'];

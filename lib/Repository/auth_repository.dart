@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:looklabs/Core/Network/api_endpoints.dart';
@@ -7,6 +9,8 @@ import 'package:looklabs/Core/Network/models/user_profile_response.dart';
 
 const _kStorageKeyAuthToken = 'api_auth_token';
 const _kStorageKeyRefreshToken = 'api_refresh_token';
+const _kStorageKeyProfileCache = 'user_profile_cache';
+const _kStorageKeySelectedDomain = 'user_selected_domain';
 
 class AuthRepository {
   AuthRepository._();
@@ -67,6 +71,7 @@ class AuthRepository {
   }
 
   /// POST /api/v1/auth/sign-out with body { "refresh_token": "..." }. Clears local tokens regardless of response.
+  /// Selected domain is kept so same-account re-login still shows the correct plan as enabled.
   Future<ApiResponse> logout() async {
     String? refreshToken;
     try {
@@ -82,8 +87,31 @@ class AuthRepository {
     try {
       await _storage.delete(key: _kStorageKeyAuthToken);
       await _storage.delete(key: _kStorageKeyRefreshToken);
+      await _storage.delete(key: _kStorageKeyProfileCache);
+      // Do not clear _kStorageKeySelectedDomain so re-login with same account shows correct plan.
+      // If backend adds selected_domain to GET users/me, we can clear here and restore from API.
     } catch (_) {}
     return response;
+  }
+
+  /// Persist the user's selected domain from onboarding (e.g. PATCH link response). Used for domains/questions and domains/answers.
+  static Future<void> setSelectedDomain(String? domain) async {
+    try {
+      if (domain == null || domain.isEmpty) {
+        await _storage.delete(key: _kStorageKeySelectedDomain);
+      } else {
+        await _storage.write(key: _kStorageKeySelectedDomain, value: domain.trim());
+      }
+    } catch (_) {}
+  }
+
+  /// Load the user's selected domain (from onboarding session link). Returns null if not set.
+  static Future<String?> getSelectedDomain() async {
+    try {
+      return await _storage.read(key: _kStorageKeySelectedDomain);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<ApiResponse> refreshToken() async {
@@ -120,7 +148,36 @@ class AuthRepository {
     return response;
   }
 
-  /// GET users/me – current user profile (Bearer token).
+  /// Loads cached profile from secure storage. Returns null if missing or invalid.
+  static Future<UserProfileResponse?> loadCachedProfile() async {
+    try {
+      final jsonStr = await _storage.read(key: _kStorageKeyProfileCache);
+      if (jsonStr == null || jsonStr.isEmpty) return null;
+      final map = jsonDecode(jsonStr) as Map<String, dynamic>?;
+      if (map == null) return null;
+      return UserProfileResponse.fromJson(map);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Clears profile cache. Call on logout.
+  static Future<void> clearProfileCache() async {
+    try {
+      await _storage.delete(key: _kStorageKeyProfileCache);
+    } catch (_) {}
+  }
+
+  static Future<void> _saveProfileToStorage(Map<String, dynamic> json) async {
+    try {
+      await _storage.write(
+        key: _kStorageKeyProfileCache,
+        value: jsonEncode(json),
+      );
+    } catch (_) {}
+  }
+
+  /// GET users/me – current user profile (Bearer token). Caches on success.
   Future<ApiResponse> getMe() async {
     final response = await ApiServices.get(ApiEndpoints.usersMe);
     if (response.success && response.data != null && response.data is Map) {
@@ -129,6 +186,7 @@ class AuthRepository {
           ? Map<String, dynamic>.from(raw['data'] as Map)
           : raw;
       final profile = UserProfileResponse.fromJson(json);
+      await _saveProfileToStorage(json);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
@@ -155,6 +213,8 @@ class AuthRepository {
     try {
       await _storage.delete(key: _kStorageKeyAuthToken);
       await _storage.delete(key: _kStorageKeyRefreshToken);
+      await _storage.delete(key: _kStorageKeyProfileCache);
+      await _storage.delete(key: _kStorageKeySelectedDomain);
     } catch (_) {}
     return response;
   }
