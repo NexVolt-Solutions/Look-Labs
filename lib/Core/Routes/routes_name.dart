@@ -81,13 +81,13 @@ class RoutesName {
       case 'haircare':
         return HairCareScreen;
       case 'workout':
-        return WorkOutScreen;
+        return WorkOutResultScreen; // Skip old WorkOut questions; go to result after domain questions
       case 'diet':
         return DietScreen;
       case 'fashion':
         return FashionScreen;
       case 'height':
-        return HeightScreen;
+        return HeightResultScreen; // Skip HeightScreen questions; go to result after domain questions
       case 'quit_porn':
         return QuitPornScreen;
       default:

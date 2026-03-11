@@ -51,7 +51,33 @@ class DomainQuestionsRepository {
       );
     }
 
-    if (response.data is! List) {
+    // Support both: (1) list of questions, (2) { "domains": { "domainKey": [ ... ] } }
+    List<dynamic> rawList;
+    if (response.data is List) {
+      rawList = response.data as List;
+    } else if (response.data is Map) {
+      final data = response.data as Map;
+      final domains = data['domains'];
+      if (domains is! Map) {
+        return ApiResponse(
+          success: false,
+          statusCode: response.statusCode,
+          data: null,
+          message: 'Invalid response format: missing domains',
+        );
+      }
+      final domainKey = effectiveDomain.toLowerCase().trim();
+      final domainList = domains[domainKey] ?? domains[effectiveDomain];
+      if (domainList is! List) {
+        return ApiResponse(
+          success: false,
+          statusCode: response.statusCode,
+          data: null,
+          message: 'No questions found for domain "$effectiveDomain"',
+        );
+      }
+      rawList = domainList;
+    } else {
       return ApiResponse(
         success: false,
         statusCode: response.statusCode,
@@ -60,13 +86,23 @@ class DomainQuestionsRepository {
       );
     }
 
-    final list = response.data as List;
     final pairs = <({FlowQuestion q, int seq})>[];
-    for (final e in list) {
+    for (var i = 0; i < rawList.length; i++) {
+      final e = rawList[i];
       if (e is Map) {
         try {
           final map = Map<String, dynamic>.from(e);
-          map['step'] = map['domain'] ?? '';
+          // Preserve step from API (e.g. "type", "density"); fallback to domain or index
+          if (map['step'] == null || map['step'].toString().trim().isEmpty) {
+            map['step'] = map['domain']?.toString() ?? 'step_${i + 1}';
+          }
+          // Ensure id for submit: backend may omit id in new format, use 1-based index
+          final idRaw = map['id'];
+          if (idRaw == null) {
+            map['id'] = i + 1;
+          } else if (idRaw is num) {
+            map['id'] = idRaw.toInt();
+          }
           final q = FlowQuestion.fromJson(map);
           final seq = map['seq'] is num
               ? (map['seq'] as num).toInt()
@@ -87,7 +123,8 @@ class DomainQuestionsRepository {
   }
 
   /// POST domains/{domain}/answers – submit each answer (one request per question).
-  /// Uses user's selected domain from onboarding (link response) when set; otherwise the given domain.
+  /// Submits sequentially so the last response (status "completed") contains ai_attributes, ai_exercises, etc.
+  /// Returns success with data = last response map when all succeed; use for workout result screen.
   Future<ApiResponse> submitDomainAnswers(
     String domain,
     List<DomainAnswerPayload> answers,
@@ -127,29 +164,29 @@ class DomainQuestionsRepository {
     }
 
     final endpoint = ApiEndpoints.domainsAnswers(effectiveDomain);
-    // Submit all answers in parallel so total time ≈ one round-trip instead of N.
-    final futures = answers.map(
-      (payload) => ApiServices.post(
+    // Submit sequentially so the last response has status "completed" with ai_attributes, ai_exercises, etc.
+    Map<String, dynamic>? lastResponseData;
+    for (var i = 0; i < answers.length; i++) {
+      final payload = answers[i];
+      final response = await ApiServices.post(
         endpoint,
         body: {
-          'user_id': userId,
           'question_id': payload.questionId,
-          'answer': payload.answer,
           'domain': effectiveDomain,
+          'answer': payload.answer,
+          if (userId > 0) 'user_id': userId,
         },
-      ),
-    );
-    final results = await Future.wait(futures);
-
-    for (var i = 0; i < results.length; i++) {
-      final response = results[i];
+      );
       if (!response.success) {
         if (kDebugMode) {
           debugPrint(
-            '[DomainAnswers] domain=$effectiveDomain questionId=${answers[i].questionId} statusCode=${response.statusCode}',
+            '[DomainAnswers] domain=$effectiveDomain questionId=${payload.questionId} statusCode=${response.statusCode}',
           );
         }
         return response;
+      }
+      if (response.data is Map) {
+        lastResponseData = Map<String, dynamic>.from(response.data as Map);
       }
     }
 
@@ -161,7 +198,7 @@ class DomainQuestionsRepository {
     return ApiResponse(
       success: true,
       statusCode: 200,
-      data: null,
+      data: lastResponseData,
       message: null,
     );
   }

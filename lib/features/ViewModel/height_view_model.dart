@@ -71,4 +71,14 @@ class HeightViewModel extends ChangeNotifier {
     selectedOptions[qIndex] = oIndex;
     notifyListeners();
   }
+
+  /// Reset to first step (e.g. when entering height step from domain questions).
+  void reset() {
+    currentStep = 0;
+    selectedOptions.clear();
+    if (pageController.hasClients) {
+      pageController.jumpToPage(0);
+    }
+    notifyListeners();
+  }
 }

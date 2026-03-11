@@ -28,8 +28,9 @@ class AuthViewModel extends ChangeNotifier {
   UserModel? _user;
   UserProfileResponse? _profile;
   bool _isSelected = false;
-  /// From last sign-in response: true = new user (show onboarding), false = returning (go to Home, do not create session). Default true so first load is safe.
-  bool _isNewUser = true;
+  /// From last sign-in response: true = new user (show onboarding), false = returning (go to Home, do NOT create session).
+  /// Default false when unknown – prefer skipping onboarding to avoid duplicate sessions for returning users.
+  bool _isNewUser = false;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -93,24 +94,14 @@ class AuthViewModel extends ChangeNotifier {
       if (response.success && response.data != null) {
         final data = response.data is Map ? response.data as Map : null;
         _user = _parseUser(response.data);
-        _isNewUser = data?['is_new_user'] == true;
-        if (_isNewUser) {
-          final sessionId = OnboardingRepository.sessionId;
-          if (sessionId != null && sessionId.isNotEmpty) {
-            final linkResponse =
-                await OnboardingRepository.instance.linkSessionToUser(sessionId);
-            if (linkResponse.success &&
-                linkResponse.data != null &&
-                linkResponse.data is Map) {
-              final domain =
-                  (linkResponse.data as Map)['domain']?.toString().trim();
-              if (domain != null && domain.isNotEmpty) {
-                await AuthRepository.setSelectedDomain(domain);
-              }
-            }
-          }
+        _isNewUser = _extractIsNewUser(data);
+        if (kDebugMode) {
+          debugPrint('[Auth] is_new_user=$_isNewUser → ${_isNewUser ? "create session, onboarding" : "skip onboarding, go Home"}');
         }
-        await OnboardingRepository.clearSession();
+        // Link is called in auth_screen after createAnonymousSession() for new users.
+        if (!_isNewUser) {
+          await OnboardingRepository.clearSession();
+        }
         _errorMessage = null;
         _isLoading = false;
         notifyListeners();
@@ -140,6 +131,29 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  /// Extract is_new_user from sign-in response. Check top-level and nested data.
+  /// When absent or invalid, return false (skip onboarding) to avoid duplicate sessions for returning users.
+  /// Handles bool, string "true"/"false", and int 1/0.
+  bool _extractIsNewUser(Map? data) {
+    if (data == null) return false;
+    bool? from(dynamic v) {
+      if (v == true || v == 1) return true;
+      if (v == false || v == 0) return false;
+      final s = v?.toString().toLowerCase();
+      if (s == 'true' || s == '1') return true;
+      if (s == 'false' || s == '0') return false;
+      return null;
+    }
+    final top = from(data['is_new_user']);
+    if (top != null) return top;
+    final nested = data['data'];
+    if (nested is Map) {
+      final v = from(nested['is_new_user']);
+      if (v != null) return v;
+    }
+    return false;
   }
 
   UserModel? _parseUser(dynamic data) {

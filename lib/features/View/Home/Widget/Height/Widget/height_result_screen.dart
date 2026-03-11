@@ -217,7 +217,7 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
               isSelected: false,
               onTap: () {},
               child: Column(
-                crossAxisAlignment: .start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   NormalText(
                     titleText: 'Today\'s Focus',

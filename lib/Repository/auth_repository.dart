@@ -70,6 +70,19 @@ class AuthRepository {
     return response;
   }
 
+  /// Clear tokens locally without calling logout API. Use when refresh fails (expired/invalid).
+  static Future<void> clearTokensLocally() async {
+    ApiServices.setAuthToken(null);
+    try {
+      await _storage.delete(key: _kStorageKeyAuthToken);
+      await _storage.delete(key: _kStorageKeyRefreshToken);
+      await _storage.delete(key: _kStorageKeyProfileCache);
+    } catch (_) {}
+    if (kDebugMode) {
+      debugPrint('[Auth] Cleared tokens locally (refresh failed or token expired)');
+    }
+  }
+
   /// POST /api/v1/auth/sign-out with body { "refresh_token": "..." }. Clears local tokens regardless of response.
   /// Selected domain is kept so same-account re-login still shows the correct plan as enabled.
   Future<ApiResponse> logout() async {

@@ -160,6 +160,20 @@ class FlowQuestion {
       constraints != null ? constraints!['min'] as int? : null;
   int? get maxConstraint =>
       constraints != null ? constraints!['max'] as int? : null;
+  String? get unitConstraint =>
+      constraints != null ? constraints!['unit']?.toString() : null;
+
+  /// True when this is the height goals question (step "height", type "numeric", constraints with current_height/desired_height).
+  bool get isHeightGoalsInput {
+    if (step.trim().toLowerCase() != 'height' ||
+        (type != 'numeric' && type != 'number')) {
+      return false;
+    }
+    final fields = constraints?['fields'];
+    if (fields is! List) return false;
+    final list = fields.map((e) => e?.toString().toLowerCase()).toList();
+    return list.contains('current_height') && list.contains('desired_height');
+  }
 }
 
 class FlowProgress {

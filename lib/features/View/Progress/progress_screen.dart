@@ -223,7 +223,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
     BuildContext context,
     ProgressViewModel progressVM,
   ) {
-    if (progressVM.progressLoading && progressVM.progressBeforeDomains.isEmpty && progressVM.progressDomains.isEmpty) {
+    if (progressVM.progressLoading &&
+        progressVM.progressBeforeDomains.isEmpty &&
+        progressVM.progressDomains.isEmpty) {
       return CustomContainer(
         radius: context.radiusR(10),
         color: AppColors.backGroundColor,
@@ -242,14 +244,20 @@ class _ProgressScreenState extends State<ProgressScreen> {
         ),
       );
     }
+    final beforeDomains = progressVM.progressBeforeDomains;
     return CustomContainer(
       radius: context.radiusR(10),
       color: AppColors.backGroundColor,
       padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
-      child: Center(
-        child: WeeklyProgressLineChart(
-          days: const [],
-          domains: progressVM.progressBeforeDomains,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          width: (beforeDomains.length * 70.0).clamp(280.0, 700.0),
+          height: context.sh(250),
+          child: WeeklyProgressLineChart(
+            days: const [],
+            domains: beforeDomains,
+          ),
         ),
       ),
     );
@@ -259,7 +267,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
     BuildContext context,
     ProgressViewModel progressVM,
   ) {
-    if (progressVM.progressLoading && progressVM.progressDomains.isEmpty && progressVM.progressDays.isEmpty) {
+    if (progressVM.progressLoading &&
+        progressVM.progressDomains.isEmpty &&
+        progressVM.progressDays.isEmpty) {
       return CustomContainer(
         radius: context.radiusR(10),
         color: AppColors.backGroundColor,
@@ -305,14 +315,20 @@ class _ProgressScreenState extends State<ProgressScreen> {
         ),
       );
     }
+    final domains = progressVM.progressDomains;
+    final days = progressVM.progressDays;
+    final count = days.isNotEmpty ? days.length : domains.length;
+    final chartWidth = (count * 70.0).clamp(280.0, 700.0);
     return CustomContainer(
       radius: context.radiusR(10),
       color: AppColors.backGroundColor,
       padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
-      child: Center(
-        child: WeeklyProgressLineChart(
-          days: progressVM.progressDays,
-          domains: progressVM.progressDomains,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          width: chartWidth,
+          height: context.sh(250),
+          child: WeeklyProgressLineChart(days: days, domains: domains),
         ),
       ),
     );

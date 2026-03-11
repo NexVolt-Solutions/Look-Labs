@@ -15,13 +15,29 @@ import 'package:looklabs/Features/ViewModel/daily_workout_routine_view_model.dar
 import 'package:provider/provider.dart';
 
 class DailyWorkoutRoutine extends StatefulWidget {
-  const DailyWorkoutRoutine({super.key});
+  const DailyWorkoutRoutine({super.key, this.workoutData});
+
+  /// API response with ai_exercises (morning, evening). When null, uses default data.
+  final Map<String, dynamic>? workoutData;
 
   @override
   State<DailyWorkoutRoutine> createState() => _DailyWorkoutRoutineState();
 }
 
 class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.workoutData != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        context.read<DailyWorkoutRoutineViewModel>().setWorkoutData(
+              widget.workoutData!,
+            );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final dailyWorkoutRoutineViewModel =
@@ -40,7 +56,11 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
           color: AppColors.pimaryColor,
           isEnabled: true,
           onTap: () {
-            Navigator.pushNamed(context, RoutesName.WorkOutProgressScreen);
+            Navigator.pushNamed(
+              context,
+              RoutesName.WorkOutProgressScreen,
+              arguments: widget.workoutData,
+            );
           },
         ),
       ),
@@ -63,6 +83,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(height: context.sh(8)),
+            if (dailyWorkoutRoutineViewModel.morningRoutineList.isNotEmpty)
             PlanContainer(
               padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
@@ -121,12 +142,15 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                     ],
                   ),
                   ...List.generate(
-                    dailyWorkoutRoutineViewModel.heightRoutineList.length,
+                    dailyWorkoutRoutineViewModel.morningRoutineList.length,
                     (index) {
                       final item =
-                          dailyWorkoutRoutineViewModel.heightRoutineList[index];
+                          dailyWorkoutRoutineViewModel.morningRoutineList[index];
+                      final globalIndex = index;
                       final bool isSelected = dailyWorkoutRoutineViewModel
-                          .isPlanSelected(index);
+                          .isPlanSelected(globalIndex);
+                      final seq = item['seq'];
+                      final displayNum = seq is int ? seq : (globalIndex + 1);
 
                       return Center(
                         child: AnimatedContainer(
@@ -164,7 +188,6 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              /// Header
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -174,7 +197,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                       GestureDetector(
                                         onTap: () {
                                           dailyWorkoutRoutineViewModel
-                                              .selectPlan(index);
+                                              .selectPlan(globalIndex);
                                         },
                                         child: Container(
                                           height: context.sh(28),
@@ -204,7 +227,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                           child: Center(
                                             child:
                                                 dailyWorkoutRoutineViewModel
-                                                    .isPlanSelected(index)
+                                                    .isPlanSelected(globalIndex)
                                                 ? Icon(
                                                     Icons.check,
                                                     size: context.sh(16),
@@ -212,7 +235,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                                         AppColors.pimaryColor,
                                                   )
                                                 : NormalText(
-                                                    titleText: '${index + 1}',
+                                                    titleText: '$displayNum',
                                                   ),
                                           ),
                                         ),
@@ -233,12 +256,12 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                   GestureDetector(
                                     onTap: () {
                                       dailyWorkoutRoutineViewModel.toggleExpand(
-                                        index,
+                                        globalIndex,
                                       );
                                     },
                                     child: Icon(
                                       dailyWorkoutRoutineViewModel.isExpanded(
-                                            index,
+                                            globalIndex,
                                           )
                                           ? Icons.keyboard_arrow_up
                                           : Icons.keyboard_arrow_down,
@@ -247,8 +270,6 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                   ),
                                 ],
                               ),
-
-                              /// Expand Section
                               AnimatedCrossFade(
                                 firstChild: const SizedBox(),
                                 secondChild: Column(
@@ -256,21 +277,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                   children: [
                                     SizedBox(height: context.sh(12)),
                                     NormalText(
-                                      titleText: item['details'],
-                                      titleSize: context.sp(12),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.iconColor,
-                                    ),
-                                    SizedBox(height: context.sh(6)),
-                                    NormalText(
-                                      titleText: "• Do exercises slowly",
-                                      titleSize: context.sp(12),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.iconColor,
-                                    ),
-                                    SizedBox(height: context.sh(6)),
-                                    NormalText(
-                                      titleText: "• Maintain proper breathing",
+                                      titleText: item['details'] ?? '',
                                       titleSize: context.sp(12),
                                       titleWeight: FontWeight.w600,
                                       titleColor: AppColors.iconColor,
@@ -279,7 +286,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                 ),
                                 crossFadeState:
                                     dailyWorkoutRoutineViewModel.isExpanded(
-                                      index,
+                                      globalIndex,
                                     )
                                     ? CrossFadeState.showSecond
                                     : CrossFadeState.showFirst,
@@ -294,6 +301,10 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                 ],
               ),
             ),
+            if (dailyWorkoutRoutineViewModel.morningRoutineList.isNotEmpty &&
+                dailyWorkoutRoutineViewModel.eveningRoutineList.isNotEmpty)
+              SizedBox(height: context.sh(8)),
+            if (dailyWorkoutRoutineViewModel.eveningRoutineList.isNotEmpty)
             PlanContainer(
               padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
@@ -351,12 +362,17 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                     ],
                   ),
                   ...List.generate(
-                    dailyWorkoutRoutineViewModel.heightRoutineList.length,
+                    dailyWorkoutRoutineViewModel.eveningRoutineList.length,
                     (index) {
                       final item =
-                          dailyWorkoutRoutineViewModel.heightRoutineList[index];
+                          dailyWorkoutRoutineViewModel.eveningRoutineList[index];
+                      final globalIndex =
+                          dailyWorkoutRoutineViewModel.morningRoutineList.length +
+                              index;
                       final bool isSelected = dailyWorkoutRoutineViewModel
-                          .isPlanSelected(index);
+                          .isPlanSelected(globalIndex);
+                      final seq = item['seq'];
+                      final displayNum = seq is int ? seq : (index + 1);
 
                       return Center(
                         child: AnimatedContainer(
@@ -394,7 +410,6 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              /// Header
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -404,7 +419,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                       GestureDetector(
                                         onTap: () {
                                           dailyWorkoutRoutineViewModel
-                                              .selectPlan(index);
+                                              .selectPlan(globalIndex);
                                         },
                                         child: Container(
                                           height: context.sh(28),
@@ -434,7 +449,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                           child: Center(
                                             child:
                                                 dailyWorkoutRoutineViewModel
-                                                    .isPlanSelected(index)
+                                                    .isPlanSelected(globalIndex)
                                                 ? Icon(
                                                     Icons.check,
                                                     size: context.sh(16),
@@ -442,7 +457,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                                         AppColors.pimaryColor,
                                                   )
                                                 : NormalText(
-                                                    titleText: '${index + 1}',
+                                                    titleText: '$displayNum',
                                                   ),
                                           ),
                                         ),
@@ -463,12 +478,12 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                   GestureDetector(
                                     onTap: () {
                                       dailyWorkoutRoutineViewModel.toggleExpand(
-                                        index,
+                                        globalIndex,
                                       );
                                     },
                                     child: Icon(
                                       dailyWorkoutRoutineViewModel.isExpanded(
-                                            index,
+                                            globalIndex,
                                           )
                                           ? Icons.keyboard_arrow_up
                                           : Icons.keyboard_arrow_down,
@@ -477,8 +492,6 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                   ),
                                 ],
                               ),
-
-                              /// Expand Section
                               AnimatedCrossFade(
                                 firstChild: const SizedBox(),
                                 secondChild: Column(
@@ -486,21 +499,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                   children: [
                                     SizedBox(height: context.sh(12)),
                                     NormalText(
-                                      titleText: item['details'],
-                                      titleSize: context.sp(12),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.iconColor,
-                                    ),
-                                    SizedBox(height: context.sh(6)),
-                                    NormalText(
-                                      titleText: "• Do exercises slowly",
-                                      titleSize: context.sp(12),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.iconColor,
-                                    ),
-                                    SizedBox(height: context.sh(6)),
-                                    NormalText(
-                                      titleText: "• Maintain proper breathing",
+                                      titleText: item['details'] ?? '',
                                       titleSize: context.sp(12),
                                       titleWeight: FontWeight.w600,
                                       titleColor: AppColors.iconColor,
@@ -509,7 +508,7 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                 ),
                                 crossFadeState:
                                     dailyWorkoutRoutineViewModel.isExpanded(
-                                      index,
+                                      globalIndex,
                                     )
                                     ? CrossFadeState.showSecond
                                     : CrossFadeState.showFirst,
@@ -524,11 +523,13 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                 ],
               ),
             ),
+            if (dailyWorkoutRoutineViewModel.aiMessage != null &&
+                dailyWorkoutRoutineViewModel.aiMessage!.isNotEmpty) ...[
             SizedBox(height: context.sh(8)),
             LightCardWidget(
-              text:
-                  'Consistency improves stamina, strength & posture over time.',
+              text: dailyWorkoutRoutineViewModel.aiMessage!,
             ),
+            ],
           ],
         ),
       ),

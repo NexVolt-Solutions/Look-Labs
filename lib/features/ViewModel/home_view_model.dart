@@ -39,9 +39,9 @@ class HomeViewModel extends ChangeNotifier {
   /// User's goal/domain from onboarding (goal screen or link response). Only this domain is tappable on Home.
   String? get selectedDomain => _selectedDomain;
 
-  /// True if this domain key is the user's selected goal (enabled to open domain questions).
+  /// True if this domain key is enabled (tappable). When no goal is stored, all domains are enabled; otherwise only the selected goal is enabled.
   bool isDomainEnabled(String key) {
-    if (_selectedDomain == null || _selectedDomain!.isEmpty) return false;
+    if (_selectedDomain == null || _selectedDomain!.isEmpty) return true;
     return key.trim().toLowerCase() == _selectedDomain!.trim().toLowerCase();
   }
 
@@ -73,7 +73,9 @@ class HomeViewModel extends ChangeNotifier {
       _domainsError = null;
     } else {
       _domains = [];
-      _domainsError = response.userMessageOrFallback('Could not load explore domains');
+      _domainsError = response.userMessageOrFallback(
+        'Could not load explore domains',
+      );
     }
     _selectedDomain = await AuthRepository.getSelectedDomain();
     notifyListeners();
@@ -91,7 +93,9 @@ class HomeViewModel extends ChangeNotifier {
       _domainsError = null;
     } else {
       if (_domains.isEmpty) {
-        _domainsError = response.userMessageOrFallback('Could not load explore domains');
+        _domainsError = response.userMessageOrFallback(
+          'Could not load explore domains',
+        );
       }
     }
     _selectedDomain = await AuthRepository.getSelectedDomain();
@@ -203,7 +207,9 @@ class HomeViewModel extends ChangeNotifier {
         );
       }
     } else {
-      _wellnessError = response.userMessageOrFallback('Could not load wellness');
+      _wellnessError = response.userMessageOrFallback(
+        'Could not load wellness',
+      );
       if (kDebugMode) {
         debugPrint(
           '[Wellness] failed: statusCode=${response.statusCode}, message=${response.message}',
@@ -261,8 +267,9 @@ class HomeViewModel extends ChangeNotifier {
       _weeklyProgress = response.data as WeeklyProgressResponse;
       _weeklyProgressError = null;
     } else {
-      _weeklyProgressError =
-          response.userMessageOrFallback('Could not load weekly progress');
+      _weeklyProgressError = response.userMessageOrFallback(
+        'Could not load weekly progress',
+      );
     }
     notifyListeners();
   }

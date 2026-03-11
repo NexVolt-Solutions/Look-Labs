@@ -7,6 +7,7 @@ import 'package:looklabs/Core/Network/api_response.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 import 'package:looklabs/Core/Network/models/onboarding_session.dart';
+import 'package:looklabs/Core/Network/models/domain_progress_overview_response.dart';
 import 'package:looklabs/Core/Network/models/progress_graph_response.dart';
 import 'package:looklabs/Core/Network/models/weekly_progress_response.dart';
 import 'package:looklabs/Core/Network/models/wellness_metrics.dart';
@@ -487,8 +488,7 @@ class OnboardingRepository {
   /// GET users/me/progress/graph. Requires Bearer token.
   /// [period] – weekly, monthly, or yearly (last 7 / 30 / 365 days).
   /// Returns score history with first_score (Before Progress) and latest_score (After Progress).
-  Future<ApiResponse> getProgressGraph(
-      {required String period}) async {
+  Future<ApiResponse> getProgressGraph({required String period}) async {
     final response = await ApiServices.get(
       ApiEndpoints.usersMeProgressGraph,
       queryParams: {'period': period},
@@ -497,13 +497,36 @@ class OnboardingRepository {
       final raw = Map<String, dynamic>.from(response.data as Map);
       final Map<String, dynamic> json =
           raw.containsKey('data') && raw['data'] is Map
-              ? Map<String, dynamic>.from(raw['data'] as Map)
-              : raw;
+          ? Map<String, dynamic>.from(raw['data'] as Map)
+          : raw;
       final graph = ProgressGraphResponse.fromJson(json);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
         data: graph,
+        message: response.message,
+      );
+    }
+    return response;
+  }
+
+  /// GET domains/progress/overview. Requires Bearer token.
+  /// Returns per-domain progress (progress_percent, answered_questions, is_completed).
+  Future<ApiResponse> getDomainProgressOverview() async {
+    final response = await ApiServices.get(
+      ApiEndpoints.domainsProgressOverview,
+    );
+    if (response.success && response.data != null && response.data is Map) {
+      final raw = Map<String, dynamic>.from(response.data as Map);
+      final Map<String, dynamic> json =
+          raw.containsKey('data') && raw['data'] is Map
+          ? Map<String, dynamic>.from(raw['data'] as Map)
+          : raw;
+      final overview = DomainProgressOverviewResponse.fromJson(json);
+      return ApiResponse(
+        success: true,
+        statusCode: response.statusCode,
+        data: overview,
         message: response.message,
       );
     }

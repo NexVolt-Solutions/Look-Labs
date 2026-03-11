@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/View/DomainQuestion/domain_question_content.dart';
 import 'package:looklabs/Features/ViewModel/domain_question_view_model.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
+import 'package:looklabs/Features/Widget/custom_stepper.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:provider/provider.dart';
 
@@ -111,6 +113,9 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
       );
     }
 
+    final bool isLastStep = vm.isLastStep;
+    final labels = vm.stepLabels;
+
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
@@ -138,17 +143,43 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
             ],
             CustomButton(
               crossAxisAlignment: CrossAxisAlignment.center,
-
-              text: vm.submitting ? 'Submitting...' : AppText.complete,
+              text: isLastStep
+                  ? (vm.submitting ? 'Submitting...' : AppText.complete)
+                  : 'Next',
               color: AppColors.pimaryColor,
-              isEnabled: vm.allAnswered && !vm.submitting,
+              isEnabled: isLastStep
+                  ? vm.isCurrentStepComplete && !vm.submitting
+                  : vm.isCurrentStepComplete,
               onTap: () async {
-                final success = await vm.submitAnswers();
-                if (!context.mounted || !success) return;
-                Navigator.pop(context);
-                final route = RoutesName.routeForDomain(widget.domain);
-                if (context.mounted && route != null) {
-                  Navigator.pushNamed(context, route);
+                if (!vm.isCurrentStepComplete) {
+                  ApiErrorHandler.showSnackBar(
+                    context,
+                    fallback:
+                        vm.currentStepQuestions.any(
+                          (q) =>
+                              q.type == 'choice' ||
+                              q.type == 'multi_choice' ||
+                              q.type == 'multi-choice',
+                        )
+                        ? 'Please select all options before continuing.'
+                        : 'Please answer all questions before continuing.',
+                  );
+                  return;
+                }
+                if (isLastStep) {
+                  final (success, responseData) = await vm.submitAnswers();
+                  if (!context.mounted || !success) return;
+                  Navigator.pop(context);
+                  final route = RoutesName.routeForDomain(widget.domain);
+                  if (context.mounted && route != null) {
+                    // Pass API response only for workout (WorkOutResultScreen uses it)
+                    final args = route == RoutesName.WorkOutResultScreen
+                        ? responseData
+                        : null;
+                    Navigator.pushNamed(context, route, arguments: args);
+                  }
+                } else {
+                  vm.nextStep();
                 }
               },
             ),
@@ -159,27 +190,57 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: context.sh(12)),
             Padding(
               padding: context.paddingSymmetricR(horizontal: 20),
-              child: AppBarContainer(
-                title: _domainTitle,
-                onTap: () => Navigator.pop(context),
-              ),
-            ),
-            SizedBox(height: context.sh(32)),
-
-            Expanded(
-              child: ListView(
-                padding: context.paddingSymmetricR(horizontal: 20),
-                children: vm.questions
-                    .map(
-                      (q) => Padding(
-                        padding: EdgeInsets.only(bottom: context.sh(24)),
-                        child: DomainFlowQuestionContent(question: q),
-                      ),
+              child: vm.currentStepIndex > 0
+                  ? AppBarContainer(
+                      title: vm.currentStepTitle,
+                      onTap: () {
+                        ApiErrorHandler.showSnackBar(
+                          context,
+                          fallback:
+                              "You can't go back after moving to the next step.",
+                        );
+                      },
                     )
-                    .toList(),
+                  : AppBarContainer(
+                      title: _domainTitle,
+                      onTap: () => Navigator.pop(context),
+                    ),
+            ),
+            SizedBox(height: context.sh(20)),
+            if (labels.isNotEmpty)
+              Padding(
+                padding: context.paddingSymmetricR(horizontal: 20),
+                child: CustomStepper(
+                  currentStep: vm.currentStepIndex,
+                  steps: labels,
+                ),
               ),
+            SizedBox(height: context.sh(20)),
+            Expanded(
+              child: vm.currentStepQuestions.isEmpty
+                  ? const SizedBox.shrink()
+                  : SingleChildScrollView(
+                      padding: context.paddingSymmetricR(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (
+                            var i = 0;
+                            i < vm.currentStepQuestions.length;
+                            i++
+                          ) ...[
+                            DomainFlowQuestionContent(
+                              question: vm.currentStepQuestions[i],
+                            ),
+                            if (i < vm.currentStepQuestions.length - 1)
+                              SizedBox(height: context.sh(24)),
+                          ],
+                        ],
+                      ),
+                    ),
             ),
           ],
         ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
+import 'package:looklabs/Features/Widget/goal_activity_graph.dart';
+import 'package:looklabs/Features/Widget/height_indicator.dart';
 import 'package:looklabs/Features/Widget/neu_text_fied.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
@@ -19,6 +21,9 @@ class DomainFlowQuestionContent extends StatelessWidget {
     if (question.type == 'text') {
       return _buildTextQuestion(context);
     }
+    if (question.isHeightGoalsInput) {
+      return _buildHeightGoalsQuestion(context);
+    }
     if (question.type == 'number' || question.type == 'numeric') {
       return _buildNumberQuestion(context);
     }
@@ -26,6 +31,74 @@ class DomainFlowQuestionContent extends StatelessWidget {
       return _buildMultiChoiceQuestion(context);
     }
     return _buildOptionsQuestion(context);
+  }
+
+  Widget _buildHeightGoalsQuestion(BuildContext context) {
+    final vm = context.read<DomainQuestionViewModel>();
+    final min = question.minConstraint ?? 100;
+    final max = question.maxConstraint ?? 250;
+    final unit = question.unitConstraint ?? 'cm';
+    final (current, desired) = vm.getFlowHeightValues(question.id);
+    final currentCm = current ?? 170;
+    final desiredCm = desired ?? 178;
+    final currentValue = ((currentCm - min) / (max - min)).clamp(0.0, 1.0);
+    final desiredValue = ((desiredCm - min) / (max - min)).clamp(0.0, 1.0);
+
+    if (current == null || desired == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        vm.setFlowHeightAnswer(question.id, currentCm, desiredCm);
+      });
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        NormalText(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          titleText: question.question,
+          titleSize: context.sp(16),
+          titleWeight: FontWeight.w600,
+          titleColor: AppColors.subHeadingColor,
+          sizeBoxheight: context.sh(4),
+          subText: 'Set your current and desired height',
+          subSize: context.sp(14),
+          subWeight: FontWeight.w400,
+          subColor: AppColors.subHeadingColor,
+        ),
+        SizedBox(height: context.sh(18)),
+        GoalActivityGraph(
+          title1: 'Current',
+          title2: 'Goal',
+          currentHeight: currentCm.toDouble(),
+          desiredHeight: desiredCm.toDouble(),
+          unit: unit,
+          minValue: min.toDouble(),
+          maxValue: max.toDouble(),
+        ),
+        SizedBox(height: context.sh(18)),
+        HeightIndicater(
+          title: 'Current Height',
+          initialValue: currentValue,
+          valueFormatter: (v) =>
+              '${(v * (max - min) + min).round()} $unit',
+          onChanged: (value) {
+            final cm = (value * (max - min) + min).round();
+            vm.setFlowHeightAnswer(question.id, cm, desiredCm);
+          },
+        ),
+        SizedBox(height: context.sh(18)),
+        HeightIndicater(
+          title: 'Desired Height',
+          initialValue: desiredValue,
+          valueFormatter: (v) =>
+              '${(v * (max - min) + min).round()} $unit',
+          onChanged: (value) {
+            final cm = (value * (max - min) + min).round();
+            vm.setFlowHeightAnswer(question.id, currentCm, cm);
+          },
+        ),
+      ],
+    );
   }
 
   Widget _buildTextQuestion(BuildContext context) {

@@ -140,12 +140,15 @@ class HeightIndicater extends StatefulWidget {
   final String title;
   final double initialValue; // 0.0 - 1.0
   final ValueChanged<double>? onChanged;
+  /// When provided, shows this instead of percentage (e.g. "170 cm" for height).
+  final String Function(double value)? valueFormatter;
 
   const HeightIndicater({
     super.key,
     required this.title,
     this.initialValue = 0.5,
     this.onChanged,
+    this.valueFormatter,
   });
 
   @override
@@ -291,9 +294,11 @@ class _HeightIndicaterState extends State<HeightIndicater> {
 
             SizedBox(width: context.sw(8)),
 
-            /// 🔹 PERCENT TEXT
+            /// 🔹 Value text (formatted or percentage)
             NormalText(
-              titleText: '${(_value * 100).round()}%',
+              titleText: widget.valueFormatter != null
+                  ? widget.valueFormatter!(_value)
+                  : '${(_value * 100).round()}%',
               titleSize: context.sp(12),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,

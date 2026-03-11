@@ -12,12 +12,13 @@ import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Features/ViewModel/diet_progress_screen_view_model.dart';
 import 'package:looklabs/Features/ViewModel/work_out_progress_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
 class WorkOutProgressScreen extends StatefulWidget {
-  const WorkOutProgressScreen({super.key});
+  const WorkOutProgressScreen({super.key, this.workoutData});
+
+  final Map<String, dynamic>? workoutData;
 
   @override
   State<WorkOutProgressScreen> createState() => _WorkOutProgressScreenState();
@@ -25,11 +26,22 @@ class WorkOutProgressScreen extends StatefulWidget {
 
 class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
   @override
+  void initState() {
+    super.initState();
+    if (widget.workoutData != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        context.read<WorkOutProgressScreenViewModel>().setWorkoutData(
+              widget.workoutData!,
+            );
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final yourProgressScreenViewModel =
         Provider.of<WorkOutProgressScreenViewModel>(context);
-    final dietProgressScreenViewModel =
-        Provider.of<DietProgressScreenViewModel>(context);
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
 
@@ -56,12 +68,18 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
             SizedBox(
               height: context.sh(135),
               child: ListView.builder(
-                itemCount: 4,
+                itemCount: yourProgressScreenViewModel.progressCards.isEmpty
+                    ? 1
+                    : yourProgressScreenViewModel.progressCards.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
+                  final cards = yourProgressScreenViewModel.progressCards;
+                  final item = cards.isEmpty
+                      ? {'title': '—', 'value': '—'}
+                      : cards[index];
                   return HeightWidgetCont(
-                    title: '2300',
-                    subTitle: 'Weekly Cal',
+                    title: item['value'] ?? '—',
+                    subTitle: item['title'] ?? '—',
                     imgPath: AppAssets.fatLossIcon,
                   );
                 },
@@ -114,6 +132,8 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       Expanded(
                         child: NormalText(
                           titleText:
+                              yourProgressScreenViewModel.postureInsight ??
+                              yourProgressScreenViewModel.aiMessage ??
                               'Small daily workouts create big long-term results. You\'re doing great—keep up the momentum.',
                           titleSize: context.sp(12),
                           titleWeight: FontWeight.w600,
@@ -132,7 +152,10 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
             Row(
               children: [
                 CustomContainer(
-                  padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
+                  padding: context.paddingSymmetricR(
+                    horizontal: 4,
+                    vertical: 4,
+                  ),
                   radius: context.radiusR(10),
                   color: AppColors.backGroundColor,
                   child: SvgPicture.asset(
@@ -164,7 +187,10 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                     child: SizedBox(
                       width: context.sw(220),
                       child: PlanContainer(
-                        padding: context.paddingSymmetricR(horizontal: 7, vertical: 24),
+                        padding: context.paddingSymmetricR(
+                          horizontal: 7,
+                          vertical: 24,
+                        ),
                         isSelected: false,
                         onTap: () {},
                         child: Column(
@@ -178,7 +204,14 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                             ),
                             SizedBox(height: context.sh(12)),
                             LinearSliderWidget(
-                              progress: 10,
+                              progress:
+                                  yourProgressScreenViewModel
+                                          .fitnessConsistencyProgress >
+                                      0
+                                  ? yourProgressScreenViewModel
+                                        .fitnessConsistencyProgress
+                                        .toDouble()
+                                  : 10.0,
                               height: context.sh(12),
                               animatedConHeight: context.sh(12),
                             ),
@@ -193,33 +226,51 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
 
             SizedBox(height: context.sh(8)),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(
                 yourProgressScreenViewModel.buttonName.length,
                 (index) {
                   final bool isSelected =
                       yourProgressScreenViewModel.selectedIndex ==
                       yourProgressScreenViewModel.buttonName[index];
-                  return CustomContainer(
-                    radius: context.radiusR(10),
-                    onTap: () {
-                      yourProgressScreenViewModel.selectIndex(index);
-                    },
-                    color: isSelected
-                        ? AppColors.buttonColor.withOpacity(0.11)
-                        : AppColors.backGroundColor,
-                    border: isSelected
-                        ? Border.all(color: AppColors.pimaryColor, width: 1.5)
-                        : null,
-                    padding: context.paddingSymmetricR(horizontal: 38, vertical: 12),
-                    margin: context.paddingSymmetricR(horizontal: 0, vertical: 0),
-                    child: Center(
-                      child: Text(
-                        yourProgressScreenViewModel.buttonName[index],
-                        style: TextStyle(
-                          fontSize: context.sp(14),
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.seconderyColor,
+                  return Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        right:
+                            index <
+                                yourProgressScreenViewModel.buttonName.length -
+                                    1
+                            ? context.sw(6)
+                            : 0,
+                      ),
+                      child: CustomContainer(
+                        radius: context.radiusR(10),
+                        onTap: () {
+                          yourProgressScreenViewModel.selectIndex(index);
+                        },
+                        color: isSelected
+                            ? AppColors.buttonColor.withOpacity(0.11)
+                            : AppColors.backGroundColor,
+                        border: isSelected
+                            ? Border.all(
+                                color: AppColors.pimaryColor,
+                                width: 1.5,
+                              )
+                            : null,
+                        padding: context.paddingSymmetricR(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                        margin: EdgeInsets.zero,
+                        child: Center(
+                          child: Text(
+                            yourProgressScreenViewModel.buttonName[index],
+                            style: TextStyle(
+                              fontSize: context.sp(14),
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.seconderyColor,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                     ),
@@ -238,7 +289,11 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
             ActivityConsistencyWidget(
               title: 'Workout Consistency',
               subtitle: 'Your workout activity this week',
-              pressentage: 20,
+              pressentage:
+                  yourProgressScreenViewModel.fitnessConsistencyProgress > 0
+                  ? yourProgressScreenViewModel.fitnessConsistencyProgress
+                        .toDouble()
+                  : 20.0,
             ),
             SizedBox(height: context.sh(16)),
             NormalText(
@@ -250,7 +305,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
             SizedBox(height: context.sh(18)),
             Column(
               children: List.generate(
-                dietProgressScreenViewModel.checkBoxName.length,
+                yourProgressScreenViewModel.checkBoxName.length,
                 (index) {
                   return Padding(
                     padding: EdgeInsets.only(bottom: context.sh(12)),
@@ -258,14 +313,14 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            dietProgressScreenViewModel.toggleChecklist(index);
+                            yourProgressScreenViewModel.toggleChecklist(index);
                           },
                           child: Container(
                             height: context.sh(28),
                             width: context.sw(28),
                             decoration: BoxDecoration(
                               color:
-                                  dietProgressScreenViewModel
+                                  yourProgressScreenViewModel
                                       .selectedChecklist[index]
                                   ? AppColors.pimaryColor
                                   : AppColors.backGroundColor,
@@ -289,7 +344,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                             ),
                             child: Center(
                               child:
-                                  dietProgressScreenViewModel
+                                  yourProgressScreenViewModel
                                       .selectedChecklist[index]
                                   ? Icon(
                                       Icons.check,
@@ -306,7 +361,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                         Expanded(
                           child: NormalText(
                             titleText:
-                                dietProgressScreenViewModel.checkBoxName[index],
+                                yourProgressScreenViewModel.checkBoxName[index],
                             titleSize: context.sp(16),
                             titleWeight: FontWeight.w600,
                             titleColor: AppColors.subHeadingColor,

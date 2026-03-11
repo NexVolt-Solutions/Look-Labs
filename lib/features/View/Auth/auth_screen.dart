@@ -12,6 +12,7 @@ import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
 import 'package:looklabs/Features/ViewModel/bottom_sheet_view_model.dart';
+import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Repository/explore_domains_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 import 'package:provider/provider.dart';
@@ -40,11 +41,25 @@ class _AuthScreenState extends State<AuthScreen> {
       if (!mounted) return;
       if (success) {
         if (vm.isNewUser) {
-          // New user: create onboarding session and go to Start (onboarding flow).
+          // New user: create onboarding session, link to user, then go to Start.
           final response = await OnboardingRepository.instance
               .createAnonymousSession();
           if (!mounted) return;
           if (response.success && response.data != null) {
+            final sessionId = OnboardingRepository.sessionId;
+            if (sessionId != null && sessionId.isNotEmpty) {
+              final linkRes =
+                  await OnboardingRepository.instance.linkSessionToUser(sessionId);
+              if (linkRes.success &&
+                  linkRes.data != null &&
+                  linkRes.data is Map) {
+                final domain =
+                    (linkRes.data as Map)['domain']?.toString().trim();
+                if (domain != null && domain.isNotEmpty) {
+                  await AuthRepository.setSelectedDomain(domain);
+                }
+              }
+            }
             Navigator.pushNamedAndRemoveUntil(
               context,
               RoutesName.StartScreen,
@@ -59,7 +74,7 @@ class _AuthScreenState extends State<AuthScreen> {
             );
           }
         } else {
-          // Returning user: pre-fetch and go straight to Home (no new session).
+          // Returning user (is_new_user: false): do NOT create session. Go straight to Home.
           try {
             await Future.wait([
               ExploreDomainsRepository.instance.getExploreDomains(),

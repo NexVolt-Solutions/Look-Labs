@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Network/models/workout_result_response.dart';
 
 class DailyWorkoutRoutineViewModel extends ChangeNotifier {
-  List<Map<String, dynamic>> heightRoutineList = [
-    {
-      'time': 'Neck Stretches',
-      'activity': '3 min exercises',
-      'details': 'Tilt head left & right for 10 seconds',
-    },
-    {
-      'time': 'Spine Alignment',
-      'activity': '5 min exercises',
-      'details': 'Sit straight and stretch your spine',
-    },
+  List<Map<String, dynamic>> _morningRoutineList = [];
+  List<Map<String, dynamic>> _eveningRoutineList = [];
+  List<Map<String, dynamic>> get morningRoutineList => _morningRoutineList;
+  List<Map<String, dynamic>> get eveningRoutineList => _eveningRoutineList;
+  List<Map<String, dynamic>> get heightRoutineList => [
+    ..._morningRoutineList,
+    ..._eveningRoutineList,
   ];
 
-  int selectedIndex = -1; // ✔ tick state
-  int expandedIndex = -1; // ⬇️ dropdown state
+  int selectedIndex = -1;
+  int expandedIndex = -1;
 
-  /// ✔ Tick logic (circle tap only)
+  String? _aiMessage;
+  String? get aiMessage => _aiMessage;
+
   void selectPlan(int index) {
     selectedIndex = selectedIndex == index ? -1 : index;
     notifyListeners();
@@ -33,32 +31,48 @@ class DailyWorkoutRoutineViewModel extends ChangeNotifier {
   bool isPlanSelected(int index) => selectedIndex == index;
   bool isExpanded(int index) => expandedIndex == index;
 
-  List<Map<String, dynamic>> gridData = [
-    {
-      'title': 'Intensity',
-      'subtitle': 'Moderate',
-      'image': AppAssets.electricLightIcon,
-    },
-    {
-      'title': 'Activity',
-      'subtitle': 'Moderate',
-      'image': AppAssets.oirActivityIcon,
-    },
-  ];
-
-  List<Map<String, dynamic>> exData = [
-    {'title': 'Flexibility', 'image': AppAssets.flexibilityIcon},
-    {'title': 'Build Muscle', 'image': AppAssets.muscleBodyIcon},
-    {'title': 'Fatloss', 'image': AppAssets.fatLossIcon},
-    {'title': 'Strength', 'image': AppAssets.actionWorkOutIcon},
-  ];
-
-  /// ✔ selected item index
-
   void selectExercise(int index) {
     selectedIndex = selectedIndex == index ? -1 : index;
     notifyListeners();
   }
 
   bool isSelected(int index) => selectedIndex == index;
+
+  /// Load from API response (ai_exercises, ai_message).
+  void setWorkoutData(Map<String, dynamic> data) {
+    try {
+      final result = WorkoutResultResponse.fromJson(data);
+      _aiMessage = result.aiMessage;
+      if (result.aiExercises != null) {
+        final ex = result.aiExercises!;
+        _morningRoutineList = ex.morning
+            .map(
+              (e) => {
+                'seq': e.seq,
+                'time': e.title,
+                'activity': e.duration,
+                'details': e.steps.isNotEmpty
+                    ? e.steps.map((s) => '• $s').join('\n')
+                    : '',
+              },
+            )
+            .toList();
+        _eveningRoutineList = ex.evening
+            .map(
+              (e) => {
+                'seq': e.seq,
+                'time': e.title,
+                'activity': e.duration,
+                'details': e.steps.isNotEmpty
+                    ? e.steps.map((s) => '• $s').join('\n')
+                    : '',
+              },
+            )
+            .toList();
+      }
+      expandedIndex = -1;
+      selectedIndex = -1;
+      notifyListeners();
+    } catch (_) {}
+  }
 }

@@ -19,6 +19,22 @@ class HeightWidgetCont extends StatelessWidget {
     this.padding,
   });
 
+  static bool _isSvg(String path) {
+    final lower = path.toLowerCase();
+    return lower.endsWith('.svg');
+  }
+
+  Widget _buildImage(BuildContext context, String path) {
+    if (_isSvg(path)) {
+      return SvgPicture.asset(
+        path,
+        fit: BoxFit.scaleDown,
+        color: AppColors.pimaryColor,
+      );
+    }
+    return Image.asset(path, fit: BoxFit.scaleDown);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -70,10 +86,9 @@ class HeightWidgetCont extends StatelessWidget {
                   child: SizedBox(
                     height: context.sh(20),
                     width: context.sw(20),
-                    child: SvgPicture.asset(
+                    child: _buildImage(
+                      context,
                       imgPath ?? AppAssets.heightIcon,
-                      fit: BoxFit.scaleDown,
-                      color: AppColors.pimaryColor,
                     ),
                   ),
                 ),

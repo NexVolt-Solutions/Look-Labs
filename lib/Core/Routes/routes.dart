@@ -254,19 +254,31 @@ class Routes {
           builder: (_) => HeightResultScreen(),
         );
       case RoutesName.WorkOutResultScreen:
+        final workoutData = settings.arguments != null &&
+                settings.arguments is Map
+            ? Map<String, dynamic>.from(settings.arguments as Map)
+            : null;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => WorkOutResultScreen(),
+          builder: (_) => WorkOutResultScreen(workoutData: workoutData),
         );
       case RoutesName.DailyWorkoutRoutineScreen:
+        final workoutData = settings.arguments != null &&
+                settings.arguments is Map
+            ? Map<String, dynamic>.from(settings.arguments as Map)
+            : null;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => DailyWorkoutRoutine(),
+          builder: (_) => DailyWorkoutRoutine(workoutData: workoutData),
         );
       case RoutesName.WorkOutProgressScreen:
+        final workoutData = settings.arguments != null &&
+                settings.arguments is Map
+            ? Map<String, dynamic>.from(settings.arguments as Map)
+            : null;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => WorkOutProgressScreen(),
+          builder: (_) => WorkOutProgressScreen(workoutData: workoutData),
         );
       case RoutesName.DietResultScreen:
         return MaterialPageRoute(

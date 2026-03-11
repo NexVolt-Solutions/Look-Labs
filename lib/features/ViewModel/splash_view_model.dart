@@ -24,13 +24,26 @@ class SplashViewModel extends ChangeNotifier {
 
     if (!context.mounted) return;
 
-    // User already signed in and session was linked → go straight to Home (no onboarding APIs).
+    // User has stored token → try refresh first (token may be expired). If refresh fails, go to Auth.
     if (ApiServices.authToken != null && ApiServices.authToken!.isNotEmpty) {
+      final refreshRes = await AuthRepository.instance.refreshToken();
+      if (!refreshRes.success) {
+        if (kDebugMode) {
+          debugPrint('[Splash] Token expired/invalid, refresh failed → clearing tokens, go to Auth');
+        }
+        await AuthRepository.clearTokensLocally();
+        if (!context.mounted) return;
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RoutesName.AuthScreen,
+          (route) => false,
+        );
+        return;
+      }
       if (kDebugMode) {
-        debugPrint('[Splash] Has token → navigating to Home (BottomSheetBarScreen)');
+        debugPrint('[Splash] Token refreshed → navigating to Home (BottomSheetBarScreen)');
       }
       try {
-        // Pre-fetch profile, domains, wellness, weekly progress in parallel so cache is warm when Home loads.
         final authVm = context.read<AuthViewModel>();
         await Future.wait([
           authVm.fetchProfile(),

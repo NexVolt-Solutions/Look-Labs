@@ -15,11 +15,18 @@ class ApiEndpoints {
   /// Returns list of domain strings, e.g. ["skincare", "hair", "workout", ...].
   static const String domainsExplore = 'domains/explore';
 
+  /// GET domains/progress/overview – per-domain progress (progress_percent, answered_questions, is_completed). Requires auth.
+  static const String domainsProgressOverview = 'domains/progress/overview';
+
   /// GET domains/{domain}/questions – questions for a domain (requires Bearer token).
   static String domainsQuestions(String domain) => 'domains/$domain/questions';
 
   /// POST domains/{domain}/answers – submit one domain answer (requires Bearer token).
   static String domainsAnswers(String domain) => 'domains/$domain/answers';
+
+  /// POST domains/{domain}/generate-plan – generate workout plan (focus, intensity, etc.).
+  static String domainsGeneratePlan(String domain) =>
+      'domains/$domain/generate-plan';
 
   /// POST onboarding/sessions/{session_id}/answers
   static String onboardingSessionAnswers(String sessionId) =>
