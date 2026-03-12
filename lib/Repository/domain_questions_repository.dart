@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:looklabs/Core/Network/api_endpoints.dart';
 import 'package:looklabs/Core/Network/api_response.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
+import 'package:looklabs/Core/Network/models/domain_answers_response.dart';
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 import 'package:looklabs/Core/Network/models/user_profile_response.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
@@ -22,10 +23,16 @@ class DomainQuestionsRepository {
       DomainQuestionsRepository._();
   static DomainQuestionsRepository get instance => _instance;
 
-  /// GET domains/{domain}/questions – list of questions. Uses user's selected domain from onboarding (link response) when set.
+  /// Effective domain: use passed domain; fallback to selected domain only when empty.
+  Future<String> _effectiveDomain(String domain) async {
+    final d = domain.trim();
+    if (d.isNotEmpty) return d;
+    return (await AuthRepository.getSelectedDomain())?.trim() ?? '';
+  }
+
+  /// GET domains/{domain}/questions – list of questions.
   Future<ApiResponse> getDomainQuestions(String domain) async {
-    final effectiveDomain =
-        (await AuthRepository.getSelectedDomain())?.trim() ?? domain.trim();
+    final effectiveDomain = await _effectiveDomain(domain);
     if (effectiveDomain.isEmpty) {
       return ApiResponse(
         success: false,
@@ -122,6 +129,115 @@ class DomainQuestionsRepository {
     );
   }
 
+  /// GET domains/{domain}/questions – returns first question + total count for step-by-step flow.
+  /// Data: { "question": FlowQuestion, "totalCount": int }.
+  Future<ApiResponse> getDomainFirstQuestion(String domain) async {
+    final res = await getDomainQuestions(domain);
+    if (!res.success || res.data is! List) return res;
+    final list = res.data as List;
+    if (list.isEmpty) {
+      return ApiResponse(
+        success: false,
+        statusCode: res.statusCode,
+        data: null,
+        message: 'No questions found',
+      );
+    }
+    final first = list.first;
+    final question = first is FlowQuestion
+        ? first
+        : FlowQuestion.fromJson(Map<String, dynamic>.from(first as Map));
+    return ApiResponse(
+      success: true,
+      statusCode: res.statusCode,
+      data: {'question': question, 'totalCount': list.length},
+      message: res.message,
+    );
+  }
+
+  /// GET domains/{domain}/flow – poll for completion when status is "processing".
+  Future<ApiResponse> getDomainFlow(String domain) async {
+    final effectiveDomain = await _effectiveDomain(domain);
+    if (effectiveDomain.isEmpty) {
+      return ApiResponse(
+        success: false,
+        statusCode: 400,
+        message: 'Domain is required',
+      );
+    }
+    final endpoint = ApiEndpoints.domainsFlow(effectiveDomain);
+    return ApiServices.get(endpoint);
+  }
+
+  /// Poll domains/{domain}/flow every [interval] until status is "completed".
+  /// Returns completed response data or null on failure/timeout.
+  Future<Map<String, dynamic>?> pollDomainFlowUntilCompleted(
+    String domain, {
+    Duration interval = const Duration(seconds: 3),
+    Duration timeout = const Duration(minutes: 2),
+  }) async {
+    final stopAt = DateTime.now().add(timeout);
+    while (DateTime.now().isBefore(stopAt)) {
+      final res = await getDomainFlow(domain);
+      if (!res.success || res.data is! Map) return null;
+      final data = Map<String, dynamic>.from(res.data as Map);
+      final status = data['status']?.toString() ?? '';
+      if (status == 'completed' || status == 'ok') {
+        return data;
+      }
+      await Future<void>.delayed(interval);
+    }
+    return null;
+  }
+
+  /// POST domains/{domain}/answers – submit one answer. Body: { question_id, domain, answer }.
+  /// Returns full response (current, next, progress, redirect) for step-by-step flow.
+  Future<ApiResponse> submitSingleAnswer(
+    String domain,
+    int questionId,
+    String answer,
+  ) async {
+    final effectiveDomain = await _effectiveDomain(domain);
+    if (effectiveDomain.isEmpty) {
+      return ApiResponse(
+        success: false,
+        statusCode: 400,
+        message: 'Domain is required',
+      );
+    }
+    final endpoint = ApiEndpoints.domainsAnswers(effectiveDomain);
+    final response = await ApiServices.post(
+      endpoint,
+      body: {
+        'question_id': questionId,
+        'domain': effectiveDomain,
+        'answer': answer,
+      },
+    );
+    if (!response.success) {
+      if (kDebugMode) {
+        debugPrint(
+          '[DomainAnswers] domain=$effectiveDomain questionId=$questionId statusCode=${response.statusCode}',
+        );
+      }
+      return response;
+    }
+    DomainAnswersResponse? data;
+    if (response.data is Map) {
+      try {
+        data = DomainAnswersResponse.fromJson(
+          Map<String, dynamic>.from(response.data as Map),
+        );
+      } catch (_) {}
+    }
+    return ApiResponse(
+      success: true,
+      statusCode: response.statusCode,
+      data: data,
+      message: response.message,
+    );
+  }
+
   /// POST domains/{domain}/answers – submit each answer (one request per question).
   /// Submits sequentially so the last response (status "completed") contains ai_attributes, ai_exercises, etc.
   /// Returns success with data = last response map when all succeed; use for workout result screen.
@@ -129,8 +245,7 @@ class DomainQuestionsRepository {
     String domain,
     List<DomainAnswerPayload> answers,
   ) async {
-    final effectiveDomain =
-        (await AuthRepository.getSelectedDomain())?.trim() ?? domain.trim();
+    final effectiveDomain = await _effectiveDomain(domain);
     if (effectiveDomain.isEmpty || answers.isEmpty) {
       return ApiResponse(
         success: false,

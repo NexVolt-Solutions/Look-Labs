@@ -24,9 +24,24 @@ class ApiEndpoints {
   /// POST domains/{domain}/answers – submit one domain answer (requires Bearer token).
   static String domainsAnswers(String domain) => 'domains/$domain/answers';
 
+  /// GET domains/{domain}/flow – poll for completion when status is "processing".
+  static String domainsFlow(String domain) => 'domains/$domain/flow';
+
   /// POST domains/{domain}/generate-plan – generate workout plan (focus, intensity, etc.).
   static String domainsGeneratePlan(String domain) =>
       'domains/$domain/generate-plan';
+
+  /// GET domains/workout/completed-exercises?date=YYYY-MM-DD – fetch completed exercise indices.
+  static const String workoutCompletedExercises =
+      'domains/workout/completed-exercises';
+
+  /// PUT domains/workout/completed-exercises – save completed exercise indices. Body: { date, completed_indices, total_exercises }.
+  static const String workoutCompletedExercisesSave =
+      'domains/workout/completed-exercises';
+
+  /// GET domains/workout/weekly-summary – weekly workout summary (user_id, week_average, days).
+  static const String workoutWeeklySummary =
+      'domains/workout/weekly-summary';
 
   /// POST onboarding/sessions/{session_id}/answers
   static String onboardingSessionAnswers(String sessionId) =>

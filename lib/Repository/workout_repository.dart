@@ -14,10 +14,14 @@ class WorkoutRepository {
   /// POST domains/workout/generate-plan – generate workout plan.
   /// Body: focus, intensity, activity_level, duration_minutes.
   /// Pass [workoutData] to derive params from ai_attributes, or use defaults.
+  /// Overrides from UI selection: [focusOverride], [intensityOverride], [activityOverride].
   Future<ApiResponse> generateWorkoutPlan({
     Map<String, dynamic>? workoutData,
+    String? focusOverride,
+    String? intensityOverride,
+    String? activityOverride,
   }) async {
-    final params = workoutData != null
+    var params = workoutData != null
         ? planParamsFromWorkoutData(workoutData)
         : <String, dynamic>{
             'focus': 'strength',
@@ -25,6 +29,15 @@ class WorkoutRepository {
             'activity_level': 'moderate',
             'duration_minutes': 30,
           };
+    if (focusOverride != null && focusOverride.trim().isNotEmpty) {
+      params = {...params, 'focus': _normalizeFocus(focusOverride)};
+    }
+    if (intensityOverride != null && intensityOverride.trim().isNotEmpty) {
+      params = {...params, 'intensity': intensityOverride.trim()};
+    }
+    if (activityOverride != null && activityOverride.trim().isNotEmpty) {
+      params = {...params, 'activity_level': activityOverride.trim()};
+    }
 
     final body = <String, dynamic>{
       'focus': (params['focus'] ?? 'strength').toString(),
@@ -34,6 +47,10 @@ class WorkoutRepository {
           ? params['duration_minutes'] as int
           : int.tryParse(params['duration_minutes']?.toString() ?? '30') ?? 30,
     };
+
+    if (kDebugMode) {
+      debugPrint('[WorkoutRepository] generate-plan request body: $body');
+    }
 
     final endpoint = ApiEndpoints.domainsGeneratePlan('workout');
     final response = await ApiServices.post(endpoint, body: body);
@@ -47,7 +64,27 @@ class WorkoutRepository {
     return response;
   }
 
+  /// Generate-plan API expects: 'flexibility' | 'build_muscle' | 'fatloss' | 'strength'.
+  static const Set<String> _validFocus = {
+    'flexibility',
+    'build_muscle',
+    'fatloss',
+    'strength',
+  };
+
+  static String _normalizeFocus(String raw) {
+    final t = raw.toLowerCase().trim().replaceAll(' ', '_');
+    if (_validFocus.contains(t)) return t;
+    if (t.contains('flex')) return 'flexibility';
+    if (t.contains('build') || t.contains('muscle')) return 'build_muscle';
+    if (t.contains('fat') || t.contains('endurance') || t.contains('loss')) {
+      return 'fatloss';
+    }
+    return 'strength';
+  }
+
   /// Build plan params from workout API response (ai_attributes).
+  /// Maps today_focus ["Strength", "Fatloss"] → focus: "strength" (API expects lowercase).
   static Map<String, dynamic> planParamsFromWorkoutData(
     Map<String, dynamic> workoutData,
   ) {
@@ -55,13 +92,11 @@ class WorkoutRepository {
       final result = WorkoutResultResponse.fromJson(workoutData);
       final a = result.aiAttributes;
       final focus = a?.todayFocus.isNotEmpty == true
-          ? a!.todayFocus.first.toLowerCase().trim()
+          ? _normalizeFocus(a!.todayFocus.first)
           : 'strength';
-      final intensity =
-          (a?.intensity ?? 'moderate').toString().toLowerCase().trim();
-      final activity =
-          (a?.activity ?? 'moderate').toString().toLowerCase().trim();
-      final duration = a?.workoutSummary?.totalDurationMin ?? 30;
+      final intensity = (a?.intensity ?? 'Moderate').toString().trim();
+      final activity = (a?.activity ?? 'Moderate').toString().trim();
+      final duration = 30; // workout_summary removed; use default
 
       return {
         'focus': focus,

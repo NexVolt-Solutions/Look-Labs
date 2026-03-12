@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide BoxShadow;
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/bottom_icon_container.dart';
 import 'package:looklabs/Features/Widget/custom_container.dart';
+import 'package:looklabs/Features/Widget/network_image_with_fallback.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
@@ -62,26 +63,17 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                           child:
                               authViewModel.user?.profileImage != null &&
                                   authViewModel.user!.profileImage!.isNotEmpty
-                              ? Image.network(
-                                  authViewModel.user!.profileImage!,
-                                  fit: BoxFit.cover,
+                              ? NetworkImageWithFallback(
+                                  url: authViewModel.user!.profileImage!,
                                   width: context.sw(40),
                                   height: context.sh(40),
-                                  loadingBuilder: (_, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return SizedBox(
-                                      width: context.sw(40),
-                                      height: context.sh(40),
-                                      child: Center(
-                                        child: CupertinoActivityIndicator(
-                                          color: AppColors.pimaryColor,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  errorBuilder: (_, __, ___) => Image.asset(
+                                  fit: BoxFit.cover,
+                                  fallbackSize: 40,
+                                  errorWidget: Image.asset(
                                     AppAssets.circleIcon,
                                     fit: BoxFit.cover,
+                                    width: context.sw(40),
+                                    height: context.sh(40),
                                   ),
                                 )
                               : Image.asset(

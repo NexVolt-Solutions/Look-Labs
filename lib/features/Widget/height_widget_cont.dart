@@ -42,7 +42,7 @@ class HeightWidgetCont extends StatelessWidget {
         height: context.sh(120),
         width: context.sw(150),
 
-        margin: EdgeInsetsGeometry.only(right: context.sh(18)),
+        margin: EdgeInsetsGeometry.only(right: context.sw(12)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(context.radiusR(16)),
           color: AppColors.backGroundColor,

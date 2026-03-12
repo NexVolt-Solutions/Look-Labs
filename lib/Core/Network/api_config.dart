@@ -13,13 +13,13 @@ class ApiConfig {
   }
 
   /// API timeout duration in seconds
-  static const int connectTimeout = 30;
+  static const int connectTimeout = 60;
 
   /// Receive timeout in seconds
-  static const int receiveTimeout = 30;
+  static const int receiveTimeout = 60;
 
   /// Send timeout in seconds
-  static const int sendTimeout = 30;
+  static const int sendTimeout = 60;
 
   /// Common headers applied to all requests
   static Map<String, String> get defaultHeaders => {

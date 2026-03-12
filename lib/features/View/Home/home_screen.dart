@@ -4,6 +4,7 @@ import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/custom_container.dart';
 import 'package:looklabs/Features/Widget/gird_data.dart';
+import 'package:looklabs/Features/Widget/network_image_with_fallback.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
@@ -27,30 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
     double size,
   ) {
     if (iconUrl != null && iconUrl.isNotEmpty) {
-      return Image.network(
-        iconUrl,
+      return NetworkImageWithFallback(
+        url: iconUrl,
         height: context.sh(size),
         width: context.sw(size),
         fit: BoxFit.cover,
-        loadingBuilder: (_, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return SizedBox(
-            height: context.sh(size),
-            width: context.sw(size),
-            child: Center(
-              child: SizedBox(
-                width: 24,
-                height: 24,
-                child: CupertinoActivityIndicator(color: AppColors.pimaryColor),
-              ),
-            ),
-          );
-        },
-        errorBuilder: (_, __, ___) => SizedBox(
-          height: context.sh(size),
-          width: context.sw(size),
-          child: Icon(Icons.image_not_supported, size: size * 0.5),
-        ),
+        fallbackSize: size,
       );
     }
     return SizedBox(
@@ -62,26 +45,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildExploreImage(String? iconUrl) {
     if (iconUrl != null && iconUrl.isNotEmpty) {
-      return Image.network(
-        iconUrl,
+      return NetworkImageWithFallback(
+        url: iconUrl,
         fit: BoxFit.cover,
-        loadingBuilder: (_, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: AppColors.backGroundColor,
-            child: Center(
-              child: SizedBox(
-                width: 32,
-                height: 32,
-                child: CupertinoActivityIndicator(color: AppColors.pimaryColor),
-              ),
-            ),
-          );
-        },
-        errorBuilder: (_, __, ___) => Container(
-          color: AppColors.backGroundColor,
-          child: const Center(child: Icon(Icons.image_not_supported, size: 48)),
-        ),
+        fallbackSize: 48,
       );
     }
     return Container(
@@ -424,6 +391,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (homeViewModel.domainsLoading && !homeViewModel.hasExploreDomains)
           SizedBox(
             height: context.sh(200),
+
             child: Center(
               child: SizedBox(
                 width: 28,
@@ -463,26 +431,32 @@ class _HomeScreenState extends State<HomeScreen> {
               final item = homeViewModel.gridData[index];
               final key = item['key'] as String? ?? '';
               final isEnabled = homeViewModel.isDomainEnabled(key);
+              final isLoading = homeViewModel.isLoadingDomain(key);
               return PlanContainer(
                 padding: EdgeInsets.zero,
                 isSelected: isEnabled,
-                onTap: () {
-                  homeViewModel.onItemTap(index, context);
-                },
-                child: Column(
+                onTap: isLoading
+                    ? null
+                    : () async {
+                        await homeViewModel.onItemTap(index, context);
+                      },
+                child: Stack(
                   children: [
-                    Expanded(
-                      flex: 3,
-                      child: CustomContainer(
-                        padding: EdgeInsets.zero,
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadiusGeometry.circular(10),
-                              child: _buildExploreImage(
-                                item['iconUrl'] as String?,
-                              ),
-                            ),
+                    Column(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: CustomContainer(
+                            padding: EdgeInsets.zero,
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius:
+                                      BorderRadiusGeometry.circular(10),
+                                  child: _buildExploreImage(
+                                    item['iconUrl'] as String?,
+                                  ),
+                                ),
                             if (!isEnabled)
                               Align(
                                 alignment: Alignment.topRight,
@@ -584,7 +558,28 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-              );
+                if (isLoading)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.backGroundColor.withOpacity(0.7),
+                        borderRadius:
+                            BorderRadius.circular(context.radiusR(10)),
+                      ),
+                      child: Center(
+                        child: SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: CupertinoActivityIndicator(
+                            color: AppColors.pimaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
             },
           ),
       ],

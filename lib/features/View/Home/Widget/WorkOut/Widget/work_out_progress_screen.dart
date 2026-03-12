@@ -28,14 +28,14 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.workoutData != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        context.read<WorkOutProgressScreenViewModel>().setWorkoutData(
-              widget.workoutData!,
-            );
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final vm = context.read<WorkOutProgressScreenViewModel>();
+      if (widget.workoutData != null) {
+        vm.setWorkoutData(widget.workoutData!);
+      }
+      vm.loadProgressData();
+    });
   }
 
   @override
@@ -46,7 +46,9 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
       backgroundColor: AppColors.backGroundColor,
 
       body: SafeArea(
-        child: ListView(
+        child: yourProgressScreenViewModel.progressLoading
+            ? const Center(child: CircularProgressIndicator())
+            : ListView(
           padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
@@ -205,13 +207,17 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                             SizedBox(height: context.sh(12)),
                             LinearSliderWidget(
                               progress:
-                                  yourProgressScreenViewModel
-                                          .fitnessConsistencyProgress >
-                                      0
-                                  ? yourProgressScreenViewModel
-                                        .fitnessConsistencyProgress
-                                        .toDouble()
-                                  : 10.0,
+                                  yourProgressScreenViewModel.todayScore > 0
+                                  ? yourProgressScreenViewModel.todayScore
+                                  : (yourProgressScreenViewModel.weekAverage > 0
+                                      ? yourProgressScreenViewModel.weekAverage
+                                      : (yourProgressScreenViewModel
+                                                  .fitnessConsistencyProgress >
+                                              0
+                                          ? yourProgressScreenViewModel
+                                              .fitnessConsistencyProgress
+                                              .toDouble()
+                                          : 10.0)),
                               height: context.sh(12),
                               animatedConHeight: context.sh(12),
                             ),
@@ -290,10 +296,17 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
               title: 'Workout Consistency',
               subtitle: 'Your workout activity this week',
               pressentage:
-                  yourProgressScreenViewModel.fitnessConsistencyProgress > 0
-                  ? yourProgressScreenViewModel.fitnessConsistencyProgress
-                        .toDouble()
-                  : 20.0,
+                  yourProgressScreenViewModel.weekAverage > 0
+                  ? yourProgressScreenViewModel.weekAverage
+                  : (yourProgressScreenViewModel.todayScore > 0
+                      ? yourProgressScreenViewModel.todayScore
+                      : (yourProgressScreenViewModel
+                                  .fitnessConsistencyProgress >
+                              0
+                          ? yourProgressScreenViewModel
+                              .fitnessConsistencyProgress
+                              .toDouble()
+                          : 20.0)),
             ),
             SizedBox(height: context.sh(16)),
             NormalText(

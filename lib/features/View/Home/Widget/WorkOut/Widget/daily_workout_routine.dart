@@ -29,9 +29,9 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
   void initState() {
     super.initState();
     if (widget.workoutData != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (!mounted) return;
-        context.read<DailyWorkoutRoutineViewModel>().setWorkoutData(
+        await context.read<DailyWorkoutRoutineViewModel>().setWorkoutData(
               widget.workoutData!,
             );
       });
@@ -147,8 +147,8 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                       final item =
                           dailyWorkoutRoutineViewModel.morningRoutineList[index];
                       final globalIndex = index;
-                      final bool isSelected = dailyWorkoutRoutineViewModel
-                          .isPlanSelected(globalIndex);
+                      final bool isDone = dailyWorkoutRoutineViewModel
+                          .isCompleted(globalIndex);
                       final seq = item['seq'];
                       final displayNum = seq is int ? seq : (globalIndex + 1);
 
@@ -161,12 +161,12 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: isSelected
+                              color: isDone
                                   ? AppColors.pimaryColor
                                   : AppColors.backGroundColor,
                               width: context.sw(1.5),
                             ),
-                            color: isSelected
+                            color: isDone
                                 ? AppColors.pimaryColor.withOpacity(0.15)
                                 : AppColors.backGroundColor,
 
@@ -197,13 +197,15 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                       GestureDetector(
                                         onTap: () {
                                           dailyWorkoutRoutineViewModel
-                                              .selectPlan(globalIndex);
+                                              .markExerciseDone(globalIndex);
                                         },
                                         child: Container(
                                           height: context.sh(28),
                                           width: context.sw(28),
                                           decoration: BoxDecoration(
-                                            color: AppColors.backGroundColor,
+                                            color: isDone
+                                                ? AppColors.pimaryColor
+                                                : AppColors.backGroundColor,
                                             shape: BoxShape.circle,
                                             boxShadow: [
                                               BoxShadow(
@@ -225,14 +227,11 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                             ],
                                           ),
                                           child: Center(
-                                            child:
-                                                dailyWorkoutRoutineViewModel
-                                                    .isPlanSelected(globalIndex)
+                                            child: isDone
                                                 ? Icon(
                                                     Icons.check,
                                                     size: context.sh(16),
-                                                    color:
-                                                        AppColors.pimaryColor,
+                                                    color: AppColors.white,
                                                   )
                                                 : NormalText(
                                                     titleText: '$displayNum',
@@ -369,8 +368,8 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                       final globalIndex =
                           dailyWorkoutRoutineViewModel.morningRoutineList.length +
                               index;
-                      final bool isSelected = dailyWorkoutRoutineViewModel
-                          .isPlanSelected(globalIndex);
+                      final bool isDone = dailyWorkoutRoutineViewModel
+                          .isCompleted(globalIndex);
                       final seq = item['seq'];
                       final displayNum = seq is int ? seq : (index + 1);
 
@@ -383,12 +382,12 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: isSelected
+                              color: isDone
                                   ? AppColors.pimaryColor
                                   : AppColors.backGroundColor,
                               width: context.sw(1.5),
                             ),
-                            color: isSelected
+                            color: isDone
                                 ? AppColors.pimaryColor.withOpacity(0.15)
                                 : AppColors.backGroundColor,
 
@@ -419,13 +418,15 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                       GestureDetector(
                                         onTap: () {
                                           dailyWorkoutRoutineViewModel
-                                              .selectPlan(globalIndex);
+                                              .markExerciseDone(globalIndex);
                                         },
                                         child: Container(
                                           height: context.sh(28),
                                           width: context.sw(28),
                                           decoration: BoxDecoration(
-                                            color: AppColors.backGroundColor,
+                                            color: isDone
+                                                ? AppColors.pimaryColor
+                                                : AppColors.backGroundColor,
                                             shape: BoxShape.circle,
                                             boxShadow: [
                                               BoxShadow(
@@ -447,14 +448,11 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
                                             ],
                                           ),
                                           child: Center(
-                                            child:
-                                                dailyWorkoutRoutineViewModel
-                                                    .isPlanSelected(globalIndex)
+                                            child: isDone
                                                 ? Icon(
                                                     Icons.check,
                                                     size: context.sh(16),
-                                                    color:
-                                                        AppColors.pimaryColor,
+                                                    color: AppColors.white,
                                                   )
                                                 : NormalText(
                                                     titleText: '$displayNum',

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:looklabs/Features/Widget/network_image_with_fallback.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/setting_continer.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
@@ -106,25 +107,13 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: 100,
                 child: ClipOval(
                   child: profileImage != null && profileImage.isNotEmpty
-                      ? Image.network(
-                          profileImage,
+                      ? NetworkImageWithFallback(
+                          url: profileImage,
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
-                          loadingBuilder: (_, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return SizedBox(
-                              width: 100,
-                              height: 100,
-                              child: Center(
-                                child: CupertinoActivityIndicator(
-                                  color: AppColors.pimaryColor,
-                                ),
-                              ),
-                            );
-                          },
-                          errorBuilder: (_, __, ___) =>
-                              _avatarLetter(avatarLabel),
+                          fallbackSize: 100,
+                          errorWidget: _avatarLetter(avatarLabel),
                         )
                       : _avatarLetter(avatarLabel),
                 ),

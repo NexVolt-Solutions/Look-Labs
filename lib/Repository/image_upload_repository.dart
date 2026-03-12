@@ -7,9 +7,6 @@ import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Network/models/album_image.dart';
 import 'package:looklabs/Core/Network/models/simple_image_upload.dart';
 
-/// Repository for image uploads.
-/// POST images/upload/simple – simple image upload (profile, onboarding, progress photos).
-/// Requires Bearer token.
 class ImageUploadRepository {
   ImageUploadRepository._();
 

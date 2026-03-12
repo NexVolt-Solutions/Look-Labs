@@ -1,16 +1,23 @@
 import 'package:flutter/foundation.dart';
 import 'package:looklabs/Core/Network/api_error_handler.dart';
+import 'package:looklabs/Core/Network/models/domain_answers_response.dart';
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 
-/// ViewModel for domain question screen. Loads questions and submits answers via API.
+/// ViewModel for domain question screen. Step-by-step flow: one question at a time,
+/// submit each answer to API, use response.current as next question.
 class DomainQuestionViewModel extends ChangeNotifier {
   DomainQuestionViewModel({required this.domain});
 
   final String domain;
   bool _disposed = false;
 
-  List<FlowQuestion> _questions = [];
+  /// Current question to show (from API: initial from GET, then from POST response.current).
+  FlowQuestion? _currentQuestion;
+  DomainProgressInfo? _progress;
+
+  /// Total question count from initial load (for stepper before progress is available).
+  int _totalQuestionCount = 0;
   bool _loading = false;
   String? _error;
 
@@ -30,88 +37,49 @@ class DomainQuestionViewModel extends ChangeNotifier {
     if (!_disposed) notifyListeners();
   }
 
-  List<FlowQuestion> get questions => List.unmodifiable(_questions);
+  FlowQuestion? get currentQuestion => _currentQuestion;
+  DomainProgressInfo? get progress => _progress;
   bool get loading => _loading;
   String? get error => _error;
-  bool get hasQuestions => _questions.isNotEmpty;
+  bool get hasQuestion => _currentQuestion != null;
 
-  /// Current step index for stepper (0-based). Used for Next/Complete flow like onboarding.
-  int _currentStepIndex = 0;
-  int get currentStepIndex => _currentStepIndex;
-
-  List<String> get stepLabels {
-    return steps.map((s) => _stepLabel(s.step)).toList();
+  /// For compatibility with DomainFlowQuestionContent – single question as list.
+  List<FlowQuestion> get currentStepQuestions {
+    final q = _currentQuestion;
+    return q != null ? [q] : [];
   }
 
-  static String _stepLabel(String step) {
-    if (step.isEmpty || step == 'default') return 'Step';
-    final lower = step.toLowerCase().replaceAll('_', ' ');
-    if (lower.length <= 1) return step.toUpperCase();
+  /// Step title from current question.
+  String get currentStepTitle {
+    final q = _currentQuestion;
+    if (q == null || q.step.isEmpty) return '';
+    final lower = q.step.toLowerCase().replaceAll('_', ' ');
+    if (lower.length <= 1) return q.step.toUpperCase();
     return '${lower[0].toUpperCase()}${lower.substring(1)}';
   }
 
-  /// Questions for the current step only (for stepper UI).
-  List<FlowQuestion> get currentStepQuestions {
-    final s = steps;
-    if (s.isEmpty || _currentStepIndex < 0 || _currentStepIndex >= s.length) {
-      return [];
-    }
-    return s[_currentStepIndex].questions;
-  }
+  /// Progress percent (0–100) for stepper/indicator.
+  double get progressPercent => _progress?.progressPercent ?? 0;
 
-  /// Title for the current step (for app bar / header).
-  String get currentStepTitle {
-    final s = steps;
-    if (s.isEmpty || _currentStepIndex >= s.length) return '';
-    return _stepLabel(s[_currentStepIndex].step);
-  }
+  /// Total questions for progress display.
+  int get totalQuestions => _progress?.total ?? _totalQuestionCount;
 
-  /// True if we're on the last step (show Complete instead of Next).
-  bool get isLastStep {
-    final s = steps;
-    return s.isEmpty || _currentStepIndex >= s.length - 1;
-  }
+  /// Answered count for progress display.
+  int get answeredCount => _progress?.answered ?? 0;
 
-  /// True if all questions in the current step are answered.
+  /// True if current question is fully answered.
   bool get isCurrentStepComplete {
-    for (final q in currentStepQuestions) {
-      if (q.type == 'text' || q.type == 'number' || q.type == 'numeric') {
-        final v = _flowTextAnswers[q.id]?.trim() ?? '';
-        if (v.isEmpty) return false;
-      } else if (q.type == 'multi_choice' || q.type == 'multi-choice') {
-        final list = _flowMultiAnswers[q.id];
-        if (list == null || list.isEmpty) return false;
-      } else {
-        if (!_flowAnswers.containsKey(q.id)) return false;
-      }
+    final q = _currentQuestion;
+    if (q == null) return false;
+    if (q.type == 'text' || q.type == 'number' || q.type == 'numeric') {
+      final v = _flowTextAnswers[q.id]?.trim() ?? '';
+      return v.isNotEmpty;
     }
-    return true;
-  }
-
-  void nextStep() {
-    if (_currentStepIndex < steps.length - 1) {
-      _currentStepIndex++;
-      _notifyIfNotDisposed();
+    if (q.type == 'multi_choice' || q.type == 'multi-choice') {
+      final list = _flowMultiAnswers[q.id];
+      return list != null && list.isNotEmpty;
     }
-  }
-
-  /// Questions grouped by step (same structure as onboarding). Steps keep API order.
-  List<FlowStepItem> get steps {
-    if (_questions.isEmpty) return [];
-    final map = <String, List<FlowQuestion>>{};
-    for (final q in _questions) {
-      final key = q.step.trim().isEmpty ? 'default' : q.step;
-      map.putIfAbsent(key, () => []).add(q);
-    }
-    // Preserve order of first occurrence of each step
-    final order = <String>[];
-    for (final q in _questions) {
-      final key = q.step.trim().isEmpty ? 'default' : q.step;
-      if (!order.contains(key)) order.add(key);
-    }
-    return order
-        .map((step) => FlowStepItem(step: step, questions: map[step] ?? []))
-        .toList();
+    return _flowAnswers.containsKey(q.id);
   }
 
   final Map<int, int> _flowAnswers = {};
@@ -123,7 +91,6 @@ class DomainQuestionViewModel extends ChangeNotifier {
     _notifyIfNotDisposed();
   }
 
-  /// Parse stored height answer "current,desired" into (currentCm, desiredCm).
   (int?, int?) getFlowHeightValues(int questionId) {
     final s = _flowTextAnswers[questionId]?.trim() ?? '';
     if (s.isEmpty) return (null, null);
@@ -162,99 +129,110 @@ class DomainQuestionViewModel extends ChangeNotifier {
     return _flowMultiAnswers[questionId]?.contains(optionIndex) ?? false;
   }
 
+  /// Build answer string for current question (for API submit).
+  String? _buildAnswerForQuestion(FlowQuestion q) {
+    if (q.type == 'text' || q.type == 'number' || q.type == 'numeric') {
+      return _flowTextAnswers[q.id]?.trim();
+    }
+    if (q.type == 'multi_choice' || q.type == 'multi-choice') {
+      final indices = _flowMultiAnswers[q.id];
+      if (indices == null || indices.isEmpty) return null;
+      final options = q.optionsAsStrings;
+      return indices
+          .map((i) => i < options.length ? options[i] : '')
+          .where((s) => s.isNotEmpty)
+          .join(', ');
+    }
+    final idx = _flowAnswers[q.id];
+    if (idx == null) return null;
+    final options = q.optionsAsStrings;
+    return idx < options.length ? options[idx] : idx.toString();
+  }
+
+  /// Load first question from API (GET domains/{domain}/questions, take first).
   Future<void> loadQuestions() async {
     if (_loading) return;
     _loading = true;
     _error = null;
+    _currentQuestion = null;
+    _progress = null;
+    _flowAnswers.clear();
+    _flowTextAnswers.clear();
+    _flowMultiAnswers.clear();
     _notifyIfNotDisposed();
 
     final response = await DomainQuestionsRepository.instance
-        .getDomainQuestions(domain);
+        .getDomainFirstQuestion(domain);
 
     if (_disposed) return;
 
     _loading = false;
-
-    if (response.success && response.data is List) {
-      _questions = List<FlowQuestion>.from(response.data as List);
-      _currentStepIndex = 0;
+    if (response.success && response.data is Map) {
+      final map = response.data as Map;
+      _currentQuestion = map['question'] is FlowQuestion
+          ? map['question'] as FlowQuestion
+          : FlowQuestion.fromJson(
+              Map<String, dynamic>.from(map['question'] as Map),
+            );
+      _totalQuestionCount = (map['totalCount'] as int?) ?? 0;
       _error = null;
     } else {
-      _questions = [];
+      _currentQuestion = null;
+      _totalQuestionCount = 0;
       _error = response.userMessageOrFallback('Could not load questions');
     }
     _notifyIfNotDisposed();
   }
 
-  bool get allAnswered {
-    for (final q in _questions) {
-      if (q.type == 'text' || q.type == 'number' || q.type == 'numeric') {
-        final v = _flowTextAnswers[q.id]?.trim() ?? '';
-        if (v.isEmpty) return false;
-      } else if (q.type == 'multi_choice' || q.type == 'multi-choice') {
-        final list = _flowMultiAnswers[q.id];
-        if (list == null || list.isEmpty) return false;
-      } else {
-        if (!_flowAnswers.containsKey(q.id)) return false;
-      }
-    }
-    return true;
-  }
-
-  /// Builds API payload for each answered question (choice → option text, multi → comma-separated, text/number → value).
-  List<DomainAnswerPayload> _buildAnswerPayloads() {
-    final list = <DomainAnswerPayload>[];
-    for (final q in _questions) {
-      final String answer;
-      if (q.type == 'text' || q.type == 'number' || q.type == 'numeric') {
-        answer = _flowTextAnswers[q.id]?.trim() ?? '';
-      } else if (q.type == 'multi_choice' || q.type == 'multi-choice') {
-        final indices = _flowMultiAnswers[q.id];
-        if (indices == null || indices.isEmpty) continue;
-        final options = q.optionsAsStrings;
-        answer = indices
-            .map((i) => i < options.length ? options[i] : '')
-            .where((s) => s.isNotEmpty)
-            .join(', ');
-      } else {
-        final idx = _flowAnswers[q.id];
-        if (idx == null) continue;
-        final options = q.optionsAsStrings;
-        answer = idx < options.length ? options[idx] : idx.toString();
-      }
-      if (answer.isEmpty) continue;
-      list.add(DomainAnswerPayload(questionId: q.id, answer: answer));
-    }
-    return list;
-  }
-
+  /// Submit current answer to API. Body: { question_id, domain, answer }.
+  /// On success: updates current question from response.current, progress from response.progress.
+  /// Returns (success, rawResponseData) – rawResponseData for result screen when done.
   Future<(bool success, Map<String, dynamic>? responseData)>
-  submitAnswers() async {
-    if (_submitting || _disposed) return (false, null);
-    if (!allAnswered) return (false, null);
+  submitCurrentAnswer() async {
+    final q = _currentQuestion;
+    if (q == null || _submitting || _disposed) return (false, null);
 
-    final payloads = _buildAnswerPayloads();
-    if (payloads.length != _questions.length) return (false, null);
+    final answer = _buildAnswerForQuestion(q);
+    if (answer == null || answer.isEmpty) return (false, null);
 
     _submitting = true;
     _submitError = null;
     _notifyIfNotDisposed();
 
     final response = await DomainQuestionsRepository.instance
-        .submitDomainAnswers(domain, payloads);
+        .submitSingleAnswer(domain, q.id, answer);
 
     if (_disposed) return (false, null);
 
     _submitting = false;
-    if (response.success) {
+
+    if (!response.success) {
+      _submitError = response.userMessageOrFallback('Failed to submit answer');
+      _notifyIfNotDisposed();
+      return (false, null);
+    }
+
+    final data = response.data;
+    if (data is DomainAnswersResponse) {
+      _progress = data.progress;
+      // Clear answer for current question before moving to next
+      _flowAnswers.remove(q.id);
+      _flowTextAnswers.remove(q.id);
+      _flowMultiAnswers.remove(q.id);
+
+      // Next question: response.current is the next question to show
+      _currentQuestion = data.questionToShow;
       _submitError = null;
       _notifyIfNotDisposed();
-      final data = response.data is Map
-          ? Map<String, dynamic>.from(response.data as Map)
-          : null;
-      return (true, data);
+
+      // Done when no more question (status processing/completed, redirect)
+      if (_currentQuestion == null) {
+        return (true, data.raw);
+      }
+      return (true, null); // More questions – caller stays on screen
     }
-    _submitError = response.userMessageOrFallback('Failed to submit answers');
+
+    _submitError = 'Invalid response';
     _notifyIfNotDisposed();
     return (false, null);
   }

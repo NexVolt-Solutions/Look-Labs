@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Features/Widget/network_image_with_fallback.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
 class GridData extends StatelessWidget {
@@ -58,27 +58,14 @@ class GridData extends StatelessWidget {
               ],
             ),
             child: iconUrl != null && iconUrl!.isNotEmpty
-                ? Image.network(
-                    iconUrl!,
-                    fit: BoxFit.scaleDown,
-                    loadingBuilder: (_, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return SizedBox(
-                        width: 32,
-                        height: 32,
-                        child: Center(
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CupertinoActivityIndicator(
-                              color: AppColors.pimaryColor,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    errorBuilder: (_, __, ___) =>
-                        Icon(Icons.image_not_supported, size: 32),
+                ? SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: NetworkImageWithFallback(
+                      url: iconUrl!,
+                      fit: BoxFit.scaleDown,
+                      fallbackSize: 32,
+                    ),
                   )
                 : (image != null && image!.isNotEmpty)
                 ? Image.asset(image!, fit: BoxFit.scaleDown)

@@ -33,15 +33,17 @@ class WorkoutResultResponse {
 }
 
 class WorkoutAiAttributes {
+  final String? title;
   final String? intensity;
   final String? activity;
   final String? goal;
   final String? dietType;
   final List<String> todayFocus;
-  final String? postureInsight;
+  final PostureInsight? postureInsight;
   final WorkoutAiSummary? workoutSummary;
 
   const WorkoutAiAttributes({
+    this.title,
     this.intensity,
     this.activity,
     this.goal,
@@ -61,14 +63,37 @@ class WorkoutAiAttributes {
       }
     }
     final ws = json['workout_summary'];
+    final pi = json['posture_insight'];
+    PostureInsight? posture;
+    if (pi is Map) {
+      posture = PostureInsight.fromJson(Map<String, dynamic>.from(pi));
+    } else if (pi != null && pi.toString().trim().isNotEmpty) {
+      posture = PostureInsight(message: pi.toString());
+    }
     return WorkoutAiAttributes(
+      title: json['title']?.toString(),
       intensity: json['intensity']?.toString(),
       activity: json['activity']?.toString(),
       goal: json['goal']?.toString(),
       dietType: json['diet_type']?.toString(),
       todayFocus: focus,
-      postureInsight: json['posture_insight']?.toString(),
+      postureInsight: posture,
       workoutSummary: ws is Map ? WorkoutAiSummary.fromJson(Map<String, dynamic>.from(ws)) : null,
+    );
+  }
+}
+
+/// posture_insight from ai_attributes: { title, message }.
+class PostureInsight {
+  final String title;
+  final String message;
+
+  const PostureInsight({this.title = '', this.message = ''});
+
+  factory PostureInsight.fromJson(Map<String, dynamic> json) {
+    return PostureInsight(
+      title: json['title']?.toString() ?? '',
+      message: json['message']?.toString() ?? '',
     );
   }
 }

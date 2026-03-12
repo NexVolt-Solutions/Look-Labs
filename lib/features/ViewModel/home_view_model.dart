@@ -7,6 +7,7 @@ import 'package:looklabs/Core/Network/models/weekly_progress_response.dart';
 import 'package:looklabs/Core/Network/models/wellness_metrics.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
+import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/explore_domains_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 
@@ -326,7 +327,18 @@ class HomeViewModel extends ChangeNotifier {
     }).toList();
   }
 
-  void onItemTap(int index, BuildContext context) {
+  /// Domains that have a flow API and result screen (check flow before questions).
+  static const _flowDomains = {'workout', 'height'};
+
+  /// Key of domain currently loading (shows overlay on that card only).
+  String? _loadingDomainKey;
+  String? get loadingDomainKey => _loadingDomainKey;
+  bool isLoadingDomain(String key) =>
+      _loadingDomainKey?.toLowerCase() == key.toLowerCase();
+
+  /// Navigate to domain questions or result screen. For flow domains (workout, height),
+  /// checks GET domains/{domain}/flow first: if completed → go to result; else → questions.
+  Future<void> onItemTap(int index, BuildContext context) async {
     if (_domains.isEmpty || index < 0 || index >= _domains.length) return;
     final key = _domains[index].key.toLowerCase().trim();
     if (!isDomainEnabled(key)) {
@@ -340,10 +352,89 @@ class HomeViewModel extends ChangeNotifier {
       );
       return;
     }
-    Navigator.pushNamed(
-      context,
-      RoutesName.DomainQuestionScreen,
-      arguments: key,
+
+    final resultRoute = RoutesName.routeForDomain(key);
+    final isFlowDomain = _flowDomains.contains(key) && resultRoute != null;
+
+    _loadingDomainKey = key;
+    notifyListeners();
+
+    try {
+      if (isFlowDomain) {
+        final flowRes = await DomainQuestionsRepository.instance
+            .getDomainFlow(key);
+        if (!context.mounted) return;
+        if (flowRes.success && flowRes.data is Map) {
+          final data = Map<String, dynamic>.from(flowRes.data as Map);
+          final status = data['status']?.toString() ?? '';
+          if (status == 'completed' || status == 'ok') {
+            _loadingDomainKey = null;
+            notifyListeners();
+            Navigator.pushNamed(context, resultRoute, arguments: data);
+            return;
+          }
+          if (status == 'processing') {
+            _showFlowLoading(context);
+            final completed = await DomainQuestionsRepository.instance
+                .pollDomainFlowUntilCompleted(key);
+            if (context.mounted) Navigator.of(context).pop();
+            if (!context.mounted) return;
+            _loadingDomainKey = null;
+            notifyListeners();
+            if (completed != null) {
+              Navigator.pushNamed(context, resultRoute, arguments: completed);
+              return;
+            }
+            ApiErrorHandler.showSnackBar(
+              context,
+              fallback: 'Processing timed out. Please try again.',
+            );
+            return;
+          }
+        }
+      }
+
+      _loadingDomainKey = null;
+      notifyListeners();
+      Navigator.pushNamed(
+        context,
+        RoutesName.DomainQuestionScreen,
+        arguments: key,
+      );
+    } catch (_) {
+      _loadingDomainKey = null;
+      notifyListeners();
+    }
+  }
+
+  void _showFlowLoading(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => PopScope(
+        canPop: false,
+        child: Center(
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Loading your plan...',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(ctx).colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
