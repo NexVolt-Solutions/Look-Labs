@@ -63,9 +63,11 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final vm = context.read<HomeViewModel>();
-      vm.loadWellness();
-      vm.loadWeeklyProgress();
       vm.loadDomainsForExplore();
+      Future.microtask(() => vm.loadWellness());
+      Future.delayed(const Duration(milliseconds: 80), () {
+        if (mounted) vm.loadWeeklyProgress();
+      });
     });
   }
 
@@ -451,135 +453,138 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Stack(
                               children: [
                                 ClipRRect(
-                                  borderRadius:
-                                      BorderRadiusGeometry.circular(10),
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                    10,
+                                  ),
                                   child: _buildExploreImage(
                                     item['iconUrl'] as String?,
                                   ),
                                 ),
-                            if (!isEnabled)
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height: 28,
-                                    width: 28,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                        context.radiusR(11),
-                                      ),
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Color(0xFFFFFFFF).withOpacity(0),
-                                          Color(0xFFDBE6F2).withOpacity(0.5),
-                                          Color(0xFF8b8c8c),
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(
-                                            0xFF123D65,
-                                          ).withOpacity(0.15),
-                                          offset: const Offset(0, 7),
-                                          blurRadius: 17,
-                                        ),
-                                        BoxShadow(
-                                          color: AppColors.white.withOpacity(
-                                            0.18,
+                                if (!isEnabled)
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        height: 28,
+                                        width: 28,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            context.radiusR(11),
                                           ),
-                                          offset: const Offset(-5, -4),
-                                          blurRadius: 58,
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Color(0xFFFFFFFF).withOpacity(0),
+                                              Color(
+                                                0xFFDBE6F2,
+                                              ).withOpacity(0.5),
+                                              Color(0xFF8b8c8c),
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Color(
+                                                0xFF123D65,
+                                              ).withOpacity(0.15),
+                                              offset: const Offset(0, 7),
+                                              blurRadius: 17,
+                                            ),
+                                            BoxShadow(
+                                              color: AppColors.white
+                                                  .withOpacity(0.18),
+                                              offset: const Offset(-5, -4),
+                                              blurRadius: 58,
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                    child: Container(
-                                      margin: EdgeInsets.all(context.sw(1)),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          context.radiusR(11),
-                                        ),
-                                        color: Color(0xFF8b8c8c),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(
-                                          context.radiusR(11),
-                                        ),
-                                        child: SvgPicture.asset(
-                                          AppAssets.crownIcon,
-                                          fit: BoxFit.scaleDown,
+                                        child: Container(
+                                          margin: EdgeInsets.all(context.sw(1)),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              context.radiusR(11),
+                                            ),
+                                            color: Color(0xFF8b8c8c),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              context.radiusR(11),
+                                            ),
+                                            child: SvgPicture.asset(
+                                              AppAssets.crownIcon,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: context.sh(4)),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                item['title'] as String? ?? '',
+                                style: TextStyle(
+                                  fontSize: context.sp(16),
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.subHeadingColor,
+                                  fontFamily: 'Raleway',
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                               ),
-                          ],
+                              SizedBox(height: context.sh(2)),
+                              Text(
+                                item['subTitle'] as String? ?? '',
+                                style: TextStyle(
+                                  fontSize: context.sp(12),
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.subHeadingColor,
+                                  fontFamily: 'Raleway',
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (isLoading)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.backGroundColor.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(
+                              context.radiusR(10),
+                            ),
+                          ),
+                          child: Center(
+                            child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: CupertinoActivityIndicator(
+                                color: AppColors.pimaryColor,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: context.sh(4)),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            item['title'] as String? ?? '',
-                            style: TextStyle(
-                              fontSize: context.sp(16),
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.subHeadingColor,
-                              fontFamily: 'Raleway',
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: context.sh(2)),
-                          Text(
-                            item['subTitle'] as String? ?? '',
-                            style: TextStyle(
-                              fontSize: context.sp(12),
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.subHeadingColor,
-                              fontFamily: 'Raleway',
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
-                if (isLoading)
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.backGroundColor.withOpacity(0.7),
-                        borderRadius:
-                            BorderRadius.circular(context.radiusR(10)),
-                      ),
-                      child: Center(
-                        child: SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: CupertinoActivityIndicator(
-                            color: AppColors.pimaryColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          );
+              );
             },
           ),
       ],

@@ -17,7 +17,6 @@ import 'package:provider/provider.dart';
 class WorkOutResultScreen extends StatefulWidget {
   const WorkOutResultScreen({super.key, this.workoutData});
 
-  /// API response from domain answers (ai_attributes, ai_exercises, ai_message, ai_progress).
   final Map<String, dynamic>? workoutData;
 
   @override
@@ -25,21 +24,21 @@ class WorkOutResultScreen extends StatefulWidget {
 }
 
 class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
-  Widget _buildProgressChip(BuildContext context, String label) {
-    return Container(
-      padding: context.paddingSymmetricR(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.pimaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(context.radiusR(8)),
-      ),
-      child: NormalText(
-        titleText: label,
-        titleSize: context.sp(11),
-        titleWeight: FontWeight.w500,
-        titleColor: AppColors.subHeadingColor,
-      ),
-    );
-  }
+  // Widget _buildProgressChip(BuildContext context, String label) {
+  //   return Container(
+  //     padding: context.paddingSymmetricR(horizontal: 10, vertical: 6),
+  //     decoration: BoxDecoration(
+  //       color: AppColors.pimaryColor.withOpacity(0.1),
+  //       borderRadius: BorderRadius.circular(context.radiusR(8)),
+  //     ),
+  //     child: NormalText(
+  //       titleText: label,
+  //       titleSize: context.sp(11),
+  //       titleWeight: FontWeight.w500,
+  //       titleColor: AppColors.subHeadingColor,
+  //     ),
+  //   );
+  // }
 
   @override
   void initState() {

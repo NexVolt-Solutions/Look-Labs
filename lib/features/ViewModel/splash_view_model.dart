@@ -4,8 +4,6 @@ import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
-import 'package:looklabs/Repository/explore_domains_repository.dart';
-import 'package:looklabs/Repository/onboarding_repository.dart';
 import 'package:provider/provider.dart';
 
 class SplashViewModel extends ChangeNotifier {
@@ -20,7 +18,7 @@ class SplashViewModel extends ChangeNotifier {
     // Restore API token so subsequent calls use it; if present we skip onboarding.
     await AuthRepository.restoreAuthToken();
 
-    await Future.delayed(const Duration(seconds: 4));
+    await Future.delayed(const Duration(milliseconds: 800));
 
     if (!context.mounted) return;
 
@@ -43,15 +41,19 @@ class SplashViewModel extends ChangeNotifier {
       if (kDebugMode) {
         debugPrint('[Splash] Token refreshed → navigating to Home (BottomSheetBarScreen)');
       }
-      try {
-        final authVm = context.read<AuthViewModel>();
-        await Future.wait([
-          authVm.fetchProfile(),
-          ExploreDomainsRepository.instance.getExploreDomains(),
-          OnboardingRepository.instance.getWellnessMetrics(),
-          OnboardingRepository.instance.getWeeklyProgress(),
-        ]);
-      } catch (_) {}
+      // Apply user from refresh response so name/avatar show immediately without waiting for GET users/me.
+      if (refreshRes.data is Map) {
+        context.read<AuthViewModel>().applyUserFromRefresh(
+          Map<String, dynamic>.from(refreshRes.data as Map),
+        );
+      }
+      // Load profile and home data in background after navigation (Home screen will also load its data).
+      final authVm = context.read<AuthViewModel>();
+      Future.microtask(() async {
+        try {
+          await authVm.fetchProfile();
+        } catch (_) {}
+      });
       if (!context.mounted) return;
       Navigator.pushNamedAndRemoveUntil(
         context,

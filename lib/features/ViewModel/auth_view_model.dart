@@ -210,6 +210,22 @@ class AuthViewModel extends ChangeNotifier {
     );
   }
 
+  /// Apply user from auth/refresh response so UI can show name/avatar without awaiting GET users/me.
+  void applyUserFromRefresh(Map<String, dynamic>? data) {
+    if (data == null) return;
+    final userJson = data['user'];
+    if (userJson is! Map) return;
+    try {
+      final map = Map<String, dynamic>.from(userJson);
+      if (map['profile_image'] == null && map['profileImage'] != null) {
+        map['profile_image'] = map['profileImage'];
+      }
+      final p = UserProfileResponse.fromJson(map);
+      _applyProfile(p);
+      notifyListeners();
+    } catch (_) {}
+  }
+
   Future<void> _refreshProfileInBackground() async {
     try {
       final response = await _authRepo.getMe();

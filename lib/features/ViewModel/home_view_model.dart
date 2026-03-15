@@ -40,11 +40,15 @@ class HomeViewModel extends ChangeNotifier {
   /// User's goal/domain from onboarding (goal screen or link response). Only this domain is tappable on Home.
   String? get selectedDomain => _selectedDomain;
 
-  /// True if this domain key is enabled (tappable). When no goal is stored, all domains are enabled; otherwise only the selected goal is enabled.
+  /// True if this domain key is enabled (tappable). When no goal is stored, none are enabled (all show Pro badge); otherwise only the selected goal is enabled.
   bool isDomainEnabled(String key) {
-    if (_selectedDomain == null || _selectedDomain!.isEmpty) return true;
+    if (_selectedDomain == null || _selectedDomain!.isEmpty) return false;
     return key.trim().toLowerCase() == _selectedDomain!.trim().toLowerCase();
   }
+
+  /// True when user has not selected a goal yet (all plans show Pro badge; tap prompts to select goal).
+  bool get hasNoGoalSelected =>
+      _selectedDomain == null || _selectedDomain!.isEmpty;
 
   /// Load domains for Explore your plans: from cache first, then GET domains/explore (requires auth).
   /// Restores selected domain from storage first so same-account re-login shows the correct plan as enabled.
@@ -342,12 +346,21 @@ class HomeViewModel extends ChangeNotifier {
     if (_domains.isEmpty || index < 0 || index >= _domains.length) return;
     final key = _domains[index].key.toLowerCase().trim();
     if (!isDomainEnabled(key)) {
+      final message = hasNoGoalSelected
+          ? 'Please select your goal first to unlock plans.'
+          : 'This plan is not your selected goal. Only your chosen goal is available to use.';
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'This plan is not your selected goal. Only your chosen goal is available to use.',
-          ),
+          content: Text(message),
           behavior: SnackBarBehavior.floating,
+          action: hasNoGoalSelected
+              ? SnackBarAction(
+                  label: 'Select goal',
+                  onPressed: () {
+                    Navigator.pushNamed(context, RoutesName.GaolScreen);
+                  },
+                )
+              : null,
         ),
       );
       return;
