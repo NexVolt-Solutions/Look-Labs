@@ -63,10 +63,19 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final vm = context.read<HomeViewModel>();
+      // First paint: explore grid only to reduce first-frame jank.
       vm.loadDomainsForExplore();
-      Future.microtask(() => vm.loadWellness());
-      Future.delayed(const Duration(milliseconds: 80), () {
-        if (mounted) vm.loadWeeklyProgress();
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 120), () {
+        if (!mounted) return;
+        context.read<HomeViewModel>().loadWellness();
+      });
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 280), () {
+        if (!mounted) return;
+        context.read<HomeViewModel>().loadWeeklyProgress();
       });
     });
   }

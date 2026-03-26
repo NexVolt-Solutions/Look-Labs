@@ -44,7 +44,10 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
     Navigator.pop(context);
     final route = RoutesName.routeForDomain(widget.domain);
     if (!mounted || route == null) return;
-    final args = route == RoutesName.WorkOutResultScreen ? data : null;
+    final args = (route == RoutesName.WorkOutResultScreen ||
+            route == RoutesName.HeightResultScreen)
+        ? data
+        : null;
     Navigator.pushNamed(context, route, arguments: args);
   }
 
@@ -177,7 +180,9 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
                 ],
                 CustomButton(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  text: vm.submitting ? 'Submitting...' : 'Next',
+                  text: vm.submitting
+                      ? 'Submitting...'
+                      : (vm.isOnLastQuestion ? 'Start analysis' : 'Next'),
                   color: AppColors.pimaryColor,
                   isEnabled: vm.isCurrentStepComplete && !vm.submitting,
                   onTap: () async {
@@ -205,7 +210,10 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
                         setState(() => _isProcessing = true);
                         final completed = await DomainQuestionsRepository
                             .instance
-                            .pollDomainFlowUntilCompleted(widget.domain);
+                            .pollDomainFlowUntilCompleted(
+                          widget.domain,
+                          lastKnownResponse: responseData,
+                        );
                         if (!mounted) return;
                         setState(() => _isProcessing = false);
                         if (completed == null) {
@@ -253,11 +261,15 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
                   Padding(
                     padding: context.paddingSymmetricR(horizontal: 20),
                     child: CustomStepper(
-                      currentStep: answeredCount,
-                      steps: List.generate(
-                        totalQuestions,
-                        (i) => 'Step ${i + 1}',
-                      ),
+                      currentStep: vm.stepperLabels.isNotEmpty
+                          ? vm.stepperCurrentStepIndex
+                          : answeredCount,
+                      steps: vm.stepperLabels.isNotEmpty
+                          ? vm.stepperLabels
+                          : List.generate(
+                              totalQuestions,
+                              (i) => 'Step ${i + 1}',
+                            ),
                     ),
                   ),
                 SizedBox(height: context.sh(20)),

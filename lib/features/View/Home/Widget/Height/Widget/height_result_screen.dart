@@ -11,21 +11,38 @@ import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Core/Routes/routes_name.dart';
+import 'package:looklabs/Features/ViewModel/height_result_view_model.dart';
 import 'package:looklabs/Features/ViewModel/height_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
 class HeightResultScreen extends StatefulWidget {
-  const HeightResultScreen({super.key});
+  const HeightResultScreen({super.key, this.resultData});
+
+  final Map<String, dynamic>? resultData;
 
   @override
   State<HeightResultScreen> createState() => _HeightResultScreenState();
 }
 
 class _HeightResultScreenState extends State<HeightResultScreen> {
+  late final HeightResultViewModel _resultLogic;
+
+  @override
+  void initState() {
+    super.initState();
+    _resultLogic = HeightResultViewModel(widget.resultData);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<HeightScreenViewModel>().applyApiResult(widget.resultData);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final heightResultViewModel = Provider.of<HeightScreenViewModel>(context);
-    double progress = 30;
+    final routines = context.watch<HeightScreenViewModel>();
+    final ui = _resultLogic.ui(routines);
+    final hasRoutine = _resultLogic.hasRoutineFor(routines);
+
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
@@ -37,9 +54,8 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
         ),
         child: CustomButton(
           isEnabled: true,
-          onTap: () =>
-              Navigator.pushNamed(context, RoutesName.DailyHeightRoutineScreen),
-          text: 'Get Started',
+          onTap: () => _resultLogic.openDailyHeightRoutine(context, routines),
+          text: 'Check your daily routine',
           color: AppColors.pimaryColor,
         ),
       ),
@@ -49,9 +65,7 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
           children: [
             AppBarContainer(
               title: 'Height',
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context),
             ),
             SizedBox(height: context.sh(24)),
             NormalText(
@@ -64,14 +78,18 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
             SizedBox(height: context.sh(18)),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(2, (index) {
-                return HeightWidgetCont(
-                  // padding: context.paddingSymmetricR(horizontal: 11.5, vertical: 14.5),
-                  title: '19 cm',
+              children: [
+                HeightWidgetCont(
+                  title: ui.currentHeightRaw,
                   subTitle: 'Current Height',
                   imgPath: AppAssets.heightIcon,
-                );
-              }),
+                ),
+                HeightWidgetCont(
+                  title: ui.goalHeightRaw,
+                  subTitle: 'Goal Height',
+                  imgPath: AppAssets.heightIcon,
+                ),
+              ],
             ),
             SizedBox(height: context.sh(10)),
             PlanContainer(
@@ -97,7 +115,7 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                             TextSpan(
                               children: [
                                 TextSpan(
-                                  text: '213',
+                                  text: ui.richNumberPart,
                                   style: TextStyle(
                                     fontSize: context.sp(26),
                                     fontWeight: FontWeight.w600,
@@ -105,7 +123,9 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: 'cm',
+                                  text: ui.richUnitPart.isEmpty
+                                      ? ''
+                                      : ' ${ui.richUnitPart}',
                                   style: TextStyle(
                                     fontSize: context.sp(16),
                                     fontWeight: FontWeight.w600,
@@ -182,11 +202,14 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                       ),
                       PlanContainer(
                         isSelected: false,
-                        padding: context.paddingSymmetricR(horizontal: 14.5, vertical: 8),
+                        padding: context.paddingSymmetricR(
+                          horizontal: 14.5,
+                          vertical: 8,
+                        ),
                         radius: BorderRadius.circular(context.radiusR(16)),
                         onTap: () {},
                         child: NormalText(
-                          titleText: 'Normal',
+                          titleText: ui.bmiStatus,
                           titleSize: context.sp(10),
                           titleWeight: FontWeight.w600,
                           titleColor: AppColors.subHeadingColor,
@@ -201,202 +224,54 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                     titleColor: AppColors.subHeadingColor,
                   ),
                   SizedBox(height: context.sh(16)),
-                  LinearSliderWidget(progress: progress),
+                  LinearSliderWidget(progress: ui.progressPercent),
                   SizedBox(height: context.sh(12)),
                 ],
               ),
             ),
             SizedBox(height: context.sh(12)),
-            LightCardWidget(
-              text:
-                  'Consistency improves stamina, strength & posture over time.',
-            ),
-            SizedBox(height: context.sh(6)),
             PlanContainer(
+              margin: context.paddingSymmetricR(horizontal: 0),
               padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
               isSelected: false,
-              onTap: () {},
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              onTap: () =>
+                  _resultLogic.openDailyHeightRoutine(context, routines),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  NormalText(
-                    titleText: 'Today\'s Focus',
-                    titleSize: context.sp(16),
-                    titleWeight: FontWeight.w600,
-                    titleColor: AppColors.subHeadingColor,
-                    maxLines: 3,
-                  ),
-                  // SizedBox(height: context.sh(10)),
-                  ...List.generate(
-                    heightResultViewModel.heightRoutineList.length,
-                    (index) {
-                      final item =
-                          heightResultViewModel.heightRoutineList[index];
-                      final bool isSelected = heightResultViewModel
-                          .isPlanSelected(index);
-
-                      return Center(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          width: double.infinity,
-                          padding: context.paddingSymmetricR(vertical: 8, horizontal: 20),
-                          margin: context.paddingSymmetricR(vertical: 11),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: isSelected
-                                  ? AppColors.pimaryColor
-                                  : AppColors.backGroundColor,
-                              width: context.sw(1.5),
-                            ),
-                            color: isSelected
-                                ? AppColors.pimaryColor.withOpacity(0.15)
-                                : AppColors.backGroundColor,
-
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.customContainerColorUp
-                                    .withOpacity(0.4),
-                                offset: const Offset(5, 5),
-                                blurRadius: 5,
-                              ),
-                              BoxShadow(
-                                color: AppColors.customContinerColorDown
-                                    .withOpacity(0.4),
-                                offset: const Offset(-5, -5),
-                                blurRadius: 5,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              /// Header
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          heightResultViewModel.selectPlan(
-                                            index,
-                                          );
-                                        },
-                                        child: Container(
-                                          height: context.sh(28),
-                                          width: context.sw(28),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.backGroundColor,
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: AppColors
-                                                    .customContainerColorUp
-                                                    .withOpacity(0.4),
-                                                offset: const Offset(3, 3),
-                                                blurRadius: 4,
-                                                inset: true,
-                                              ),
-                                              BoxShadow(
-                                                color: AppColors
-                                                    .customContinerColorDown
-                                                    .withOpacity(0.4),
-                                                offset: const Offset(-3, -3),
-                                                blurRadius: 4,
-                                                inset: true,
-                                              ),
-                                            ],
-                                          ),
-                                          child: Center(
-                                            child:
-                                                heightResultViewModel
-                                                    .isPlanSelected(index)
-                                                ? Icon(
-                                                    Icons.check,
-                                                    size: context.sh(16),
-                                                    color:
-                                                        AppColors.pimaryColor,
-                                                  )
-                                                : NormalText(
-                                                    titleText: '${index + 1}',
-                                                  ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: context.sw(9)),
-                                      NormalText(
-                                        titleText: item['time'],
-                                        titleSize: context.sp(14),
-                                        titleWeight: FontWeight.w500,
-                                        titleColor: AppColors.subHeadingColor,
-                                        subText: item['activity'],
-                                        subSize: context.sp(10),
-                                        subWeight: FontWeight.w400,
-                                        subColor: AppColors.subHeadingColor,
-                                      ),
-                                    ],
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      heightResultViewModel.toggleExpand(index);
-                                    },
-                                    child: Icon(
-                                      heightResultViewModel.isExpanded(index)
-                                          ? Icons.keyboard_arrow_up
-                                          : Icons.keyboard_arrow_down,
-                                      size: context.sh(24),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              /// Expand Section
-                              AnimatedCrossFade(
-                                firstChild: const SizedBox(),
-                                secondChild: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(height: context.sh(12)),
-                                    NormalText(
-                                      titleText: item['details'],
-                                      titleSize: context.sp(12),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.iconColor,
-                                    ),
-                                    SizedBox(height: context.sh(6)),
-                                    NormalText(
-                                      titleText: "• Do exercises slowly",
-                                      titleSize: context.sp(12),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.iconColor,
-                                    ),
-                                    SizedBox(height: context.sh(6)),
-                                    NormalText(
-                                      titleText: "• Maintain proper breathing",
-                                      titleSize: context.sp(12),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.iconColor,
-                                    ),
-                                  ],
-                                ),
-                                crossFadeState:
-                                    heightResultViewModel.isExpanded(index)
-                                    ? CrossFadeState.showSecond
-                                    : CrossFadeState.showFirst,
-                                duration: const Duration(milliseconds: 300),
-                              ),
-                            ],
-                          ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        NormalText(
+                          titleText: 'Today\'s exercises',
+                          titleSize: context.sp(16),
+                          titleWeight: FontWeight.w600,
+                          titleColor: AppColors.subHeadingColor,
                         ),
-                      );
-                    },
+                        SizedBox(height: context.sh(4)),
+                        NormalText(
+                          titleText:
+                              '${ui.routineExerciseCount} exercises • ${ui.routineEstimatedMinutes} min',
+                          titleSize: context.sp(12),
+                          titleWeight: FontWeight.w400,
+                          titleColor: AppColors.subHeadingColor.withOpacity(0.7),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    hasRoutine ? Icons.chevron_right : Icons.lock_outline,
+                    size: context.sh(24),
+                    color: hasRoutine
+                        ? AppColors.subHeadingColor
+                        : AppColors.subHeadingColor.withOpacity(0.5),
                   ),
                 ],
               ),
             ),
-
+            SizedBox(height: context.sh(12)),
+            LightCardWidget(text: ui.insightText),
             SizedBox(height: context.sh(30)),
           ],
         ),

@@ -2,9 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-const _kPrefix = 'workout_completed_';
-
-/// Persists completed exercise indices per date. No API required.
+/// Persists completed exercise indices per date and domain (`workout`, `height`, …).
 class WorkoutCompletionStorage {
   WorkoutCompletionStorage._();
 
@@ -15,17 +13,25 @@ class WorkoutCompletionStorage {
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
-  static String _keyForDate(DateTime date) {
+  static String _slug(String domain) {
+    final s = domain.toLowerCase().trim().replaceAll(RegExp(r'[^a-z0-9_]'), '_');
+    return s.isEmpty ? 'workout' : s;
+  }
+
+  static String _keyForDate(DateTime date, String domain) {
     final y = date.year;
     final m = date.month.toString().padLeft(2, '0');
     final d = date.day.toString().padLeft(2, '0');
-    return '$_kPrefix$y-$m-$d';
+    return '${_slug(domain)}_completed_$y-$m-$d';
   }
 
-  /// Load completed exercise indices for a date.
-  static Future<Set<int>> loadCompletedForDate(DateTime date) async {
+  /// Load completed exercise indices for [date] and [domain].
+  static Future<Set<int>> loadCompletedForDate(
+    DateTime date, [
+    String domain = 'workout',
+  ]) async {
     try {
-      final key = _keyForDate(date);
+      final key = _keyForDate(date, domain);
       final jsonStr = await _storage.read(key: key);
       if (jsonStr == null || jsonStr.isEmpty) return {};
       final decoded = jsonDecode(jsonStr);
@@ -42,20 +48,25 @@ class WorkoutCompletionStorage {
     }
   }
 
-  /// Save completed exercise indices for a date.
-  static Future<void> saveCompletedForDate(DateTime date, Set<int> indices) async {
+  /// Save completed exercise indices for [date] and [domain].
+  static Future<void> saveCompletedForDate(
+    DateTime date,
+    Set<int> indices, [
+    String domain = 'workout',
+  ]) async {
     try {
-      final key = _keyForDate(date);
+      final key = _keyForDate(date, domain);
       final list = indices.toList()..sort();
       await _storage.write(key: key, value: jsonEncode(list));
     } catch (_) {}
   }
 
-  /// Load for today (convenience).
-  static Future<Set<int>> loadCompletedForToday() =>
-      loadCompletedForDate(DateTime.now());
+  static Future<Set<int>> loadCompletedForToday([String domain = 'workout']) =>
+      loadCompletedForDate(DateTime.now(), domain);
 
-  /// Save for today (convenience).
-  static Future<void> saveCompletedForToday(Set<int> indices) =>
-      saveCompletedForDate(DateTime.now(), indices);
+  static Future<void> saveCompletedForToday(
+    Set<int> indices, [
+    String domain = 'workout',
+  ]) =>
+      saveCompletedForDate(DateTime.now(), indices, domain);
 }

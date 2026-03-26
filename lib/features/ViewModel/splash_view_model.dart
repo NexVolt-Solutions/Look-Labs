@@ -18,7 +18,7 @@ class SplashViewModel extends ChangeNotifier {
     // Restore API token so subsequent calls use it; if present we skip onboarding.
     await AuthRepository.restoreAuthToken();
 
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(milliseconds: 400));
 
     if (!context.mounted) return;
 

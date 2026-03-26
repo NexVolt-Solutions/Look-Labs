@@ -143,14 +143,19 @@ class DomainQuestionsRepository {
         message: 'No questions found',
       );
     }
-    final first = list.first;
-    final question = first is FlowQuestion
-        ? first
-        : FlowQuestion.fromJson(Map<String, dynamic>.from(first as Map));
+    final flowQuestions = list.map((e) {
+      if (e is FlowQuestion) return e;
+      return FlowQuestion.fromJson(Map<String, dynamic>.from(e as Map));
+    }).toList();
+    final first = flowQuestions.first;
     return ApiResponse(
       success: true,
       statusCode: res.statusCode,
-      data: {'question': question, 'totalCount': list.length},
+      data: {
+        'question': first,
+        'totalCount': flowQuestions.length,
+        'allQuestions': flowQuestions,
+      },
       message: res.message,
     );
   }
@@ -170,22 +175,31 @@ class DomainQuestionsRepository {
   }
 
   /// Poll domains/{domain}/flow every [interval] until status is "completed".
-  /// Returns completed response data or null on failure/timeout.
+  /// Pass [lastKnownResponse] when you already called [getDomainFlow] and got
+  /// e.g. `processing` — avoids an immediate duplicate GET on the first poll tick.
   Future<Map<String, dynamic>?> pollDomainFlowUntilCompleted(
     String domain, {
+    Map<String, dynamic>? lastKnownResponse,
     Duration interval = const Duration(seconds: 3),
     Duration timeout = const Duration(minutes: 2),
   }) async {
     final stopAt = DateTime.now().add(timeout);
+    Map<String, dynamic>? data = lastKnownResponse != null
+        ? Map<String, dynamic>.from(lastKnownResponse)
+        : null;
+
     while (DateTime.now().isBefore(stopAt)) {
-      final res = await getDomainFlow(domain);
-      if (!res.success || res.data is! Map) return null;
-      final data = Map<String, dynamic>.from(res.data as Map);
+      if (data == null) {
+        final res = await getDomainFlow(domain);
+        if (!res.success || res.data is! Map) return null;
+        data = Map<String, dynamic>.from(res.data as Map);
+      }
       final status = data['status']?.toString() ?? '';
       if (status == 'completed' || status == 'ok') {
         return data;
       }
       await Future<void>.delayed(interval);
+      data = null;
     }
     return null;
   }

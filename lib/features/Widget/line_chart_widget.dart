@@ -94,20 +94,24 @@ TooltipBehavior _customChartTooltip(BuildContext context) => TooltipBehavior(
 );
 
 class LineChartWidget extends StatelessWidget {
-  const LineChartWidget({super.key});
+  /// When non-null and non-empty, shows this workout weekly data (from GET weekly-summary) instead of ChartViewModel.
+  const LineChartWidget({super.key, this.workoutChartData});
+
+  final List<SalesData>? workoutChartData;
 
   @override
   Widget build(BuildContext context) {
     final chartVM = context.watch<ChartViewModel>();
+    final dataSource = (workoutChartData != null && workoutChartData!.isNotEmpty)
+        ? workoutChartData!
+        : chartVM.chartData;
 
     return SfCartesianChart(
       primaryXAxis: CategoryAxis(),
-
       tooltipBehavior: _customChartTooltip(context),
-
       series: <LineSeries<SalesData, String>>[
         LineSeries<SalesData, String>(
-          dataSource: chartVM.chartData,
+          dataSource: dataSource,
           xValueMapper: (data, _) => data.month,
           yValueMapper: (data, _) => data.sales,
           markerSettings: MarkerSettings(

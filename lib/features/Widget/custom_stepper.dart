@@ -58,21 +58,19 @@ class CustomStepper extends StatelessWidget {
               int stepIndex = i ~/ 2;
 
               return Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    steps[stepIndex],
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: TextOverflow.visible,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: context.sp(12),
-                      color: stepIndex == currentStep
-                          ? AppColors.pimaryColor
-                          : AppColors.seconderyColor,
-                      fontWeight: FontWeight.w500,
-                    ),
+                flex: 3,
+                child: Text(
+                  steps[stepIndex],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: context.sp(8),
+                    height: 1.2,
+                    color: stepIndex == currentStep
+                        ? AppColors.pimaryColor
+                        : AppColors.seconderyColor,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               );

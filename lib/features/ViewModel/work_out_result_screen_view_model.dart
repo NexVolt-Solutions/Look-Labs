@@ -92,17 +92,33 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
   Map<String, dynamic>? _workoutData;
   Map<String, dynamic>? get workoutData => _workoutData;
 
-  bool _generatePlanLoading = false;
-  bool get generatePlanLoading => _generatePlanLoading;
+  bool _getStartedLoading = false;
+  bool _tileLoading = false;
+  bool get getStartedLoading => _getStartedLoading;
+  bool get tileLoading => _tileLoading;
+  /// True when either control is loading (for optional shared disable; each control uses its own loading getter).
+  bool get generatePlanLoading => _getStartedLoading || _tileLoading;
+
+  /// Pass to [generateWorkoutPlan] so loading shows on the correct control.
+  static const String loadingSourceGetStarted = 'get_started';
+  static const String loadingSourceTile = 'tile';
 
   /// Calls POST domains/workout/generate-plan with params from workoutData.
   /// [selectedFocusIndex] overrides focus with exData[selectedFocusIndex].title when >= 0.
+  /// [loadingSource] must be [loadingSourceGetStarted] or [loadingSourceTile] so loading is shown on the correct control.
   /// Returns API response. Updates totalExercises/totalDurationMin from response.
-  Future<ApiResponse> generateWorkoutPlan({int selectedFocusIndex = -1}) async {
-    if (_generatePlanLoading) {
-      return ApiResponse(success: false, statusCode: 0);
+  Future<ApiResponse> generateWorkoutPlan({
+    int selectedFocusIndex = -1,
+    String loadingSource = loadingSourceGetStarted,
+  }) async {
+    // Block only the same control from firing again; the other can call API separately.
+    if (loadingSource == loadingSourceTile) {
+      if (_tileLoading) return ApiResponse(success: false, statusCode: 0);
+      _tileLoading = true;
+    } else {
+      if (_getStartedLoading) return ApiResponse(success: false, statusCode: 0);
+      _getStartedLoading = true;
     }
-    _generatePlanLoading = true;
     notifyListeners();
 
     ApiResponse response;
@@ -127,9 +143,12 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
         );
       }
     } finally {
-      _generatePlanLoading = false;
+      if (loadingSource == loadingSourceTile) {
+        _tileLoading = false;
+      } else {
+        _getStartedLoading = false;
+      }
       notifyListeners();
-      // Ensure UI updates after async callback; schedule for next frame.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         notifyListeners();
       });
@@ -330,11 +349,32 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
     return list;
   }
 
+  /// True if we have plan data (from a previous generate-plan), so flow-only updates should not overwrite it.
+  bool get _hasExistingPlan =>
+      _morningRoutineList.isNotEmpty ||
+      _eveningRoutineList.isNotEmpty ||
+      (_totalExercises != null && _totalExercises! > 0);
+
+  /// True if [data] contains exercise/plan content (from generate-plan), not just flow response.
+  static bool _dataHasPlan(Map<String, dynamic> data) {
+    if (data['ai_exercises'] != null) return true;
+    if (data['exercises'] is List && (data['exercises'] as List).isNotEmpty) return true;
+    if (data['morning'] is List && (data['morning'] as List).isNotEmpty) return true;
+    if (data['evening'] is List && (data['evening'] as List).isNotEmpty) return true;
+    return false;
+  }
+
   /// Load from API response (ai_attributes, ai_exercises, ai_message, ai_progress).
+  /// When incoming data is flow-only (no exercises), preserves existing plan so counts and navigation stay correct.
   void setWorkoutData(Map<String, dynamic> data) {
     try {
-      _workoutData = data;
       final result = WorkoutResultResponse.fromJson(data);
+      final incomingHasPlan = _dataHasPlan(data);
+      final keepExistingPlan = _hasExistingPlan && !incomingHasPlan;
+
+      if (!keepExistingPlan) {
+        _workoutData = data;
+      }
 
       // Grid: dynamic from ai_attributes
       final attrs = data['ai_attributes'];
@@ -347,7 +387,7 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
         attrs is Map ? Map<String, dynamic>.from(attrs) : null,
       );
 
-      // Screen title, posture_insight from ai_attributes (workout_summary removed)
+      // Screen title, posture_insight from ai_attributes
       if (result.aiAttributes != null) {
         final a = result.aiAttributes!;
         _screenTitle = a.title?.trim().isNotEmpty == true ? a.title : null;
@@ -355,10 +395,10 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
           _postureInsightTitle = a.postureInsight!.title;
           _postureInsightMessage = a.postureInsight!.message;
         }
-        // totalExercises/totalDurationMin come from generate-plan, not workout_summary
-        _totalExercises = null;
-        _totalDurationMin = null;
-        // Pre-select intensity/activity from ai_attributes (match our options)
+        if (!keepExistingPlan) {
+          _totalExercises = null;
+          _totalDurationMin = null;
+        }
         _selectedIntensity =
             _matchOption(a.intensity?.trim(), intensityOptions) ??
             intensityOptions.first;
@@ -376,7 +416,7 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
         _recoveryChecklist = result.aiProgress!.recoveryChecklist;
       }
 
-      // Routine: morning + evening exercises from ai_exercises
+      // Routine and plan counts: only overwrite when incoming data has plan
       if (result.aiExercises != null) {
         final ex = result.aiExercises!;
         _morningRoutineList = ex.morning
@@ -403,6 +443,9 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
               },
             )
             .toList();
+      } else if (!keepExistingPlan) {
+        _morningRoutineList = [];
+        _eveningRoutineList = [];
       }
 
       if (result.aiMessage != null && result.aiMessage!.isNotEmpty) {

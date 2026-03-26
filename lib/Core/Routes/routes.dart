@@ -244,14 +244,22 @@ class Routes {
           builder: (_) => SkinProductDetailScreen(),
         );
       case RoutesName.DailyHeightRoutineScreen:
+        final heightRoutineData =
+            settings.arguments != null && settings.arguments is Map
+                ? Map<String, dynamic>.from(settings.arguments as Map)
+                : null;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => DailyHeightRoutineScreen(),
+          builder: (_) =>
+              DailyHeightRoutineScreen(resultData: heightRoutineData),
         );
       case RoutesName.HeightResultScreen:
+        final heightData = settings.arguments != null && settings.arguments is Map
+            ? Map<String, dynamic>.from(settings.arguments as Map)
+            : null;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => HeightResultScreen(),
+          builder: (_) => HeightResultScreen(resultData: heightData),
         );
       case RoutesName.WorkOutResultScreen:
         final workoutData = settings.arguments != null &&

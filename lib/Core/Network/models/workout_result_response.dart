@@ -184,6 +184,10 @@ class WorkoutAiProgress {
   final String? consistency;
   final String? strengthGain;
   final String? fitnessConsistency;
+  /// Optional e.g. "85%" — Calorie Balance bar on progress screen.
+  final String? calorieBalance;
+  /// Optional e.g. "72%" — Hydration bar on progress screen.
+  final String? hydration;
   final List<String> recoveryChecklist;
 
   const WorkoutAiProgress({
@@ -191,6 +195,8 @@ class WorkoutAiProgress {
     this.consistency,
     this.strengthGain,
     this.fitnessConsistency,
+    this.calorieBalance,
+    this.hydration,
     this.recoveryChecklist = const [],
   });
 
@@ -208,6 +214,8 @@ class WorkoutAiProgress {
       consistency: json['consistency']?.toString(),
       strengthGain: json['strength_gain']?.toString(),
       fitnessConsistency: json['fitness_consistency']?.toString(),
+      calorieBalance: json['calorie_balance']?.toString(),
+      hydration: json['hydration']?.toString(),
       recoveryChecklist: checklist,
     );
   }

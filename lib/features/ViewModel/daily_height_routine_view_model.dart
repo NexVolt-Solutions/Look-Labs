@@ -1,34 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:looklabs/Repository/height_routine_repository.dart';
+import 'package:looklabs/Repository/workout_completion_repository.dart';
 
 class DailyHeightRoutineViewModel extends ChangeNotifier {
-  List<Map<String, dynamic>> heightRoutineList = [
-    {
-      'time': 'Neck Stretches',
-      'activity': '3 min exercises',
-      'details': 'Tilt head left & right for 10 seconds',
-    },
-    {
-      'time': 'Spine Alignment',
-      'activity': '5 min exercises',
-      'details': 'Sit straight and stretch your spine',
-    },
-  ];
+  List<Map<String, dynamic>> morningRoutineList = [];
+  List<Map<String, dynamic>> eveningRoutineList = [];
 
-  int selectedIndex = -1; // ✔ tick state
-  int expandedIndex = -1; // ⬇️ dropdown state
+  List<Map<String, dynamic>> get heightRoutineList => [
+        ...morningRoutineList,
+        ...eveningRoutineList,
+      ];
 
-  /// ✔ Tick logic (circle tap only)
-  void selectPlan(int index) {
-    selectedIndex = selectedIndex == index ? -1 : index;
+  int expandedIndex = -1;
+
+  static const String _completionDomain = 'height';
+
+  Set<int> _completedIndices = {};
+  bool isCompleted(int index) => _completedIndices.contains(index);
+
+  int get totalExercises =>
+      morningRoutineList.length + eveningRoutineList.length;
+
+  Future<void> markExerciseDone(int index) async {
+    if (_completedIndices.contains(index)) {
+      _completedIndices.remove(index);
+    } else {
+      _completedIndices.add(index);
+    }
+    await WorkoutCompletionRepository.instance.saveCompleted(
+      DateTime.now(),
+      _completedIndices,
+      domain: _completionDomain,
+      totalExercises: totalExercises,
+    );
     notifyListeners();
   }
 
-  /// ⬇️ Expand logic (arrow tap only)
   void toggleExpand(int index) {
     expandedIndex = expandedIndex == index ? -1 : index;
     notifyListeners();
   }
 
-  bool isPlanSelected(int index) => selectedIndex == index;
   bool isExpanded(int index) => expandedIndex == index;
+
+  Future<void> loadFromFlowResult(Map<String, dynamic>? data) async {
+    if (data == null) {
+      morningRoutineList = [];
+      eveningRoutineList = [];
+      _completedIndices = {};
+      expandedIndex = -1;
+      notifyListeners();
+      return;
+    }
+    final lists = HeightRoutineRepository.parseRoutineLists(
+      data,
+      defaultsWhenDataNull: false,
+    );
+    morningRoutineList = lists.morning;
+    eveningRoutineList = lists.evening;
+    expandedIndex = -1;
+    _completedIndices = await WorkoutCompletionRepository.instance.loadCompleted(
+      DateTime.now(),
+      domain: _completionDomain,
+    );
+    notifyListeners();
+  }
 }

@@ -31,13 +31,10 @@ class ApiEndpoints {
   static String domainsGeneratePlan(String domain) =>
       'domains/$domain/generate-plan';
 
-  /// GET domains/workout/completed-exercises?date=YYYY-MM-DD – fetch completed exercise indices.
-  static const String workoutCompletedExercises =
-      'domains/workout/completed-exercises';
-
-  /// PUT domains/workout/completed-exercises – save completed exercise indices. Body: { date, completed_indices, total_exercises }.
-  static const String workoutCompletedExercisesSave =
-      'domains/workout/completed-exercises';
+  /// GET/PUT `domains/{domain}/completed-exercises` — same API for workout, height, and other domains.
+  /// Query (GET): `date=YYYY-MM-DD`. Body (PUT): `{ date, completed_indices, total_exercises }`.
+  static String domainsCompletedExercises(String domain) =>
+      'domains/${domain.toLowerCase().trim()}/completed-exercises';
 
   /// GET domains/workout/weekly-summary – weekly workout summary (user_id, week_average, days).
   static const String workoutWeeklySummary =

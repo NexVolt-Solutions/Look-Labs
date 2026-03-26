@@ -18,6 +18,12 @@ class DomainQuestionViewModel extends ChangeNotifier {
 
   /// Total question count from initial load (for stepper before progress is available).
   int _totalQuestionCount = 0;
+
+  /// Distinct `step` keys from all loaded questions (API order / seq).
+  List<String> _stepperStepKeys = [];
+
+  /// Question ids in flow order (from `allQuestions`); used for last-question CTA.
+  List<int> _questionIdsInOrder = [];
   bool _loading = false;
   String? _error;
 
@@ -53,9 +59,37 @@ class DomainQuestionViewModel extends ChangeNotifier {
   String get currentStepTitle {
     final q = _currentQuestion;
     if (q == null || q.step.isEmpty) return '';
-    final lower = q.step.toLowerCase().replaceAll('_', ' ');
-    if (lower.length <= 1) return q.step.toUpperCase();
+    return _humanizeStepKey(q.step);
+  }
+
+  /// Humanized step labels for [CustomStepper] (same style as [currentStepTitle]).
+  List<String> get stepperLabels =>
+      _stepperStepKeys.map(_humanizeStepKey).toList();
+
+  /// Index of the current question’s `step` in [stepperLabels], for stepper highlight.
+  int get stepperCurrentStepIndex {
+    final q = _currentQuestion;
+    if (q == null || _stepperStepKeys.isEmpty) return 0;
+    final idx = _stepperStepKeys.indexOf(q.step);
+    return idx >= 0 ? idx : 0;
+  }
+
+  static String _humanizeStepKey(String step) {
+    if (step.isEmpty) return '';
+    final lower = step.toLowerCase().replaceAll('_', ' ');
+    if (lower.length <= 1) return step.toUpperCase();
     return '${lower[0].toUpperCase()}${lower.substring(1)}';
+  }
+
+  static List<String> _orderedUniqueStepKeys(List<FlowQuestion> questions) {
+    final seen = <String>{};
+    final keys = <String>[];
+    for (final q in questions) {
+      final s = q.step.trim();
+      if (s.isEmpty) continue;
+      if (seen.add(s)) keys.add(s);
+    }
+    return keys;
   }
 
   /// Progress percent (0–100) for stepper/indicator.
@@ -66,6 +100,18 @@ class DomainQuestionViewModel extends ChangeNotifier {
 
   /// Answered count for progress display.
   int get answeredCount => _progress?.answered ?? 0;
+
+  /// True when the shown question is the last in the flow (primary button: "Start analysis").
+  bool get isOnLastQuestion {
+    final q = _currentQuestion;
+    if (q == null) return false;
+    if (_questionIdsInOrder.isNotEmpty) {
+      return q.id == _questionIdsInOrder.last;
+    }
+    final t = totalQuestions;
+    if (t <= 1) return true;
+    return answeredCount >= t - 1;
+  }
 
   /// True if current question is fully answered.
   bool get isCurrentStepComplete {
@@ -156,6 +202,7 @@ class DomainQuestionViewModel extends ChangeNotifier {
     _error = null;
     _currentQuestion = null;
     _progress = null;
+    _stepperStepKeys = [];
     _flowAnswers.clear();
     _flowTextAnswers.clear();
     _flowMultiAnswers.clear();
@@ -175,6 +222,26 @@ class DomainQuestionViewModel extends ChangeNotifier {
               Map<String, dynamic>.from(map['question'] as Map),
             );
       _totalQuestionCount = (map['totalCount'] as int?) ?? 0;
+      final allRaw = map['allQuestions'];
+      final parsedAll = <FlowQuestion>[];
+      if (allRaw is List<FlowQuestion> && allRaw.isNotEmpty) {
+        parsedAll.addAll(allRaw);
+      } else if (allRaw is List && allRaw.isNotEmpty) {
+        for (final e in allRaw) {
+          if (e is FlowQuestion) {
+            parsedAll.add(e);
+          } else if (e is Map) {
+            try {
+              parsedAll.add(
+                FlowQuestion.fromJson(Map<String, dynamic>.from(e)),
+              );
+            } catch (_) {}
+          }
+        }
+      }
+      _stepperStepKeys =
+          parsedAll.isEmpty ? [] : _orderedUniqueStepKeys(parsedAll);
+      _questionIdsInOrder = parsedAll.map((q) => q.id).toList();
       _error = null;
     } else {
       _currentQuestion = null;

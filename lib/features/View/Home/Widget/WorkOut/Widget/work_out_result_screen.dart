@@ -67,18 +67,24 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
           bottom: context.sh(30),
         ),
         child: CustomButton(
-          isEnabled: !workOutResultViewModel.generatePlanLoading,
+          isEnabled: !workOutResultViewModel.getStartedLoading,
           onTap: () async {
             if (workOutResultViewModel.selectedIndex < 0) {
-              ApiErrorHandler.showSnackBar(context);
+              ApiErrorHandler.showSnackBar(
+                context,
+                fallback: 'Please select a focus',
+              );
               return;
             }
             final response = await workOutResultViewModel.generateWorkoutPlan(
               selectedFocusIndex: workOutResultViewModel.selectedIndex,
+              loadingSource:
+                  WorkOutResultScreenViewModel.loadingSourceGetStarted,
             );
             if (!context.mounted) return;
             if (!response.success) {
               ApiErrorHandler.showSnackBar(context, response: response);
+              return;
             }
             Navigator.pushNamed(
               context,
@@ -87,7 +93,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                   workOutResultViewModel.workoutData ?? widget.workoutData,
             );
           },
-          text: workOutResultViewModel.generatePlanLoading
+          text: workOutResultViewModel.getStartedLoading
               ? 'Generating...'
               : 'Get Started',
           color: AppColors.pimaryColor,
@@ -247,17 +253,8 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                     isSelected: isSelected,
                     radius: BorderRadius.circular(context.radiusR(16)),
 
-                    onTap: () async {
-                      final wasSelected = workOutResultViewModel.isSelected(
-                        btnIndex,
-                      );
+                    onTap: () {
                       workOutResultViewModel.selectExercise(btnIndex);
-                      // Call generate-plan when selecting a chip to update Today's Workout card
-                      if (!wasSelected) {
-                        await workOutResultViewModel.generateWorkoutPlan(
-                          selectedFocusIndex: btnIndex,
-                        );
-                      }
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -295,112 +292,79 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
               SizedBox(height: context.sh(18)),
             ],
 
-            // Today's Workout card – only when API data exists
-            // Counts from generate-plan; show "0 exercises • 0 min" until chip is tapped.
-            // On tap: call generate-plan if no exercises yet, then navigate.
+            // Today's Workout card – navigate to Daily Workout only after Get Started has run and we have exercises.
+            // API is called only from Get Started; tile never calls API. Arrow and navigation enabled only when we have plan data.
             if ((workOutResultViewModel.workoutData ?? widget.workoutData) !=
                 null) ...[
-              PlanContainer(
-                margin: context.paddingSymmetricR(horizontal: 0),
-                padding: context.paddingSymmetricR(
-                  horizontal: 12,
-                  vertical: 12,
-                ),
-                isSelected: false,
-                onTap: workOutResultViewModel.generatePlanLoading
-                    ? null
-                    : () async {
-                        var data =
-                            workOutResultViewModel.workoutData ??
-                            widget.workoutData;
-                        if (data == null) return;
-                        var hasExercises =
-                            workOutResultViewModel
-                                .morningRoutineList
-                                .isNotEmpty ||
-                            workOutResultViewModel
-                                .eveningRoutineList
-                                .isNotEmpty;
-                        if (!hasExercises) {
-                          if (workOutResultViewModel.selectedIndex < 0) {
-                            ApiErrorHandler.showSnackBar(context);
-                            return;
-                          }
-                          final response = await workOutResultViewModel
-                              .generateWorkoutPlan(
-                                selectedFocusIndex:
-                                    workOutResultViewModel.selectedIndex,
-                              );
-                          if (!context.mounted) return;
-                          if (!response.success) {
-                            ApiErrorHandler.showSnackBar(
-                              context,
-                              response: response,
-                            );
-                            return;
-                          }
-                          data = workOutResultViewModel.workoutData ?? data;
-                          hasExercises =
-                              workOutResultViewModel
-                                  .morningRoutineList
-                                  .isNotEmpty ||
-                              workOutResultViewModel
-                                  .eveningRoutineList
-                                  .isNotEmpty;
-                          if (!hasExercises) {
-                            ApiErrorHandler.showSnackBar(context);
-                            return;
-                          }
-                        }
-                        if (!context.mounted) return;
-                        Navigator.pushNamed(
-                          context,
-                          RoutesName.DailyWorkoutRoutineScreen,
-                          arguments: data,
-                        );
-                      },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          NormalText(
-                            titleText: 'Today\'s Workout',
-                            titleSize: context.sp(16),
-                            titleWeight: FontWeight.w600,
-                            titleColor: AppColors.subHeadingColor,
-                          ),
-                          SizedBox(height: context.sh(4)),
-                          NormalText(
-                            titleText:
-                                workOutResultViewModel.generatePlanLoading
-                                ? 'Loading plan...'
-                                : '${workOutResultViewModel.totalExercises ?? 0} exercises • ${workOutResultViewModel.totalDurationMin ?? 0} min',
-                            titleSize: context.sp(12),
-                            titleWeight: FontWeight.w400,
-                            titleColor: AppColors.subHeadingColor.withOpacity(
-                              0.7,
-                            ),
-                          ),
-                        ],
-                      ),
+              Builder(
+                builder: (context) {
+                  final hasExercises =
+                      workOutResultViewModel.morningRoutineList.isNotEmpty ||
+                      workOutResultViewModel.eveningRoutineList.isNotEmpty;
+                  final data = workOutResultViewModel.workoutData ??
+                      widget.workoutData;
+                  return PlanContainer(
+                    margin: context.paddingSymmetricR(horizontal: 0),
+                    padding: context.paddingSymmetricR(
+                      horizontal: 12,
+                      vertical: 12,
                     ),
-                    if (workOutResultViewModel.generatePlanLoading)
-                      SizedBox(
-                        width: context.sw(24),
-                        height: context.sh(24),
-                        child: const CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    else
-                      Icon(
-                        Icons.chevron_right,
-                        size: context.sh(24),
-                        color: AppColors.subHeadingColor,
-                      ),
-                  ],
-                ),
+                    isSelected: false,
+                    onTap: () {
+                      if (!hasExercises || data == null) {
+                        ApiErrorHandler.showSnackBar(
+                          context,
+                          fallback: 'Tap Get Started to generate your workout',
+                        );
+                        return;
+                      }
+                      Navigator.pushNamed(
+                        context,
+                        RoutesName.DailyWorkoutRoutineScreen,
+                        arguments: data,
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              NormalText(
+                                titleText: 'Today\'s Workout',
+                                titleSize: context.sp(16),
+                                titleWeight: FontWeight.w600,
+                                titleColor: AppColors.subHeadingColor,
+                              ),
+                              SizedBox(height: context.sh(4)),
+                              NormalText(
+                                titleText:
+                                    '${workOutResultViewModel.totalExercises ?? 0} exercises • ${workOutResultViewModel.totalDurationMin ?? 0} min',
+                                titleSize: context.sp(12),
+                                titleWeight: FontWeight.w400,
+                                titleColor: AppColors.subHeadingColor
+                                    .withOpacity(0.7),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (hasExercises)
+                          Icon(
+                            Icons.chevron_right,
+                            size: context.sh(24),
+                            color: AppColors.subHeadingColor,
+                          )
+                        else
+                          Icon(
+                            Icons.lock_outline,
+                            size: context.sh(24),
+                            color: AppColors.subHeadingColor.withOpacity(0.5),
+                          ),
+                      ],
+                    ),
+                  );
+                },
               ),
               SizedBox(height: context.sh(18)),
             ],

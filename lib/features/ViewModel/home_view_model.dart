@@ -369,27 +369,45 @@ class HomeViewModel extends ChangeNotifier {
     final resultRoute = RoutesName.routeForDomain(key);
     final isFlowDomain = _flowDomains.contains(key) && resultRoute != null;
 
+    if (_loadingDomainKey == key) return;
+
     _loadingDomainKey = key;
     notifyListeners();
 
     try {
       if (isFlowDomain) {
-        final flowRes = await DomainQuestionsRepository.instance
-            .getDomainFlow(key);
+        final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
+          key,
+        );
         if (!context.mounted) return;
         if (flowRes.success && flowRes.data is Map) {
           final data = Map<String, dynamic>.from(flowRes.data as Map);
           final status = data['status']?.toString() ?? '';
-          if (status == 'completed' || status == 'ok') {
+          // Only navigate to result when the backend says the flow is completed.
+          // status "ok" means there are questions to answer (current/next provided).
+          if (status == 'completed') {
             _loadingDomainKey = null;
             notifyListeners();
             Navigator.pushNamed(context, resultRoute, arguments: data);
             return;
           }
+          if (status == 'ok') {
+            _loadingDomainKey = null;
+            notifyListeners();
+            Navigator.pushNamed(
+              context,
+              RoutesName.DomainQuestionScreen,
+              arguments: key,
+            );
+            return;
+          }
           if (status == 'processing') {
             _showFlowLoading(context);
             final completed = await DomainQuestionsRepository.instance
-                .pollDomainFlowUntilCompleted(key);
+                .pollDomainFlowUntilCompleted(
+              key,
+              lastKnownResponse: data,
+            );
             if (context.mounted) Navigator.of(context).pop();
             if (!context.mounted) return;
             _loadingDomainKey = null;
