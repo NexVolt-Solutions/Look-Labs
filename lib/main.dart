@@ -151,7 +151,6 @@ void main() async {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        // home: DietResultScreen(),
         initialRoute: RoutesName.SplashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
