@@ -74,13 +74,13 @@ class _PersonalizedExerciseScreenState
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.customContainerColorUp
-                                  .withOpacity(0.4),
+                                  .withValues(alpha: 0.4),
                               offset: const Offset(3, 3),
                               blurRadius: 4,
                             ),
                             BoxShadow(
                               color: AppColors.customContinerColorDown
-                                  .withOpacity(0.4),
+                                  .withValues(alpha: 0.4),
                               offset: const Offset(-3, -3),
                               blurRadius: 4,
                             ),
@@ -144,19 +144,19 @@ class _PersonalizedExerciseScreenState
                               width: context.sw(1.5),
                             ),
                             color: isSelected
-                                ? AppColors.pimaryColor.withOpacity(0.15)
+                                ? AppColors.pimaryColor.withValues(alpha: 0.15)
                                 : AppColors.backGroundColor,
 
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.customContainerColorUp
-                                    .withOpacity(0.4),
+                                    .withValues(alpha: 0.4),
                                 offset: const Offset(5, 5),
                                 blurRadius: 5,
                               ),
                               BoxShadow(
                                 color: AppColors.customContinerColorDown
-                                    .withOpacity(0.4),
+                                    .withValues(alpha: 0.4),
                                 offset: const Offset(-5, -5),
                                 blurRadius: 5,
                               ),
@@ -187,7 +187,7 @@ class _PersonalizedExerciseScreenState
                                               BoxShadow(
                                                 color: AppColors
                                                     .customContainerColorUp
-                                                    .withOpacity(0.4),
+                                                    .withValues(alpha: 0.4),
                                                 offset: const Offset(3, 3),
                                                 blurRadius: 4,
                                                 inset: true,
@@ -195,7 +195,7 @@ class _PersonalizedExerciseScreenState
                                               BoxShadow(
                                                 color: AppColors
                                                     .customContinerColorDown
-                                                    .withOpacity(0.4),
+                                                    .withValues(alpha: 0.4),
                                                 offset: const Offset(-3, -3),
                                                 blurRadius: 4,
                                                 inset: true,
@@ -255,7 +255,7 @@ class _PersonalizedExerciseScreenState
                                   children: [
                                     SizedBox(height: context.sh(12)),
                                     NormalText(
-                                      titleText: '• ' + item['details'],
+                                      titleText: '• ${item['details']}',
                                       titleSize: context.sp(12),
                                       titleWeight: FontWeight.w600,
                                       titleColor: AppColors.iconColor,

@@ -32,8 +32,8 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (!mounted) return;
         await context.read<DailyWorkoutRoutineViewModel>().setWorkoutData(
-              widget.workoutData!,
-            );
+          widget.workoutData!,
+        );
       });
     }
   }
@@ -84,449 +84,487 @@ class _DailyWorkoutRoutineState extends State<DailyWorkoutRoutine> {
             ),
             SizedBox(height: context.sh(8)),
             if (dailyWorkoutRoutineViewModel.morningRoutineList.isNotEmpty)
-            PlanContainer(
-              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
-              isSelected: false,
-              onTap: () {},
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: context.sh(28),
-                        width: context.sw(28),
-                        decoration: BoxDecoration(
-                          color: AppColors.backGroundColor,
-                          borderRadius: BorderRadius.circular(
-                            context.radiusR(10),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.customContainerColorUp
-                                  .withOpacity(0.4),
-                              offset: const Offset(3, 3),
-                              blurRadius: 4,
-                            ),
-                            BoxShadow(
-                              color: AppColors.customContinerColorDown
-                                  .withOpacity(0.4),
-                              offset: const Offset(-3, -3),
-                              blurRadius: 4,
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: SizedBox(
-                            height: context.sh(32),
-                            width: context.sw(32),
-                            child: SvgPicture.asset(
-                              AppAssets.sunIcon,
-                              color: AppColors.fireColor,
-                              fit: BoxFit.scaleDown,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: context.sw(11)),
-                      Expanded(
-                        child: NormalText(
-                          titleText: 'Morning Plan',
-                          titleSize: context.sp(12),
-                          titleWeight: FontWeight.w600,
-                          titleColor: AppColors.subHeadingColor,
-                          // subText: 'Best done after waking up',
-                          // subSize: context.sp(10),
-                          // subWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  ...List.generate(
-                    dailyWorkoutRoutineViewModel.morningRoutineList.length,
-                    (index) {
-                      final item =
-                          dailyWorkoutRoutineViewModel.morningRoutineList[index];
-                      final globalIndex = index;
-                      final bool isDone = dailyWorkoutRoutineViewModel
-                          .isCompleted(globalIndex);
-                      final seq = item['seq'];
-                      final displayNum = seq is int ? seq : (globalIndex + 1);
-
-                      return Center(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          width: double.infinity,
-                          padding: context.paddingSymmetricR(vertical: 8, horizontal: 20),
-                          margin: context.paddingSymmetricR(vertical: 11),
+              PlanContainer(
+                padding: context.paddingSymmetricR(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+                isSelected: false,
+                onTap: () {},
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          height: context.sh(28),
+                          width: context.sw(28),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: isDone
-                                  ? AppColors.pimaryColor
-                                  : AppColors.backGroundColor,
-                              width: context.sw(1.5),
+                            color: AppColors.backGroundColor,
+                            borderRadius: BorderRadius.circular(
+                              context.radiusR(10),
                             ),
-                            color: isDone
-                                ? AppColors.pimaryColor.withOpacity(0.15)
-                                : AppColors.backGroundColor,
-
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.customContainerColorUp
-                                    .withOpacity(0.4),
-                                offset: const Offset(5, 5),
-                                blurRadius: 5,
+                                    .withValues(alpha: 0.4),
+                                offset: const Offset(3, 3),
+                                blurRadius: 4,
                               ),
                               BoxShadow(
                                 color: AppColors.customContinerColorDown
-                                    .withOpacity(0.4),
-                                offset: const Offset(-5, -5),
-                                blurRadius: 5,
+                                    .withValues(alpha: 0.4),
+                                offset: const Offset(-3, -3),
+                                blurRadius: 4,
                               ),
                             ],
                           ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          dailyWorkoutRoutineViewModel
-                                              .markExerciseDone(globalIndex);
-                                        },
-                                        child: Container(
-                                          height: context.sh(28),
-                                          width: context.sw(28),
-                                          decoration: BoxDecoration(
-                                            color: isDone
-                                                ? AppColors.pimaryColor
-                                                : AppColors.backGroundColor,
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: AppColors
-                                                    .customContainerColorUp
-                                                    .withOpacity(0.4),
-                                                offset: const Offset(3, 3),
-                                                blurRadius: 4,
-                                                inset: true,
-                                              ),
-                                              BoxShadow(
-                                                color: AppColors
-                                                    .customContinerColorDown
-                                                    .withOpacity(0.4),
-                                                offset: const Offset(-3, -3),
-                                                blurRadius: 4,
-                                                inset: true,
-                                              ),
-                                            ],
-                                          ),
-                                          child: Center(
-                                            child: isDone
-                                                ? Icon(
-                                                    Icons.check,
-                                                    size: context.sh(16),
-                                                    color: AppColors.white,
-                                                  )
-                                                : NormalText(
-                                                    titleText: '$displayNum',
-                                                  ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: context.sw(9)),
-                                      NormalText(
-                                        titleText: item['time'],
-                                        titleSize: context.sp(14),
-                                        titleWeight: FontWeight.w500,
-                                        titleColor: AppColors.subHeadingColor,
-                                        subText: item['activity'],
-                                        subSize: context.sp(10),
-                                        subWeight: FontWeight.w400,
-                                        subColor: AppColors.subHeadingColor,
-                                      ),
-                                    ],
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      dailyWorkoutRoutineViewModel.toggleExpand(
-                                        globalIndex,
-                                      );
-                                    },
-                                    child: Icon(
-                                      dailyWorkoutRoutineViewModel.isExpanded(
-                                            globalIndex,
-                                          )
-                                          ? Icons.keyboard_arrow_up
-                                          : Icons.keyboard_arrow_down,
-                                      size: context.sh(24),
-                                    ),
-                                  ),
-                                ],
+                          child: Center(
+                            child: SizedBox(
+                              height: context.sh(32),
+                              width: context.sw(32),
+                              child: SvgPicture.asset(
+                                AppAssets.sunIcon,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.fireColor,
+                                  BlendMode.srcIn,
+                                ),
+                                fit: BoxFit.scaleDown,
                               ),
-                              AnimatedCrossFade(
-                                firstChild: const SizedBox(),
-                                secondChild: Column(
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: context.sw(11)),
+                        Expanded(
+                          child: NormalText(
+                            titleText: 'Morning Plan',
+                            titleSize: context.sp(12),
+                            titleWeight: FontWeight.w600,
+                            titleColor: AppColors.subHeadingColor,
+                            // subText: 'Best done after waking up',
+                            // subSize: context.sp(10),
+                            // subWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ...List.generate(
+                      dailyWorkoutRoutineViewModel.morningRoutineList.length,
+                      (index) {
+                        final item = dailyWorkoutRoutineViewModel
+                            .morningRoutineList[index];
+                        final globalIndex = index;
+                        final bool isDone = dailyWorkoutRoutineViewModel
+                            .isCompleted(globalIndex);
+                        final seq = item['seq'];
+                        final displayNum = seq is int ? seq : (globalIndex + 1);
+
+                        return Center(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            width: double.infinity,
+                            padding: context.paddingSymmetricR(
+                              vertical: 8,
+                              horizontal: 20,
+                            ),
+                            margin: context.paddingSymmetricR(vertical: 11),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: isDone
+                                    ? AppColors.pimaryColor
+                                    : AppColors.backGroundColor,
+                                width: context.sw(1.5),
+                              ),
+                              color: isDone
+                                  ? AppColors.pimaryColor.withValues(alpha: 0.15)
+                                  : AppColors.backGroundColor,
+
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.customContainerColorUp
+                                      .withValues(alpha: 0.4),
+                                  offset: const Offset(5, 5),
+                                  blurRadius: 5,
+                                ),
+                                BoxShadow(
+                                  color: AppColors.customContinerColorDown
+                                      .withValues(alpha: 0.4),
+                                  offset: const Offset(-5, -5),
+                                  blurRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(height: context.sh(12)),
-                                    NormalText(
-                                      titleText: item['details'] ?? '',
-                                      titleSize: context.sp(12),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.iconColor,
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              dailyWorkoutRoutineViewModel
+                                                  .markExerciseDone(
+                                                    globalIndex,
+                                                  );
+                                            },
+                                            child: Container(
+                                              height: context.sh(28),
+                                              width: context.sw(28),
+                                              decoration: BoxDecoration(
+                                                color: isDone
+                                                    ? AppColors.pimaryColor
+                                                    : AppColors.backGroundColor,
+                                                shape: BoxShape.circle,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: AppColors
+                                                        .customContainerColorUp
+                                                        .withValues(alpha: 0.4),
+                                                    offset: const Offset(3, 3),
+                                                    blurRadius: 4,
+                                                    inset: true,
+                                                  ),
+                                                  BoxShadow(
+                                                    color: AppColors
+                                                        .customContinerColorDown
+                                                        .withValues(alpha: 0.4),
+                                                    offset: const Offset(
+                                                      -3,
+                                                      -3,
+                                                    ),
+                                                    blurRadius: 4,
+                                                    inset: true,
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Center(
+                                                child: isDone
+                                                    ? Icon(
+                                                        Icons.check,
+                                                        size: context.sh(16),
+                                                        color: AppColors.white,
+                                                      )
+                                                    : NormalText(
+                                                        titleText:
+                                                            '$displayNum',
+                                                      ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: context.sw(9)),
+                                          Expanded(
+                                            child: NormalText(
+                                              titleText: item['time'],
+                                              titleSize: context.sp(14),
+                                              titleWeight: FontWeight.w500,
+                                              titleColor:
+                                                  AppColors.subHeadingColor,
+                                              subText: item['activity'],
+                                              subSize: context.sp(10),
+                                              subWeight: FontWeight.w400,
+                                              subColor:
+                                                  AppColors.subHeadingColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        dailyWorkoutRoutineViewModel
+                                            .toggleExpand(globalIndex);
+                                      },
+                                      child: Icon(
+                                        dailyWorkoutRoutineViewModel.isExpanded(
+                                              globalIndex,
+                                            )
+                                            ? Icons.keyboard_arrow_up
+                                            : Icons.keyboard_arrow_down,
+                                        size: context.sh(24),
+                                      ),
                                     ),
                                   ],
                                 ),
-                                crossFadeState:
-                                    dailyWorkoutRoutineViewModel.isExpanded(
-                                      globalIndex,
-                                    )
-                                    ? CrossFadeState.showSecond
-                                    : CrossFadeState.showFirst,
-                                duration: const Duration(milliseconds: 300),
-                              ),
-                            ],
+                                AnimatedCrossFade(
+                                  firstChild: const SizedBox(),
+                                  secondChild: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: context.sh(12)),
+                                      NormalText(
+                                        titleText: item['details'] ?? '',
+                                        titleSize: context.sp(12),
+                                        titleWeight: FontWeight.w600,
+                                        titleColor: AppColors.iconColor,
+                                      ),
+                                    ],
+                                  ),
+                                  crossFadeState:
+                                      dailyWorkoutRoutineViewModel.isExpanded(
+                                        globalIndex,
+                                      )
+                                      ? CrossFadeState.showSecond
+                                      : CrossFadeState.showFirst,
+                                  duration: const Duration(milliseconds: 300),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
             if (dailyWorkoutRoutineViewModel.morningRoutineList.isNotEmpty &&
                 dailyWorkoutRoutineViewModel.eveningRoutineList.isNotEmpty)
               SizedBox(height: context.sh(8)),
             if (dailyWorkoutRoutineViewModel.eveningRoutineList.isNotEmpty)
-            PlanContainer(
-              padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
-              isSelected: false,
-              onTap: () {},
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: context.sh(28),
-                        width: context.sw(28),
-                        decoration: BoxDecoration(
-                          color: AppColors.backGroundColor,
-                          borderRadius: BorderRadius.circular(
-                            context.radiusR(10),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.customContainerColorUp
-                                  .withOpacity(0.4),
-                              offset: const Offset(3, 3),
-                              blurRadius: 4,
-                            ),
-                            BoxShadow(
-                              color: AppColors.customContinerColorDown
-                                  .withOpacity(0.4),
-                              offset: const Offset(-3, -3),
-                              blurRadius: 4,
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: SizedBox(
-                            height: context.sh(32),
-                            width: context.sw(32),
-                            child: SvgPicture.asset(
-                              AppAssets.nightIcon,
-                              fit: BoxFit.scaleDown,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: context.sw(11)),
-                      Expanded(
-                        child: NormalText(
-                          titleText: 'Evening Plan',
-                          titleSize: context.sp(12),
-                          titleWeight: FontWeight.w600,
-                          titleColor: AppColors.subHeadingColor,
-                          // subText: 'Best done after waking up',
-                          // subSize: context.sp(10),
-                          // subWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  ...List.generate(
-                    dailyWorkoutRoutineViewModel.eveningRoutineList.length,
-                    (index) {
-                      final item =
-                          dailyWorkoutRoutineViewModel.eveningRoutineList[index];
-                      final globalIndex =
-                          dailyWorkoutRoutineViewModel.morningRoutineList.length +
-                              index;
-                      final bool isDone = dailyWorkoutRoutineViewModel
-                          .isCompleted(globalIndex);
-                      final seq = item['seq'];
-                      final displayNum = seq is int ? seq : (index + 1);
-
-                      return Center(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          width: double.infinity,
-                          padding: context.paddingSymmetricR(vertical: 8, horizontal: 20),
-                          margin: context.paddingSymmetricR(vertical: 11),
+              PlanContainer(
+                padding: context.paddingSymmetricR(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+                isSelected: false,
+                onTap: () {},
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          height: context.sh(28),
+                          width: context.sw(28),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: isDone
-                                  ? AppColors.pimaryColor
-                                  : AppColors.backGroundColor,
-                              width: context.sw(1.5),
+                            color: AppColors.backGroundColor,
+                            borderRadius: BorderRadius.circular(
+                              context.radiusR(10),
                             ),
-                            color: isDone
-                                ? AppColors.pimaryColor.withOpacity(0.15)
-                                : AppColors.backGroundColor,
-
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.customContainerColorUp
-                                    .withOpacity(0.4),
-                                offset: const Offset(5, 5),
-                                blurRadius: 5,
+                                    .withValues(alpha: 0.4),
+                                offset: const Offset(3, 3),
+                                blurRadius: 4,
                               ),
                               BoxShadow(
                                 color: AppColors.customContinerColorDown
-                                    .withOpacity(0.4),
-                                offset: const Offset(-5, -5),
-                                blurRadius: 5,
+                                    .withValues(alpha: 0.4),
+                                offset: const Offset(-3, -3),
+                                blurRadius: 4,
                               ),
                             ],
                           ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          dailyWorkoutRoutineViewModel
-                                              .markExerciseDone(globalIndex);
-                                        },
-                                        child: Container(
-                                          height: context.sh(28),
-                                          width: context.sw(28),
-                                          decoration: BoxDecoration(
-                                            color: isDone
-                                                ? AppColors.pimaryColor
-                                                : AppColors.backGroundColor,
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: AppColors
-                                                    .customContainerColorUp
-                                                    .withOpacity(0.4),
-                                                offset: const Offset(3, 3),
-                                                blurRadius: 4,
-                                                inset: true,
-                                              ),
-                                              BoxShadow(
-                                                color: AppColors
-                                                    .customContinerColorDown
-                                                    .withOpacity(0.4),
-                                                offset: const Offset(-3, -3),
-                                                blurRadius: 4,
-                                                inset: true,
-                                              ),
-                                            ],
-                                          ),
-                                          child: Center(
-                                            child: isDone
-                                                ? Icon(
-                                                    Icons.check,
-                                                    size: context.sh(16),
-                                                    color: AppColors.white,
-                                                  )
-                                                : NormalText(
-                                                    titleText: '$displayNum',
-                                                  ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: context.sw(9)),
-                                      NormalText(
-                                        titleText: item['time'],
-                                        titleSize: context.sp(14),
-                                        titleWeight: FontWeight.w500,
-                                        titleColor: AppColors.subHeadingColor,
-                                        subText: item['activity'],
-                                        subSize: context.sp(10),
-                                        subWeight: FontWeight.w400,
-                                        subColor: AppColors.subHeadingColor,
-                                      ),
-                                    ],
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      dailyWorkoutRoutineViewModel.toggleExpand(
-                                        globalIndex,
-                                      );
-                                    },
-                                    child: Icon(
-                                      dailyWorkoutRoutineViewModel.isExpanded(
-                                            globalIndex,
-                                          )
-                                          ? Icons.keyboard_arrow_up
-                                          : Icons.keyboard_arrow_down,
-                                      size: context.sh(24),
-                                    ),
-                                  ),
-                                ],
+                          child: Center(
+                            child: SizedBox(
+                              height: context.sh(32),
+                              width: context.sw(32),
+                              child: SvgPicture.asset(
+                                AppAssets.nightIcon,
+                                fit: BoxFit.scaleDown,
                               ),
-                              AnimatedCrossFade(
-                                firstChild: const SizedBox(),
-                                secondChild: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: context.sw(11)),
+                        Expanded(
+                          child: NormalText(
+                            titleText: 'Evening Plan',
+                            titleSize: context.sp(12),
+                            titleWeight: FontWeight.w600,
+                            titleColor: AppColors.subHeadingColor,
+                            // subText: 'Best done after waking up',
+                            // subSize: context.sp(10),
+                            // subWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ...List.generate(
+                      dailyWorkoutRoutineViewModel.eveningRoutineList.length,
+                      (index) {
+                        final item = dailyWorkoutRoutineViewModel
+                            .eveningRoutineList[index];
+                        final globalIndex =
+                            dailyWorkoutRoutineViewModel
+                                .morningRoutineList
+                                .length +
+                            index;
+                        final bool isDone = dailyWorkoutRoutineViewModel
+                            .isCompleted(globalIndex);
+                        final seq = item['seq'];
+                        final displayNum = seq is int ? seq : (index + 1);
+
+                        return Center(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            width: double.infinity,
+                            padding: context.paddingSymmetricR(
+                              vertical: 8,
+                              horizontal: 20,
+                            ),
+                            margin: context.paddingSymmetricR(vertical: 11),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: isDone
+                                    ? AppColors.pimaryColor
+                                    : AppColors.backGroundColor,
+                                width: context.sw(1.5),
+                              ),
+                              color: isDone
+                                  ? AppColors.pimaryColor.withValues(alpha: 0.15)
+                                  : AppColors.backGroundColor,
+
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.customContainerColorUp
+                                      .withValues(alpha: 0.4),
+                                  offset: const Offset(5, 5),
+                                  blurRadius: 5,
+                                ),
+                                BoxShadow(
+                                  color: AppColors.customContinerColorDown
+                                      .withValues(alpha: 0.4),
+                                  offset: const Offset(-5, -5),
+                                  blurRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
                                   children: [
-                                    SizedBox(height: context.sh(12)),
-                                    NormalText(
-                                      titleText: item['details'] ?? '',
-                                      titleSize: context.sp(12),
-                                      titleWeight: FontWeight.w600,
-                                      titleColor: AppColors.iconColor,
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              dailyWorkoutRoutineViewModel
+                                                  .markExerciseDone(
+                                                    globalIndex,
+                                                  );
+                                            },
+                                            child: Container(
+                                              height: context.sh(28),
+                                              width: context.sw(28),
+                                              decoration: BoxDecoration(
+                                                color: isDone
+                                                    ? AppColors.pimaryColor
+                                                    : AppColors.backGroundColor,
+                                                shape: BoxShape.circle,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: AppColors
+                                                        .customContainerColorUp
+                                                        .withValues(alpha: 0.4),
+                                                    offset: const Offset(3, 3),
+                                                    blurRadius: 4,
+                                                    inset: true,
+                                                  ),
+                                                  BoxShadow(
+                                                    color: AppColors
+                                                        .customContinerColorDown
+                                                        .withValues(alpha: 0.4),
+                                                    offset: const Offset(
+                                                      -3,
+                                                      -3,
+                                                    ),
+                                                    blurRadius: 4,
+                                                    inset: true,
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Center(
+                                                child: isDone
+                                                    ? Icon(
+                                                        Icons.check,
+                                                        size: context.sh(16),
+                                                        color: AppColors.white,
+                                                      )
+                                                    : NormalText(
+                                                        titleText:
+                                                            '$displayNum',
+                                                      ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: context.sw(9)),
+                                          Expanded(
+                                            child: NormalText(
+                                              titleText: item['time'],
+                                              titleSize: context.sp(14),
+                                              titleWeight: FontWeight.w500,
+                                              titleColor:
+                                                  AppColors.subHeadingColor,
+                                              subText: item['activity'],
+                                              subSize: context.sp(10),
+                                              subWeight: FontWeight.w400,
+                                              subColor:
+                                                  AppColors.subHeadingColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        dailyWorkoutRoutineViewModel
+                                            .toggleExpand(globalIndex);
+                                      },
+                                      child: Icon(
+                                        dailyWorkoutRoutineViewModel.isExpanded(
+                                              globalIndex,
+                                            )
+                                            ? Icons.keyboard_arrow_up
+                                            : Icons.keyboard_arrow_down,
+                                        size: context.sh(24),
+                                      ),
                                     ),
                                   ],
                                 ),
-                                crossFadeState:
-                                    dailyWorkoutRoutineViewModel.isExpanded(
-                                      globalIndex,
-                                    )
-                                    ? CrossFadeState.showSecond
-                                    : CrossFadeState.showFirst,
-                                duration: const Duration(milliseconds: 300),
-                              ),
-                            ],
+                                AnimatedCrossFade(
+                                  firstChild: const SizedBox(),
+                                  secondChild: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: context.sh(12)),
+                                      NormalText(
+                                        titleText: item['details'] ?? '',
+                                        titleSize: context.sp(12),
+                                        titleWeight: FontWeight.w600,
+                                        titleColor: AppColors.iconColor,
+                                      ),
+                                    ],
+                                  ),
+                                  crossFadeState:
+                                      dailyWorkoutRoutineViewModel.isExpanded(
+                                        globalIndex,
+                                      )
+                                      ? CrossFadeState.showSecond
+                                      : CrossFadeState.showFirst,
+                                  duration: const Duration(milliseconds: 300),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
             if (dailyWorkoutRoutineViewModel.aiMessage != null &&
                 dailyWorkoutRoutineViewModel.aiMessage!.isNotEmpty) ...[
-            SizedBox(height: context.sh(8)),
-            LightCardWidget(
-              text: dailyWorkoutRoutineViewModel.aiMessage!,
-            ),
+              SizedBox(height: context.sh(8)),
+              LightCardWidget(text: dailyWorkoutRoutineViewModel.aiMessage!),
             ],
           ],
         ),

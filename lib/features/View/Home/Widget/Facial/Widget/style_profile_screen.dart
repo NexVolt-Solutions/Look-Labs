@@ -106,13 +106,13 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: AppColors.customContainerColorUp
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     offset: const Offset(5, 5),
                                     blurRadius: 5,
                                   ),
                                   BoxShadow(
                                     color: AppColors.customContinerColorDown
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     offset: const Offset(-5, -5),
                                     blurRadius: 5,
                                   ),
@@ -122,7 +122,10 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                                 item['image'],
                                 height: context.sh(18.05),
                                 width: context.sw(22.56),
-                                color: AppColors.pimaryColor,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.pimaryColor,
+                                  BlendMode.srcIn,
+                                ),
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -172,6 +175,7 @@ class _StyleProfileScreenState extends State<StyleProfileScreen> {
                 styleProfileScreenViewModel.selectExercise();
 
                 Future.delayed(const Duration(milliseconds: 150), () {
+                  if (!context.mounted) return;
                   Navigator.pushNamed(
                     context,
                     RoutesName.PersonalizedExerciseScreen,

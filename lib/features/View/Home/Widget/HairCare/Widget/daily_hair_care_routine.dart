@@ -87,7 +87,10 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                             AppAssets.starIcon,
                             height: context.sh(24),
                             width: context.sw(24),
-                            color: AppColors.pimaryColor,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.pimaryColor,
+                              BlendMode.srcIn,
+                            ),
                           ),
                           SizedBox(width: context.sw(8)),
                           NormalText(
@@ -152,7 +155,7 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                   expansionFactor: 3,
                   spacing: 6,
                   activeDotColor: AppColors.pimaryColor,
-                  dotColor: AppColors.pimaryColor.withOpacity(0.3),
+                  dotColor: AppColors.pimaryColor.withValues(alpha: 0.3),
                 ),
               ),
             ),
@@ -174,13 +177,7 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                     children: [
                       SimpleCheckBox(
                         isSelected: dailyHairCareRoutineViewModel.isSelected,
-                        onTap: () {
-                          setState(() {
-                            dailyHairCareRoutineViewModel.isSelected =
-                                !dailyHairCareRoutineViewModel
-                                    .isSelected; // toggle the checkbox
-                          });
-                        },
+                        onTap: dailyHairCareRoutineViewModel.toggleChecklistSelection,
                       ),
                       SizedBox(width: context.sw(12)),
                       Expanded(
@@ -235,13 +232,9 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                       children: [
                         SimpleCheckBox(
                           isSelected: dailyHairCareRoutineViewModel.isSelected,
-                          onTap: () {
-                            setState(() {
-                              dailyHairCareRoutineViewModel.isSelected =
-                                  !dailyHairCareRoutineViewModel
-                                      .isSelected; // toggle the checkbox
-                            });
-                          },
+                          onTap:
+                              dailyHairCareRoutineViewModel
+                                  .toggleChecklistSelection,
                         ),
                         SizedBox(width: context.sw(12)),
                         Expanded(
@@ -291,7 +284,7 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                     progressViewModel.selectIndex(index);
                   },
                   color: isSelected
-                      ? AppColors.buttonColor.withOpacity(0.11)
+                      ? AppColors.buttonColor.withValues(alpha: 0.11)
                       : AppColors.backGroundColor,
                   border: isSelected
                       ? Border.all(color: AppColors.pimaryColor, width: 1.5)

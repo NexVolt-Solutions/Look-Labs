@@ -148,13 +148,13 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.customContainerColorUp
-                                  .withOpacity(0.4),
+                                  .withValues(alpha: 0.4),
                               offset: const Offset(3, 3),
                               blurRadius: 4,
                             ),
                             BoxShadow(
                               color: AppColors.customContinerColorDown
-                                  .withOpacity(0.4),
+                                  .withValues(alpha: 0.4),
                               offset: const Offset(-3, -3),
                               blurRadius: 4,
                             ),
@@ -175,7 +175,7 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                   ),
                   SizedBox(height: context.sh(12)),
                   Divider(
-                    color: AppColors.iconColor.withOpacity(0.2),
+                    color: AppColors.iconColor.withValues(alpha: 0.2),
                     thickness: 0.5,
                     height: context.sh(0.5),
                   ),
@@ -189,7 +189,10 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                             AppAssets.liftingUpIcon,
                             height: context.sh(24),
                             width: context.sw(24),
-                            color: AppColors.iconColor,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.iconColor,
+                              BlendMode.srcIn,
+                            ),
                             fit: BoxFit.scaleDown,
                           ),
                           NormalText(
@@ -255,7 +258,7 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                               '${ui.routineExerciseCount} exercises • ${ui.routineEstimatedMinutes} min',
                           titleSize: context.sp(12),
                           titleWeight: FontWeight.w400,
-                          titleColor: AppColors.subHeadingColor.withOpacity(0.7),
+                          titleColor: AppColors.subHeadingColor.withValues(alpha: 0.7),
                         ),
                       ],
                     ),
@@ -265,7 +268,7 @@ class _HeightResultScreenState extends State<HeightResultScreen> {
                     size: context.sh(24),
                     color: hasRoutine
                         ? AppColors.subHeadingColor
-                        : AppColors.subHeadingColor.withOpacity(0.5),
+                        : AppColors.subHeadingColor.withValues(alpha: 0.5),
                   ),
                 ],
               ),

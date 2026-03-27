@@ -114,9 +114,12 @@ class _DietResultScreenState extends State<DietResultScreen> {
                           child: SvgPicture.asset(
                             dietResultScreenViewModel.exData[btnIndex]['image'],
                             fit: BoxFit.scaleDown,
-                            color: isSelected
-                                ? AppColors.pimaryColor
-                                : AppColors.subHeadingColor,
+                            colorFilter: ColorFilter.mode(
+                              isSelected
+                                  ? AppColors.pimaryColor
+                                  : AppColors.subHeadingColor,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
@@ -152,14 +155,14 @@ class _DietResultScreenState extends State<DietResultScreen> {
                       borderRadius: BorderRadius.circular(context.radiusR(10)),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.customContainerColorUp.withOpacity(
+                          color: AppColors.customContainerColorUp.withValues(alpha: 
                             0.4,
                           ),
                           offset: const Offset(3, 3),
                           blurRadius: 4,
                         ),
                         BoxShadow(
-                          color: AppColors.customContinerColorDown.withOpacity(
+                          color: AppColors.customContinerColorDown.withValues(alpha: 
                             0.4,
                           ),
                           offset: const Offset(-3, -3),
@@ -227,14 +230,14 @@ class _DietResultScreenState extends State<DietResultScreen> {
 
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.customContainerColorUp.withOpacity(
+                          color: AppColors.customContainerColorUp.withValues(alpha: 
                             0.4,
                           ),
                           offset: const Offset(5, 5),
                           blurRadius: 5,
                         ),
                         BoxShadow(
-                          color: AppColors.customContinerColorDown.withOpacity(
+                          color: AppColors.customContinerColorDown.withValues(alpha: 
                             0.4,
                           ),
                           offset: const Offset(-5, -5),

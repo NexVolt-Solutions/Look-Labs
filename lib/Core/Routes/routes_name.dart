@@ -77,9 +77,13 @@ class RoutesName {
       case 'facial':
         return FacialScreen;
       case 'skincare':
-        return SkinCareScreen;
+      case 'skin_care':
+      case 'skin':
+        return DailySkinCareRoutineScreen;
       case 'haircare':
-        return HairCareScreen;
+      case 'hair_care':
+      case 'hair':
+        return DailyHairCareRoutineScreen;
       case 'workout':
         return WorkOutResultScreen; // Skip old WorkOut questions; go to result after domain questions
       case 'diet':
@@ -89,7 +93,7 @@ class RoutesName {
       case 'height':
         return HeightResultScreen; // Skip HeightScreen questions; go to result after domain questions
       case 'quit_porn':
-        return QuitPornScreen;
+        return RecoveryPathScreen;
       default:
         return null;
     }

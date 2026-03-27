@@ -31,7 +31,6 @@ import 'package:looklabs/Features/View/Home/Widget/HairCare/hair_care.dart';
 import 'package:looklabs/Features/View/Home/Widget/Height/Widget/daily_height_routine.dart';
 import 'package:looklabs/Features/View/Home/Widget/Height/Widget/height_result_screen.dart';
 import 'package:looklabs/Features/View/Home/Widget/Height/height_screen.dart';
-import 'package:looklabs/Features/View/Home/Widget/QuitPorn/quit_porn.dart';
 import 'package:looklabs/Features/View/Home/Widget/HairCare/Widget/hair_analyzing_screen.dart';
 import 'package:looklabs/Features/View/Home/Widget/HairCare/Widget/daily_hair_care_routine.dart';
 import 'package:looklabs/Features/View/Home/Widget/HairCare/Widget/hair_home_remedies.dart';
@@ -42,7 +41,7 @@ import 'package:looklabs/Features/View/Home/Widget/QuitPorn/recovery_path_screen
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/daily_skin_care_routine.dart';
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_analyzing_screen.dart';
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_home_remedies.dart';
-import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_product_Detail_screen.dart';
+import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_product_detail_screen.dart';
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_top_product.dart';
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_review_scans.dart';
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/skin_care.dart';
@@ -59,6 +58,9 @@ import 'package:looklabs/Features/View/Purchase/purchase_screen.dart';
 import 'package:looklabs/Features/View/DomainQuestion/domain_question_screen.dart';
 import 'package:looklabs/Features/View/QuestionScreen/question_screen.dart';
 import 'package:looklabs/Features/ViewModel/domain_question_view_model.dart';
+import 'package:looklabs/Features/ViewModel/fashion_profile_screen_view_model.dart';
+import 'package:looklabs/Features/ViewModel/recovery_path_screen_view_model.dart';
+import 'package:looklabs/Features/ViewModel/review_scans_view_model.dart';
 import 'package:looklabs/Features/View/SplahScreen/splash_screen.dart';
 import 'package:looklabs/Features/View/StartScreen/start_screen.dart';
 import 'package:looklabs/Features/View/Subscription%20Plan/subscription_plan_screen.dart';
@@ -174,7 +176,10 @@ class Routes {
       case RoutesName.QuitPornScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => QuitPorn(),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => DomainQuestionViewModel(domain: 'quit_porn'),
+            child: const DomainQuestionScreen(domain: 'quit_porn'),
+          ),
         );
       case RoutesName.WorkOutScreen:
         return MaterialPageRoute(settings: settings, builder: (_) => WorkOut());
@@ -186,7 +191,10 @@ class Routes {
       case RoutesName.HairReviewScansScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => HairReviewScans(),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => ReviewScansViewModel(),
+            child: const HairReviewScans(),
+          ),
         );
       case RoutesName.HairAnalyzingScreen:
         return MaterialPageRoute(
@@ -221,7 +229,10 @@ class Routes {
       case RoutesName.SkinReviewScansScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => SkinReviewScans(),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => ReviewScansViewModel(),
+            child: const SkinReviewScans(),
+          ),
         );
       case RoutesName.SkinHomeRemediesScreen:
         return MaterialPageRoute(
@@ -246,15 +257,16 @@ class Routes {
       case RoutesName.DailyHeightRoutineScreen:
         final heightRoutineData =
             settings.arguments != null && settings.arguments is Map
-                ? Map<String, dynamic>.from(settings.arguments as Map)
-                : null;
+            ? Map<String, dynamic>.from(settings.arguments as Map)
+            : null;
         return MaterialPageRoute(
           settings: settings,
           builder: (_) =>
               DailyHeightRoutineScreen(resultData: heightRoutineData),
         );
       case RoutesName.HeightResultScreen:
-        final heightData = settings.arguments != null && settings.arguments is Map
+        final heightData =
+            settings.arguments != null && settings.arguments is Map
             ? Map<String, dynamic>.from(settings.arguments as Map)
             : null;
         return MaterialPageRoute(
@@ -262,8 +274,8 @@ class Routes {
           builder: (_) => HeightResultScreen(resultData: heightData),
         );
       case RoutesName.WorkOutResultScreen:
-        final workoutData = settings.arguments != null &&
-                settings.arguments is Map
+        final workoutData =
+            settings.arguments != null && settings.arguments is Map
             ? Map<String, dynamic>.from(settings.arguments as Map)
             : null;
         return MaterialPageRoute(
@@ -271,8 +283,8 @@ class Routes {
           builder: (_) => WorkOutResultScreen(workoutData: workoutData),
         );
       case RoutesName.DailyWorkoutRoutineScreen:
-        final workoutData = settings.arguments != null &&
-                settings.arguments is Map
+        final workoutData =
+            settings.arguments != null && settings.arguments is Map
             ? Map<String, dynamic>.from(settings.arguments as Map)
             : null;
         return MaterialPageRoute(
@@ -280,8 +292,8 @@ class Routes {
           builder: (_) => DailyWorkoutRoutine(workoutData: workoutData),
         );
       case RoutesName.WorkOutProgressScreen:
-        final workoutData = settings.arguments != null &&
-                settings.arguments is Map
+        final workoutData =
+            settings.arguments != null && settings.arguments is Map
             ? Map<String, dynamic>.from(settings.arguments as Map)
             : null;
         return MaterialPageRoute(
@@ -316,7 +328,10 @@ class Routes {
       case RoutesName.FacialReviewScansScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => FacialReviewScansScreen(),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => ReviewScansViewModel(),
+            child: const FacialReviewScansScreen(),
+          ),
         );
       case RoutesName.FacialAnalyzingScren:
         return MaterialPageRoute(
@@ -339,9 +354,16 @@ class Routes {
           builder: (_) => FacialProgressScreen(),
         );
       case RoutesName.RecoveryPathScreen:
+        final quitPornData =
+            settings.arguments != null && settings.arguments is Map
+            ? Map<String, dynamic>.from(settings.arguments as Map)
+            : null;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => RecoveryPathScreen(),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => RecoveryPathScreenViewModel(),
+            child: RecoveryPathScreen(resultData: quitPornData),
+          ),
         );
 
       case RoutesName.FashionAnalyzingScreen:
@@ -352,12 +374,18 @@ class Routes {
       case RoutesName.FashionReviewScanScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => FashionReviewScanScreen(),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => ReviewScansViewModel(),
+            child: const FashionReviewScanScreen(),
+          ),
         );
       case RoutesName.FashionProfileScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => FashionProfileScreen(),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => FashionProfileScreenViewModel(),
+            child: const FashionProfileScreen(),
+          ),
         );
       case RoutesName.WeeklyPlanScreen:
         return MaterialPageRoute(

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class SkinCareQuestionPage extends StatelessWidget {
   final int index;
-  const SkinCareQuestionPage({required this.index});
+  const SkinCareQuestionPage({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {

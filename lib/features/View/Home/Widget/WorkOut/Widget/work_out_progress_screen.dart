@@ -176,7 +176,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                                 yourProgressScreenViewModel.selectIndex(index);
                               },
                               color: isSelected
-                                  ? AppColors.buttonColor.withOpacity(0.11)
+                                  ? AppColors.buttonColor.withValues(alpha: 0.11)
                                   : AppColors.backGroundColor,
                               border: isSelected
                                   ? Border.all(
@@ -246,13 +246,13 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: AppColors.customContainerColorUp
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     offset: const Offset(3, 3),
                                     blurRadius: 4,
                                   ),
                                   BoxShadow(
                                     color: AppColors.customContinerColorDown
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     offset: const Offset(-3, -3),
                                     blurRadius: 4,
                                   ),
@@ -341,14 +341,14 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                                     boxShadow: [
                                       BoxShadow(
                                         color: AppColors.customContainerColorUp
-                                            .withOpacity(0.4),
+                                            .withValues(alpha: 0.4),
                                         offset: const Offset(3, 3),
                                         blurRadius: 4,
                                         inset: true,
                                       ),
                                       BoxShadow(
                                         color: AppColors.customContinerColorDown
-                                            .withOpacity(0.4),
+                                            .withValues(alpha: 0.4),
                                         offset: const Offset(-3, -3),
                                         blurRadius: 4,
                                         inset: true,

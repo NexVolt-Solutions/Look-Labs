@@ -12,6 +12,27 @@ import 'package:looklabs/Repository/explore_domains_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
 
 class HomeViewModel extends ChangeNotifier {
+  String _normalizedDomainKey(String key) {
+    final d = key.trim().toLowerCase();
+    switch (d) {
+      case 'skin':
+        return 'skincare';
+      case 'skin_care':
+        return 'skincare';
+      case 'hair':
+        return 'haircare';
+      case 'hair_care':
+        return 'haircare';
+      default:
+        return d;
+    }
+  }
+
+  bool get _hasAuthToken {
+    final t = ApiServices.authToken;
+    return t != null && t.trim().isNotEmpty;
+  }
+
   WellnessMetrics? _wellness;
   bool _wellnessLoading = false;
   String? _wellnessError;
@@ -70,6 +91,14 @@ class HomeViewModel extends ChangeNotifier {
       return;
     }
 
+    if (!_hasAuthToken) {
+      _domains = [];
+      _domainsLoading = false;
+      _domainsError = null;
+      notifyListeners();
+      return;
+    }
+
     final response = await ExploreDomainsRepository.instance
         .getExploreDomains();
     _domainsLoading = false;
@@ -88,6 +117,12 @@ class HomeViewModel extends ChangeNotifier {
 
   /// Refresh domains from API (e.g. retry or pull-to-refresh).
   Future<void> refreshDomainsForExplore() async {
+    if (!_hasAuthToken) {
+      _domains = [];
+      _domainsError = null;
+      notifyListeners();
+      return;
+    }
     _domainsError = null;
     notifyListeners();
 
@@ -108,6 +143,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> _refreshDomainsInBackground() async {
+    if (!_hasAuthToken) return;
     final response = await ExploreDomainsRepository.instance
         .getExploreDomains();
     if (response.success && response.data is List) {
@@ -177,6 +213,14 @@ class HomeViewModel extends ChangeNotifier {
     _wellnessError = null;
     notifyListeners();
 
+    if (!_hasAuthToken) {
+      _wellness = null;
+      _wellnessLoading = false;
+      _wellnessError = null;
+      notifyListeners();
+      return;
+    }
+
     final cached = await OnboardingRepository.loadCachedWellness();
     if (cached != null) {
       final cachedHasData =
@@ -225,6 +269,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> _refreshWellnessInBackground() async {
+    if (!_hasAuthToken) return;
     final response = await OnboardingRepository.instance.getWellnessMetrics();
     if (response.success && response.data is WellnessMetrics) {
       final fresh = response.data as WellnessMetrics;
@@ -257,6 +302,14 @@ class HomeViewModel extends ChangeNotifier {
     _weeklyProgressError = null;
     notifyListeners();
 
+    if (!_hasAuthToken) {
+      _weeklyProgress = null;
+      _weeklyProgressLoading = false;
+      _weeklyProgressError = null;
+      notifyListeners();
+      return;
+    }
+
     final cached = await OnboardingRepository.loadCachedWeeklyProgress();
     if (cached != null) {
       _weeklyProgress = cached;
@@ -280,6 +333,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> _refreshWeeklyProgressInBackground() async {
+    if (!_hasAuthToken) return;
     final response = await OnboardingRepository.instance.getWeeklyProgress();
     if (response.success && response.data is WeeklyProgressResponse) {
       final fresh = response.data as WeeklyProgressResponse;
@@ -332,7 +386,13 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   /// Domains that have a flow API and result screen (check flow before questions).
-  static const _flowDomains = {'workout', 'height'};
+  static const _flowDomains = {
+    'workout',
+    'height',
+    'quit_porn',
+    'skincare',
+    'haircare',
+  };
 
   /// Key of domain currently loading (shows overlay on that card only).
   String? _loadingDomainKey;
@@ -344,7 +404,7 @@ class HomeViewModel extends ChangeNotifier {
   /// checks GET domains/{domain}/flow first: if completed → go to result; else → questions.
   Future<void> onItemTap(int index, BuildContext context) async {
     if (_domains.isEmpty || index < 0 || index >= _domains.length) return;
-    final key = _domains[index].key.toLowerCase().trim();
+    final key = _normalizedDomainKey(_domains[index].key);
     if (!isDomainEnabled(key)) {
       final message = hasNoGoalSelected
           ? 'Please select your goal first to unlock plans.'
@@ -404,10 +464,7 @@ class HomeViewModel extends ChangeNotifier {
           if (status == 'processing') {
             _showFlowLoading(context);
             final completed = await DomainQuestionsRepository.instance
-                .pollDomainFlowUntilCompleted(
-              key,
-              lastKnownResponse: data,
-            );
+                .pollDomainFlowUntilCompleted(key, lastKnownResponse: data);
             if (context.mounted) Navigator.of(context).pop();
             if (!context.mounted) return;
             _loadingDomainKey = null;

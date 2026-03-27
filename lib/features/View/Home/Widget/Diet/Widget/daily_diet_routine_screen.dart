@@ -125,13 +125,13 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.customContainerColorUp
-                                  .withOpacity(0.4),
+                                  .withValues(alpha: 0.4),
                               offset: const Offset(3, 3),
                               blurRadius: 4,
                             ),
                             BoxShadow(
                               color: AppColors.customContinerColorDown
-                                  .withOpacity(0.4),
+                                  .withValues(alpha: 0.4),
                               offset: const Offset(-3, -3),
                               blurRadius: 4,
                             ),
@@ -143,7 +143,10 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                             width: context.sw(32),
                             child: SvgPicture.asset(
                               AppAssets.sunIcon,
-                              color: AppColors.fireColor,
+                              colorFilter: const ColorFilter.mode(
+                                AppColors.fireColor,
+                                BlendMode.srcIn,
+                              ),
                               fit: BoxFit.scaleDown,
                             ),
                           ),
@@ -183,19 +186,19 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                               width: context.sw(1.5),
                             ),
                             color: isSelected
-                                ? AppColors.pimaryColor.withOpacity(0.15)
+                                ? AppColors.pimaryColor.withValues(alpha: 0.15)
                                 : AppColors.backGroundColor,
 
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.customContainerColorUp
-                                    .withOpacity(0.4),
+                                    .withValues(alpha: 0.4),
                                 offset: const Offset(5, 5),
                                 blurRadius: 5,
                               ),
                               BoxShadow(
                                 color: AppColors.customContinerColorDown
-                                    .withOpacity(0.4),
+                                    .withValues(alpha: 0.4),
                                 offset: const Offset(-5, -5),
                                 blurRadius: 5,
                               ),
@@ -226,7 +229,7 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                                               BoxShadow(
                                                 color: AppColors
                                                     .customContainerColorUp
-                                                    .withOpacity(0.4),
+                                                    .withValues(alpha: 0.4),
                                                 offset: const Offset(3, 3),
                                                 blurRadius: 4,
                                                 inset: true,
@@ -234,7 +237,7 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                                               BoxShadow(
                                                 color: AppColors
                                                     .customContinerColorDown
-                                                    .withOpacity(0.4),
+                                                    .withValues(alpha: 0.4),
                                                 offset: const Offset(-3, -3),
                                                 blurRadius: 4,
                                                 inset: true,
@@ -353,13 +356,13 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.customContainerColorUp
-                                  .withOpacity(0.4),
+                                  .withValues(alpha: 0.4),
                               offset: const Offset(3, 3),
                               blurRadius: 4,
                             ),
                             BoxShadow(
                               color: AppColors.customContinerColorDown
-                                  .withOpacity(0.4),
+                                  .withValues(alpha: 0.4),
                               offset: const Offset(-3, -3),
                               blurRadius: 4,
                             ),
@@ -410,19 +413,19 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                               width: context.sw(1.5),
                             ),
                             color: isSelected
-                                ? AppColors.pimaryColor.withOpacity(0.15)
+                                ? AppColors.pimaryColor.withValues(alpha: 0.15)
                                 : AppColors.backGroundColor,
 
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.customContainerColorUp
-                                    .withOpacity(0.4),
+                                    .withValues(alpha: 0.4),
                                 offset: const Offset(5, 5),
                                 blurRadius: 5,
                               ),
                               BoxShadow(
                                 color: AppColors.customContinerColorDown
-                                    .withOpacity(0.4),
+                                    .withValues(alpha: 0.4),
                                 offset: const Offset(-5, -5),
                                 blurRadius: 5,
                               ),
@@ -453,7 +456,7 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                                               BoxShadow(
                                                 color: AppColors
                                                     .customContainerColorUp
-                                                    .withOpacity(0.4),
+                                                    .withValues(alpha: 0.4),
                                                 offset: const Offset(3, 3),
                                                 blurRadius: 4,
                                                 inset: true,
@@ -461,7 +464,7 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                                               BoxShadow(
                                                 color: AppColors
                                                     .customContinerColorDown
-                                                    .withOpacity(0.4),
+                                                    .withValues(alpha: 0.4),
                                                 offset: const Offset(-3, -3),
                                                 blurRadius: 4,
                                                 inset: true,
@@ -574,7 +577,7 @@ class _DailyDietRoutineScreenState extends State<DailyDietRoutineScreen> {
                     progressViewModel.selectIndex(index);
                   },
                   color: isSelected
-                      ? AppColors.buttonColor.withOpacity(0.11)
+                      ? AppColors.buttonColor.withValues(alpha: 0.11)
                       : AppColors.backGroundColor,
                   border: isSelected
                       ? Border.all(color: AppColors.pimaryColor, width: 1.5)

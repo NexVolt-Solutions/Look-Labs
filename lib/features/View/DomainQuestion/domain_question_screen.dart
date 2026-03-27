@@ -44,8 +44,10 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
     Navigator.pop(context);
     final route = RoutesName.routeForDomain(widget.domain);
     if (!mounted || route == null) return;
-    final args = (route == RoutesName.WorkOutResultScreen ||
-            route == RoutesName.HeightResultScreen)
+    final args =
+        (route == RoutesName.WorkOutResultScreen ||
+            route == RoutesName.HeightResultScreen ||
+            route == RoutesName.RecoveryPathScreen)
         ? data
         : null;
     Navigator.pushNamed(context, route, arguments: args);
@@ -211,9 +213,9 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
                         final completed = await DomainQuestionsRepository
                             .instance
                             .pollDomainFlowUntilCompleted(
-                          widget.domain,
-                          lastKnownResponse: responseData,
-                        );
+                              widget.domain,
+                              lastKnownResponse: responseData,
+                            );
                         if (!mounted) return;
                         setState(() => _isProcessing = false);
                         if (completed == null) {

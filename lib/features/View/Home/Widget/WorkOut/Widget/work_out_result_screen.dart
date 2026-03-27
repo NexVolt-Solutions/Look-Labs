@@ -28,7 +28,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
   //   return Container(
   //     padding: context.paddingSymmetricR(horizontal: 10, vertical: 6),
   //     decoration: BoxDecoration(
-  //       color: AppColors.pimaryColor.withOpacity(0.1),
+  //       color: AppColors.pimaryColor.withValues(alpha: 0.1),
   //       borderRadius: BorderRadius.circular(context.radiusR(8)),
   //     ),
   //     child: NormalText(
@@ -236,7 +236,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
               SizedBox(height: context.sh(8)),
               Wrap(
                 spacing: context.sw(12),
-                // runSpacing: context.sh(1),
+                runSpacing: context.sh(12),
                 children: List.generate(workOutResultViewModel.exData.length, (
                   btnIndex,
                 ) {
@@ -266,9 +266,12 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                             child: SvgPicture.asset(
                               workOutResultViewModel.exData[btnIndex]['image'],
                               fit: BoxFit.scaleDown,
-                              color: isSelected
-                                  ? AppColors.pimaryColor
-                                  : AppColors.subHeadingColor,
+                              colorFilter: ColorFilter.mode(
+                                isSelected
+                                    ? AppColors.pimaryColor
+                                    : AppColors.subHeadingColor,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),
@@ -301,8 +304,8 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                   final hasExercises =
                       workOutResultViewModel.morningRoutineList.isNotEmpty ||
                       workOutResultViewModel.eveningRoutineList.isNotEmpty;
-                  final data = workOutResultViewModel.workoutData ??
-                      widget.workoutData;
+                  final data =
+                      workOutResultViewModel.workoutData ?? widget.workoutData;
                   return PlanContainer(
                     margin: context.paddingSymmetricR(horizontal: 0),
                     padding: context.paddingSymmetricR(
@@ -344,7 +347,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                                 titleSize: context.sp(12),
                                 titleWeight: FontWeight.w400,
                                 titleColor: AppColors.subHeadingColor
-                                    .withOpacity(0.7),
+                                    .withValues(alpha: 0.7),
                               ),
                             ],
                           ),
@@ -359,7 +362,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                           Icon(
                             Icons.lock_outline,
                             size: context.sh(24),
-                            color: AppColors.subHeadingColor.withOpacity(0.5),
+                            color: AppColors.subHeadingColor.withValues(alpha: 0.5),
                           ),
                       ],
                     ),
@@ -390,7 +393,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.customContainerColorUp.withOpacity(
+                            color: AppColors.customContainerColorUp.withValues(alpha: 
                               0.4,
                             ),
                             offset: const Offset(3, 3),
@@ -398,7 +401,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                           ),
                           BoxShadow(
                             color: AppColors.customContinerColorDown
-                                .withOpacity(0.4),
+                                .withValues(alpha: 0.4),
                             offset: const Offset(-3, -3),
                             blurRadius: 4,
                           ),

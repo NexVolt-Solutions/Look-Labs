@@ -7,18 +7,15 @@ import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
+import 'package:looklabs/Features/ViewModel/review_scans_view_model.dart';
+import 'package:provider/provider.dart';
 
-class SkinReviewScans extends StatefulWidget {
+class SkinReviewScans extends StatelessWidget {
   const SkinReviewScans({super.key});
 
   @override
-  State<SkinReviewScans> createState() => _SkinReviewScansState();
-}
-
-class _SkinReviewScansState extends State<SkinReviewScans> {
-  int currentStep = 0;
-  @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<ReviewScansViewModel>();
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
@@ -50,7 +47,7 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
             SizedBox(height: context.sh(24)),
 
             CustomStepper(
-              currentStep: currentStep,
+              currentStep: viewModel.currentStep,
               steps: const ['Front', 'Back', 'Left', 'Right'],
             ),
             SizedBox(height: context.sh(20)),
@@ -82,12 +79,8 @@ class _SkinReviewScansState extends State<SkinReviewScans> {
                 itemCount: 4,
                 itemBuilder: (context, index) {
                   return CameraWidget(
-                    onTapFun: () {
-                      setState(() {
-                        currentStep = index;
-                      });
-                    },
-                    isSelected: currentStep == index,
+                    onTapFun: () => viewModel.selectStep(index),
+                    isSelected: viewModel.currentStep == index,
                   );
                 },
               ),

@@ -37,7 +37,6 @@ import 'package:looklabs/Features/ViewModel/privacy_policy_view_model.dart';
 import 'package:looklabs/Features/ViewModel/progress_view_model.dart';
 import 'package:looklabs/Features/ViewModel/terms_of_service_view_model.dart';
 import 'package:looklabs/Features/ViewModel/purchase_view_model.dart';
-import 'package:looklabs/Features/ViewModel/quit_porn_view_model.dart';
 import 'package:looklabs/Features/ViewModel/recommended_product_view_model.dart';
 import 'package:looklabs/Features/ViewModel/skin_care_view_model.dart';
 import 'package:looklabs/Features/ViewModel/skin_top_product_view_model.dart';
@@ -98,7 +97,6 @@ void main() async {
         ChangeNotifierProvider(create: (context) => DietViewModel()),
         ChangeNotifierProvider(create: (context) => FacialViewModel()),
         ChangeNotifierProvider(create: (context) => FashionViewModel()),
-        ChangeNotifierProvider(create: (context) => QuitPornViewModel()),
         ChangeNotifierProvider(
           create: (context) => DailyHairCareRoutineViewModel(),
         ),

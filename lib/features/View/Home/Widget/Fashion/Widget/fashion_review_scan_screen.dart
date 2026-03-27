@@ -7,20 +7,15 @@ import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/custom_stepper.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
+import 'package:looklabs/Features/ViewModel/review_scans_view_model.dart';
+import 'package:provider/provider.dart';
 
-class FashionReviewScanScreen extends StatefulWidget {
+class FashionReviewScanScreen extends StatelessWidget {
   const FashionReviewScanScreen({super.key});
 
   @override
-  State<FashionReviewScanScreen> createState() =>
-      _FashionReviewScanScreenState();
-}
-
-class _FashionReviewScanScreenState extends State<FashionReviewScanScreen> {
-  int currentStep = 0;
-
-  @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<ReviewScansViewModel>();
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       bottomNavigationBar: Padding(
@@ -52,7 +47,7 @@ class _FashionReviewScanScreenState extends State<FashionReviewScanScreen> {
             SizedBox(height: context.sh(24)),
 
             CustomStepper(
-              currentStep: currentStep,
+              currentStep: viewModel.currentStep,
               steps: const ['Front', 'Back', 'Left', 'Right'],
             ),
             SizedBox(height: context.sh(20)),
@@ -84,12 +79,8 @@ class _FashionReviewScanScreenState extends State<FashionReviewScanScreen> {
                 itemCount: 4,
                 itemBuilder: (context, index) {
                   return CameraWidget(
-                    onTapFun: () {
-                      setState(() {
-                        currentStep = index;
-                      });
-                    },
-                    isSelected: currentStep == index,
+                    onTapFun: () => viewModel.selectStep(index),
+                    isSelected: viewModel.currentStep == index,
                   );
                 },
               ),

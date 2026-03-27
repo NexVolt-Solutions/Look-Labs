@@ -84,7 +84,7 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                       facialProgressScreenViewModel.selectIndex(index);
                     },
                     color: isSelected
-                        ? AppColors.buttonColor.withOpacity(0.11)
+                        ? AppColors.buttonColor.withValues(alpha: 0.11)
                         : AppColors.backGroundColor,
                     border: isSelected
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)
@@ -158,14 +158,14 @@ class _FacialProgressScreenState extends State<FacialProgressScreen> {
                               boxShadow: [
                                 BoxShadow(
                                   color: AppColors.customContainerColorUp
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(3, 3),
                                   blurRadius: 4,
                                   inset: true,
                                 ),
                                 BoxShadow(
                                   color: AppColors.customContinerColorDown
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(-3, -3),
                                   blurRadius: 4,
                                   inset: true,

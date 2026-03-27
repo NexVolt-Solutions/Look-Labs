@@ -178,7 +178,10 @@ class _HairProductDetailScreenState extends State<HairProductDetailScreen> {
                   AppAssets.starIcon,
                   height: context.sh(24),
                   width: context.sw(24),
-                  color: AppColors.pimaryColor,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.pimaryColor,
+                    BlendMode.srcIn,
+                  ),
                   fit: BoxFit.scaleDown,
                 ),
                 SizedBox(width: context.sw(8)),

@@ -10,6 +10,7 @@ import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/fashion_profile_screen_view_model.dart';
+import 'package:provider/provider.dart';
 
 class FashionProfileScreen extends StatefulWidget {
   const FashionProfileScreen({super.key});
@@ -19,8 +20,6 @@ class FashionProfileScreen extends StatefulWidget {
 }
 
 class _FashionProfileScreenState extends State<FashionProfileScreen> {
-  bool isBestClothingSelected = false;
-
   final List<String> clothingFits = [
     'Fitted shirts',
     'Slim jeans',
@@ -30,7 +29,8 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final fashionProfileScreenViewModel = FashionProfileScreenViewModel();
+    final fashionProfileScreenViewModel =
+        context.watch<FashionProfileScreenViewModel>();
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       // bottomNavigationBar: CustomButton(
@@ -145,30 +145,29 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                         isSelected: false,
                         onTap: () {},
                         child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isBestClothingSelected = !isBestClothingSelected;
-                            });
-                          },
+                          onTap:
+                              fashionProfileScreenViewModel
+                                  .toggleBestClothingSelection,
                           child: Container(
                             height: context.sh(20),
                             width: context.sw(20),
                             decoration: BoxDecoration(
-                              color: isBestClothingSelected
+                              color: fashionProfileScreenViewModel
+                                      .isBestClothingSelected
                                   ? AppColors.pimaryColor
                                   : AppColors.backGroundColor,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
                                   color: AppColors.customContainerColorUp
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(3, 3),
                                   blurRadius: 4,
                                   inset: true,
                                 ),
                                 BoxShadow(
                                   color: AppColors.customContinerColorDown
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(-3, -3),
                                   blurRadius: 4,
                                   inset: true,
@@ -176,7 +175,8 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                               ],
                             ),
                             child: Center(
-                              child: isBestClothingSelected
+                              child: fashionProfileScreenViewModel
+                                      .isBestClothingSelected
                                   ? Icon(
                                       Icons.check,
                                       size: context.sh(16),
@@ -240,11 +240,9 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                         isSelected: false,
                         onTap: () {},
                         child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isBestClothingSelected = !isBestClothingSelected;
-                            });
-                          },
+                          onTap:
+                              fashionProfileScreenViewModel
+                                  .toggleBestClothingSelection,
                           child: SvgPicture.asset(
                             AppAssets.waringIcon,
                             fit: BoxFit.scaleDown,
@@ -301,11 +299,9 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                         isSelected: false,
                         onTap: () {},
                         child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isBestClothingSelected = !isBestClothingSelected;
-                            });
-                          },
+                          onTap:
+                              fashionProfileScreenViewModel
+                                  .toggleBestClothingSelection,
                           child: SvgPicture.asset(
                             AppAssets.themeIcon,
                             fit: BoxFit.scaleDown,
@@ -360,6 +356,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                 fashionProfileScreenViewModel.selectExercise();
 
                 Future.delayed(const Duration(milliseconds: 150), () {
+                          if (!context.mounted) return;
                   Navigator.pushNamed(context, RoutesName.WeeklyPlanScreen);
                 });
               },

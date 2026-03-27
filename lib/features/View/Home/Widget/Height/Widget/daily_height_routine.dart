@@ -58,16 +58,16 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
             width: context.sw(1.5),
           ),
           color: isDone
-              ? AppColors.pimaryColor.withOpacity(0.15)
+              ? AppColors.pimaryColor.withValues(alpha: 0.15)
               : AppColors.backGroundColor,
           boxShadow: [
             BoxShadow(
-              color: AppColors.customContainerColorUp.withOpacity(0.4),
+              color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
               offset: const Offset(5, 5),
               blurRadius: 5,
             ),
             BoxShadow(
-              color: AppColors.customContinerColorDown.withOpacity(0.4),
+              color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
               offset: const Offset(-5, -5),
               blurRadius: 5,
             ),
@@ -93,7 +93,7 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.customContainerColorUp.withOpacity(
+                              color: AppColors.customContainerColorUp.withValues(alpha: 
                                 0.4,
                               ),
                               offset: const Offset(3, 3),
@@ -102,7 +102,7 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                             ),
                             BoxShadow(
                               color: AppColors.customContinerColorDown
-                                  .withOpacity(0.4),
+                                  .withValues(alpha: 0.4),
                               offset: const Offset(-3, -3),
                               blurRadius: 4,
                               inset: true,
@@ -229,13 +229,13 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                               boxShadow: [
                                 BoxShadow(
                                   color: AppColors.customContainerColorUp
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(3, 3),
                                   blurRadius: 4,
                                 ),
                                 BoxShadow(
                                   color: AppColors.customContinerColorDown
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(-3, -3),
                                   blurRadius: 4,
                                 ),
@@ -308,13 +308,13 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                               boxShadow: [
                                 BoxShadow(
                                   color: AppColors.customContainerColorUp
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(3, 3),
                                   blurRadius: 4,
                                 ),
                                 BoxShadow(
                                   color: AppColors.customContinerColorDown
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(-3, -3),
                                   blurRadius: 4,
                                 ),

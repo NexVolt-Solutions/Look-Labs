@@ -3,8 +3,15 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 
 class FashionProfileScreenViewModel extends ChangeNotifier {
   bool isExerciseSelected = false;
+  bool isBestClothingSelected = false;
+
   void selectExercise() {
     isExerciseSelected = true;
+    notifyListeners();
+  }
+
+  void toggleBestClothingSelection() {
+    isBestClothingSelected = !isBestClothingSelected;
     notifyListeners();
   }
 

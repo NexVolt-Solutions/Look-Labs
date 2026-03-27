@@ -68,14 +68,14 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
 
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.customContainerColorUp.withOpacity(
+                          color: AppColors.customContainerColorUp.withValues(alpha: 
                             0.4,
                           ),
                           offset: const Offset(5, 5),
                           blurRadius: 5,
                         ),
                         BoxShadow(
-                          color: AppColors.customContinerColorDown.withOpacity(
+                          color: AppColors.customContinerColorDown.withValues(alpha: 
                             0.4,
                           ),
                           offset: const Offset(-5, -5),
@@ -99,7 +99,10 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                                   child: Center(
                                     child: SvgPicture.asset(
                                       AppAssets.sunIcon,
-                                      color: AppColors.fireColor,
+                                      colorFilter: const ColorFilter.mode(
+                                        AppColors.fireColor,
+                                        BlendMode.srcIn,
+                                      ),
                                       fit: BoxFit.scaleDown,
                                     ),
                                   ),
@@ -200,7 +203,7 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                     radius: context.radiusR(10),
                     padding: context.paddingSymmetricR(horizontal: 19, vertical: 11),
                     color: isSelected
-                        ? AppColors.buttonColor.withOpacity(0.11)
+                        ? AppColors.buttonColor.withValues(alpha: 0.11)
                         : AppColors.backGroundColor,
                     border: isSelected
                         ? Border.all(color: AppColors.pimaryColor, width: 1.5)

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
@@ -6,6 +7,7 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Network/api_error_handler.dart';
+import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/gaol_screen_view_model.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
@@ -70,16 +72,31 @@ class _GaolScreenState extends State<GaolScreen> {
       return;
     }
 
+    // Ensure anonymous onboarding session is linked to the authenticated user
+    // so users/me wellness/progress can resolve submitted onboarding answers.
+    final token = ApiServices.authToken;
+    if (token != null && token.trim().isNotEmpty) {
+      final linkRes = await OnboardingRepository.instance.linkSessionToUser(
+        sessionId,
+      );
+      if (!linkRes.success && kDebugMode) {
+        debugPrint(
+          '[Onboarding] linkSessionToUser failed: statusCode=${linkRes.statusCode}, message=${linkRes.message}',
+        );
+      }
+    }
+
     // Store selected domain from response (status: domain_selected, domain: "fashion") for later domain APIs.
     if (response.data != null && response.data is Map) {
       final domainFromResponse = (response.data as Map)['domain']
           ?.toString()
-          ?.trim();
+          .trim();
       if (domainFromResponse != null && domainFromResponse.isNotEmpty) {
         await AuthRepository.setSelectedDomain(domainFromResponse);
       }
     }
 
+    if (!context.mounted) return;
     Navigator.pushNamed(context, RoutesName.OnBoardScreen);
   }
 

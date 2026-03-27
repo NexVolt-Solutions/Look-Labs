@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 class DailySkinCareRoutineViewModel extends ChangeNotifier {
   bool isSelected = false;
 
+  void toggleChecklistSelection() {
+    isSelected = !isSelected;
+    notifyListeners();
+  }
+
   void toggleRemediesSelection(int index) {
     remediesData[index]['isSelected'] =
         !(remediesData[index]['isSelected'] as bool);
