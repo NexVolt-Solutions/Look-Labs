@@ -29,6 +29,51 @@ class OnboardingRepository {
   static OnboardingSession? currentSession;
   static String? get sessionId => currentSession?.id;
 
+  static String _normalizeDomainKey(String value) {
+    return value.toLowerCase().trim().replaceAll(RegExp(r'[^a-z0-9]'), '');
+  }
+
+  static ProgressGraphDomain? _domainFromGraphPayload(
+    dynamic data, {
+    required String domain,
+  }) {
+    if (data is! Map) return null;
+    final raw = Map<String, dynamic>.from(data);
+    final json = raw.containsKey('data') && raw['data'] is Map
+        ? Map<String, dynamic>.from(raw['data'] as Map)
+        : raw;
+
+    // Domain-specific shape: { period, domain, scores, first_score, latest_score, ... }
+    if (json['domain'] != null || json['scores'] is List) {
+      final d = ProgressGraphDomain.fromJson(json);
+      if (_normalizeDomainKey(d.domain) == _normalizeDomainKey(domain) ||
+          d.domain.trim().isEmpty) {
+        return ProgressGraphDomain(
+          domain: d.domain.trim().isEmpty ? domain : d.domain,
+          iconUrl: d.iconUrl,
+          scores: d.scores,
+          firstScore: d.firstScore,
+          latestScore: d.latestScore,
+          change: d.change,
+        );
+      }
+    }
+
+    // Aggregate shape: { domains: [ { domain, scores, ... } ] }.
+    final domains = json['domains'];
+    if (domains is List) {
+      final target = _normalizeDomainKey(domain);
+      for (final row in domains) {
+        if (row is! Map) continue;
+        final m = Map<String, dynamic>.from(row);
+        final key = _normalizeDomainKey(m['domain']?.toString() ?? '');
+        if (key != target) continue;
+        return ProgressGraphDomain.fromJson(m);
+      }
+    }
+    return null;
+  }
+
   static Future<bool> loadStoredSession() async {
     try {
       final json = await _storage.read(key: _kStorageKeySession);
@@ -506,6 +551,36 @@ class OnboardingRepository {
       );
     }
     return response;
+  }
+
+  /// GET domains/{domain}/progress/graph. Requires Bearer token.
+  /// [period] – weekly, monthly, or yearly.
+  /// Returns one [ProgressGraphDomain] for the requested domain.
+  Future<ApiResponse> getDomainProgressGraph({
+    required String domain,
+    required String period,
+  }) async {
+    final response = await ApiServices.get(
+      ApiEndpoints.domainsProgressGraph(domain),
+      queryParams: {'period': period},
+    );
+    if (!response.success || response.data == null) return response;
+
+    final parsed = _domainFromGraphPayload(response.data, domain: domain);
+    if (parsed == null) {
+      return ApiResponse(
+        success: false,
+        statusCode: response.statusCode,
+        data: null,
+        message: response.message ?? 'Could not parse domain progress graph',
+      );
+    }
+    return ApiResponse(
+      success: true,
+      statusCode: response.statusCode,
+      data: parsed,
+      message: response.message,
+    );
   }
 
   /// GET domains/progress/overview. Requires Bearer token.

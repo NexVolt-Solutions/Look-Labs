@@ -6,7 +6,6 @@ import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/light_card_widget.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/View/Home/Widget/QuitPorn/recovery_path_sections.dart';
-import 'package:looklabs/Model/sales_data.dart';
 import 'package:provider/provider.dart';
 
 class RecoveryPathScreen extends StatefulWidget {
@@ -58,9 +57,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
               selectedPeriod: vm.selectedPeriod,
               onPeriodTap: vm.onPeriodTap,
               chartLoading: vm.chartLoading,
-              chartData:
-                  vm.chartFor(vm.selectedPeriod) ??
-                  [SalesData(vm.selectedPeriod, 0)],
+              chartData: vm.chartFor(vm.selectedPeriod) ?? const [],
               repButtons: vm.repButtons,
               selectedAction: vm.selectedAction,
               onActionTap: (i) => _onActionTap(vm, i),

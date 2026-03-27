@@ -59,10 +59,13 @@ class DailyHeightRoutineViewModel extends ChangeNotifier {
     morningRoutineList = lists.morning;
     eveningRoutineList = lists.evening;
     expandedIndex = -1;
-    _completedIndices = await WorkoutCompletionRepository.instance.loadCompleted(
+    final loaded = await WorkoutCompletionRepository.instance.loadCompleted(
       DateTime.now(),
       domain: _completionDomain,
     );
+    if (loaded != null) {
+      _completedIndices = loaded;
+    }
     notifyListeners();
   }
 }

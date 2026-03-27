@@ -171,28 +171,39 @@ class WorkOutProgressScreenViewModel extends ChangeNotifier {
       final weekly = await WorkoutCompletionRepository.instance
           .getWeeklySummary();
 
-      _todayCompleted = (todayData['completed_indices'] is List)
-          ? (todayData['completed_indices'] as List).length
-          : 0;
-      _todayTotal = todayData['total_exercises'] is int
-          ? todayData['total_exercises'] as int
-          : (todayData['total_exercises'] != null
-              ? int.tryParse(todayData['total_exercises'].toString()) ?? 0
-              : 0);
-      _todayScore = (todayData['score'] is num)
-          ? (todayData['score'] as num).toDouble()
-          : 0.0;
-
-      if (weekly['week_average'] is num) {
-        _weekAverage = (weekly['week_average'] as num).toDouble();
+      if (todayData != null) {
+        _todayCompleted = (todayData['completed_indices'] is List)
+            ? (todayData['completed_indices'] as List).length
+            : 0;
+        _todayTotal = todayData['total_exercises'] is int
+            ? todayData['total_exercises'] as int
+            : (todayData['total_exercises'] != null
+                ? int.tryParse(todayData['total_exercises'].toString()) ?? 0
+                : 0);
+        _todayScore = (todayData['score'] is num)
+            ? (todayData['score'] as num).toDouble()
+            : 0.0;
+      } else {
+        _todayCompleted = 0;
+        _todayTotal = 0;
+        _todayScore = 0.0;
       }
-      _weeklyDays = [];
-      if (weekly['days'] is List) {
-        for (final d in weekly['days'] as List) {
-          if (d is Map) {
-            _weeklyDays.add(Map<String, dynamic>.from(d));
+
+      if (weekly != null) {
+        if (weekly['week_average'] is num) {
+          _weekAverage = (weekly['week_average'] as num).toDouble();
+        }
+        _weeklyDays = [];
+        if (weekly['days'] is List) {
+          for (final d in weekly['days'] as List) {
+            if (d is Map) {
+              _weeklyDays.add(Map<String, dynamic>.from(d));
+            }
           }
         }
+      } else {
+        _weekAverage = 0.0;
+        _weeklyDays = [];
       }
 
       _rebuildMergedWeeklyDays(now);

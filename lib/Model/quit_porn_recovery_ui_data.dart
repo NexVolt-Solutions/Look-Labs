@@ -43,43 +43,17 @@ class RecoveryPathUiData {
   final List<RecoveryTaskItem> dailyPlanItems;
   final List<RecoveryTaskItem> exerciseItems;
 
-  factory RecoveryPathUiData.fallback() {
+  factory RecoveryPathUiData.empty() {
     return const RecoveryPathUiData(
-      insightText: 'One day at a time. Keep going!',
+      insightText: '',
       streak: RecoveryStreakData(
         currentStreak: 0,
         longestStreak: 0,
         nextGoal: 0,
-        streakMessage: 'Today is day one. Let\'s make it count!',
+        streakMessage: '',
       ),
-      dailyPlanItems: [
-        RecoveryTaskItem(
-          id: 'daily_0',
-          title: 'Set Your Daily Intention',
-          subtitle: 'Take 2 minutes to write down your intention.',
-          duration: '2 min',
-          completed: false,
-          order: 1,
-        ),
-        RecoveryTaskItem(
-          id: 'daily_1',
-          title: 'Evening Reflection',
-          subtitle: 'Write 3 wins from today, no matter how small.',
-          duration: '5 min',
-          completed: false,
-          order: 2,
-        ),
-      ],
-      exerciseItems: [
-        RecoveryTaskItem(
-          id: 'exercise_0',
-          title: 'Box Breathing',
-          subtitle: 'Breathe in 4, hold 4, out 4, hold 4.',
-          duration: '5 min',
-          completed: false,
-          order: 1,
-        ),
-      ],
+      dailyPlanItems: [],
+      exerciseItems: [],
     );
   }
 }

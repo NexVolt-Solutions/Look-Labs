@@ -25,7 +25,7 @@ class NormalText extends StatelessWidget {
   final TextOverflow? overflow;
   final int? subMaxLines;
   final TextOverflow? subOverflow;
-
+  final TextDecoration? titleDecoration;
   const NormalText({
     super.key,
     this.titleText,
@@ -44,6 +44,7 @@ class NormalText extends StatelessWidget {
     this.overflow,
     this.subMaxLines,
     this.subOverflow,
+    this.titleDecoration,
   });
 
   @override
@@ -64,6 +65,7 @@ class NormalText extends StatelessWidget {
                 fontSize: titleSize ?? context.sp(16),
                 fontWeight: titleWeight ?? FontWeight.w500,
                 fontFamily: 'Raleway',
+                decoration: titleDecoration ?? TextDecoration.none,
               ),
               textAlign: titleAlign ?? TextAlign.start,
             ),

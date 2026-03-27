@@ -107,7 +107,11 @@ class LineChartWidget extends StatelessWidget {
         : chartVM.chartData;
 
     return SfCartesianChart(
-      primaryXAxis: CategoryAxis(),
+      primaryXAxis: CategoryAxis(
+        interval: 1,
+        labelRotation: -45,
+        labelIntersectAction: AxisLabelIntersectAction.rotate45,
+      ),
       tooltipBehavior: _customChartTooltip(context),
       series: <LineSeries<SalesData, String>>[
         LineSeries<SalesData, String>(

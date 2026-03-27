@@ -51,7 +51,10 @@ class RecoveryTaskList extends StatelessWidget {
                 else
                   PlanContainer(
                     margin: context.paddingSymmetricR(vertical: 1),
-                    padding: context.paddingSymmetricR(horizontal: 4, vertical: 4),
+                    padding: context.paddingSymmetricR(
+                      horizontal: 4,
+                      vertical: 4,
+                    ),
                     isSelected: false,
                     onTap: () {},
                     child: SizedBox(
@@ -75,7 +78,10 @@ class RecoveryTaskList extends StatelessWidget {
                               titleText: item.title,
                               titleSize: context.sp(14),
                               titleWeight: FontWeight.w600,
-                              titleColor: AppColors.subHeadingColor,
+
+                              titleDecoration: checked
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
                             ),
                           ),
                           if (item.duration.isNotEmpty)
@@ -83,7 +89,6 @@ class RecoveryTaskList extends StatelessWidget {
                               titleText: item.duration,
                               titleSize: context.sp(11),
                               titleWeight: FontWeight.w500,
-                              titleColor: AppColors.iconColor,
                             ),
                         ],
                       ),
@@ -92,8 +97,6 @@ class RecoveryTaskList extends StatelessWidget {
                           titleText: item.subtitle,
                           titleSize: context.sp(10),
                           titleWeight: FontWeight.w400,
-                          titleColor:
-                              AppColors.subHeadingColor.withValues(alpha: 0.7),
                         ),
                     ],
                   ),

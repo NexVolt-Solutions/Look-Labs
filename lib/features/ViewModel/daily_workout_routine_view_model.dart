@@ -85,8 +85,11 @@ class DailyWorkoutRoutineViewModel extends ChangeNotifier {
         _eveningRoutineList = parsed.evening;
       }
       expandedIndex = -1;
-      _completedIndices = await WorkoutCompletionRepository.instance
+      final loaded = await WorkoutCompletionRepository.instance
           .loadCompleted(DateTime.now());
+      if (loaded != null) {
+        _completedIndices = loaded;
+      }
       notifyListeners();
     } catch (_) {}
   }

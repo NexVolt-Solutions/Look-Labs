@@ -11,7 +11,7 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   final QuitPornRecoveryRepository _repository;
   bool _initialized = false;
 
-  RecoveryPathUiData uiData = RecoveryPathUiData.fallback();
+  RecoveryPathUiData uiData = RecoveryPathUiData.empty();
   final List<String> periodButtons = const ['Week', 'Month', 'Year'];
   final List<Map<String, String>> repButtons = const [
     {'image': AppAssets.reportIcon, 'text': 'Report Relapse'},
@@ -25,6 +25,8 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   List<bool> dailyDone = [];
   List<bool> exerciseDone = [];
   final Map<String, List<SalesData>> chartByPeriod = {};
+  bool _persistInFlight = false;
+  bool _persistCoalesce = false;
 
   List<RecoveryTaskItem> get selectedTaskItems {
     return selectedSection == 'Daily Plan'
@@ -113,12 +115,14 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
     if (index < 0 || index >= dailyDone.length) return;
     dailyDone[index] = !dailyDone[index];
     notifyListeners();
+    _persistChecklistState();
   }
 
   void toggleExerciseDoneAt(int index) {
     if (index < 0 || index >= exerciseDone.length) return;
     exerciseDone[index] = !exerciseDone[index];
     notifyListeners();
+    _persistChecklistState();
   }
 
   Future<void> loadChartForPeriod(String periodLabel) async {
@@ -135,16 +139,66 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
       uiData.dailyPlanItems.length,
       uiData.exerciseItems.length,
     );
-    dailyDone = List<bool>.generate(uiData.dailyPlanItems.length, (i) {
-      return uiData.dailyPlanItems[i].completed || done.contains(i);
-    });
+    if (done == null) {
+      dailyDone = List<bool>.generate(
+        uiData.dailyPlanItems.length,
+        (i) => uiData.dailyPlanItems[i].completed,
+      );
+      exerciseDone = List<bool>.generate(
+        uiData.exerciseItems.length,
+        (i) => uiData.exerciseItems[i].completed,
+      );
+    } else {
+      dailyDone = List<bool>.generate(uiData.dailyPlanItems.length, (i) {
+        return uiData.dailyPlanItems[i].completed || done.contains(i);
+      });
+      final exerciseOffset = uiData.dailyPlanItems.length;
+      exerciseDone = List<bool>.generate(uiData.exerciseItems.length, (i) {
+        return uiData.exerciseItems[i].completed ||
+            done.contains(exerciseOffset + i);
+      });
+    }
     completionLoaded = true;
     notifyListeners();
   }
 
+  Set<int> _combinedCheckedIndices() {
+    final indices = <int>{};
+    for (var i = 0; i < dailyDone.length; i++) {
+      if (dailyDone[i]) indices.add(i);
+    }
+    final offset = dailyDone.length;
+    for (var i = 0; i < exerciseDone.length; i++) {
+      if (exerciseDone[i]) indices.add(offset + i);
+    }
+    return indices;
+  }
+
+  int get _totalChecklistItems => dailyDone.length + exerciseDone.length;
+
+  Future<void> _persistChecklistState() async {
+    if (_persistInFlight) {
+      _persistCoalesce = true;
+      return;
+    }
+    _persistInFlight = true;
+    try {
+      do {
+        _persistCoalesce = false;
+        await _repository.saveCheckedIndices(
+          indices: _combinedCheckedIndices(),
+          totalExercises: _totalChecklistItems,
+        );
+      } while (_persistCoalesce);
+    } finally {
+      _persistInFlight = false;
+    }
+  }
+
   Future<String> reportRelapse() async {
+    final total = uiData.dailyPlanItems.length + uiData.exerciseItems.length;
     await _repository.reportRelapse(
-      totalExercises: uiData.dailyPlanItems.length,
+      totalExercises: total,
     );
     setSelectedAction(0);
     setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, false));
@@ -153,9 +207,11 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   }
 
   Future<String> completeDay() async {
-    await _repository.completeDay(totalExercises: uiData.dailyPlanItems.length);
+    final total = uiData.dailyPlanItems.length + uiData.exerciseItems.length;
+    await _repository.completeDay(totalExercises: total);
     setSelectedAction(1);
     setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, true));
+    setExerciseDone(List<bool>.filled(uiData.exerciseItems.length, true));
     return 'Day marked as completed.';
   }
 

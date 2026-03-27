@@ -1,7 +1,6 @@
-import 'package:looklabs/Core/Network/models/progress_graph_response.dart';
 import 'package:looklabs/Model/quit_porn_recovery_ui_data.dart';
 import 'package:looklabs/Model/sales_data.dart';
-import 'package:looklabs/Repository/onboarding_repository.dart';
+import 'package:looklabs/Repository/domain_progress_graph_repository.dart';
 import 'package:looklabs/Repository/workout_completion_repository.dart';
 
 class QuitPornRecoveryRepository {
@@ -34,24 +33,17 @@ class QuitPornRecoveryRepository {
         ? Map<String, dynamic>.from(streakMapRaw)
         : <String, dynamic>{};
 
-    final fallback = RecoveryPathUiData.fallback();
     final streak = RecoveryStreakData(
       currentStreak: _intFrom(streakMap['current_streak']),
       longestStreak: _intFrom(streakMap['longest_streak']),
       nextGoal: _intFrom(streakMap['next_goal']),
-      streakMessage: _strFrom(
-        streakMap['streak_message'],
-        fallback: fallback.streak.streakMessage,
-      ),
+      streakMessage: _strFrom(streakMap['streak_message']),
     );
 
-    final insight = _strFrom(
-      resultData?['ai_message'],
-      fallback: fallback.insightText,
-    );
+    final insight = _strFrom(resultData?['ai_message']);
 
-    final daily = _parseDaily(resultData, fallback.dailyPlanItems);
-    final exercise = _parseExercise(resultData, fallback.exerciseItems);
+    final daily = _parseDaily(resultData);
+    final exercise = _parseExercise(resultData);
 
     return RecoveryPathUiData(
       insightText: insight,
@@ -63,10 +55,9 @@ class QuitPornRecoveryRepository {
 
   List<RecoveryTaskItem> _parseDaily(
     Map<String, dynamic>? resultData,
-    List<RecoveryTaskItem> fallback,
   ) {
     final raw = resultData?['ai_progress']?['recovery_checklist'];
-    if (raw is! List || raw.isEmpty) return fallback;
+    if (raw is! List || raw.isEmpty) return const [];
 
     final items = <RecoveryTaskItem>[];
     for (var i = 0; i < raw.length; i++) {
@@ -103,17 +94,16 @@ class QuitPornRecoveryRepository {
         );
       }
     }
-    if (items.isEmpty) return fallback;
+    if (items.isEmpty) return const [];
     items.sort((a, b) => a.order.compareTo(b.order));
     return items;
   }
 
   List<RecoveryTaskItem> _parseExercise(
     Map<String, dynamic>? resultData,
-    List<RecoveryTaskItem> fallback,
   ) {
     final raw = resultData?['ai_recovery']?['daily_tasks'];
-    if (raw is! List || raw.isEmpty) return fallback;
+    if (raw is! List || raw.isEmpty) return const [];
 
     final items = <RecoveryTaskItem>[];
     for (var i = 0; i < raw.length; i++) {
@@ -136,88 +126,34 @@ class QuitPornRecoveryRepository {
         ),
       );
     }
-    if (items.isEmpty) return fallback;
+    if (items.isEmpty) return const [];
     items.sort((a, b) => a.order.compareTo(b.order));
     return items;
   }
 
-  String _periodToApi(String label) {
-    switch (label.toLowerCase()) {
-      case 'month':
-        return 'monthly';
-      case 'year':
-        return 'yearly';
-      default:
-        return 'weekly';
-    }
-  }
-
-  String _labelFromDate(String recordedAt, String periodLabel) {
-    final dt = DateTime.tryParse(recordedAt);
-    if (dt == null) return recordedAt;
-    switch (periodLabel.toLowerCase()) {
-      case 'year':
-        const m = [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dec',
-        ];
-        return m[dt.month - 1];
-      case 'month':
-        return '${dt.month}/${dt.day}';
-      default:
-        const d = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        return d[dt.weekday - 1];
-    }
-  }
-
   Future<List<SalesData>> loadChartForPeriod(String periodLabel) async {
-    final res = await OnboardingRepository.instance.getProgressGraph(
-      period: _periodToApi(periodLabel),
+    return DomainProgressGraphRepository.instance.getDomainChartPoints(
+      domain: _domain,
+      periodLabel: periodLabel,
     );
-
-    var points = <SalesData>[];
-    if (res.success && res.data is ProgressGraphResponse) {
-      final graph = res.data as ProgressGraphResponse;
-      ProgressGraphDomain? domain;
-      for (final d in graph.domains) {
-        if (d.domain.trim().toLowerCase() == _domain) {
-          domain = d;
-          break;
-        }
-      }
-      if (domain != null && domain.scores.isNotEmpty) {
-        points = domain.scores
-            .map(
-              (s) => SalesData(
-                _labelFromDate(s.recordedAt, periodLabel),
-                s.score.toDouble(),
-              ),
-            )
-            .toList();
-      } else if (domain != null) {
-        points = [SalesData(periodLabel, domain.latestScore.toDouble())];
-      }
-    }
-    if (points.isEmpty) {
-      points = [SalesData(periodLabel, 0)];
-    }
-    return points;
   }
 
-  Future<Set<int>> loadCompletedToday() {
+  Future<Set<int>?> loadCompletedToday() {
     return WorkoutCompletionRepository.instance.loadCompleted(
       DateTime.now(),
       domain: _domain,
+    );
+  }
+
+  Future<void> saveCheckedIndices({
+    required Set<int> indices,
+    required int totalExercises,
+  }) {
+    return WorkoutCompletionRepository.instance.saveCompleted(
+      DateTime.now(),
+      indices,
+      domain: _domain,
+      totalExercises: totalExercises,
     );
   }
 

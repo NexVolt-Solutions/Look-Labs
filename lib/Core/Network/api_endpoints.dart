@@ -27,6 +27,11 @@ class ApiEndpoints {
   /// GET domains/{domain}/flow – poll for completion when status is "processing".
   static String domainsFlow(String domain) => 'domains/$domain/flow';
 
+  /// GET domains/{domain}/progress/graph – domain-specific score history.
+  /// Query: period=weekly|monthly|yearly.
+  static String domainsProgressGraph(String domain) =>
+      'domains/$domain/progress/graph';
+
   /// POST domains/{domain}/generate-plan – generate workout plan (focus, intensity, etc.).
   static String domainsGeneratePlan(String domain) =>
       'domains/$domain/generate-plan';
@@ -37,8 +42,7 @@ class ApiEndpoints {
       'domains/${domain.toLowerCase().trim()}/completed-exercises';
 
   /// GET domains/workout/weekly-summary – weekly workout summary (user_id, week_average, days).
-  static const String workoutWeeklySummary =
-      'domains/workout/weekly-summary';
+  static const String workoutWeeklySummary = 'domains/workout/weekly-summary';
 
   /// POST onboarding/sessions/{session_id}/answers
   static String onboardingSessionAnswers(String sessionId) =>

@@ -14,22 +14,25 @@ class WorkoutCompletionRepository {
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   /// Load completed indices for [domain] (default `workout`) from API.
-  Future<Set<int>> loadCompleted(
+  /// Returns `null` when the request fails or the payload is unusable (no client-side defaults).
+  Future<Set<int>?> loadCompleted(
     DateTime date, {
     String domain = 'workout',
   }) async {
     final result = await loadCompletedExercises(date, domain: domain);
-    return result['completed_indices'] is List
-        ? (result['completed_indices'] as List)
-              .map((e) => e is int ? e : int.tryParse(e?.toString() ?? ''))
-              .whereType<int>()
-              .where((i) => i >= 0)
-              .toSet()
-        : <int>{};
+    if (result == null) return null;
+    final raw = result['completed_indices'];
+    if (raw is! List) return null;
+    return raw
+        .map((e) => e is int ? e : int.tryParse(e?.toString() ?? ''))
+        .whereType<int>()
+        .where((i) => i >= 0)
+        .toSet();
   }
 
   /// GET completed-exercises for [date] and [domain].
-  Future<Map<String, dynamic>> loadCompletedExercises(
+  /// Returns `null` on non-success or invalid body (no fabricated empty map).
+  Future<Map<String, dynamic>?> loadCompletedExercises(
     DateTime date, {
     String domain = 'workout',
   }) async {
@@ -66,12 +69,7 @@ class WorkoutCompletionRepository {
         '[RoutineCompletion] domain=$domain API load failed (${response.statusCode})',
       );
     }
-    return {
-      'date': dateStr,
-      'completed_indices': <int>[],
-      'total_exercises': 0,
-      'score': 0.0,
-    };
+    return null;
   }
 
   /// Save completed indices for [domain] (PUT `domains/{domain}/completed-exercises`).
@@ -108,8 +106,8 @@ class WorkoutCompletionRepository {
     return false;
   }
 
-  /// GET weekly-summary. Returns { user_id, week_average, days: [{ date, score, completed, total }] } or empty map.
-  Future<Map<String, dynamic>> getWeeklySummary() async {
+  /// GET weekly-summary. Returns map on success; `null` on failure (no empty stub).
+  Future<Map<String, dynamic>?> getWeeklySummary() async {
     final response = await ApiServices.get(ApiEndpoints.workoutWeeklySummary);
     if (response.success && response.data is Map) {
       return Map<String, dynamic>.from(response.data as Map);
@@ -120,6 +118,6 @@ class WorkoutCompletionRepository {
         'statusCode=${response.statusCode} message=${response.message}',
       );
     }
-    return {};
+    return null;
   }
 }
