@@ -24,9 +24,7 @@ class OnboardingRepository {
   static final OnboardingRepository _instance = OnboardingRepository._();
   static OnboardingRepository get instance => _instance;
 
-  static const FlutterSecureStorage _storage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
   static OnboardingSession? currentSession;
   static String? get sessionId => currentSession?.id;

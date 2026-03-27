@@ -1,5 +1,6 @@
-/// Response from POST domains/{domain}/answers (submit one answer).
-/// Contains current question, next question, progress, and redirect.
+// Response from POST domains/{domain}/answers (submit one answer).
+// Contains current question, next question, progress, and redirect.
+
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 
 class DomainAnswersResponse {

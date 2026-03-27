@@ -165,10 +165,11 @@ class MultiDomainLineChart extends StatelessWidget {
     if (recordedAt.isEmpty) return '';
     try {
       final dt = DateTime.tryParse(recordedAt);
-      if (dt == null)
+      if (dt == null) {
         return recordedAt.length > 10
             ? recordedAt.substring(0, 10)
             : recordedAt;
+      }
       return '${dt.month}/${dt.day}';
     } catch (_) {
       return recordedAt.length > 10 ? recordedAt.substring(0, 10) : recordedAt;
@@ -307,7 +308,7 @@ class MultiDomainLineChart extends StatelessWidget {
           'Complete domains to see progress',
           style: TextStyle(
             fontSize: 14,
-            color: AppColors.subHeadingColor.withOpacity(0.7),
+            color: AppColors.subHeadingColor.withValues(alpha: 0.7),
           ),
         ),
       ),
@@ -412,8 +413,8 @@ class WeeklyProgressLineChart extends StatelessWidget {
             series: <LineSeries<WeeklyProgressDomain, String>>[
               LineSeries<WeeklyProgressDomain, String>(
                 dataSource: const [_emptyChartPlaceholder],
-                xValueMapper: (_, __) => ' ',
-                yValueMapper: (_, __) => 0.0,
+                xValueMapper: (_, _) => ' ',
+                yValueMapper: (_, _) => 0.0,
                 markerSettings: const MarkerSettings(isVisible: false),
                 dataLabelSettings: const DataLabelSettings(isVisible: false),
                 enableTooltip: false,
@@ -424,7 +425,7 @@ class WeeklyProgressLineChart extends StatelessWidget {
             'No data yet',
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.subHeadingColor.withOpacity(0.7),
+              color: AppColors.subHeadingColor.withValues(alpha: 0.7),
             ),
           ),
         ],

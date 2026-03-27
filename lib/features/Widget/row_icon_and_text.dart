@@ -38,7 +38,7 @@ class RowIconAndText extends StatelessWidget {
                 borderRadius: BorderRadius.circular(context.radiusR(16)),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.customContainerColorUp.withOpacity(0.4),
+                    color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
                     offset: const Offset(5, 5),
                     blurRadius: 5,
                     inset: false,

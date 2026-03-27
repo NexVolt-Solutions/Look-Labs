@@ -28,12 +28,12 @@ class LightCardWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(context.radiusR(10)),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.customContainerColorUp.withOpacity(0.4),
+                  color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
                   offset: const Offset(3, 3),
                   blurRadius: 4,
                 ),
                 BoxShadow(
-                  color: AppColors.customContinerColorDown.withOpacity(0.4),
+                  color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                   offset: const Offset(-3, -3),
                   blurRadius: 4,
                 ),

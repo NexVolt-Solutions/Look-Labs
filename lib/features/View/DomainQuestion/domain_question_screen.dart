@@ -78,7 +78,7 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
                 Icon(
                   Icons.cloud_off_rounded,
                   size: context.sw(64),
-                  color: AppColors.subHeadingColor.withOpacity(0.6),
+                  color: AppColors.subHeadingColor.withValues(alpha: 0.6),
                 ),
                 SizedBox(height: context.sh(20)),
                 NormalText(
@@ -205,7 +205,7 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
                     }
                     final (success, responseData) = await vm
                         .submitCurrentAnswer();
-                    if (!context.mounted || !success) return;
+                    if (!mounted || !success) return;
                     if (responseData != null) {
                       final status = responseData['status']?.toString() ?? '';
                       if (status == 'processing') {
@@ -219,8 +219,9 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
                         if (!mounted) return;
                         setState(() => _isProcessing = false);
                         if (completed == null) {
+                          if (!mounted) return;
                           ApiErrorHandler.showSnackBar(
-                            context,
+                            this.context,
                             fallback: 'Processing timed out. Please try again.',
                           );
                           return;
@@ -305,7 +306,7 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
         if (_isProcessing)
           Positioned.fill(
             child: Container(
-              color: AppColors.backGroundColor.withOpacity(0.9),
+              color: AppColors.backGroundColor.withValues(alpha: 0.9),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

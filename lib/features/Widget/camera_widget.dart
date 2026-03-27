@@ -54,12 +54,12 @@ class _CameraWidgetState extends State<CameraWidget> {
                   color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.customContainerColorUp.withOpacity(0.4),
+                      color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
                       offset: const Offset(5, 5),
                       blurRadius: 5,
                     ),
                     BoxShadow(
-                      color: AppColors.customContinerColorDown.withOpacity(0.4),
+                      color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                       offset: const Offset(-5, -5),
                       blurRadius: 5,
                     ),
@@ -69,9 +69,12 @@ class _CameraWidgetState extends State<CameraWidget> {
                   AppAssets.cameraIcon,
                   height: context.sh(18.05),
                   width: context.sw(22.56),
-                  color: isSelected
-                      ? AppColors.pimaryColor
-                      : AppColors.notSelectedColor,
+                  colorFilter: ColorFilter.mode(
+                    isSelected
+                        ? AppColors.pimaryColor
+                        : AppColors.notSelectedColor,
+                    BlendMode.srcIn,
+                  ),
                   fit: BoxFit.contain,
                 ),
               ),

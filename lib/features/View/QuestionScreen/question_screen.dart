@@ -91,7 +91,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                 Icon(
                   Icons.cloud_off_rounded,
                   size: context.sw(64),
-                  color: AppColors.subHeadingColor.withOpacity(0.6),
+                  color: AppColors.subHeadingColor.withValues(alpha: 0.6),
                 ),
                 SizedBox(height: context.sh(20)),
                 NormalText(

@@ -95,6 +95,7 @@ class SettingViewModel extends ChangeNotifier {
     final response = await AuthRepository.instance.updateProfile(body);
     if (!response.success) return false;
 
+    if (!context.mounted) return false;
     final authVm = Provider.of<AuthViewModel>(context, listen: false);
     await authVm.fetchProfile();
     exitEditMode();
@@ -145,11 +146,11 @@ class SettingViewModel extends ChangeNotifier {
     final authVm = Provider.of<AuthViewModel>(context, listen: false);
     _showLoadingDialog(context);
     await authVm.logout();
+    if (!context.mounted) return;
     // Reset bottom tab to Home so next login lands on Home
     try {
       Provider.of<BottomSheetViewModel>(context, listen: false).changeIndex(0);
     } catch (_) {}
-    if (!context.mounted) return;
     Navigator.of(context, rootNavigator: true).pop();
     if (!context.mounted) return;
     Navigator.pushNamedAndRemoveUntil(

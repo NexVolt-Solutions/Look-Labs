@@ -21,10 +21,7 @@ class ProgressScreen extends StatefulWidget {
 }
 
 class _ProgressScreenState extends State<ProgressScreen> {
-  Future<void> _onUploadTap(
-    BuildContext context,
-    ProgressViewModel progressVM,
-  ) async {
+  Future<void> _onUploadTap(ProgressViewModel progressVM) async {
     final success = await progressVM.pickAndUploadProgressImage();
     if (!mounted) return;
     if (success) {
@@ -74,7 +71,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   progressViewModel.selectTabAndLoad(index);
                 },
                 color: isSelected
-                    ? AppColors.buttonColor.withOpacity(0.11)
+                    ? AppColors.buttonColor.withValues(alpha: 0.11)
                     : AppColors.backGroundColor,
                 border: isSelected
                     ? Border.all(color: AppColors.pimaryColor, width: 1.5)
@@ -120,7 +117,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
             CustomContainer(
               onTap: progressViewModel.uploadLoading
                   ? null
-                  : () => _onUploadTap(context, progressViewModel),
+                  : () => _onUploadTap(progressViewModel),
               radius: context.radiusR(10),
               color: AppColors.backGroundColor,
               padding: context.paddingSymmetricR(horizontal: 9, vertical: 9),
@@ -140,7 +137,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
                     : SvgPicture.asset(
                         AppAssets.upLoadIcon,
                         height: context.sh(24),
-                        color: AppColors.pimaryColor,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.pimaryColor,
+                          BlendMode.srcIn,
+                        ),
                         width: context.sw(24),
                         fit: BoxFit.contain,
                       ),
@@ -194,7 +194,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
                     height: context.sh(24),
                     width: context.sw(24),
                     fit: BoxFit.contain,
-                    color: AppColors.pimaryColor,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.pimaryColor,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               ),

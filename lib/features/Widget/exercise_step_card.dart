@@ -54,7 +54,7 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.customContainerColorUp.withOpacity(
+                        color: AppColors.customContainerColorUp.withValues(alpha: 
                           0.4,
                         ),
                         offset: const Offset(3, 3),
@@ -62,7 +62,7 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
                         inset: true,
                       ),
                       BoxShadow(
-                        color: AppColors.customContinerColorDown.withOpacity(
+                        color: AppColors.customContinerColorDown.withValues(alpha: 
                           0.4,
                         ),
                         offset: const Offset(-3, -3),
@@ -122,7 +122,7 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.customContainerColorUp.withOpacity(
+                            color: AppColors.customContainerColorUp.withValues(alpha: 
                               0.4,
                             ),
                             offset: const Offset(3, 3),
@@ -131,7 +131,7 @@ class _ExerciseStepCardState extends State<ExerciseStepCard> {
                           ),
                           BoxShadow(
                             color: AppColors.customContinerColorDown
-                                .withOpacity(0.4),
+                                .withValues(alpha: 0.4),
                             offset: const Offset(-3, -3),
                             blurRadius: 4,
                             inset: true,

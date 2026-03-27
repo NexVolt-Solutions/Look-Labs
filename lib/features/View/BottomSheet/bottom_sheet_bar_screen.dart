@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide BoxShadow;
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/bottom_icon_container.dart';
@@ -127,7 +126,10 @@ class _BottomSheetBarScreenState extends State<BottomSheetBarScreen> {
                             AppAssets.notificationIcon,
                             fit: BoxFit.scaleDown,
                             // height: context.sh(24),
-                            color: AppColors.notSelectedColor,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.notSelectedColor,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ],

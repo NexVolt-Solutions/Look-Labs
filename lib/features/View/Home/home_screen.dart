@@ -165,12 +165,12 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(context.radiusR(14)),
             boxShadow: [
               BoxShadow(
-                color: AppColors.customContainerColorUp.withOpacity(0.4),
+                color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
                 offset: const Offset(3, 3),
                 blurRadius: 4,
               ),
               BoxShadow(
-                color: AppColors.customContinerColorDown.withOpacity(0.4),
+                color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                 offset: const Offset(-3, -3),
                 blurRadius: 4,
               ),
@@ -183,8 +183,8 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(context.radiusR(14)),
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF000000).withOpacity(0.9),
-                  Color(0xFF000000).withOpacity(0.7),
+                  Color(0xFF000000).withValues(alpha: 0.9),
+                  Color(0xFF000000).withValues(alpha: 0.7),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -280,14 +280,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: AppColors.backGroundColor,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.customContainerColorUp.withOpacity(
+                        color: AppColors.customContainerColorUp.withValues(alpha: 
                           0.4,
                         ),
                         offset: const Offset(5, 5),
                         blurRadius: 5,
                       ),
                       BoxShadow(
-                        color: AppColors.customContinerColorDown.withOpacity(
+                        color: AppColors.customContinerColorDown.withValues(alpha: 
                           0.4,
                         ),
                         offset: const Offset(-5, -5),
@@ -307,21 +307,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           gradient: LinearGradient(
                             colors: [
-                              Color(0xFFFFFFFF).withOpacity(0.9),
-                              Color(0xffDBE6F2).withOpacity(0.5),
-                              Color(0xFF8F9FAE).withOpacity(0.3),
+                              Color(0xFFFFFFFF).withValues(alpha: 0.9),
+                              Color(0xffDBE6F2).withValues(alpha: 0.5),
+                              Color(0xFF8F9FAE).withValues(alpha: 0.3),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.white.withOpacity(0.4),
+                              color: AppColors.white.withValues(alpha: 0.4),
                               offset: const Offset(3, 3),
                               blurRadius: 2,
                             ),
                             BoxShadow(
-                              color: AppColors.white.withOpacity(0.4),
+                              color: AppColors.white.withValues(alpha: 0.4),
                               offset: const Offset(-3, -3),
                               blurRadius: 5,
                             ),
@@ -483,10 +483,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           gradient: LinearGradient(
                                             colors: [
-                                              Color(0xFFFFFFFF).withOpacity(0),
+                                              Color(0xFFFFFFFF).withValues(alpha: 0),
                                               Color(
                                                 0xFFDBE6F2,
-                                              ).withOpacity(0.5),
+                                              ).withValues(alpha: 0.5),
                                               Color(0xFF8b8c8c),
                                             ],
                                             begin: Alignment.topLeft,
@@ -496,13 +496,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                             BoxShadow(
                                               color: Color(
                                                 0xFF123D65,
-                                              ).withOpacity(0.15),
+                                              ).withValues(alpha: 0.15),
                                               offset: const Offset(0, 7),
                                               blurRadius: 17,
                                             ),
                                             BoxShadow(
                                               color: AppColors.white
-                                                  .withOpacity(0.18),
+                                                  .withValues(alpha: 0.18),
                                               offset: const Offset(-5, -4),
                                               blurRadius: 58,
                                             ),
@@ -575,7 +575,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: AppColors.backGroundColor.withOpacity(0.7),
+                            color: AppColors.backGroundColor.withValues(alpha: 0.7),
                             borderRadius: BorderRadius.circular(
                               context.radiusR(10),
                             ),

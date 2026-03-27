@@ -35,7 +35,7 @@
 //                 color: AppColors.backGroundColor,
 //                 borderRadius: BorderRadius.circular(context.radiusR(12)),
 //                 border: Border.all(
-//                   color: AppColors.white.withOpacity(0.2),
+//                   color: AppColors.white.withValues(alpha: 0.2),
 //                   width: 1.5,
 //                 ),
 //                 boxShadow: [
@@ -138,7 +138,7 @@ class AppBarContainer extends StatelessWidget {
                       color: AppColors.backGroundColor,
                       borderRadius: BorderRadius.circular(context.radiusR(12)),
                       border: Border.all(
-                        color: AppColors.white.withOpacity(0.2),
+                        color: AppColors.white.withValues(alpha: 0.2),
                         width: 1.5,
                       ),
                       boxShadow: [

@@ -7,16 +7,16 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class SpeedMeterWidget extends StatelessWidget {
-  final box1Title;
-  final box1subTitle;
-  final box2Title;
-  final box2subTitle;
-  final box1per;
-  final box2per;
+  final String? box1Title;
+  final String? box1subTitle;
+  final String? box2Title;
+  final String? box2subTitle;
+  final String? box1per;
+  final String? box2per;
 
-  final smHTitle;
-  final smTitle;
-  final smsSubTitle;
+  final String? smHTitle;
+  final String? smTitle;
+  final String? smsSubTitle;
   const SpeedMeterWidget({
     super.key,
     this.box1Title,
@@ -45,13 +45,13 @@ class SpeedMeterWidget extends StatelessWidget {
                   color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.customContainerColorUp.withOpacity(0.4),
+                      color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
                       offset: const Offset(5, 5),
                       blurRadius: 5,
                       inset: false,
                     ),
                     BoxShadow(
-                      color: AppColors.customContinerColorDown.withOpacity(0.4),
+                      color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                       offset: const Offset(-5, -5),
                       blurRadius: 5,
                       inset: false,
@@ -62,7 +62,7 @@ class SpeedMeterWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      box1Title,
+                      box1Title ?? '',
                       style: TextStyle(
                         fontSize: context.sp(16.32),
                         fontWeight: FontWeight.w600,
@@ -70,7 +70,7 @@ class SpeedMeterWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      box1subTitle,
+                      box1subTitle ?? '',
                       style: TextStyle(
                         fontSize: context.sp(16.32),
                         fontWeight: FontWeight.w600,
@@ -91,14 +91,14 @@ class SpeedMeterWidget extends StatelessWidget {
                               boxShadow: [
                                 BoxShadow(
                                   color: AppColors.customContainerColorUp
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(5, 5),
                                   blurRadius: 5,
                                   inset: true,
                                 ),
                                 BoxShadow(
                                   color: AppColors.customContinerColorDown
-                                      .withOpacity(0.4),
+                                      .withValues(alpha: 0.4),
                                   offset: const Offset(-5, -5),
                                   blurRadius: 5,
                                   inset: true,
@@ -122,7 +122,7 @@ class SpeedMeterWidget extends StatelessWidget {
                         ),
                         SizedBox(width: context.sw(8)),
                         Text(
-                          box1per,
+                          box1per ?? '',
                           style: TextStyle(
                             fontSize: context.sp(12),
                             fontWeight: FontWeight.w600,
@@ -146,12 +146,12 @@ class SpeedMeterWidget extends StatelessWidget {
             color: AppColors.backGroundColor,
             boxShadow: [
               BoxShadow(
-                color: AppColors.customContainerColorUp.withOpacity(0.4),
+                color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
                 offset: const Offset(5, 5),
                 blurRadius: 5,
               ),
               BoxShadow(
-                color: AppColors.customContinerColorDown.withOpacity(0.4),
+                color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                 offset: const Offset(-5, -5),
                 blurRadius: 5,
               ),
@@ -164,18 +164,18 @@ class SpeedMeterWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   NormalText(
-                    titleText: smHTitle,
+                    titleText: smHTitle ?? '',
                     titleSize: context.sp(16),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
                   ),
                   Divider(thickness: 1, indent: 0, endIndent: 10),
                   NormalText(
-                    titleText: smTitle,
+                    titleText: smTitle ?? '',
                     titleSize: context.sp(12),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
-                    subText: smsSubTitle,
+                    subText: smsSubTitle ?? '',
                     subSize: context.sp(14),
                     subWeight: FontWeight.w600,
                     subColor: AppColors.subHeadingColor,

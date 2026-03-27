@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Network/models/workout_result_response.dart';
 import 'package:looklabs/Model/sales_data.dart';
@@ -342,8 +341,9 @@ class WorkOutProgressScreenViewModel extends ChangeNotifier {
               : (pi.title.isNotEmpty ? pi.title : null);
         }
       }
-      if (result.aiMessage != null && result.aiMessage!.isNotEmpty)
+      if (result.aiMessage != null && result.aiMessage!.isNotEmpty) {
         _aiMessage = result.aiMessage;
+      }
       notifyListeners();
     } catch (_) {}
   }

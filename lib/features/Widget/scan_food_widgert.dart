@@ -7,7 +7,7 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 class ScanFoodWidget extends StatelessWidget {
   final String? text;
   final String? icon;
-  final onTap;
+  final VoidCallback? onTap;
 
   const ScanFoodWidget({super.key, this.text, this.icon, this.onTap});
 
@@ -28,12 +28,12 @@ class ScanFoodWidget extends StatelessWidget {
             color: AppColors.white,
             boxShadow: [
               BoxShadow(
-                color: AppColors.customContinerColorDown.withOpacity(0.4),
+                color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                 offset: const Offset(5, 5),
                 blurRadius: 20,
               ),
               BoxShadow(
-                color: AppColors.customContinerColorDown.withOpacity(0.4),
+                color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                 offset: const Offset(-5, -5),
                 blurRadius: 20,
               ),
@@ -50,12 +50,12 @@ class ScanFoodWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(context.radiusR(10)),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.customContainerColorUp.withOpacity(0.4),
+                      color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
                       offset: const Offset(3, 3),
                       blurRadius: 4,
                     ),
                     BoxShadow(
-                      color: AppColors.customContinerColorDown.withOpacity(0.4),
+                      color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                       offset: const Offset(-3, -3),
                       blurRadius: 4,
                     ),

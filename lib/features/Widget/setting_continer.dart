@@ -31,12 +31,12 @@ class SettingContainer extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.customContainerColorUp.withOpacity(0.4),
+              color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
               offset: const Offset(5, 5),
               blurRadius: 5,
             ),
             BoxShadow(
-              color: AppColors.customContinerColorDown.withOpacity(0.4),
+              color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
               offset: const Offset(-5, -5),
               blurRadius: 5,
             ),
@@ -65,7 +65,10 @@ class SettingContainer extends StatelessWidget {
                           ),
                           child: SvgPicture.asset(
                             item['icon'],
-                            color: AppColors.iconColor,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.iconColor,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                         SizedBox(width: context.sw(12)),
@@ -90,7 +93,7 @@ class SettingContainer extends StatelessWidget {
                 /// DIVIDER
                 if (index != items.length - 1)
                   Divider(
-                    color: AppColors.subHeadingColor.withOpacity(0.2),
+                    color: AppColors.subHeadingColor.withValues(alpha: 0.2),
                     thickness: 1,
                   ),
               ],

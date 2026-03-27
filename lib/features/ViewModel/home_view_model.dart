@@ -400,6 +400,33 @@ class HomeViewModel extends ChangeNotifier {
   bool isLoadingDomain(String key) =>
       _loadingDomainKey?.toLowerCase() == key.toLowerCase();
 
+  bool _isCompletedFlowPayload(Map<String, dynamic> data) {
+    final status = data['status']?.toString().toLowerCase().trim() ?? '';
+    if (status == 'completed') return true;
+    if (data['completed'] == true || data['is_completed'] == true) return true;
+
+    // Heuristic: completed payloads usually contain result/AI sections.
+    const resultKeys = {
+      'ai_message',
+      'ai_progress',
+      'ai_recovery',
+      'ai_attributes',
+      'ai_exercises',
+      'result',
+      'recommendations',
+    };
+    for (final k in resultKeys) {
+      if (data.containsKey(k) && data[k] != null) return true;
+    }
+
+    // Another common completion shape: no current/next question left.
+    final current = data['current'];
+    final next = data['next'];
+    if (status == 'ok' && current == null && next == null) return true;
+
+    return false;
+  }
+
   /// Navigate to domain questions or result screen. For flow domains (workout, height),
   /// checks GET domains/{domain}/flow first: if completed → go to result; else → questions.
   Future<void> onItemTap(int index, BuildContext context) async {
@@ -443,9 +470,10 @@ class HomeViewModel extends ChangeNotifier {
         if (flowRes.success && flowRes.data is Map) {
           final data = Map<String, dynamic>.from(flowRes.data as Map);
           final status = data['status']?.toString() ?? '';
+          final isCompleted = _isCompletedFlowPayload(data);
           // Only navigate to result when the backend says the flow is completed.
           // status "ok" means there are questions to answer (current/next provided).
-          if (status == 'completed') {
+          if (isCompleted) {
             _loadingDomainKey = null;
             notifyListeners();
             Navigator.pushNamed(context, resultRoute, arguments: data);

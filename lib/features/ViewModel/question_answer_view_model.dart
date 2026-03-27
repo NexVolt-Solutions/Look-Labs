@@ -15,7 +15,6 @@ class QuestionAnswerViewModel extends ChangeNotifier {
   OnboardingFlowResponse? flowResponse;
   bool isLoadingFlow = false;
   String? flowError;
-  bool _flowLoadedOnce = false;
 
   /// When backend returns a "steps" list, we cache by step name so Next/Back don't need more API calls.
   final Map<String, List<FlowQuestion>> _stepsCache = {};
@@ -99,7 +98,6 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     final sessionId = OnboardingRepository.sessionId;
     if (sessionId == null || sessionId.isEmpty) {
       flowError = 'No session';
-      _flowLoadedOnce = true;
       currentStepQuestions = [];
       notifyListeners();
       return;
@@ -109,7 +107,6 @@ class QuestionAnswerViewModel extends ChangeNotifier {
 
     // Use in-memory cache when we already have questions for this step
     if (_stepsCache.containsKey(step)) {
-      _flowLoadedOnce = true;
       currentStepQuestions = _stepsCache[step]!;
       flowError = currentStepQuestions.isEmpty
           ? 'No questions for this step'
@@ -131,7 +128,6 @@ class QuestionAnswerViewModel extends ChangeNotifier {
       }
       flowResponse = cachedFlow;
       final cached = _stepsCache[step];
-      _flowLoadedOnce = true;
       currentStepQuestions = cached ?? [];
       flowError = currentStepQuestions.isEmpty ? 'No questions for this step' : null;
       notifyListeners();
@@ -159,7 +155,6 @@ class QuestionAnswerViewModel extends ChangeNotifier {
           }
         }
         final cached = _stepsCache[step];
-        _flowLoadedOnce = true;
         isLoadingFlow = false;
         currentStepQuestions = cached ?? [];
         flowError = currentStepQuestions.isEmpty
@@ -172,7 +167,6 @@ class QuestionAnswerViewModel extends ChangeNotifier {
       if (flow.questions != null && flow.questions!.isNotEmpty) {
         _stepsCache['profile_setup'] = flow.questions!;
         final cached = _stepsCache[step];
-        _flowLoadedOnce = true;
         isLoadingFlow = false;
         currentStepQuestions = cached ?? [];
         flowError = currentStepQuestions.isEmpty
@@ -183,7 +177,6 @@ class QuestionAnswerViewModel extends ChangeNotifier {
       }
     }
 
-    _flowLoadedOnce = true;
     isLoadingFlow = false;
     flowError = _extractFlowLoadError(questionsResponse);
     currentStepQuestions = [];
@@ -241,7 +234,7 @@ class QuestionAnswerViewModel extends ChangeNotifier {
       return;
     }
     final payload = <String, dynamic>{};
-    final qLower = (String s) => s.toLowerCase();
+    String qLower(String s) => s.toLowerCase();
     for (final q in currentStepQuestions) {
       final question = q.question;
       if (qLower(question).contains('name') &&

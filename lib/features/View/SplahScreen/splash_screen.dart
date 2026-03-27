@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 error,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: AppColors.white.withOpacity(0.95),
+                  color: AppColors.white.withValues(alpha: 0.95),
                   fontSize: context.sp(14),
                   height: 1.4,
                 ),
@@ -81,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Text(
               'Give it another try',
               style: TextStyle(
-                color: AppColors.white.withOpacity(0.8),
+                color: AppColors.white.withValues(alpha: 0.8),
                 fontSize: context.sp(13),
               ),
             ),

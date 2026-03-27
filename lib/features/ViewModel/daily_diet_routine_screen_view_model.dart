@@ -9,13 +9,13 @@ class DailyDietRoutineScreenViewModel extends ChangeNotifier {
     showGeneralDialog(
       context: context,
       barrierDismissible: false, // user can't dismiss until you allow
-      barrierColor: Colors.black.withOpacity(
+      barrierColor: Colors.black.withValues(alpha: 
         0.5,
       ), // full-screen semi-transparent black
       transitionDuration: const Duration(milliseconds: 200), // quick fade-in
       pageBuilder: (context, animation, secondaryAnimation) {
         return Scaffold(
-          backgroundColor: Colors.black.withOpacity(0.5),
+          backgroundColor: Colors.black.withValues(alpha: 0.5),
           body: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -46,7 +46,9 @@ class DailyDietRoutineScreenViewModel extends ChangeNotifier {
 
     // Later you can replace this with actual scan logic
     Future.delayed(const Duration(seconds: 10), () {
+      if (!context.mounted) return;
       Navigator.pop(context); // close dialog after scan time
+      if (!context.mounted) return;
       Navigator.pushNamed(context, RoutesName.DietDetailsScreen);
     });
   }

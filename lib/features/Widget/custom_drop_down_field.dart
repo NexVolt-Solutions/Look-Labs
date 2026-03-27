@@ -57,7 +57,7 @@ class CustomDropdownFieldState extends State<CustomDropdownField>
                 color: AppColors.backGroundColor,
                 borderRadius: BorderRadius.circular(context.radiusR(16)),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.4),
+                  color: Colors.white.withValues(alpha: 0.4),
                   width: context.sw(0.5),
                 ),
                 boxShadow: const [

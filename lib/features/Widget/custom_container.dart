@@ -40,12 +40,12 @@ class CustomContainer extends StatelessWidget {
           color: color ?? AppColors.backGroundColor,
           boxShadow: [
             BoxShadow(
-              color: AppColors.customContainerColorUp.withOpacity(0.4),
+              color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
               offset: const Offset(5, 5),
               blurRadius: 5,
             ),
             BoxShadow(
-              color: AppColors.customContinerColorDown.withOpacity(0.4),
+              color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
               offset: const Offset(-5, -5),
               blurRadius: 5,
             ),

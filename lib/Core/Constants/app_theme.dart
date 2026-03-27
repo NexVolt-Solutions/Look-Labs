@@ -40,8 +40,6 @@ class AppTheme {
         surface: AppColors.backGroundColor,
         onSurface: AppColors.headingColor,
 
-        background: AppColors.backGroundColor,
-
         error: Colors.red,
         onError: AppColors.white,
 

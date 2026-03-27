@@ -67,7 +67,7 @@ class ApiServices {
       final uri = Uri.parse(ApiConfig.baseUrl);
       if (uri.host.isNotEmpty && _isDevHost(uri.host)) {
         final io = HttpClient();
-        io.badCertificateCallback = (_, __, ___) => true;
+        io.badCertificateCallback = (_, _, _) => true;
         _httpClient = IOClient(io);
       } else {
         _httpClient = http.Client();

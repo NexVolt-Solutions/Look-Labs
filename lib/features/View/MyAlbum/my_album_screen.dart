@@ -128,7 +128,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                                   ),
                                 );
                               },
-                              errorBuilder: (_, __, ___) => Container(
+                              errorBuilder: (_, _, _) => Container(
                                 color: AppColors.backGroundColor,
                                 child: Icon(
                                   Icons.image_not_supported,

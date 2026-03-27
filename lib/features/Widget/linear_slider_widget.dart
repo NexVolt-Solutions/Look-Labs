@@ -39,13 +39,13 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 //               color: AppColors.backGroundColor,
 //               boxShadow: [
 //                 BoxShadow(
-//                   color: AppColors.customContainerColorUp.withOpacity(0.4),
+//                   color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
 //                   offset: const Offset(5, 5),
 //                   blurRadius: 5,
 //                   inset: inset ?? true,
 //                 ),
 //                 BoxShadow(
-//                   color: AppColors.customContinerColorDown.withOpacity(0.4),
+//                   color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
 //                   offset: const Offset(-5, -5),
 //                   blurRadius: 5,
 //                   inset: inset ?? true,
@@ -65,7 +65,7 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 //                         color: AppColors.pimaryColor,
 //                         boxShadow: [
 //                           BoxShadow(
-//                             color: AppColors.pimaryColor.withOpacity(0.15),
+//                             color: AppColors.pimaryColor.withValues(alpha: 0.15),
 //                             offset: const Offset(3, 3),
 //                             blurRadius: 4,
 //                           ),
@@ -167,13 +167,13 @@ class LinearSliderWidget extends StatelessWidget {
                   color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.customContainerColorUp.withOpacity(0.4),
+                      color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
                       offset: const Offset(5, 5),
                       blurRadius: 5,
                       inset: inset ?? true,
                     ),
                     BoxShadow(
-                      color: AppColors.customContinerColorDown.withOpacity(0.4),
+                      color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                       offset: const Offset(-5, -5),
                       blurRadius: 5,
                       inset: inset ?? true,
@@ -195,7 +195,7 @@ class LinearSliderWidget extends StatelessWidget {
                             color: AppColors.pimaryColor,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.pimaryColor.withOpacity(0.15),
+                                color: AppColors.pimaryColor.withValues(alpha: 0.15),
                                 offset: const Offset(3, 3),
                                 blurRadius: 4,
                               ),

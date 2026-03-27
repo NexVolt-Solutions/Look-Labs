@@ -28,7 +28,7 @@ class BottomIconContainer extends StatelessWidget {
             inset: false,
           ),
           BoxShadow(
-            color: Color(0xFF123D65).withOpacity(0.2),
+            color: Color(0xFF123D65).withValues(alpha: 0.2),
             offset: const Offset(-8, -6),
             blurRadius: 80,
             inset: false,
@@ -64,7 +64,7 @@ class BottomIconContainer extends StatelessWidget {
                         color: AppColors.backGroundColor,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.customContainerColorUp.withOpacity(
+                            color: AppColors.customContainerColorUp.withValues(alpha: 
                               0.4,
                             ),
                             offset: const Offset(5, 5),
@@ -72,7 +72,7 @@ class BottomIconContainer extends StatelessWidget {
                           ),
                           BoxShadow(
                             color: AppColors.customContinerColorDown
-                                .withOpacity(0.4),
+                                .withValues(alpha: 0.4),
                             offset: const Offset(-5, -5),
                             blurRadius: 5,
                           ),
@@ -82,9 +82,12 @@ class BottomIconContainer extends StatelessWidget {
                         child: SvgPicture.asset(
                           item['image'],
                           height: context.sh(18),
-                          color: isSelected
-                              ? AppColors.pimaryColor
-                              : AppColors.iconColor,
+                          colorFilter: ColorFilter.mode(
+                            isSelected
+                                ? AppColors.pimaryColor
+                                : AppColors.iconColor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                     ),

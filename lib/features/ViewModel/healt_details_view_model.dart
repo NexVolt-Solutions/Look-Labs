@@ -93,7 +93,7 @@ class HealtDetailsViewModel extends ChangeNotifier {
                       padding: context.paddingSymmetricR(horizontal: 24, vertical: 18),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? AppColors.buttonColor.withOpacity(0.11)
+                            ? AppColors.buttonColor.withValues(alpha: 0.11)
                             : AppColors.backGroundColor,
                         borderRadius: BorderRadius.circular(context.radiusR(16)),
                         border: isSelected
@@ -104,7 +104,7 @@ class HealtDetailsViewModel extends ChangeNotifier {
                             : null,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.customContainerColorUp.withOpacity(
+                            color: AppColors.customContainerColorUp.withValues(alpha: 
                               0.4,
                             ),
                             offset: const Offset(5, 5),

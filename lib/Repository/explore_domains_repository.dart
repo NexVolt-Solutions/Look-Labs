@@ -18,9 +18,7 @@ class ExploreDomainsRepository {
   static final ExploreDomainsRepository _instance = ExploreDomainsRepository._();
   static ExploreDomainsRepository get instance => _instance;
 
-  static const FlutterSecureStorage _storage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
   /// Loads cached domains from secure storage. Returns null if missing or invalid.
   static Future<List<ExploreDomain>?> loadCachedDomains() async {

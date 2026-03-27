@@ -30,7 +30,7 @@ class CustomContiner extends StatelessWidget {
           borderRadius: BorderRadius.circular(context.radiusR(16)),
           boxShadow: [
             BoxShadow(
-              color: AppColors.customContainerColorUp.withOpacity(0.5),
+              color: AppColors.customContainerColorUp.withValues(alpha: 0.5),
               offset: const Offset(5, 5),
               blurRadius: 20,
               inset: false,
@@ -75,7 +75,7 @@ class CustomContiner extends StatelessWidget {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.customContainerColorUp.withOpacity(
+                        color: AppColors.customContainerColorUp.withValues(alpha: 
                           0.5,
                         ),
                         offset: const Offset(5, 5),

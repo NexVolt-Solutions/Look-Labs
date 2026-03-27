@@ -18,9 +18,7 @@ class AuthRepository {
   static final AuthRepository _instance = AuthRepository._();
   static AuthRepository get instance => _instance;
 
-  static const FlutterSecureStorage _storage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
   static Future<bool> restoreAuthToken() async {
     try {

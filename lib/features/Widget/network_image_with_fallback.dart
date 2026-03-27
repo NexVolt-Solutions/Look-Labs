@@ -75,7 +75,7 @@ class NetworkImageWithFallback extends StatelessWidget {
               ),
             );
           },
-          errorBuilder: (_, __, ___) {
+          errorBuilder: (_, _, _) {
             if (errorWidget != null) return errorWidget!;
             if (localAsset != null) {
               return Image.asset(
@@ -83,7 +83,7 @@ class NetworkImageWithFallback extends StatelessWidget {
                 width: width,
                 height: height,
                 fit: fit,
-                errorBuilder: (_, __, ___) => _buildIconFallback(context),
+                errorBuilder: (_, _, _) => _buildIconFallback(context),
               );
             }
             return _buildIconFallback(context);
@@ -100,7 +100,7 @@ class NetworkImageWithFallback extends StatelessWidget {
       child: Icon(
         Icons.image_not_supported,
         size: fallbackSize * 0.5,
-        color: AppColors.subHeadingColor.withOpacity(0.5),
+        color: AppColors.subHeadingColor.withValues(alpha: 0.5),
       ),
     );
   }

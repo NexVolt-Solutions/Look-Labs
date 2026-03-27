@@ -45,13 +45,13 @@
 //                   color: AppColors.backGroundColor,
 //                   boxShadow: [
 //                     BoxShadow(
-//                       color: AppColors.customContainerColorUp.withOpacity(0.4),
+//                       color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
 //                       offset: const Offset(5, 5),
 //                       blurRadius: 5,
 //                       inset: true,
 //                     ),
 //                     BoxShadow(
-//                       color: AppColors.customContinerColorDown.withOpacity(0.4),
+//                       color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
 //                       offset: const Offset(-5, -5),
 //                       blurRadius: 5,
 //                       inset: true,
@@ -86,13 +86,13 @@
 //                           boxShadow: [
 //                             BoxShadow(
 //                               color: AppColors.customContainerColorUp
-//                                   .withOpacity(0.4),
+//                                   .withValues(alpha: 0.4),
 //                               offset: const Offset(2.5, 2.5),
 //                               blurRadius: 0,
 //                             ),
 //                             BoxShadow(
 //                               color: AppColors.customContinerColorDown
-//                                   .withOpacity(0.4),
+//                                   .withValues(alpha: 0.4),
 //                               offset: const Offset(-2.5, -2.5),
 //                               blurRadius: 10,
 //                             ),
@@ -215,7 +215,7 @@ class _HeightIndicaterState extends State<HeightIndicater> {
                         color: AppColors.backGroundColor,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.customContainerColorUp.withOpacity(
+                            color: AppColors.customContainerColorUp.withValues(alpha: 
                               0.4,
                             ),
                             offset: const Offset(5, 5),
@@ -224,7 +224,7 @@ class _HeightIndicaterState extends State<HeightIndicater> {
                           ),
                           BoxShadow(
                             color: AppColors.customContinerColorDown
-                                .withOpacity(0.4),
+                                .withValues(alpha: 0.4),
                             offset: const Offset(-5, -5),
                             blurRadius: 5,
                             inset: true,
@@ -261,12 +261,12 @@ class _HeightIndicaterState extends State<HeightIndicater> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: AppColors.customContainerColorUp
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     offset: const Offset(2.5, 2.5),
                                   ),
                                   BoxShadow(
                                     color: AppColors.customContinerColorDown
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     offset: const Offset(-2.5, -2.5),
                                     blurRadius: 10,
                                   ),

@@ -59,6 +59,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   await AuthRepository.setSelectedDomain(domain);
                 }
               }
+              if (!mounted) return;
             }
             Navigator.pushNamedAndRemoveUntil(
               context,

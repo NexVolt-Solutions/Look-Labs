@@ -73,14 +73,14 @@ class GoalActivityGraph extends StatelessWidget {
                     color: AppColors.backGroundColor,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.customContainerColorUp.withOpacity(
+                        color: AppColors.customContainerColorUp.withValues(alpha: 
                           0.4,
                         ),
                         offset: const Offset(5, 5),
                         blurRadius: 5,
                       ),
                       BoxShadow(
-                        color: AppColors.customContinerColorDown.withOpacity(
+                        color: AppColors.customContinerColorDown.withValues(alpha: 
                           0.4,
                         ),
                         offset: const Offset(-5, -5),
@@ -132,12 +132,12 @@ class GoalActivityGraph extends StatelessWidget {
                     color: AppColors.pimaryColor,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.pimaryColor.withOpacity(.3),
+                        color: AppColors.pimaryColor.withValues(alpha: .3),
                         offset: Offset(5, 5),
                         blurRadius: 20,
                       ),
                       BoxShadow(
-                        color: AppColors.pimaryColor.withOpacity(.1),
+                        color: AppColors.pimaryColor.withValues(alpha: .1),
                         offset: Offset(-5, -5),
                         blurRadius: 20,
                       ),

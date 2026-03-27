@@ -7,10 +7,10 @@ class CustomStepper extends StatelessWidget {
   final List<String> steps;
 
   const CustomStepper({
-    Key? key,
+    super.key,
     required this.currentStep,
     required this.steps,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class CustomStepper extends StatelessWidget {
                   height: 1.5,
                   color: isCompleted
                       ? AppColors.pimaryColor
-                      : AppColors.seconderyColor.withOpacity(0.3),
+                      : AppColors.seconderyColor.withValues(alpha: 0.3),
                 ),
               );
             } else {
@@ -94,19 +94,19 @@ class CustomStepper extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(
           color: isUpcoming
-              ? AppColors.white.withOpacity(0.3)
+              ? AppColors.white.withValues(alpha: 0.3)
               : AppColors.pimaryColor,
           width: context.sw(2),
         ),
         color: isCompleted ? AppColors.pimaryColor : AppColors.backGroundColor,
         boxShadow: [
           BoxShadow(
-            color: AppColors.customContainerColorUp.withOpacity(0.4),
+            color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
             offset: const Offset(3, 3),
             blurRadius: 4,
           ),
           BoxShadow(
-            color: AppColors.customContinerColorDown.withOpacity(0.4),
+            color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
             offset: const Offset(-3, -3),
             blurRadius: 4,
           ),

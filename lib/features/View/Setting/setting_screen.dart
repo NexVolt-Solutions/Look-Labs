@@ -91,12 +91,12 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.customContainerColorUp.withOpacity(0.4),
+                    color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
                     offset: const Offset(5, 5),
                     blurRadius: 5,
                   ),
                   BoxShadow(
-                    color: AppColors.customContinerColorDown.withOpacity(0.4),
+                    color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
                     offset: const Offset(-5, -5),
                     blurRadius: 5,
                   ),
@@ -298,12 +298,12 @@ class _PersonalInfoEditFormState extends State<_PersonalInfoEditForm> {
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.customContainerColorUp.withOpacity(0.4),
+              color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
               offset: const Offset(5, 5),
               blurRadius: 5,
             ),
             BoxShadow(
-              color: AppColors.customContinerColorDown.withOpacity(0.4),
+              color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
               offset: const Offset(-5, -5),
               blurRadius: 5,
             ),
@@ -322,7 +322,7 @@ class _PersonalInfoEditFormState extends State<_PersonalInfoEditForm> {
               ),
             ),
             Divider(
-              color: AppColors.subHeadingColor.withOpacity(0.2),
+              color: AppColors.subHeadingColor.withValues(alpha: 0.2),
               thickness: 1,
             ),
             _editRow(
@@ -337,7 +337,7 @@ class _PersonalInfoEditFormState extends State<_PersonalInfoEditForm> {
               ),
             ),
             Divider(
-              color: AppColors.subHeadingColor.withOpacity(0.2),
+              color: AppColors.subHeadingColor.withValues(alpha: 0.2),
               thickness: 1,
             ),
             _editRow(
@@ -351,7 +351,7 @@ class _PersonalInfoEditFormState extends State<_PersonalInfoEditForm> {
               ),
             ),
             Divider(
-              color: AppColors.subHeadingColor.withOpacity(0.2),
+              color: AppColors.subHeadingColor.withValues(alpha: 0.2),
               thickness: 1,
             ),
             _editRow(
@@ -419,12 +419,12 @@ class _PersonalInfoEditFormState extends State<_PersonalInfoEditForm> {
         borderRadius: BorderRadius.circular(context.radiusR(16)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.customContainerColorUp.withOpacity(0.4),
+            color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
             offset: const Offset(5, 5),
             blurRadius: 5,
           ),
           BoxShadow(
-            color: AppColors.customContinerColorDown.withOpacity(0.4),
+            color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
             offset: const Offset(-5, -5),
             blurRadius: 5,
           ),
@@ -485,13 +485,13 @@ class _PersonalInfoEditFormState extends State<_PersonalInfoEditForm> {
         borderRadius: BorderRadius.circular(context.radiusR(16)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.customContainerColorUp.withOpacity(0.4),
+            color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
             offset: const Offset(5, 5),
             blurRadius: 5,
             inset: true,
           ),
           BoxShadow(
-            color: AppColors.customContinerColorDown.withOpacity(0.4),
+            color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
             offset: const Offset(-5, -5),
             blurRadius: 5,
             inset: true,

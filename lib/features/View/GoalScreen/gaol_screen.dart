@@ -171,7 +171,7 @@ class _GaolScreenState extends State<GaolScreen> {
                       child: Container(
                         decoration: material.BoxDecoration(
                           color: isSelected
-                              ? AppColors.buttonColor.withOpacity(0.11)
+                              ? AppColors.buttonColor.withValues(alpha: 0.11)
                               : AppColors.backGroundColor,
                           borderRadius: material.BorderRadius.circular(
                             context.radiusR(16),
@@ -185,14 +185,14 @@ class _GaolScreenState extends State<GaolScreen> {
                           boxShadow: isSelected
                               ? [
                                   material.BoxShadow(
-                                    color: AppColors.buttonColor.withOpacity(
+                                    color: AppColors.buttonColor.withValues(alpha: 
                                       0.15,
                                     ),
                                     offset: const Offset(5, 5),
                                     blurRadius: 20,
                                   ),
                                   material.BoxShadow(
-                                    color: AppColors.buttonColor.withOpacity(
+                                    color: AppColors.buttonColor.withValues(alpha: 
                                       0.15,
                                     ),
                                     offset: const Offset(-5, -5),
@@ -202,7 +202,7 @@ class _GaolScreenState extends State<GaolScreen> {
                               : [
                                   material.BoxShadow(
                                     color: AppColors.customContainerColorUp
-                                        .withOpacity(0.5),
+                                        .withValues(alpha: 0.5),
                                     offset: const Offset(5, 5),
                                     blurRadius: 20,
                                   ),

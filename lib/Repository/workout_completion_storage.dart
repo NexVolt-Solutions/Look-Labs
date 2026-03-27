@@ -9,9 +9,7 @@ class WorkoutCompletionStorage {
   static final WorkoutCompletionStorage _instance = WorkoutCompletionStorage._();
   static WorkoutCompletionStorage get instance => _instance;
 
-  static const FlutterSecureStorage _storage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
   static String _slug(String domain) {
     final s = domain.toLowerCase().trim().replaceAll(RegExp(r'[^a-z0-9_]'), '_');

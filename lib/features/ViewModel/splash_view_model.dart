@@ -42,12 +42,14 @@ class SplashViewModel extends ChangeNotifier {
         debugPrint('[Splash] Token refreshed → navigating to Home (BottomSheetBarScreen)');
       }
       // Apply user from refresh response so name/avatar show immediately without waiting for GET users/me.
+      if (!context.mounted) return;
       if (refreshRes.data is Map) {
         context.read<AuthViewModel>().applyUserFromRefresh(
           Map<String, dynamic>.from(refreshRes.data as Map),
         );
       }
       // Load profile and home data in background after navigation (Home screen will also load its data).
+      if (!context.mounted) return;
       final authVm = context.read<AuthViewModel>();
       Future.microtask(() async {
         try {
