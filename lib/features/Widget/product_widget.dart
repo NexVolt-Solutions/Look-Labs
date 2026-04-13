@@ -208,6 +208,9 @@ class ProductWidget extends StatelessWidget {
   final int index;
   final dynamic viewmodel;
 
+  /// When set, used for tag chips instead of `viewmodel.productData[index]['buttonText']`.
+  final List<String>? tagLabels;
+
   const ProductWidget({
     super.key,
     required this.index,
@@ -219,7 +222,25 @@ class ProductWidget extends StatelessWidget {
     this.text,
     this.showGradient = false,
     this.viewmodel,
+    this.tagLabels,
   });
+
+  List<String> _resolvedTags() {
+    if (tagLabels != null) return tagLabels!;
+    final vm = viewmodel;
+    if (vm == null) return const [];
+    try {
+      final list = vm.productData as List<dynamic>?;
+      if (list == null || index < 0 || index >= list.length) {
+        return const [];
+      }
+      final bt = list[index]['buttonText'];
+      if (bt is List) {
+        return bt.map((e) => e.toString()).toList();
+      }
+    } catch (_) {}
+    return const [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -260,12 +281,16 @@ class ProductWidget extends StatelessWidget {
                   color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
+                      color: AppColors.customContainerColorUp.withValues(
+                        alpha: 0.4,
+                      ),
                       offset: const Offset(5, 5),
                       blurRadius: 5,
                     ),
                     BoxShadow(
-                      color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
+                      color: AppColors.customContinerColorDown.withValues(
+                        alpha: 0.4,
+                      ),
                       offset: const Offset(-5, -5),
                       blurRadius: 5,
                     ),
@@ -299,12 +324,16 @@ class ProductWidget extends StatelessWidget {
                   color: showGradient ? null : AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
+                      color: AppColors.customContainerColorUp.withValues(
+                        alpha: 0.4,
+                      ),
                       offset: const Offset(5, 5),
                       blurRadius: 5,
                     ),
                     BoxShadow(
-                      color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
+                      color: AppColors.customContinerColorDown.withValues(
+                        alpha: 0.4,
+                      ),
                       offset: const Offset(-5, -5),
                       blurRadius: 5,
                     ),
@@ -368,24 +397,20 @@ class ProductWidget extends StatelessWidget {
           Wrap(
             spacing: context.sw(8),
             runSpacing: context.sh(8),
-            children: List.generate(
-              viewmodel.productData[index]['buttonText'].length,
-              (btnIndex) {
-                return PlanContainer(
-                  padding: context.paddingSymmetricR(horizontal: 12, vertical: 8),
-                  radius: BorderRadius.circular(context.radiusR(16)),
-                  isSelected: false,
-                  onTap: () {},
-                  child: NormalText(
-                    titleText:
-                        viewmodel.productData[index]['buttonText'][btnIndex],
-                    titleSize: context.sp(10),
-                    titleWeight: FontWeight.w600,
-                    titleColor: AppColors.subHeadingColor,
-                  ),
-                );
-              },
-            ),
+            children: List.generate(_resolvedTags().length, (btnIndex) {
+              return PlanContainer(
+                padding: context.paddingSymmetricR(horizontal: 12, vertical: 8),
+                radius: BorderRadius.circular(context.radiusR(16)),
+                isSelected: false,
+                onTap: () {},
+                child: NormalText(
+                  titleText: _resolvedTags()[btnIndex],
+                  titleSize: context.sp(10),
+                  titleWeight: FontWeight.w600,
+                  titleColor: AppColors.subHeadingColor,
+                ),
+              );
+            }),
           ),
 
           SizedBox(height: context.sh(12)),

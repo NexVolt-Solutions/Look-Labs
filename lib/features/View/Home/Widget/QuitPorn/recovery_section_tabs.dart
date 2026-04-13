@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
+import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
@@ -29,9 +30,23 @@ class RecoverySectionTabs extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(AppAssets.ageIcon),
-                SizedBox(width: context.sw(6)),
-                NormalText(titleText: 'Daily Plan'),
+                SvgPicture.asset(
+                  AppAssets.ageIcon,
+                  width: context.sw(20),
+                  height: context.sh(20),
+                  colorFilter: ColorFilter.mode(
+                    selectedSection == 'Daily Plan'
+                        ? AppColors.pimaryColor
+                        : AppColors.iconColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                SizedBox(width: context.sw(8)),
+                NormalText(
+                  titleText: 'Daily Plan',
+                  titleSize: context.sp(14),
+                  titleWeight: FontWeight.w600,
+                ),
               ],
             ),
           ),
@@ -46,9 +61,23 @@ class RecoverySectionTabs extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(AppAssets.exersieIcon),
-                SizedBox(width: context.sw(6)),
-                NormalText(titleText: 'Exercise'),
+                SvgPicture.asset(
+                  AppAssets.exersieIcon,
+                  width: context.sw(24),
+                  height: context.sh(24),
+                  colorFilter: ColorFilter.mode(
+                    selectedSection == 'Exercise'
+                        ? AppColors.pimaryColor
+                        : AppColors.iconColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                SizedBox(width: context.sw(8)),
+                NormalText(
+                  titleText: 'Exercise',
+                  titleSize: context.sp(14),
+                  titleWeight: FontWeight.w600,
+                ),
               ],
             ),
           ),

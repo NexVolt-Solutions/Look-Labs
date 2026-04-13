@@ -23,10 +23,25 @@ const List<Color> _domainChartColors = [
 
 /// Custom tooltip that shows [label] (e.g. day) and [value] with cloud icon and neumorphic style.
 class _ChartTooltipContent extends StatelessWidget {
-  const _ChartTooltipContent({required this.label, required this.value});
+  const _ChartTooltipContent({
+    required this.label,
+    required this.value,
+    this.valueSuffix,
+  });
 
   final String label;
   final num value;
+
+  /// e.g. `'%'` for domain recovery scores (0–100).
+  final String? valueSuffix;
+
+  String get _valueText {
+    final core = value.truncateToDouble() == value
+        ? value.toInt().toString()
+        : value.toStringAsFixed(1);
+    if (valueSuffix == null || valueSuffix!.isEmpty) return core;
+    return '$core$valueSuffix';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +61,7 @@ class _ChartTooltipContent extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          value.truncateToDouble() == value
-              ? value.toInt().toString()
-              : value.toStringAsFixed(1),
+          _valueText,
           style: TextStyle(
             fontSize: context.sp(12),
             color: AppColors.subHeadingColor,
@@ -93,18 +106,64 @@ TooltipBehavior _customChartTooltip(BuildContext context) => TooltipBehavior(
       },
 );
 
+TooltipBehavior _recoveryChartTooltip(
+  BuildContext context, {
+  required String valueSuffix,
+}) => TooltipBehavior(
+  enable: true,
+  color: Theme.of(context).colorScheme.surface,
+  borderColor: Theme.of(context).colorScheme.surface,
+  borderWidth: 0,
+  builder:
+      (
+        dynamic data,
+        dynamic point,
+        dynamic series,
+        int pointIndex,
+        int seriesIndex,
+      ) {
+        if (data is! SalesData) {
+          return _ChartTooltipContent(label: '', value: 0);
+        }
+        return _ChartTooltipContent(
+          label: data.month,
+          value: data.sales,
+          valueSuffix: valueSuffix,
+        );
+      },
+);
+
 class LineChartWidget extends StatelessWidget {
   /// When non-null and non-empty, shows this workout weekly data (from GET weekly-summary) instead of ChartViewModel.
-  const LineChartWidget({super.key, this.workoutChartData});
+  const LineChartWidget({
+    super.key,
+    this.workoutChartData,
+    this.yAxisMinimum,
+    this.yAxisMaximum,
+    this.valueDisplaySuffix,
+  });
 
   final List<SalesData>? workoutChartData;
+
+  /// When set with [yAxisMaximum], fixes Y scale (e.g. 0–100 for recovery %).
+  final double? yAxisMinimum;
+  final double? yAxisMaximum;
+
+  /// Appended to point labels and tooltips (e.g. `'%'` for recovery score).
+  final String? valueDisplaySuffix;
 
   @override
   Widget build(BuildContext context) {
     final chartVM = context.watch<ChartViewModel>();
-    final dataSource = (workoutChartData != null && workoutChartData!.isNotEmpty)
+    final dataSource =
+        (workoutChartData != null && workoutChartData!.isNotEmpty)
         ? workoutChartData!
         : chartVM.chartData;
+
+    final suffix = valueDisplaySuffix;
+    final tooltip = suffix != null && suffix.isNotEmpty
+        ? _recoveryChartTooltip(context, valueSuffix: suffix)
+        : _customChartTooltip(context);
 
     return SfCartesianChart(
       primaryXAxis: CategoryAxis(
@@ -112,12 +171,28 @@ class LineChartWidget extends StatelessWidget {
         labelRotation: -45,
         labelIntersectAction: AxisLabelIntersectAction.rotate45,
       ),
-      tooltipBehavior: _customChartTooltip(context),
+      primaryYAxis: yAxisMaximum != null
+          ? NumericAxis(
+              minimum: yAxisMinimum ?? 0,
+              maximum: yAxisMaximum,
+              interval: 25,
+            )
+          : const NumericAxis(),
+      tooltipBehavior: tooltip,
       series: <LineSeries<SalesData, String>>[
         LineSeries<SalesData, String>(
           dataSource: dataSource,
           xValueMapper: (data, _) => data.month,
           yValueMapper: (data, _) => data.sales,
+          dataLabelMapper: suffix == null || suffix.isEmpty
+              ? null
+              : (SalesData data, _) {
+                  final v = data.sales;
+                  final core = v.truncateToDouble() == v
+                      ? v.toInt().toString()
+                      : v.toStringAsFixed(1);
+                  return '$core$suffix';
+                },
           markerSettings: MarkerSettings(
             isVisible: true,
             image: AssetImage(AppAssets.image),

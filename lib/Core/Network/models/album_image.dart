@@ -1,6 +1,78 @@
-/// Album image item from GET images/album.
-/// API returns array of: { id, user_id, file_path, s3_key, url, mime_type, file_size, image_type, status, domain, view, analysis_result, error_message, uploaded_at, processed_at, updated_at }.
 class AlbumImage {
+  static bool isTerminalProcessedStatus(String? status) {
+    final s = (status ?? '').toLowerCase();
+    return s == 'processed' ||
+        s == 'completed' ||
+        s == 'complete' ||
+        s == 'done';
+  }
+
+  static bool isFailureStatus(String? status) {
+    final s = (status ?? '').toLowerCase();
+    return s == 'failed' || s == 'error';
+  }
+
+  static List<AlbumImage> _imagesForView(
+    List<AlbumImage> images,
+    String viewKey,
+  ) {
+    final lower = viewKey.toLowerCase();
+    return images.where((e) => (e.view ?? '').toLowerCase() == lower).toList();
+  }
+
+  /// Newest row for this view by id (matches API “current upload” ordering).
+  static AlbumImage? pickNewestByIdForView(
+    List<AlbumImage> images,
+    String viewKey,
+  ) {
+    final matches = _imagesForView(images, viewKey);
+    if (matches.isEmpty) return null;
+    matches.sort((a, b) => b.id.compareTo(a.id));
+    return matches.first;
+  }
+
+  /// Newest terminal-processed row for this view (stable preview while a newer row is pending).
+  static AlbumImage? pickNewestProcessedForView(
+    List<AlbumImage> images,
+    String viewKey,
+  ) {
+    final processed = _imagesForView(
+      images,
+      viewKey,
+    ).where((e) => isTerminalProcessedStatus(e.status)).toList();
+    if (processed.isEmpty) return null;
+    processed.sort((a, b) => b.id.compareTo(a.id));
+    return processed.first;
+  }
+
+  /// Standard capture slots (front / back / right / left) used by scan + album UIs.
+  static const List<String> standardSlotViewKeys = [
+    'front',
+    'back',
+    'right',
+    'left',
+  ];
+
+  /// True when each [standardSlotViewKeys] view has a display row with a non-empty [url].
+  static bool hasAllSlotImages(List<AlbumImage> images) {
+    for (final v in standardSlotViewKeys) {
+      final img = pickDisplayImageForView(images, v);
+      if (img == null || img.url.trim().isEmpty) return false;
+    }
+    return true;
+  }
+
+  /// Prefer the latest upload when it is already processed; otherwise fall back to the last good processed image.
+  static AlbumImage? pickDisplayImageForView(
+    List<AlbumImage> images,
+    String viewKey,
+  ) {
+    final latest = pickNewestByIdForView(images, viewKey);
+    if (latest == null) return null;
+    if (isTerminalProcessedStatus(latest.status)) return latest;
+    return pickNewestProcessedForView(images, viewKey) ?? latest;
+  }
+
   final int id;
   final int? userId;
   final String? filePath;
@@ -12,7 +84,8 @@ class AlbumImage {
   final String? status;
   final String? domain;
   final String? view;
-  final String? analysisResult;
+
+  final dynamic analysisResult;
   final String? errorMessage;
   final String? uploadedAt;
   final String? processedAt;
@@ -56,7 +129,7 @@ class AlbumImage {
       status: json['status']?.toString(),
       domain: json['domain']?.toString(),
       view: json['view']?.toString(),
-      analysisResult: json['analysis_result']?.toString(),
+      analysisResult: json['analysis_result'],
       errorMessage: json['error_message']?.toString(),
       uploadedAt: json['uploaded_at']?.toString(),
       processedAt: json['processed_at']?.toString(),

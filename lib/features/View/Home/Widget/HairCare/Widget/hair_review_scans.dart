@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/camera_widget.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
@@ -9,6 +10,117 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/review_scans_view_model.dart';
 import 'package:provider/provider.dart';
+
+class _PickSourceCard extends StatelessWidget {
+  const _PickSourceCard({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(context.radiusR(16)),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(context.radiusR(16)),
+            border: Border.all(
+              color: AppColors.pimaryColor.withValues(alpha: 0.35),
+              width: context.sw(1.2),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.customContainerColorUp.withValues(alpha: 0.2),
+                offset: const Offset(2, 2),
+                blurRadius: 6,
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: context.paddingSymmetricR(vertical: 20, horizontal: 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: context.paddingSymmetricR(
+                    horizontal: 14,
+                    vertical: 14,
+                  ),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.pimaryColor.withValues(alpha: 0.12),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: AppColors.pimaryColor,
+                    size: context.sw(28),
+                  ),
+                ),
+                SizedBox(height: context.sh(10)),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: context.sp(14),
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.subHeadingColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _pickHairImageForSlot(
+  BuildContext context,
+  ReviewScansViewModel vm,
+  int index,
+) async {
+  vm.selectStep(index);
+  final source = await showModalBottomSheet<ImageSource>(
+    context: context,
+    showDragHandle: true,
+    backgroundColor: AppColors.backGroundColor,
+    builder: (ctx) => SafeArea(
+      child: Padding(
+        padding: context.paddingSymmetricR(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: _PickSourceCard(
+                icon: Icons.photo_camera_outlined,
+                label: 'Camera',
+                onTap: () => Navigator.pop(ctx, ImageSource.camera),
+              ),
+            ),
+            SizedBox(width: context.sw(12)),
+            Expanded(
+              child: _PickSourceCard(
+                icon: Icons.photo_library_outlined,
+                label: 'Gallery',
+                onTap: () => Navigator.pop(ctx, ImageSource.gallery),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+  if (source == null || !context.mounted) return;
+  await vm.pickImageForSlot(index, source);
+}
 
 class HairReviewScans extends StatelessWidget {
   const HairReviewScans({super.key});
@@ -25,13 +137,36 @@ class HairReviewScans extends StatelessWidget {
           right: context.sw(20),
           bottom: context.sh(30),
         ),
-        child: CustomButton(
-          text: 'Continue',
-          color: AppColors.pimaryColor,
-          isEnabled: true,
-          onTap: () {
-            Navigator.pushNamed(context, RoutesName.HairAnalyzingScreen);
-          },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (viewModel.uploadError != null) ...[
+              Padding(
+                padding: EdgeInsets.only(bottom: context.sh(8)),
+                child: Text(
+                  viewModel.uploadError!,
+                  style: TextStyle(
+                    color: AppColors.redColor,
+                    fontSize: context.sp(13),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+            CustomButton(
+              text: viewModel.uploading ? 'Uploading...' : 'Continue',
+              color: AppColors.pimaryColor,
+              isEnabled:
+                  !viewModel.uploading &&
+                  (!viewModel.needsDomainUpload || viewModel.allSlotsFilled),
+              onTap: () async {
+                final ok = await viewModel.uploadAllDomainImages();
+                if (!context.mounted) return;
+                if (!ok) return;
+                Navigator.pushNamed(context, RoutesName.HairAnalyzingScreen);
+              },
+            ),
+          ],
         ),
       ),
       body: SafeArea(
@@ -44,8 +179,8 @@ class HairReviewScans extends StatelessWidget {
             ),
             SizedBox(height: context.sh(24)),
             CustomStepper(
-              currentStep: viewModel.currentStep,
-              steps: const ['Front', 'Back', 'Left', 'Right'],
+              currentStep: viewModel.stepperHighlightStep,
+              steps: ReviewScansViewModel.stepperStepTitles,
             ),
             SizedBox(height: context.sh(20)),
             NormalText(
@@ -63,25 +198,31 @@ class HairReviewScans extends StatelessWidget {
               subAlign: TextAlign.center,
             ),
             SizedBox(height: context.sh(12)),
-
-            SizedBox(
-              height: context.sh(1150),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 3.5 / 3.5,
-                ),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return CameraWidget(
-                    onTapFun: () => viewModel.selectStep(index),
-                    isSelected: viewModel.currentStep == index,
-                  );
-                },
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: context.sw(12),
+                mainAxisSpacing: context.sh(12),
+                childAspectRatio: 0.78,
               ),
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                return ReviewScanTile(
+                  onTapCapture: () =>
+                      _pickHairImageForSlot(context, viewModel, index),
+                  onRetake: () =>
+                      _pickHairImageForSlot(context, viewModel, index),
+                  localImagePath: viewModel.imagePathForSlot(index),
+                  isSelected:
+                      (viewModel.imagePathForSlot(index)?.isNotEmpty ??
+                          false) ||
+                      viewModel.currentStep == index,
+                  angleTitle: ReviewScansViewModel.slotLabels[index],
+                );
+              },
             ),
           ],
         ),
@@ -89,89 +230,3 @@ class HairReviewScans extends StatelessWidget {
     );
   }
 }
-
-// class HairReviewScans extends StatefulWidget {
-//   const HairReviewScans({super.key});
-
-//   @override
-//   State<HairReviewScans> createState() => _HairReviewScansState();
-// }
-
-// class _HairReviewScansState extends State<HairReviewScans> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: AppColors.backGroundColor,
-//       bottomNavigationBar: CustomButton(
-//         text: 'Continue',
-//         color: AppColors.pimaryColor,
-//         isEnabled: true,
-//         onTap: () {
-//           Navigator.pushNamed(context, RoutesName.HairAnalyzingScreen);
-//         },
-//       ),
-//       body: SafeArea(
-//         child: ListView(
-//           padding: context.paddingSymmetricR(horizontal: 20),
-//           children: [
-//             AppBarContainer(
-//               title: 'Review Scans',
-//               onTap: () {
-//                 Navigator.pop(context);
-//               },
-//             ),
-
-//             // CustomStepper(
-//             //   currentStep: index,
-//             //   steps: const [
-//             //     'Haircare',
-//             //     'History',
-//             //     'Hair',
-//             //     'Scalp',
-//             //     'Concern',
-//             //     'Routine',
-//             //   ],
-//             // ),
-//             SizedBox(height: context.sh(20)),
-//             NormalText(
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               titleText: 'Capture Your Hair',
-//               titleSize: context.sp(18),
-//               titleWeight: FontWeight.w600,
-//               titleColor: AppColors.headingColor,
-//               subText:
-//                   'Take 4 photos from different angles for personalized recommendations',
-//               subSize: context.sp(14),
-//               subWeight: FontWeight.w400,
-//               subColor: AppColors.subHeadingColor,
-//               sizeBoxheight: context.sh(8),
-//               subAlign: TextAlign.center,
-//             ),
-//             SizedBox(height: context.sh(12)),
-//             SizedBox(
-//               height: context.sh(1150),
-//               child: GridView.builder(
-//                 shrinkWrap: true,
-//                 physics: const NeverScrollableScrollPhysics(),
-//                 padding: EdgeInsets.zero,
-//                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//                   crossAxisCount: 2,
-//                   // mainAxisSpacing: 16,
-//                   // crossAxisSpacing: 16,
-//                   // mainAxisExtent: 2,
-//                   childAspectRatio: 3.5 / 3.5,
-//                 ),
-//                 itemCount: 4,
-//                 // homeViewModel.gridData.length,
-//                 itemBuilder: (context, index) {
-//                   // final item = homeViewModel.gridData[index];
-//                   return CameraWidget();
-//                 },
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

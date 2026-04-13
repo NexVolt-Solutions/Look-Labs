@@ -71,25 +71,13 @@ class HomeViewModel extends ChangeNotifier {
   bool get hasNoGoalSelected =>
       _selectedDomain == null || _selectedDomain!.isEmpty;
 
-  /// Load domains for Explore your plans: from cache first, then GET domains/explore (requires auth).
-  /// Restores selected domain from storage first so same-account re-login shows the correct plan as enabled.
+  /// Load domains for Explore your plans: always GET domains/explore (requires auth).
   Future<void> loadDomainsForExplore() async {
     if (_domainsLoading) return;
     _domainsLoading = true;
     _domainsError = null;
-    // Restore selected domain from storage immediately so UI is correct after re-login.
     _selectedDomain = await AuthRepository.getSelectedDomain();
     notifyListeners();
-
-    final cached = await ExploreDomainsRepository.loadCachedDomains();
-    if (cached != null && cached.isNotEmpty) {
-      _domains = cached;
-      _selectedDomain = await AuthRepository.getSelectedDomain();
-      _domainsLoading = false;
-      notifyListeners();
-      _refreshDomainsInBackground();
-      return;
-    }
 
     if (!_hasAuthToken) {
       _domains = [];
@@ -142,33 +130,6 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _refreshDomainsInBackground() async {
-    if (!_hasAuthToken) return;
-    final response = await ExploreDomainsRepository.instance
-        .getExploreDomains();
-    if (response.success && response.data is List) {
-      final fresh = (response.data as List).whereType<ExploreDomain>().toList();
-      if (fresh.isEmpty) return;
-      bool changed = _domains.length != fresh.length;
-      if (!changed) {
-        for (var i = 0; i < _domains.length && i < fresh.length; i++) {
-          final a = _domains[i];
-          final b = fresh[i];
-          if (a.key != b.key || a.name != b.name || a.iconUrl != b.iconUrl) {
-            changed = true;
-            break;
-          }
-        }
-      }
-      final selected = await AuthRepository.getSelectedDomain();
-      if (changed || _selectedDomain != selected) {
-        _domains = fresh;
-        _selectedDomain = selected;
-        notifyListeners();
-      }
-    }
-  }
-
   static String _titleCase(String s) {
     if (s.isEmpty) return s;
     return s[0].toUpperCase() + s.substring(1).toLowerCase();
@@ -206,7 +167,7 @@ class HomeViewModel extends ChangeNotifier {
     ];
   }
 
-  /// Load wellness: cache-first, then background refresh to detect backend changes.
+  /// Load wellness: always GET onboarding/users/me/wellness.
   Future<void> loadWellness() async {
     if (_wellnessLoading) return;
     _wellnessLoading = true;
@@ -219,22 +180,6 @@ class HomeViewModel extends ChangeNotifier {
       _wellnessError = null;
       notifyListeners();
       return;
-    }
-
-    final cached = await OnboardingRepository.loadCachedWellness();
-    if (cached != null) {
-      final cachedHasData =
-          cached.height.isNotEmpty ||
-          cached.weight.isNotEmpty ||
-          cached.sleepHours.isNotEmpty ||
-          cached.waterIntake.isNotEmpty;
-      if (cachedHasData) {
-        _wellness = cached;
-        _wellnessLoading = false;
-        notifyListeners();
-        _refreshWellnessInBackground();
-        return;
-      }
     }
 
     if (kDebugMode) {
@@ -268,34 +213,7 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _refreshWellnessInBackground() async {
-    if (!_hasAuthToken) return;
-    final response = await OnboardingRepository.instance.getWellnessMetrics();
-    if (response.success && response.data is WellnessMetrics) {
-      final fresh = response.data as WellnessMetrics;
-      final freshHasData =
-          fresh.height.isNotEmpty ||
-          fresh.weight.isNotEmpty ||
-          fresh.sleepHours.isNotEmpty ||
-          fresh.waterIntake.isNotEmpty;
-      if (!freshHasData && _wellness != null) {
-        return;
-      }
-      final changed =
-          _wellness == null ||
-          _wellness!.height != fresh.height ||
-          _wellness!.weight != fresh.weight ||
-          _wellness!.sleepHours != fresh.sleepHours ||
-          _wellness!.waterIntake != fresh.waterIntake ||
-          _wellness!.dailyQuote != fresh.dailyQuote;
-      if (changed) {
-        _wellness = fresh;
-        notifyListeners();
-      }
-    }
-  }
-
-  /// Load weekly progress: cache-first, then background refresh to detect backend changes.
+  /// Load weekly progress: always GET users/me/progress/weekly.
   Future<void> loadWeeklyProgress() async {
     if (_weeklyProgressLoading) return;
     _weeklyProgressLoading = true;
@@ -310,15 +228,6 @@ class HomeViewModel extends ChangeNotifier {
       return;
     }
 
-    final cached = await OnboardingRepository.loadCachedWeeklyProgress();
-    if (cached != null) {
-      _weeklyProgress = cached;
-      _weeklyProgressLoading = false;
-      notifyListeners();
-      _refreshWeeklyProgressInBackground();
-      return;
-    }
-
     final response = await OnboardingRepository.instance.getWeeklyProgress();
     _weeklyProgressLoading = false;
     if (response.success && response.data is WeeklyProgressResponse) {
@@ -330,23 +239,6 @@ class HomeViewModel extends ChangeNotifier {
       );
     }
     notifyListeners();
-  }
-
-  Future<void> _refreshWeeklyProgressInBackground() async {
-    if (!_hasAuthToken) return;
-    final response = await OnboardingRepository.instance.getWeeklyProgress();
-    if (response.success && response.data is WeeklyProgressResponse) {
-      final fresh = response.data as WeeklyProgressResponse;
-      final changed =
-          _weeklyProgress == null ||
-          _weeklyProgress!.domains.length != fresh.domains.length ||
-          _weeklyProgress!.days.length != fresh.days.length ||
-          (_weeklyProgress!.weekAverage ?? 0) != (fresh.weekAverage ?? 0);
-      if (changed) {
-        _weeklyProgress = fresh;
-        notifyListeners();
-      }
-    }
   }
 
   /// Weekly progress section: domains or days from API only.
@@ -427,8 +319,22 @@ class HomeViewModel extends ChangeNotifier {
     return false;
   }
 
-  /// Navigate to domain questions or result screen. For flow domains (workout, height),
-  /// checks GET domains/{domain}/flow first: if completed → go to result; else → questions.
+  /// From Home when flow is completed: always open review scans for hair/skin so users can
+  /// capture new angles and re-run analysis for an updated routine.
+  Future<void> _openCompletedScanDomainFromHome({
+    required BuildContext context,
+    required String domainKey,
+    required Map<String, dynamic> flowPayload,
+    required String reviewScansRoute,
+  }) async {
+    if (!context.mounted) return;
+    Navigator.pushNamed(
+      context,
+      reviewScansRoute,
+      arguments: flowPayload,
+    );
+  }
+
   Future<void> onItemTap(int index, BuildContext context) async {
     if (_domains.isEmpty || index < 0 || index >= _domains.length) return;
     final key = _normalizedDomainKey(_domains[index].key);
@@ -476,7 +382,12 @@ class HomeViewModel extends ChangeNotifier {
           if (isCompleted) {
             _loadingDomainKey = null;
             notifyListeners();
-            Navigator.pushNamed(context, resultRoute, arguments: data);
+            await _openCompletedScanDomainFromHome(
+              context: context,
+              domainKey: key,
+              flowPayload: data,
+              reviewScansRoute: resultRoute,
+            );
             return;
           }
           if (status == 'ok') {
@@ -498,7 +409,12 @@ class HomeViewModel extends ChangeNotifier {
             _loadingDomainKey = null;
             notifyListeners();
             if (completed != null) {
-              Navigator.pushNamed(context, resultRoute, arguments: completed);
+              await _openCompletedScanDomainFromHome(
+                context: context,
+                domainKey: key,
+                flowPayload: Map<String, dynamic>.from(completed),
+                reviewScansRoute: resultRoute,
+              );
               return;
             }
             ApiErrorHandler.showSnackBar(

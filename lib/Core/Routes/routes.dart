@@ -44,6 +44,7 @@ import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_home_rem
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_product_detail_screen.dart';
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_top_product.dart';
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/Widget/skin_review_scans.dart';
+import 'package:looklabs/Features/ViewModel/skin_analyzing_view_model.dart';
 import 'package:looklabs/Features/View/Home/Widget/SkinCare/skin_care.dart';
 import 'package:looklabs/Features/View/Home/Widget/WorkOut/Widget/daily_workout_routine.dart';
 import 'package:looklabs/Features/View/Home/Widget/WorkOut/Widget/work_out_result_screen.dart';
@@ -192,14 +193,14 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ChangeNotifierProvider(
-            create: (_) => ReviewScansViewModel(),
+            create: (_) => ReviewScansViewModel(uploadDomain: 'haircare'),
             child: const HairReviewScans(),
           ),
         );
       case RoutesName.HairAnalyzingScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => HairAnalyzingScreen(),
+          builder: (_) => const _SkinAnalyzingHost(domain: 'haircare'),
         );
       case RoutesName.DailyHairCareRoutineScreen:
         return MaterialPageRoute(
@@ -224,13 +225,13 @@ class Routes {
       case RoutesName.SkinAnalyzingScreen:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => SkinAnalyzingScreen(),
+          builder: (_) => const _SkinAnalyzingHost(domain: 'skincare'),
         );
       case RoutesName.SkinReviewScansScreen:
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ChangeNotifierProvider(
-            create: (_) => ReviewScansViewModel(),
+            create: (_) => ReviewScansViewModel(uploadDomain: 'skincare'),
             child: const SkinReviewScans(),
           ),
         );
@@ -431,5 +432,43 @@ class Routes {
           ),
         );
     }
+  }
+}
+
+/// One [SkinAnalyzingViewModel] per route; avoids duplicate polling if the route
+/// page rebuilds and [ChangeNotifierProvider.create] would run again.
+class _SkinAnalyzingHost extends StatefulWidget {
+  const _SkinAnalyzingHost({required this.domain});
+
+  final String domain;
+
+  @override
+  State<_SkinAnalyzingHost> createState() => _SkinAnalyzingHostState();
+}
+
+class _SkinAnalyzingHostState extends State<_SkinAnalyzingHost> {
+  late final SkinAnalyzingViewModel _vm;
+
+  @override
+  void initState() {
+    super.initState();
+    _vm = SkinAnalyzingViewModel(domain: widget.domain);
+    _vm.startPolling();
+  }
+
+  @override
+  void dispose() {
+    _vm.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider.value(
+      value: _vm,
+      child: widget.domain == 'haircare'
+          ? const HairAnalyzingScreen()
+          : const SkinAnalyzingScreen(),
+    );
   }
 }

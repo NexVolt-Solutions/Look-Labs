@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Network/api_endpoints.dart';
 
-/// Fetches/saves completed exercise indices via API only.
+/// Fetches/saves completed exercise indices (and optional recovery checklist indices) via API.
 class WorkoutCompletionRepository {
   WorkoutCompletionRepository._();
 
@@ -12,6 +12,15 @@ class WorkoutCompletionRepository {
 
   static String _dateStr(DateTime d) =>
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+  static Set<int> _parseIndexSet(dynamic raw) {
+    if (raw is! List) return {};
+    return raw
+        .map((e) => e is int ? e : int.tryParse(e?.toString() ?? ''))
+        .whereType<int>()
+        .where((i) => i >= 0)
+        .toSet();
+  }
 
   /// Load completed indices for [domain] (default `workout`) from API.
   /// Returns `null` when the request fails or the payload is unusable (no client-side defaults).
@@ -58,7 +67,12 @@ class WorkoutCompletionRepository {
               '[RoutineCompletion] domain=$domain loaded from API: $set for $dateStr',
             );
           }
-          data['completed_indices'] = set.toList();
+          data['completed_indices'] = set.toList()..sort();
+          final recovery = _parseIndexSet(data['recovery_completed_indices']);
+          if (recovery.isNotEmpty ||
+              data.containsKey('recovery_completed_indices')) {
+            data['recovery_completed_indices'] = recovery.toList()..sort();
+          }
           return data;
         }
       } catch (_) {}
@@ -72,27 +86,41 @@ class WorkoutCompletionRepository {
     return null;
   }
 
-  /// Save completed indices for [domain] (PUT `domains/{domain}/completed-exercises`).
+  /// Persists completion for [date]. For domain `workout`, [completed_indices] are **exercise**
+  /// positions in the generated plan; [recoveryCompletedIndices] are indices into
+  /// `ai_progress.recovery_checklist` — separate concepts, same document in API.
   Future<bool> saveCompleted(
     DateTime date,
     Set<int> indices, {
     String domain = 'workout',
     int? totalExercises,
+    Set<int>? recoveryCompletedIndices,
   }) async {
     final dateStr = _dateStr(date);
+    final d = domain.toLowerCase().trim();
 
     final body = <String, dynamic>{
       'date': dateStr,
       'completed_indices': indices.toList()..sort(),
       'total_exercises': totalExercises ?? 0,
     };
+    // Workout: always send both dimensions so the server never treats a missing key as ambiguous.
+    if (d == 'workout') {
+      body['recovery_completed_indices'] =
+          (recoveryCompletedIndices ?? <int>{}).toList()..sort();
+    } else if (recoveryCompletedIndices != null) {
+      body['recovery_completed_indices'] = recoveryCompletedIndices.toList()
+        ..sort();
+    }
     final endpoint = ApiEndpoints.domainsCompletedExercises(domain);
     final response = await ApiServices.put(endpoint, body: body);
 
     if (response.success) {
       if (kDebugMode) {
         debugPrint(
-          '[RoutineCompletion] domain=$domain saved to API: $indices for $dateStr',
+          '[RoutineCompletion] domain=$domain saved to API: exercises=$indices '
+          '${d == 'workout' ? 'recovery=${body['recovery_completed_indices']} ' : (recoveryCompletedIndices != null ? 'recovery=$recoveryCompletedIndices ' : '')}'
+          'for $dateStr',
         );
       }
       return true;

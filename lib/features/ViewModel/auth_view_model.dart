@@ -169,22 +169,13 @@ class AuthViewModel extends ChangeNotifier {
     return null;
   }
 
-  /// Fetch user profile: cache-first, then background refresh to detect backend changes.
+  /// Fetch user profile: always GET `users/me`.
   Future<void> fetchProfile() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final cached = await AuthRepository.loadCachedProfile();
-      if (cached != null) {
-        _applyProfile(cached);
-        _isLoading = false;
-        notifyListeners();
-        _refreshProfileInBackground();
-        return;
-      }
-
       final response = await _authRepo.getMe();
       if (response.success && response.data is UserProfileResponse) {
         _applyProfile(response.data as UserProfileResponse);
@@ -223,24 +214,6 @@ class AuthViewModel extends ChangeNotifier {
       final p = UserProfileResponse.fromJson(map);
       _applyProfile(p);
       notifyListeners();
-    } catch (_) {}
-  }
-
-  Future<void> _refreshProfileInBackground() async {
-    try {
-      final response = await _authRepo.getMe();
-      if (response.success && response.data is UserProfileResponse) {
-        final fresh = response.data as UserProfileResponse;
-        final changed = _profile == null ||
-            _profile!.name != fresh.name ||
-            _profile!.profileImage != fresh.profileImage ||
-            _profile!.age != fresh.age ||
-            _profile!.gender != fresh.gender;
-        if (changed) {
-          _applyProfile(fresh);
-          notifyListeners();
-        }
-      }
     } catch (_) {}
   }
 

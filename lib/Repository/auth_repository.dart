@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:looklabs/Core/Network/api_endpoints.dart';
@@ -77,12 +75,12 @@ class AuthRepository {
       await _storage.delete(key: _kStorageKeyProfileCache);
     } catch (_) {}
     if (kDebugMode) {
-      debugPrint('[Auth] Cleared tokens locally (refresh failed or token expired)');
+      debugPrint(
+        '[Auth] Cleared tokens locally (refresh failed or token expired)',
+      );
     }
   }
 
-  /// POST /api/v1/auth/sign-out with body { "refresh_token": "..." }. Clears local tokens regardless of response.
-  /// Selected domain is kept so same-account re-login still shows the correct plan as enabled.
   Future<ApiResponse> logout() async {
     String? refreshToken;
     try {
@@ -99,8 +97,6 @@ class AuthRepository {
       await _storage.delete(key: _kStorageKeyAuthToken);
       await _storage.delete(key: _kStorageKeyRefreshToken);
       await _storage.delete(key: _kStorageKeyProfileCache);
-      // Do not clear _kStorageKeySelectedDomain so re-login with same account shows correct plan.
-      // If backend adds selected_domain to GET users/me, we can clear here and restore from API.
     } catch (_) {}
     return response;
   }
@@ -108,18 +104,47 @@ class AuthRepository {
   /// Persist the user's selected domain from onboarding (e.g. PATCH link response). Used for domains/questions and domains/answers.
   static Future<void> setSelectedDomain(String? domain) async {
     try {
-      if (domain == null || domain.isEmpty) {
+      final normalized = _normalizeSelectedDomain(domain);
+      if (normalized.isEmpty) {
         await _storage.delete(key: _kStorageKeySelectedDomain);
       } else {
-        await _storage.write(key: _kStorageKeySelectedDomain, value: domain.trim());
+        await _storage.write(
+          key: _kStorageKeySelectedDomain,
+          value: normalized,
+        );
       }
     } catch (_) {}
+  }
+
+  static String _normalizeSelectedDomain(String? domain) {
+    if (domain == null) return '';
+    var d = domain.trim().toLowerCase();
+    if (d.isEmpty) return '';
+    if (d == 'null' || d == 'none' || d == 'undefined') return '';
+
+    // Convert "Quit Porn" / "quit-porn" / "quit_porn" => "quit_porn"
+    d = d.replaceAll(RegExp(r'[^a-z0-9]+'), '_');
+    d = d.replaceAll(RegExp(r'_+'), '_');
+
+    // Match HomeViewModel's domain mapping expectations.
+    switch (d) {
+      case 'skin':
+      case 'skin_care':
+        return 'skincare';
+      case 'hair':
+      case 'hair_care':
+        return 'haircare';
+      default:
+        return d;
+    }
   }
 
   /// Load the user's selected domain (from onboarding session link). Returns null if not set.
   static Future<String?> getSelectedDomain() async {
     try {
-      return await _storage.read(key: _kStorageKeySelectedDomain);
+      final raw = await _storage.read(key: _kStorageKeySelectedDomain);
+      final normalized = _normalizeSelectedDomain(raw);
+      return normalized.isEmpty ? null : normalized;
     } catch (_) {
       return null;
     }
@@ -160,16 +185,10 @@ class AuthRepository {
   }
 
   /// Loads cached profile from secure storage. Returns null if missing or invalid.
+  ///
+  /// Cache disabled: always returns null so callers always use GET `users/me`.
   static Future<UserProfileResponse?> loadCachedProfile() async {
-    try {
-      final jsonStr = await _storage.read(key: _kStorageKeyProfileCache);
-      if (jsonStr == null || jsonStr.isEmpty) return null;
-      final map = jsonDecode(jsonStr) as Map<String, dynamic>?;
-      if (map == null) return null;
-      return UserProfileResponse.fromJson(map);
-    } catch (_) {
-      return null;
-    }
+    return null;
   }
 
   /// Clears profile cache. Call on logout.
@@ -179,16 +198,7 @@ class AuthRepository {
     } catch (_) {}
   }
 
-  static Future<void> _saveProfileToStorage(Map<String, dynamic> json) async {
-    try {
-      await _storage.write(
-        key: _kStorageKeyProfileCache,
-        value: jsonEncode(json),
-      );
-    } catch (_) {}
-  }
-
-  /// GET users/me – current user profile (Bearer token). Caches on success.
+  /// GET users/me – current user profile (Bearer token).
   Future<ApiResponse> getMe() async {
     final response = await ApiServices.get(ApiEndpoints.usersMe);
     if (response.success && response.data != null && response.data is Map) {
@@ -197,7 +207,6 @@ class AuthRepository {
           ? Map<String, dynamic>.from(raw['data'] as Map)
           : raw;
       final profile = UserProfileResponse.fromJson(json);
-      await _saveProfileToStorage(json);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,

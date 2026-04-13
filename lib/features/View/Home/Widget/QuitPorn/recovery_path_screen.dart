@@ -27,7 +27,10 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
     });
   }
 
-  Future<void> _onActionTap(RecoveryPathScreenViewModel vm, int actionIndex) async {
+  Future<void> _onActionTap(
+    RecoveryPathScreenViewModel vm,
+    int actionIndex,
+  ) async {
     final message = await vm.onActionTap(actionIndex);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -72,9 +75,8 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
             SizedBox(height: context.sh(12)),
             NormalText(
               titleText: vm.taskSectionTitle,
-              titleSize: context.sp(18),
+              titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
-              titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(height: context.sh(8)),
             RecoveryTaskList(

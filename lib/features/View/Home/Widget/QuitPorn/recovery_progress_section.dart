@@ -33,12 +33,12 @@ class RecoveryProgressSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         NormalText(
           titleText: 'Your Progress',
-          titleSize: context.sp(18),
+          titleSize: context.sp(16),
           titleWeight: FontWeight.w600,
-          titleColor: AppColors.subHeadingColor,
         ),
         SizedBox(height: context.sh(8)),
         Row(
@@ -90,7 +90,12 @@ class RecoveryProgressSection extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: SizedBox(
                     width: (chartData.length * 56.0).clamp(320.0, 900.0),
-                    child: LineChartWidget(workoutChartData: chartData),
+                    child: LineChartWidget(
+                      workoutChartData: chartData,
+                      yAxisMinimum: 0,
+                      yAxisMaximum: 100,
+                      valueDisplaySuffix: '%',
+                    ),
                   ),
                 ),
         ),

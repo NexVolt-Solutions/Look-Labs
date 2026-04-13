@@ -37,15 +37,6 @@ class GaolScreenViewModel extends ChangeNotifier {
     _error = null;
     notifyListeners();
 
-    final cached = await OnboardingRepository.loadCachedDomains();
-    if (cached != null && cached.isNotEmpty) {
-      _domains = cached;
-      _error = null;
-      _isLoading = false;
-      notifyListeners();
-      return;
-    }
-
     final response = await OnboardingRepository.instance.getOnboardingDomains();
 
     _isLoading = false;

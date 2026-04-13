@@ -47,18 +47,27 @@ class _GaolScreenState extends State<GaolScreen> {
 
     final sessionId = OnboardingRepository.sessionId;
     if (sessionId == null || sessionId.isEmpty) {
-      if (!context.mounted) return;
-      material.ScaffoldMessenger.of(context).showSnackBar(
-        material.SnackBar(
-          content: material.Text('Session expired. Please start again.'),
-          behavior: material.SnackBarBehavior.floating,
-        ),
-      );
-      return;
+      // If user lands here from Home later, we may not have an anonymous onboarding session yet.
+      // Create one so the goal can be persisted.
+      final createRes = await OnboardingRepository.instance.createAnonymousSession();
+      final newSessionId = OnboardingRepository.sessionId;
+      if (!(createRes.success && newSessionId != null && newSessionId.isNotEmpty)) {
+        if (!context.mounted) return;
+        material.ScaffoldMessenger.of(context).showSnackBar(
+          material.SnackBar(
+            content: material.Text('Session expired. Please start again.'),
+            behavior: material.SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
     }
 
+    final effectiveSessionId = OnboardingRepository.sessionId;
+    if (effectiveSessionId == null || effectiveSessionId.isEmpty) return;
+
     final response = await OnboardingRepository.instance.selectDomain(
-      sessionId: sessionId,
+      sessionId: effectiveSessionId,
       domain: domain,
     );
 
@@ -77,7 +86,7 @@ class _GaolScreenState extends State<GaolScreen> {
     final token = ApiServices.authToken;
     if (token != null && token.trim().isNotEmpty) {
       final linkRes = await OnboardingRepository.instance.linkSessionToUser(
-        sessionId,
+        effectiveSessionId,
       );
       if (!linkRes.success && kDebugMode) {
         debugPrint(
@@ -86,15 +95,17 @@ class _GaolScreenState extends State<GaolScreen> {
       }
     }
 
-    // Store selected domain from response (status: domain_selected, domain: "fashion") for later domain APIs.
-    if (response.data != null && response.data is Map) {
-      final domainFromResponse = (response.data as Map)['domain']
-          ?.toString()
-          .trim();
-      if (domainFromResponse != null && domainFromResponse.isNotEmpty) {
-        await AuthRepository.setSelectedDomain(domainFromResponse);
+    // Persist selected domain so Home unlocking works immediately.
+    // Prefer backend echo if present, but fall back to what the user selected.
+    String? domainToSave;
+    if (response.data is Map) {
+      final fromResponse = (response.data as Map)['domain']?.toString().trim();
+      if (fromResponse != null && fromResponse.isNotEmpty) {
+        domainToSave = fromResponse;
       }
     }
+    domainToSave ??= domain;
+    await AuthRepository.setSelectedDomain(domainToSave);
 
     if (!context.mounted) return;
     Navigator.pushNamed(context, RoutesName.OnBoardScreen);

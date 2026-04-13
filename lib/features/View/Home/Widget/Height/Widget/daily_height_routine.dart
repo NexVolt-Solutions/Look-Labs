@@ -211,65 +211,65 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                     horizontal: 12,
                     vertical: 12,
                   ),
-                  isSelected: false,
-                  onTap: () {},
-                  child: Column(
+              isSelected: false,
+              onTap: () {},
+              child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            height: context.sh(28),
-                            width: context.sw(28),
-                            decoration: BoxDecoration(
-                              color: AppColors.backGroundColor,
-                              borderRadius: BorderRadius.circular(
-                                context.radiusR(10),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.customContainerColorUp
+                      Container(
+                        height: context.sh(28),
+                        width: context.sw(28),
+                        decoration: BoxDecoration(
+                          color: AppColors.backGroundColor,
+                          borderRadius: BorderRadius.circular(
+                            context.radiusR(10),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.customContainerColorUp
                                       .withValues(alpha: 0.4),
-                                  offset: const Offset(3, 3),
-                                  blurRadius: 4,
-                                ),
-                                BoxShadow(
-                                  color: AppColors.customContinerColorDown
-                                      .withValues(alpha: 0.4),
-                                  offset: const Offset(-3, -3),
-                                  blurRadius: 4,
-                                ),
-                              ],
+                              offset: const Offset(3, 3),
+                              blurRadius: 4,
                             ),
-                            child: Center(
-                              child: SizedBox(
-                                height: context.sh(32),
-                                width: context.sw(32),
-                                child: SvgPicture.asset(
-                                  AppAssets.sunIcon,
+                            BoxShadow(
+                              color: AppColors.customContinerColorDown
+                                      .withValues(alpha: 0.4),
+                              offset: const Offset(-3, -3),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: SizedBox(
+                            height: context.sh(32),
+                            width: context.sw(32),
+                            child: SvgPicture.asset(
+                              AppAssets.sunIcon,
                                   colorFilter: const ColorFilter.mode(
                                     AppColors.fireColor,
                                     BlendMode.srcIn,
                                   ),
-                                  fit: BoxFit.scaleDown,
-                                ),
-                              ),
+                              fit: BoxFit.scaleDown,
                             ),
                           ),
-                          SizedBox(width: context.sw(11)),
-                          Expanded(
-                            child: NormalText(
-                              titleText: 'Morning routine',
-                              titleSize: context.sp(14),
-                              titleWeight: FontWeight.w600,
-                              titleColor: AppColors.subHeadingColor,
-                              subText: 'Best done after waking up',
-                              subSize: context.sp(10),
-                              subWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
+                      SizedBox(width: context.sw(11)),
+                      Expanded(
+                        child: NormalText(
+                              titleText: 'Morning routine',
+                          titleSize: context.sp(14),
+                          titleWeight: FontWeight.w600,
+                          titleColor: AppColors.subHeadingColor,
+                          subText: 'Best done after waking up',
+                          subSize: context.sp(10),
+                          subWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
                       ...vm.morningRoutineList.asMap().entries.map(
                             (e) => _buildRoutineExerciseTile(
                               context,
@@ -277,9 +277,9 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                               e.value,
                               e.key,
                             ),
+                              ),
+                            ],
                           ),
-                    ],
-                  ),
                 ),
               if (vm.morningRoutineList.isNotEmpty &&
                   vm.eveningRoutineList.isNotEmpty)
@@ -292,56 +292,56 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                   ),
                   isSelected: false,
                   onTap: () {},
-                  child: Column(
+                          child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
+                                children: [
+                                  Row(
+                                    children: [
                           Container(
-                            height: context.sh(28),
-                            width: context.sw(28),
-                            decoration: BoxDecoration(
-                              color: AppColors.backGroundColor,
+                                          height: context.sh(28),
+                                          width: context.sw(28),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.backGroundColor,
                               borderRadius: BorderRadius.circular(
                                 context.radiusR(10),
                               ),
-                              boxShadow: [
-                                BoxShadow(
+                                            boxShadow: [
+                                              BoxShadow(
                                   color: AppColors.customContainerColorUp
                                       .withValues(alpha: 0.4),
-                                  offset: const Offset(3, 3),
-                                  blurRadius: 4,
-                                ),
-                                BoxShadow(
+                                                offset: const Offset(3, 3),
+                                                blurRadius: 4,
+                                              ),
+                                              BoxShadow(
                                   color: AppColors.customContinerColorDown
                                       .withValues(alpha: 0.4),
-                                  offset: const Offset(-3, -3),
-                                  blurRadius: 4,
-                                ),
-                              ],
-                            ),
-                            child: Center(
+                                                offset: const Offset(-3, -3),
+                                                blurRadius: 4,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Center(
                               child: Icon(
                                 Icons.nightlight_round,
                                 size: context.sh(20),
                                 color: AppColors.pimaryColor,
-                              ),
-                            ),
-                          ),
+                                                  ),
+                                          ),
+                                        ),
                           SizedBox(width: context.sw(11)),
                           Expanded(
                             child: NormalText(
                               titleText: 'Evening routine',
-                              titleSize: context.sp(14),
+                                        titleSize: context.sp(14),
                               titleWeight: FontWeight.w600,
-                              titleColor: AppColors.subHeadingColor,
+                                        titleColor: AppColors.subHeadingColor,
                               subText: 'Wind down and decompress',
-                              subSize: context.sp(10),
-                              subWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
+                                        subSize: context.sp(10),
+                                        subWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ...vm.eveningRoutineList.asMap().entries.map(
                             (e) => _buildRoutineExerciseTile(
                               context,
@@ -349,11 +349,11 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                               e.value,
                               vm.morningRoutineList.length + e.key,
                             ),
+                              ),
+                            ],
                           ),
-                    ],
                   ),
-                ),
-            ],
+                ],
             SizedBox(height: context.sh(30)),
           ],
         ),

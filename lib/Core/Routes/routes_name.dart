@@ -79,11 +79,13 @@ class RoutesName {
       case 'skincare':
       case 'skin_care':
       case 'skin':
-        return DailySkinCareRoutineScreen;
+        // After domain questions → capture & upload angles, then analyzing → daily routine.
+        return SkinReviewScansScreen;
       case 'haircare':
       case 'hair_care':
       case 'hair':
-        return DailyHairCareRoutineScreen;
+        // After domain questions → capture & upload angles, then analyzing → daily routine.
+        return HairReviewScansScreen;
       case 'workout':
         return WorkOutResultScreen; // Skip old WorkOut questions; go to result after domain questions
       case 'diet':
@@ -94,6 +96,23 @@ class RoutesName {
         return HeightResultScreen; // Skip HeightScreen questions; go to result after domain questions
       case 'quit_porn':
         return RecoveryPathScreen;
+      default:
+        return null;
+    }
+  }
+
+  /// Daily routine screen for domains that use the 4-angle scan flow (reached after upload + analyzing).
+  static String? dailyRoutineRouteForDomain(String domain) {
+    final d = domain.trim().toLowerCase();
+    switch (d) {
+      case 'skincare':
+      case 'skin_care':
+      case 'skin':
+        return DailySkinCareRoutineScreen;
+      case 'haircare':
+      case 'hair_care':
+      case 'hair':
+        return DailyHairCareRoutineScreen;
       default:
         return null;
     }

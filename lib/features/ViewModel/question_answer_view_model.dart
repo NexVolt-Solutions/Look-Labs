@@ -16,16 +16,11 @@ class QuestionAnswerViewModel extends ChangeNotifier {
   bool isLoadingFlow = false;
   String? flowError;
 
-  /// When backend returns a "steps" list, we cache by step name so Next/Back don't need more API calls.
-  final Map<String, List<FlowQuestion>> _stepsCache = {};
-
   bool get hasFlowQuestions => currentStepQuestions.isNotEmpty;
   FlowProgress? get flowProgress => flowResponse?.progress;
 
-  /// Set when user completed the last step and we navigated to Goal. Avoids showing Planning again if they re-enter the flow.
   bool onboardingComplete = false;
 
-  /// Complete = we're on the last step (Planning); button shows "Complete" and navigates.
   bool get isFlowComplete => currentStepIndex >= flowStepperLabels.length - 1;
 
   void markOnboardingComplete() {
@@ -33,7 +28,6 @@ class QuestionAnswerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// True when every question on the current step has a valid answer (required for Next/Complete).
   bool get isCurrentStepComplete {
     for (final q in currentStepQuestions) {
       if (q.type == 'text' || q.type == 'number') {
@@ -105,42 +99,12 @@ class QuestionAnswerViewModel extends ChangeNotifier {
 
     final step = flowStep;
 
-    // Use in-memory cache when we already have questions for this step
-    if (_stepsCache.containsKey(step)) {
-      currentStepQuestions = _stepsCache[step]!;
-      flowError = currentStepQuestions.isEmpty
-          ? 'No questions for this step'
-          : null;
-      notifyListeners();
-      return;
-    }
-
-    // Try secure storage first so API is called only once; per section/domain we read from cache
-    final cachedFlow = await OnboardingRepository.loadCachedQuestionsFlow();
-    if (cachedFlow != null && (cachedFlow.steps != null || cachedFlow.questions != null)) {
-      if (cachedFlow.steps != null && cachedFlow.steps!.isNotEmpty) {
-        for (final s in cachedFlow.steps!) {
-          if (s.step.isNotEmpty) _stepsCache[s.step] = s.questions;
-        }
-      }
-      if (cachedFlow.questions != null && cachedFlow.questions!.isNotEmpty) {
-        _stepsCache['profile_setup'] = cachedFlow.questions!;
-      }
-      flowResponse = cachedFlow;
-      final cached = _stepsCache[step];
-      currentStepQuestions = cached ?? [];
-      flowError = currentStepQuestions.isEmpty ? 'No questions for this step' : null;
-      notifyListeners();
-      return;
-    }
-
     isLoadingFlow = true;
     flowError = null;
     notifyListeners();
 
     final repo = OnboardingRepository.instance;
 
-    // API called only when cache is empty; response is then saved to secure storage
     final questionsResponse = await repo.getOnboardingQuestions(
       sessionId: sessionId,
     );
@@ -149,26 +113,31 @@ class QuestionAnswerViewModel extends ChangeNotifier {
       final flow = questionsResponse.data as OnboardingFlowResponse;
       flowResponse = flow;
       if (flow.steps != null && flow.steps!.isNotEmpty) {
+        final normalizedStep = step.trim().toLowerCase();
+        List<FlowQuestion> matching = [];
         for (final s in flow.steps!) {
-          if (s.step.isNotEmpty) {
-            _stepsCache[s.step] = s.questions;
+          if (s.step.trim().toLowerCase() == normalizedStep) {
+            matching = s.questions;
+            break;
           }
         }
-        final cached = _stepsCache[step];
         isLoadingFlow = false;
-        currentStepQuestions = cached ?? [];
+        currentStepQuestions = matching;
         flowError = currentStepQuestions.isEmpty
             ? 'No questions for this step'
             : null;
         notifyListeners();
         return;
       }
-      // Backend returned top-level "questions" array (no "steps") – treat as profile_setup
+
+      // Backend returned a top-level "questions" array (no "steps")
       if (flow.questions != null && flow.questions!.isNotEmpty) {
-        _stepsCache['profile_setup'] = flow.questions!;
-        final cached = _stepsCache[step];
+        final normalizedStep = step.trim().toLowerCase();
+        final matching = flow.questions!
+            .where((q) => q.step.trim().toLowerCase() == normalizedStep)
+            .toList();
         isLoadingFlow = false;
-        currentStepQuestions = cached ?? [];
+        currentStepQuestions = matching.isNotEmpty ? matching : flow.questions!;
         flowError = currentStepQuestions.isEmpty
             ? 'No questions for this step'
             : null;

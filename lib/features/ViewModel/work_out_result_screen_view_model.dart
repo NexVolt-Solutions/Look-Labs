@@ -45,9 +45,7 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
   int? get totalExercises => _totalExercises;
   int? get totalDurationMin => _totalDurationMin;
 
-  List<String> _progressChips = [];
   List<String> _recoveryChecklist = [];
-  List<String> get progressChips => _progressChips;
   List<String> get recoveryChecklist => _recoveryChecklist;
 
   /// Config: API key -> {label, icon, chipSuffix}. Used for dynamic parsing.
@@ -67,18 +65,11 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
   String? _selectedActivity;
   String? get selectedIntensity => _selectedIntensity;
   String? get selectedActivity => _selectedActivity;
-  static const Map<String, Map<String, String>> _progressChipConfig = {
-    'weekly_calories': {'label': 'Calories', 'suffix': ' cal'},
-    'consistency': {'label': 'Consistency'},
-    'strength_gain': {'label': 'Strength'},
-    'fitness_consistency': {'label': 'Fitness'},
-  };
   static const Set<String> _skipAttributeKeys = {
     'today_focus',
     'posture_insight',
     'workout_summary',
   };
-  static const Set<String> _skipProgressKeys = {'recovery_checklist'};
 
   /// Config: keyword (lowercase) -> icon for Today's Focus. First match wins.
   static const Map<String, String> _todayFocusIconConfig = {
@@ -92,10 +83,69 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
   Map<String, dynamic>? _workoutData;
   Map<String, dynamic>? get workoutData => _workoutData;
 
+  /// Set after a successful generate-plan; cleared only when [setWorkoutData] replaces state (!keepExistingPlan).
+  /// Avoids calling generate-plan again when popping back from progress if lists/_workoutData look empty.
+  bool _activeGeneratePlan = false;
+
+  /// Last focus + intensity + activity used for the stored plan (normalized). [hasGeneratedPlan] only if these match the UI.
+  bool _planInputsSnapshotValid = false;
+  /// Focus chip index used for the last successful generate-plan (strict match when >= 0).
+  int _snapshotFocusIndex = -1;
+  String _snapshotFocusNorm = '';
+  String _snapshotIntensityNorm = '';
+  String _snapshotActivityNorm = '';
+
+  void _clearPlanInputsSnapshot() {
+    _planInputsSnapshotValid = false;
+    _snapshotFocusIndex = -1;
+    _snapshotFocusNorm = '';
+    _snapshotIntensityNorm = '';
+    _snapshotActivityNorm = '';
+  }
+
+  void _setPlanInputsSnapshot({
+    int focusIndexAtGenerate = -1,
+    required String focusNorm,
+    required String intensityNorm,
+    required String activityNorm,
+  }) {
+    _planInputsSnapshotValid = true;
+    _snapshotFocusIndex = focusIndexAtGenerate;
+    _snapshotFocusNorm = focusNorm;
+    _snapshotIntensityNorm = intensityNorm;
+    _snapshotActivityNorm = activityNorm;
+  }
+
+  bool _planInputsMatchSnapshot() {
+    if (!_planInputsSnapshotValid) return false;
+    // Continue only when a focus chip is selected; avoids ''=='' matching with empty snapshot.
+    if (selectedIndex < 0 || selectedIndex >= _exData.length) return false;
+    final curFocus =
+        (_exData[selectedIndex]['title']?.toString() ?? '').trim().toLowerCase();
+    if (curFocus.isEmpty || curFocus != _snapshotFocusNorm) return false;
+    if (_snapshotFocusIndex >= 0 && selectedIndex != _snapshotFocusIndex) {
+      return false;
+    }
+    final curI =
+        (_selectedIntensity ?? intensityOptions.first).toLowerCase().trim();
+    final curA =
+        (_selectedActivity ?? activityOptions.first).toLowerCase().trim();
+    return curI == _snapshotIntensityNorm && curA == _snapshotActivityNorm;
+  }
+
+  /// True when merged exercise/plan content exists (inputs may still require regenerate).
+  bool get _hasPlanPayload =>
+      _activeGeneratePlan ||
+      _dataHasPlan(_workoutData ?? {}) ||
+      _morningRoutineList.isNotEmpty ||
+      _eveningRoutineList.isNotEmpty ||
+      (_totalExercises != null && _totalExercises! > 0);
+
   bool _getStartedLoading = false;
   bool _tileLoading = false;
   bool get getStartedLoading => _getStartedLoading;
   bool get tileLoading => _tileLoading;
+
   /// True when either control is loading (for optional shared disable; each control uses its own loading getter).
   bool get generatePlanLoading => _getStartedLoading || _tileLoading;
 
@@ -138,8 +188,12 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
       );
 
       if (response.success && response.data is Map) {
-        _updateFromGeneratePlanResponse(
-          Map<String, dynamic>.from(response.data as Map),
+        final map = Map<String, dynamic>.from(response.data as Map);
+        _updateFromGeneratePlanResponse(map);
+        _capturePlanInputsSnapshotAfterGenerate(
+          selectedFocusIndex: selectedFocusIndex,
+          focusOverrideSent: focusOverride,
+          response: map,
         );
       }
     } finally {
@@ -177,6 +231,7 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
     if (totalEx != null) _totalExercises = totalEx;
     if (totalDur != null) _totalDurationMin = totalDur;
     // Merge exercises into workoutData for DailyWorkoutRoutineScreen
+    var mergedLists = false;
     if (data['exercises'] is List ||
         data['morning'] is List ||
         data['evening'] is List) {
@@ -184,6 +239,11 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
       final ex = _parseExercisesFromPlan(data);
       _morningRoutineList = ex.morning;
       _eveningRoutineList = ex.evening;
+      mergedLists = true;
+    }
+    final hasExerciseCount = totalEx != null && totalEx > 0;
+    if (mergedLists || hasExerciseCount) {
+      _activeGeneratePlan = true;
     }
   }
 
@@ -318,49 +378,28 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
     return list;
   }
 
-  /// Build progress chips dynamically from ai_progress. Uses config for suffix.
-  /// Skips recovery_checklist. Order: config keys first, then any extra API keys.
-  static List<String> _buildProgressChipsFromApi(
-    Map<String, dynamic>? progress,
-  ) {
-    if (progress == null) return [];
-    final list = <String>[];
-    final seen = <String>{};
-    for (final key in _progressChipConfig.keys) {
-      if (!progress.containsKey(key)) continue;
-      final val = progress[key];
-      if (val == null || val is Map || val is List) continue;
-      final str = val.toString().trim();
-      if (str.isEmpty) continue;
-      seen.add(key);
-      final cfg = _progressChipConfig[key];
-      final suffix = cfg?['suffix'] ?? '';
-      list.add('$str$suffix');
-    }
-    for (final e in progress.entries) {
-      final key = e.key.toString();
-      if (seen.contains(key) || _skipProgressKeys.contains(key)) continue;
-      final val = e.value;
-      if (val == null || val is Map || val is List) continue;
-      final str = val.toString().trim();
-      if (str.isEmpty) continue;
-      list.add(str);
-    }
-    return list;
-  }
-
   /// True if we have plan data (from a previous generate-plan), so flow-only updates should not overwrite it.
   bool get _hasExistingPlan =>
       _morningRoutineList.isNotEmpty ||
       _eveningRoutineList.isNotEmpty ||
       (_totalExercises != null && _totalExercises! > 0);
 
+  /// True when a plan exists and current focus + intensity + activity match the last generate (or seeded plan).
+  bool get hasGeneratedPlan =>
+      _hasPlanPayload && _planInputsMatchSnapshot();
+
   /// True if [data] contains exercise/plan content (from generate-plan), not just flow response.
   static bool _dataHasPlan(Map<String, dynamic> data) {
     if (data['ai_exercises'] != null) return true;
-    if (data['exercises'] is List && (data['exercises'] as List).isNotEmpty) return true;
-    if (data['morning'] is List && (data['morning'] as List).isNotEmpty) return true;
-    if (data['evening'] is List && (data['evening'] as List).isNotEmpty) return true;
+    if (data['exercises'] is List && (data['exercises'] as List).isNotEmpty) {
+      return true;
+    }
+    if (data['morning'] is List && (data['morning'] as List).isNotEmpty) {
+      return true;
+    }
+    if (data['evening'] is List && (data['evening'] as List).isNotEmpty) {
+      return true;
+    }
     return false;
   }
 
@@ -373,6 +412,8 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
       final keepExistingPlan = _hasExistingPlan && !incomingHasPlan;
 
       if (!keepExistingPlan) {
+        _activeGeneratePlan = false;
+        _clearPlanInputsSnapshot();
         _workoutData = data;
       }
 
@@ -398,6 +439,15 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
         if (!keepExistingPlan) {
           _totalExercises = null;
           _totalDurationMin = null;
+          final ws = a.workoutSummary;
+          if (ws != null) {
+            if (ws.totalExercises != null) {
+              _totalExercises = ws.totalExercises;
+            }
+            if (ws.totalDurationMin != null) {
+              _totalDurationMin = ws.totalDurationMin;
+            }
+          }
         }
         _selectedIntensity =
             _matchOption(a.intensity?.trim(), intensityOptions) ??
@@ -407,13 +457,10 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
             activityOptions.first;
       }
 
-      // Progress chips: dynamic from ai_progress
-      final prog = data['ai_progress'];
-      _progressChips = _buildProgressChipsFromApi(
-        prog is Map ? Map<String, dynamic>.from(prog) : null,
-      );
       if (result.aiProgress != null) {
         _recoveryChecklist = result.aiProgress!.recoveryChecklist;
+      } else {
+        _recoveryChecklist = [];
       }
 
       // Routine and plan counts: only overwrite when incoming data has plan
@@ -452,9 +499,105 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
         _aiMessage = result.aiMessage;
       }
 
-      selectedIndex = -1;
+      if (!keepExistingPlan) {
+        if (incomingHasPlan) {
+          _seedPlanSnapshotFromIncoming(data);
+          _selectIndexMatchingSnapshotFocus();
+        } else {
+          selectedIndex = -1;
+        }
+      }
       notifyListeners();
     } catch (_) {}
+  }
+
+  void _capturePlanInputsSnapshotAfterGenerate({
+    required int selectedFocusIndex,
+    required String? focusOverrideSent,
+    required Map<String, dynamic> response,
+  }) {
+    final focusNorm = _resolvedFocusSnapshotNorm(
+      response,
+      focusOverrideSent?.trim(),
+    );
+    final idx = (selectedFocusIndex >= 0 && selectedFocusIndex < _exData.length)
+        ? selectedFocusIndex
+        : -1;
+    _setPlanInputsSnapshot(
+      focusIndexAtGenerate: idx,
+      focusNorm: focusNorm,
+      intensityNorm:
+          (_selectedIntensity ?? intensityOptions.first).toLowerCase().trim(),
+      activityNorm:
+          (_selectedActivity ?? activityOptions.first).toLowerCase().trim(),
+    );
+  }
+
+  String _resolvedFocusSnapshotNorm(
+    Map<String, dynamic> response,
+    String? focusOverride,
+  ) {
+    if (focusOverride != null && focusOverride.isNotEmpty) {
+      return focusOverride.toLowerCase().trim();
+    }
+    final api = response['focus']?.toString().trim().toLowerCase() ?? '';
+    for (final row in _exData) {
+      final t = (row['title']?.toString() ?? '').trim().toLowerCase();
+      if (api.isEmpty) continue;
+      final apiSpaced = api.replaceAll('_', ' ');
+      if (t.replaceAll(' ', '_') == api || t == apiSpaced) return t;
+    }
+    if (api.isNotEmpty) return api.replaceAll('_', ' ').trim();
+    if (_exData.isNotEmpty) {
+      return (_exData.first['title']?.toString() ?? '').trim().toLowerCase();
+    }
+    return '';
+  }
+
+  String? _inferFocusFromIncoming(Map<String, dynamic> data) {
+    final top = data['focus']?.toString().trim();
+    if (top != null && top.isNotEmpty) return top;
+    final attrs = data['ai_attributes'];
+    if (attrs is Map && attrs['today_focus'] is List) {
+      final l = attrs['today_focus'] as List;
+      for (final e in l) {
+        final s = e?.toString().trim();
+        if (s != null && s.isNotEmpty) return s;
+      }
+    }
+    return null;
+  }
+
+  void _seedPlanSnapshotFromIncoming(Map<String, dynamic> data) {
+    final inferred = _inferFocusFromIncoming(data);
+    final focusNorm = _resolvedFocusSnapshotNorm(data, inferred);
+    var idx = -1;
+    for (var i = 0; i < _exData.length; i++) {
+      final t = (_exData[i]['title']?.toString() ?? '').trim().toLowerCase();
+      if (t == focusNorm) {
+        idx = i;
+        break;
+      }
+    }
+    _setPlanInputsSnapshot(
+      focusIndexAtGenerate: idx,
+      focusNorm: focusNorm,
+      intensityNorm:
+          (_selectedIntensity ?? intensityOptions.first).toLowerCase().trim(),
+      activityNorm:
+          (_selectedActivity ?? activityOptions.first).toLowerCase().trim(),
+    );
+  }
+
+  void _selectIndexMatchingSnapshotFocus() {
+    if (_snapshotFocusNorm.isEmpty) return;
+    for (var i = 0; i < _exData.length; i++) {
+      final t = (_exData[i]['title']?.toString() ?? '').trim().toLowerCase();
+      if (t == _snapshotFocusNorm) {
+        selectedIndex = i;
+        return;
+      }
+    }
   }
 
   void selectExercise(int index) {

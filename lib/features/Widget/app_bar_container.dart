@@ -112,12 +112,16 @@ class AppBarContainer extends StatelessWidget {
   final bool showHeart;
   final VoidCallback? onHeartTap;
 
+  /// Opens the 4-angle capture flow again (e.g. hair/skin) to refresh analysis.
+  final VoidCallback? onRescanTap;
+
   const AppBarContainer({
     super.key,
     required this.title,
     this.onTap,
     this.showHeart = false,
     this.onHeartTap,
+    this.onRescanTap,
   });
 
   @override
@@ -180,11 +184,23 @@ class AppBarContainer extends StatelessWidget {
             ),
           ),
 
-          /// ❤️ Heart OR Empty Space
+          /// Rescan, heart, or spacer (same width as back for centered title).
           SizedBox(
             height: context.sh(40),
             width: context.sw(40),
-            child: showHeart
+            child: onRescanTap != null
+                ? Tooltip(
+                    message: 'Scan again',
+                    child: GestureDetector(
+                      onTap: onRescanTap,
+                      child: Icon(
+                        Icons.photo_camera_outlined,
+                        size: context.sw(22),
+                        color: AppColors.headingColor,
+                      ),
+                    ),
+                  )
+                : showHeart
                 ? GestureDetector(
                     onTap: onHeartTap,
                     child: SvgPicture.asset(

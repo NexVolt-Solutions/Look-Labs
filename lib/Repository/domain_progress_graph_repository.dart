@@ -10,6 +10,10 @@ class DomainProgressGraphRepository {
   static final DomainProgressGraphRepository instance =
       DomainProgressGraphRepository._();
 
+  /// Same X buckets as [getDomainGraphPoints] when there are no scores (all zeros).
+  static List<SalesData> emptyChartBuckets(String periodLabel) =>
+      _bucketScores(const [], periodLabel);
+
   static String periodLabelToApi(String label) {
     switch (label.toLowerCase()) {
       case 'month':
@@ -19,6 +23,57 @@ class DomainProgressGraphRepository {
       default:
         return 'weekly';
     }
+  }
+
+  /// X-axis bucket label for a local calendar date (matches [_bucketScores] keys).
+  static String bucketKeyForLocalDate(DateTime today, String periodLabel) {
+    final p = periodLabel.toLowerCase();
+    if (p == 'year' || p == 'yearly') {
+      const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      return months[today.month - 1];
+    }
+    if (p == 'month' || p == 'monthly') {
+      final week = ((today.day - 1) ~/ 7) + 1;
+      return 'Week $week';
+    }
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[today.weekday - 1];
+  }
+
+  /// Replaces the value for today's bucket with [score] (e.g. checklist % from completed-exercises).
+  static List<SalesData> overlayTodayRoutineScore({
+    required List<SalesData> points,
+    required String periodLabel,
+    required DateTime today,
+    required double score,
+  }) {
+    if (points.isEmpty) return points;
+    final key = bucketKeyForLocalDate(today, periodLabel);
+    var hit = false;
+    final next = <SalesData>[];
+    for (final p in points) {
+      if (p.month == key) {
+        hit = true;
+        next.add(SalesData(p.month, score));
+      } else {
+        next.add(p);
+      }
+    }
+    if (!hit) return points;
+    return next;
   }
 
   static String labelFromRecordedAt(String recordedAt, String periodLabel) {
@@ -147,7 +202,9 @@ class DomainProgressGraphRepository {
       domain: domain,
       periodLabel: periodLabel,
     );
-    if (graph == null) return const [];
+    if (graph == null) {
+      return _bucketScores(const [], periodLabel);
+    }
 
     if (graph.scores.isNotEmpty) {
       final bucketed = _bucketScores(graph.scores, periodLabel);

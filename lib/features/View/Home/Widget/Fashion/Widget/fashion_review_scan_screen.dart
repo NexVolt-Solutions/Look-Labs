@@ -47,8 +47,8 @@ class FashionReviewScanScreen extends StatelessWidget {
             SizedBox(height: context.sh(24)),
 
             CustomStepper(
-              currentStep: viewModel.currentStep,
-              steps: const ['Front', 'Back', 'Left', 'Right'],
+              currentStep: viewModel.stepperHighlightStep,
+              steps: ReviewScansViewModel.stepperStepTitles,
             ),
             SizedBox(height: context.sh(20)),
             NormalText(
@@ -66,24 +66,27 @@ class FashionReviewScanScreen extends StatelessWidget {
               subAlign: TextAlign.center,
             ),
             SizedBox(height: context.sh(12)),
-            SizedBox(
-              height: context.sh(1150),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 3.5 / 3.5,
-                ),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return CameraWidget(
-                    onTapFun: () => viewModel.selectStep(index),
-                    isSelected: viewModel.currentStep == index,
-                  );
-                },
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: context.sw(12),
+                mainAxisSpacing: context.sh(12),
+                childAspectRatio: 0.62,
               ),
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                return ReviewScanTile(
+                  onTapCapture: () => viewModel.selectStep(index),
+                  localImagePath: viewModel.imagePathForSlot(index),
+                  isSelected:
+                      (viewModel.imagePathForSlot(index)?.isNotEmpty ?? false) ||
+                          viewModel.currentStep == index,
+                  angleTitle: ReviewScansViewModel.slotLabels[index],
+                );
+              },
             ),
           ],
         ),

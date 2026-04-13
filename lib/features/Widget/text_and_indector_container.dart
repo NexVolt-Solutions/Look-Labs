@@ -9,18 +9,21 @@ class TextAndIndectorContiner extends StatelessWidget {
   final String? subTitle;
   final String? pers;
   final double? progress;
+  final bool usePlaceholderProgress;
+
   const TextAndIndectorContiner({
     super.key,
     this.title,
     this.subTitle,
     this.pers,
     this.progress,
+    this.usePlaceholderProgress = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: context.paddingSymmetricR(horizontal: 25, vertical: 13),
+      padding: context.paddingSymmetricR(horizontal: 20, vertical: 10),
       margin: context.paddingSymmetricR(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(context.radiusR(16)),
@@ -47,81 +50,30 @@ class TextAndIndectorContiner extends StatelessWidget {
           Text(
             title ?? '',
             style: TextStyle(
-              fontSize: context.sp(16.32),
+              fontSize: context.sp(12),
               fontWeight: FontWeight.w600,
               color: AppColors.notSelectedColor,
             ),
           ),
           Text(
             subTitle ?? '',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: context.sp(16.32),
               fontWeight: FontWeight.w600,
               color: AppColors.subHeadingColor,
             ),
           ),
-          SizedBox(height: context.sh(10)),
-          LinearSliderWidget(
-            showTopIcon: false,
-            progress: progress ?? 10,
-            inset: true,
-            height: context.sh(8.16),
-            animatedConHeight: context.sh(8.16),
-            showPercentage: true,
-          ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Expanded(
-          //       child: Container(
-          //         height: context.sh(10),
-          //         // padding: context.paddingSymmetricR(horizontal: 15.3),
-          //         decoration: BoxDecoration(
-          //           borderRadius: BorderRadius.circular(context.radiusR(20)),
-          //           color: AppColors.backGroundColor,
-          //           boxShadow: [
-          //             BoxShadow(
-          //               color: AppColors.customContainerColorUp.withValues(alpha: 
-          //                 0.4,
-          //               ),
-          //               offset: const Offset(5, 5),
-          //               blurRadius: 5,
-          //               inset: true,
-          //             ),
-          //             BoxShadow(
-          //               color: AppColors.customContinerColorDown.withValues(alpha: 
-          //                 0.4,
-          //               ),
-          //               offset: const Offset(-5, -5),
-          //               blurRadius: 5,
-          //               inset: true,
-          //             ),
-          //           ],
-          //         ),
-          //         child: ClipRRect(
-          //           borderRadius: BorderRadius.circular(context.radiusR(20)),
-          //           child: LinearPercentIndicator(
-          //             padding: EdgeInsets.zero,
-          //             lineHeight: context.sh(8),
-          //             percent: 0.5,
-          //             backgroundColor: AppColors.backGroundColor,
-          //             progressColor: AppColors.pimaryColor,
-          //             barRadius: Radius.circular(context.radiusR(20)),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     SizedBox(width: context.sw(8)),
-          //     Text(
-          //       '${pers}%',
-          //       style: TextStyle(
-          //         fontSize: context.sp(12),
-          //         fontWeight: FontWeight.w600,
-          //         color: AppColors.subHeadingColor,
-          //       ),
-          //     ),
-          //   ],
-          // ),
+          if (progress != null || usePlaceholderProgress)
+            LinearSliderWidget(
+              showTopIcon: false,
+              progress: progress ?? 0,
+              inset: true,
+              height: context.sh(10),
+              animatedConHeight: context.sh(10),
+              showPercentage: true,
+            ),
         ],
       ),
     );

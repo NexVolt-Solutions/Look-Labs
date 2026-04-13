@@ -125,12 +125,42 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
     _persistChecklistState();
   }
 
-  Future<void> loadChartForPeriod(String periodLabel) async {
-    if (hasChartPeriod(periodLabel)) return;
+  Future<void> loadChartForPeriod(
+    String periodLabel, {
+    bool force = false,
+  }) async {
+    if (!force && hasChartPeriod(periodLabel)) return;
+    if (force) {
+      chartByPeriod.remove(periodLabel);
+    }
     setChartLoading(true);
     final points = await _repository.loadChartForPeriod(periodLabel);
     putChartPeriod(periodLabel, points);
     setChartLoading(false);
+  }
+
+  /// Refetch Week/Month/Year graphs after progress changes (one completion GET + parallel graphs).
+  Future<void> _refreshAllPeriodCharts() async {
+    chartByPeriod.clear();
+    notifyListeners();
+    setChartLoading(true);
+    notifyListeners();
+    final map = await _repository.loadPeriodChartsWithTodayOverlay(
+      periodButtons,
+    );
+    for (final e in map.entries) {
+      putChartPeriod(e.key, e.value);
+    }
+    setChartLoading(false);
+  }
+
+  Future<void> _syncChartOverlaysAfterChecklist() async {
+    if (chartByPeriod.isEmpty) return;
+    final next = await _repository.reapplyTodayOverlayToAll(chartByPeriod);
+    chartByPeriod
+      ..clear()
+      ..addAll(next);
+    notifyListeners();
   }
 
   Future<void> loadCompletionForToday() async {
@@ -190,6 +220,7 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
           totalExercises: _totalChecklistItems,
         );
       } while (_persistCoalesce);
+      await _syncChartOverlaysAfterChecklist();
     } finally {
       _persistInFlight = false;
     }
@@ -197,12 +228,11 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
 
   Future<String> reportRelapse() async {
     final total = uiData.dailyPlanItems.length + uiData.exerciseItems.length;
-    await _repository.reportRelapse(
-      totalExercises: total,
-    );
+    await _repository.reportRelapse(totalExercises: total);
     setSelectedAction(0);
     setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, false));
     setExerciseDone(List<bool>.filled(uiData.exerciseItems.length, false));
+    await _refreshAllPeriodCharts();
     return 'Relapse reported. Progress reset for today.';
   }
 
@@ -212,6 +242,7 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
     setSelectedAction(1);
     setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, true));
     setExerciseDone(List<bool>.filled(uiData.exerciseItems.length, true));
+    await _refreshAllPeriodCharts();
     return 'Day marked as completed.';
   }
 

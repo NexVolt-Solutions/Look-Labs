@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Network/models/workout_result_response.dart';
 import 'package:looklabs/Repository/workout_completion_repository.dart';
 
+/// Daily exercise list from generate-plan / merged flow. [markExerciseDone] updates **exercise**
+/// indices only; each PUT also sends [recoveryCompletedIndices] so checklist progress is not wiped.
 class DailyWorkoutRoutineViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> _morningRoutineList = [];
   List<Map<String, dynamic>> _eveningRoutineList = [];
@@ -16,6 +18,8 @@ class DailyWorkoutRoutineViewModel extends ChangeNotifier {
 
   /// Completed exercise indices (persisted). User taps to mark done.
   Set<int> _completedIndices = {};
+  /// Daily recovery checklist indices from same completed-exercises record (preserve on exercise PUT).
+  Set<int> _recoveryCompletedIndices = {};
   bool isCompleted(int index) => _completedIndices.contains(index);
 
   String? _aiMessage;
@@ -36,6 +40,7 @@ class DailyWorkoutRoutineViewModel extends ChangeNotifier {
       DateTime.now(),
       _completedIndices,
       totalExercises: totalExercises,
+      recoveryCompletedIndices: _recoveryCompletedIndices,
     );
     notifyListeners();
   }
@@ -85,10 +90,30 @@ class DailyWorkoutRoutineViewModel extends ChangeNotifier {
         _eveningRoutineList = parsed.evening;
       }
       expandedIndex = -1;
-      final loaded = await WorkoutCompletionRepository.instance
-          .loadCompleted(DateTime.now());
-      if (loaded != null) {
-        _completedIndices = loaded;
+      final row = await WorkoutCompletionRepository.instance
+          .loadCompletedExercises(DateTime.now());
+      if (row != null) {
+        final list = row['completed_indices'];
+        if (list is List) {
+          _completedIndices = list
+              .map((e) => e is int ? e : int.tryParse(e?.toString() ?? ''))
+              .whereType<int>()
+              .where((i) => i >= 0)
+              .toSet();
+        } else {
+          _completedIndices = {};
+        }
+        final rList = row['recovery_completed_indices'];
+        _recoveryCompletedIndices = {};
+        if (rList is List) {
+          for (final e in rList) {
+            final i = e is int ? e : int.tryParse(e?.toString() ?? '');
+            if (i != null && i >= 0) _recoveryCompletedIndices.add(i);
+          }
+        }
+      } else {
+        _completedIndices = {};
+        _recoveryCompletedIndices = {};
       }
       notifyListeners();
     } catch (_) {}

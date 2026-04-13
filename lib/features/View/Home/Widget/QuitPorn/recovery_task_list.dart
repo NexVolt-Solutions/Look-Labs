@@ -95,7 +95,7 @@ class RecoveryTaskList extends StatelessWidget {
                       if (item.subtitle.isNotEmpty)
                         NormalText(
                           titleText: item.subtitle,
-                          titleSize: context.sp(10),
+                          titleSize: context.sp(12),
                           titleWeight: FontWeight.w400,
                         ),
                     ],

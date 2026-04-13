@@ -4,9 +4,23 @@ import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/auth_view_model.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 class SplashViewModel extends ChangeNotifier {
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
+
+  // Secure-storage keys used by the client-side "cache-first" implementation.
+  // We delete them on app launch so returning users always hit real APIs.
+  static const List<String> _clientCacheKeys = [
+    'explore_domains_cache',
+    'user_profile_cache',
+    'onboarding_domains_cache',
+    'onboarding_questions_cache',
+    'wellness_cache',
+    'weekly_progress_cache',
+  ];
+
   /// Set when session create fails; cleared on retry. No fallback: we only navigate when we have a session.
   String? sessionError;
 
@@ -14,6 +28,16 @@ class SplashViewModel extends ChangeNotifier {
   void goTo(BuildContext context) async {
     sessionError = null;
     notifyListeners();
+
+    // Remove previously stored client caches so we don't accidentally reuse stale data.
+    // (The repositories no longer read these caches, but removing them keeps storage clean.)
+    await Future.wait(
+      _clientCacheKeys.map((k) async {
+        try {
+          await _storage.delete(key: k);
+        } catch (_) {}
+      }),
+    );
 
     // Restore API token so subsequent calls use it; if present we skip onboarding.
     await AuthRepository.restoreAuthToken();

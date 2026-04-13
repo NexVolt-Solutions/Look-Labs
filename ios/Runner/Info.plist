@@ -68,6 +68,8 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to your photo library to upload progress images.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app uses the camera to capture skin photos for AI analysis.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

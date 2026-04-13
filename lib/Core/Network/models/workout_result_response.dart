@@ -1,5 +1,3 @@
-/// Response from POST domains/{domain}/answers when status is "completed".
-/// Contains ai_attributes, ai_exercises, ai_message, ai_progress from the API.
 class WorkoutResultResponse {
   final String? status;
   final String? redirect;
@@ -24,10 +22,16 @@ class WorkoutResultResponse {
     return WorkoutResultResponse(
       status: json['status']?.toString(),
       redirect: json['redirect']?.toString(),
-      aiAttributes: attrs is Map ? WorkoutAiAttributes.fromJson(Map<String, dynamic>.from(attrs)) : null,
-      aiExercises: ex is Map ? WorkoutAiExercises.fromJson(Map<String, dynamic>.from(ex)) : null,
+      aiAttributes: attrs is Map
+          ? WorkoutAiAttributes.fromJson(Map<String, dynamic>.from(attrs))
+          : null,
+      aiExercises: ex is Map
+          ? WorkoutAiExercises.fromJson(Map<String, dynamic>.from(ex))
+          : null,
       aiMessage: json['ai_message']?.toString(),
-      aiProgress: prog is Map ? WorkoutAiProgress.fromJson(Map<String, dynamic>.from(prog)) : null,
+      aiProgress: prog is Map
+          ? WorkoutAiProgress.fromJson(Map<String, dynamic>.from(prog))
+          : null,
     );
   }
 }
@@ -78,7 +82,9 @@ class WorkoutAiAttributes {
       dietType: json['diet_type']?.toString(),
       todayFocus: focus,
       postureInsight: posture,
-      workoutSummary: ws is Map ? WorkoutAiSummary.fromJson(Map<String, dynamic>.from(ws)) : null,
+      workoutSummary: ws is Map
+          ? WorkoutAiSummary.fromJson(Map<String, dynamic>.from(ws))
+          : null,
     );
   }
 }
@@ -120,10 +126,7 @@ class WorkoutAiExercises {
   final List<WorkoutExercise> morning;
   final List<WorkoutExercise> evening;
 
-  const WorkoutAiExercises({
-    this.morning = const [],
-    this.evening = const [],
-  });
+  const WorkoutAiExercises({this.morning = const [], this.evening = const []});
 
   factory WorkoutAiExercises.fromJson(Map<String, dynamic> json) {
     final m = json['morning'];
@@ -171,7 +174,9 @@ class WorkoutExercise {
       }
     }
     return WorkoutExercise(
-      seq: json['seq'] is int ? json['seq'] as int : int.tryParse(json['seq']?.toString() ?? '0') ?? 0,
+      seq: json['seq'] is int
+          ? json['seq'] as int
+          : int.tryParse(json['seq']?.toString() ?? '0') ?? 0,
       title: json['title']?.toString() ?? '',
       duration: json['duration']?.toString() ?? '',
       steps: stepsList,
@@ -184,8 +189,10 @@ class WorkoutAiProgress {
   final String? consistency;
   final String? strengthGain;
   final String? fitnessConsistency;
+
   /// Optional e.g. "85%" — Calorie Balance bar on progress screen.
   final String? calorieBalance;
+
   /// Optional e.g. "72%" — Hydration bar on progress screen.
   final String? hydration;
   final List<String> recoveryChecklist;
@@ -202,20 +209,34 @@ class WorkoutAiProgress {
 
   factory WorkoutAiProgress.fromJson(Map<String, dynamic> json) {
     List<String> checklist = [];
-    if (json['recovery_checklist'] is List) {
-      for (final e in json['recovery_checklist'] as List) {
+    final rawList = json['recovery_checklist'] ?? json['recoveryChecklist'];
+    if (rawList is List) {
+      for (final e in rawList) {
         if (e != null && e.toString().trim().isNotEmpty) {
           checklist.add(e.toString().trim());
         }
       }
     }
+    String? pickStr(List<String> keys) {
+      for (final k in keys) {
+        final v = json[k];
+        if (v != null && v.toString().trim().isNotEmpty) {
+          return v.toString().trim();
+        }
+      }
+      return null;
+    }
+
     return WorkoutAiProgress(
-      weeklyCalories: json['weekly_calories']?.toString(),
-      consistency: json['consistency']?.toString(),
-      strengthGain: json['strength_gain']?.toString(),
-      fitnessConsistency: json['fitness_consistency']?.toString(),
-      calorieBalance: json['calorie_balance']?.toString(),
-      hydration: json['hydration']?.toString(),
+      weeklyCalories: pickStr(['weekly_calories', 'weeklyCalories']),
+      consistency: pickStr(['consistency']),
+      strengthGain: pickStr(['strength_gain', 'strengthGain']),
+      fitnessConsistency: pickStr([
+        'fitness_consistency',
+        'fitnessConsistency',
+      ]),
+      calorieBalance: pickStr(['calorie_balance', 'calorieBalance']),
+      hydration: pickStr(['hydration']),
       recoveryChecklist: checklist,
     );
   }

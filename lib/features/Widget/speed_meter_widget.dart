@@ -17,6 +17,10 @@ class SpeedMeterWidget extends StatelessWidget {
   final String? smHTitle;
   final String? smTitle;
   final String? smsSubTitle;
+
+  /// Needle value for the semi-circle gauge (0–100).
+  final double? gaugeNeedleValue;
+
   const SpeedMeterWidget({
     super.key,
     this.box1Title,
@@ -28,30 +32,122 @@ class SpeedMeterWidget extends StatelessWidget {
     this.smHTitle,
     this.smTitle,
     this.smsSubTitle,
+    this.gaugeNeedleValue,
   });
+
+  /// Needle 0–100 from concerns `PageView` rows (`title`, `subTitle`, optional `progress` / `pers`).
+  /// Uses severity language in [subTitle] (e.g. Low / Moderate / High); blends with API confidence when set.
+  static double needleFromConcernRows(List<Map<String, dynamic>> rows) {
+    if (rows.isEmpty) return 45;
+
+    Map<String, dynamic>? hairLossRow;
+    for (final r in rows) {
+      final t = (r['title'] ?? '').toString().toLowerCase();
+      if (t.contains('hairloss') ||
+          t.contains('hair loss') ||
+          t.contains('hairfall') ||
+          t.contains('hair fall')) {
+        hairLossRow = r;
+        break;
+      }
+    }
+    final primary = hairLossRow ?? rows.first;
+    final label = (primary['subTitle'] ?? '').toString().toLowerCase().trim();
+    final semantic = _semanticSeverityNeedle(label);
+    final conf = _rowConfidencePercent(primary);
+    var needle = conf != null
+        ? (0.58 * semantic + 0.42 * conf).clamp(0, 100)
+        : semantic;
+
+    if (rows.length >= 2) {
+      final secondary = rows[1];
+      final l2 = (secondary['subTitle'] ?? '').toString().toLowerCase().trim();
+      final s2 = _semanticSeverityNeedle(l2);
+      final c2 = _rowConfidencePercent(secondary);
+      final n2 = c2 != null ? (0.58 * s2 + 0.42 * c2).clamp(0, 100) : s2;
+      needle = (0.72 * needle + 0.28 * n2).clamp(0, 100);
+    }
+
+    return needle.clamp(0, 100).toDouble();
+  }
+
+  static double? _rowConfidencePercent(Map<String, dynamic> row) {
+    final p = row['progress'];
+    if (p is num) return p.toDouble().clamp(0, 100);
+    final s = row['pers']?.toString().replaceAll('%', '').trim();
+    return double.tryParse(s ?? '');
+  }
+
+  /// Higher needle = more severe for loss / damage style labels.
+  static double _semanticSeverityNeedle(String lower) {
+    if (lower.isEmpty) return 45;
+    if (lower.contains('critical')) return 97;
+    if (lower.contains('severe')) return 93;
+    if (lower.contains('very high')) return 90;
+    if (lower.contains('moderately high')) return 74;
+    if (lower.contains('high')) return 86;
+    if (lower.contains('moderate')) return 62;
+    if (lower.contains('elevated')) return 58;
+    if (lower.contains('mild')) return 36;
+    if (lower.contains('normal') || lower.contains('balanced')) return 42;
+    if (lower.contains('healthy') && !lower.contains('unhealthy')) return 28;
+    if (lower.contains('minimal')) return 16;
+    if (lower.contains('none') ||
+        lower == 'clear' ||
+        lower.startsWith('no ') ||
+        lower.endsWith(' none')) {
+      return 10;
+    }
+    if (lower.contains('low')) return 24;
+    if (lower.contains('sparse') || lower.contains('thinning')) return 55;
+    if (lower.contains('recession') || lower.contains('receding')) return 60;
+    return 48;
+  }
+
+  static double _percentFromString(String? raw) {
+    if (raw == null || raw.trim().isEmpty) return 0;
+    final n = double.tryParse(raw.replaceAll('%', '').trim());
+    if (n == null) return 0;
+    return (n / 100).clamp(0.0, 1.0);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final p1 = _percentFromString(box1per);
+    final p2 = _percentFromString(box2per);
+
     return Column(
       children: [
         Row(
           children: List.generate(2, (index) {
+            final title = index == 0 ? box1Title : box2Title;
+            final sub = index == 0 ? box1subTitle : box2subTitle;
+            final per = index == 0 ? box1per : box2per;
+            final pct = index == 0 ? p1 : p2;
+
             return Expanded(
               child: Container(
-                padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
+                padding: context.paddingSymmetricR(
+                  horizontal: 20,
+                  vertical: 30,
+                ),
                 margin: context.paddingSymmetricR(horizontal: 8, vertical: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(context.radiusR(16)),
                   color: AppColors.backGroundColor,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.customContainerColorUp.withValues(alpha: 0.4),
+                      color: AppColors.customContainerColorUp.withValues(
+                        alpha: 0.4,
+                      ),
                       offset: const Offset(5, 5),
                       blurRadius: 5,
                       inset: false,
                     ),
                     BoxShadow(
-                      color: AppColors.customContinerColorDown.withValues(alpha: 0.4),
+                      color: AppColors.customContinerColorDown.withValues(
+                        alpha: 0.4,
+                      ),
                       offset: const Offset(-5, -5),
                       blurRadius: 5,
                       inset: false,
@@ -62,17 +158,17 @@ class SpeedMeterWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      box1Title ?? '',
+                      title ?? '',
                       style: TextStyle(
-                        fontSize: context.sp(16.32),
+                        fontSize: context.sp(12),
                         fontWeight: FontWeight.w600,
                         color: AppColors.notSelectedColor,
                       ),
                     ),
                     Text(
-                      box1subTitle ?? '',
+                      sub ?? '',
                       style: TextStyle(
-                        fontSize: context.sp(16.32),
+                        fontSize: context.sp(16),
                         fontWeight: FontWeight.w600,
                         color: AppColors.subHeadingColor,
                       ),
@@ -112,7 +208,7 @@ class SpeedMeterWidget extends StatelessWidget {
                               child: LinearPercentIndicator(
                                 padding: EdgeInsets.zero,
                                 lineHeight: context.sh(8),
-                                percent: 0.5,
+                                percent: pct,
                                 backgroundColor: AppColors.backGroundColor,
                                 progressColor: AppColors.pimaryColor,
                                 barRadius: Radius.circular(context.radiusR(20)),
@@ -122,7 +218,7 @@ class SpeedMeterWidget extends StatelessWidget {
                         ),
                         SizedBox(width: context.sw(8)),
                         Text(
-                          box1per ?? '',
+                          per ?? '',
                           style: TextStyle(
                             fontSize: context.sp(12),
                             fontWeight: FontWeight.w600,
@@ -139,7 +235,7 @@ class SpeedMeterWidget extends StatelessWidget {
         ),
 
         Container(
-          padding: context.paddingSymmetricR(horizontal: 20, vertical: 13),
+          padding: context.paddingSymmetricR(horizontal: 20, vertical: 12),
           margin: context.paddingSymmetricR(horizontal: 8, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(context.radiusR(16)),
@@ -158,31 +254,48 @@ class SpeedMeterWidget extends StatelessWidget {
             ],
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  NormalText(
-                    titleText: smHTitle ?? '',
-                    titleSize: context.sp(16),
-                    titleWeight: FontWeight.w500,
-                    titleColor: AppColors.subHeadingColor,
-                  ),
-                  Divider(thickness: 1, indent: 0, endIndent: 10),
-                  NormalText(
-                    titleText: smTitle ?? '',
-                    titleSize: context.sp(12),
-                    titleWeight: FontWeight.w500,
-                    titleColor: AppColors.subHeadingColor,
-                    subText: smsSubTitle ?? '',
-                    subSize: context.sp(14),
-                    subWeight: FontWeight.w600,
-                    subColor: AppColors.subHeadingColor,
-                  ),
-                ],
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    NormalText(
+                      titleText: smHTitle ?? '',
+                      titleSize: context.sp(12),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      titleWeight: FontWeight.w600,
+                      titleColor: AppColors.subHeadingColor,
+                    ),
+                    Divider(
+                      thickness: context.sw(2),
+                      indent: 0,
+                      endIndent: context.sw(5),
+                    ),
+                    NormalText(
+                      titleText: smTitle ?? '',
+                      titleSize: context.sp(12),
+                      maxLines: 6,
+                      overflow: TextOverflow.ellipsis,
+                      titleWeight: FontWeight.w600,
+                      titleColor: AppColors.notSelectedColor,
+                      subText: smsSubTitle ?? '',
+                      subSize: context.sp(16),
+                      subWeight: FontWeight.w600,
+                      subColor: AppColors.subHeadingColor,
+                      subMaxLines: 10,
+                      subOverflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
-              Center(child: _getRadialGauge()),
+              SizedBox(width: context.sw(8)),
+              Expanded(
+                flex: 1,
+                child: _RadialGauge(needle: gaugeNeedleValue ?? 70),
+              ),
             ],
           ),
         ),
@@ -191,70 +304,70 @@ class SpeedMeterWidget extends StatelessWidget {
   }
 }
 
-Widget _getRadialGauge() {
-  return SizedBox(
-    height: 100,
-    width: 200,
+class _RadialGauge extends StatelessWidget {
+  final double needle;
 
-    child: SfRadialGauge(
-      axes: <RadialAxis>[
-        RadialAxis(
-          minimum: 0,
-          maximum: 100,
+  const _RadialGauge({required this.needle});
 
-          // 🔹 SEMI CIRCLE
-          startAngle: 180,
-          endAngle: 0,
+  @override
+  Widget build(BuildContext context) {
+    final v = needle.clamp(0, 100).toDouble();
 
-          showTicks: false,
-          showLabels: false,
-
-          axisLineStyle: const AxisLineStyle(
-            thickness: 8, // chhoti size ke liye kam
-            cornerStyle: CornerStyle.bothCurve,
-          ),
-
-          // 🔹 3 COLOR PARTS
-          ranges: <GaugeRange>[
-            GaugeRange(
-              startValue: 0,
-              endValue: 33,
-              color: Colors.red,
-              startWidth: 8,
-              endWidth: 8,
+    return SizedBox(
+      height: 100,
+      width: 200,
+      child: SfRadialGauge(
+        axes: <RadialAxis>[
+          RadialAxis(
+            minimum: 0,
+            maximum: 100,
+            startAngle: 180,
+            endAngle: 0,
+            showTicks: false,
+            showLabels: false,
+            axisLineStyle: const AxisLineStyle(
+              thickness: 8,
+              cornerStyle: CornerStyle.bothCurve,
             ),
-            GaugeRange(
-              startValue: 33,
-              endValue: 66,
-              color: Colors.yellow,
-              startWidth: 8,
-              endWidth: 8,
-            ),
-            GaugeRange(
-              startValue: 66,
-              endValue: 100,
-              color: Colors.green,
-              startWidth: 8,
-              endWidth: 8,
-            ),
-          ],
-
-          // 🔹 NEEDLE
-          pointers: const <GaugePointer>[
-            NeedlePointer(
-              value: 70,
-              needleLength: 0.6,
-              needleStartWidth: 1,
-              needleEndWidth: 3,
-              knobStyle: KnobStyle(
-                color: Colors.black,
-                sizeUnit: GaugeSizeUnit.factor,
-                knobRadius: 0.04,
+            ranges: <GaugeRange>[
+              GaugeRange(
+                startValue: 0,
+                endValue: 33,
+                color: Colors.red,
+                startWidth: 8,
+                endWidth: 8,
               ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
+              GaugeRange(
+                startValue: 33,
+                endValue: 66,
+                color: Colors.yellow,
+                startWidth: 8,
+                endWidth: 8,
+              ),
+              GaugeRange(
+                startValue: 66,
+                endValue: 100,
+                color: Colors.green,
+                startWidth: 8,
+                endWidth: 8,
+              ),
+            ],
+            pointers: <GaugePointer>[
+              NeedlePointer(
+                value: v,
+                needleLength: 0.6,
+                needleStartWidth: 1,
+                needleEndWidth: 3,
+                knobStyle: KnobStyle(
+                  color: Colors.black,
+                  sizeUnit: GaugeSizeUnit.factor,
+                  knobRadius: 0.04,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

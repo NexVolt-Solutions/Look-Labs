@@ -36,8 +36,6 @@ class ApiEndpoints {
   static String domainsGeneratePlan(String domain) =>
       'domains/$domain/generate-plan';
 
-  /// GET/PUT `domains/{domain}/completed-exercises` — same API for workout, height, and other domains.
-  /// Query (GET): `date=YYYY-MM-DD`. Body (PUT): `{ date, completed_indices, total_exercises }`.
   static String domainsCompletedExercises(String domain) =>
       'domains/${domain.toLowerCase().trim()}/completed-exercises';
 
@@ -137,6 +135,9 @@ class ApiEndpoints {
 
   /// POST images/upload/simple – simple image upload (profile, onboarding, etc.). Requires auth.
   static const String imagesUploadSimple = 'images/upload/simple';
+
+  /// POST images/upload – domain analysis uploads (multipart file + query: domain, view, image_type).
+  static const String imagesUpload = 'images/upload';
 
   /// GET images/album – user's album images. Optional query: domain, view, status (pending|processed|failed).
   static const String imagesAlbum = 'images/album';

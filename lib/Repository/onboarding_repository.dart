@@ -151,32 +151,9 @@ class OnboardingRepository {
     } catch (_) {}
   }
 
-  /// Saves domains list to secure storage so home/explore and goal screen can use cache and API is called only once.
-  static Future<void> _saveDomainsToStorage(List<String> domains) async {
-    try {
-      await _storage.write(
-        key: _kStorageKeyDomainsCache,
-        value: jsonEncode(domains),
-      );
-    } catch (_) {}
-  }
-
-  /// Loads cached domains from secure storage. Returns null if missing or invalid.
+  /// Cache disabled: always returns null.
   static Future<List<String>?> loadCachedDomains() async {
-    try {
-      final jsonStr = await _storage.read(key: _kStorageKeyDomainsCache);
-      if (jsonStr == null || jsonStr.isEmpty) return null;
-      final decoded = jsonDecode(jsonStr);
-      if (decoded is List) {
-        return decoded
-            .map<String>((e) => (e?.toString().trim() ?? ''))
-            .where((s) => s.isNotEmpty)
-            .toList();
-      }
-      return null;
-    } catch (_) {
-      return null;
-    }
+    return null;
   }
 
   /// Clears cached domains. Call after logout or when backend updates domains.
@@ -186,61 +163,12 @@ class OnboardingRepository {
     } catch (_) {}
   }
 
-  /// Saves raw questions response to secure storage so domain/section questions can be read without calling API again.
-  static Future<void> _saveQuestionsToStorage(dynamic rawData) async {
-    try {
-      if (rawData is List || rawData is Map) {
-        await _storage.write(
-          key: _kStorageKeyQuestionsCache,
-          value: jsonEncode(rawData),
-        );
-      }
-    } catch (_) {}
-  }
-
-  /// Loads cached questions from secure storage (per section/domain). Returns null if missing or invalid.
+  /// Cache disabled: always returns null.
   static Future<OnboardingFlowResponse?> loadCachedQuestionsFlow() async {
-    try {
-      final jsonStr = await _storage.read(key: _kStorageKeyQuestionsCache);
-      if (jsonStr == null || jsonStr.isEmpty) return null;
-      final decoded = jsonDecode(jsonStr);
-      if (decoded is List) {
-        final stepsMap = <String, List<FlowQuestion>>{};
-        for (final e in decoded) {
-          if (e is! Map) continue;
-          try {
-            final q = FlowQuestion.fromJson(Map<String, dynamic>.from(e));
-            stepsMap
-                .putIfAbsent(
-                  q.step.isEmpty ? 'profile_setup' : q.step,
-                  () => [],
-                )
-                .add(q);
-          } catch (_) {}
-        }
-        final stepsList = stepsMap.entries
-            .map((e) => FlowStepItem(step: e.key, questions: e.value))
-            .toList();
-        return OnboardingFlowResponse(
-          status: 'ok',
-          current: null,
-          next: null,
-          questions: null,
-          steps: stepsList,
-          progress: null,
-          redirect: null,
-        );
-      }
-      if (decoded is Map<String, dynamic>) {
-        return OnboardingFlowResponse.fromJson(decoded);
-      }
-      return null;
-    } catch (_) {
-      return null;
-    }
+    return null;
   }
 
-  /// GET onboarding/questions – all steps and questions in one call. Saves response to secure storage so sections (e.g. Hair Care, Skincare) can use cache and API is called only once.
+  /// GET onboarding/questions – all steps and questions in one call.
   Future<ApiResponse> getOnboardingQuestions({String? sessionId}) async {
     final queryParams = sessionId != null && sessionId.isNotEmpty
         ? <String, String>{'session_id': sessionId}
@@ -277,7 +205,6 @@ class OnboardingRepository {
         progress: null,
         redirect: null,
       );
-      await _saveQuestionsToStorage(response.data);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
@@ -304,7 +231,6 @@ class OnboardingRepository {
         }
       }
       final flow = OnboardingFlowResponse.fromJson(json);
-      await _saveQuestionsToStorage(json);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
@@ -315,7 +241,7 @@ class OnboardingRepository {
     return response;
   }
 
-  /// GET onboarding/domains – list of domain strings. Saves to secure storage so home/explore and goal screen use cache and API is called only once.
+  /// GET onboarding/domains – list of domain strings.
   Future<ApiResponse> getOnboardingDomains() async {
     final response = await ApiServices.get(
       ApiEndpoints.onboardingDomains,
@@ -340,7 +266,6 @@ class OnboardingRepository {
         }
       }
     }
-    if (domains.isNotEmpty) await _saveDomainsToStorage(domains);
     return ApiResponse(
       success: true,
       statusCode: response.statusCode,
@@ -411,17 +336,9 @@ class OnboardingRepository {
     return response;
   }
 
-  /// Loads cached wellness from secure storage. Returns null if missing or invalid.
+  /// Cache disabled: always returns null.
   static Future<WellnessMetrics?> loadCachedWellness() async {
-    try {
-      final jsonStr = await _storage.read(key: _kStorageKeyWellnessCache);
-      if (jsonStr == null || jsonStr.isEmpty) return null;
-      final map = jsonDecode(jsonStr) as Map<String, dynamic>?;
-      if (map == null) return null;
-      return WellnessMetrics.fromJson(map);
-    } catch (_) {
-      return null;
-    }
+    return null;
   }
 
   /// Clears wellness cache. Call on logout.
@@ -431,16 +348,7 @@ class OnboardingRepository {
     } catch (_) {}
   }
 
-  static Future<void> _saveWellnessToStorage(Map<String, dynamic> json) async {
-    try {
-      await _storage.write(
-        key: _kStorageKeyWellnessCache,
-        value: jsonEncode(json),
-      );
-    } catch (_) {}
-  }
-
-  /// GET onboarding/users/me/wellness. Requires Bearer token. Caches on success.
+  /// GET onboarding/users/me/wellness. Requires Bearer token.
   Future<ApiResponse> getWellnessMetrics() async {
     final response = await ApiServices.get(
       ApiEndpoints.onboardingUsersMeWellness,
@@ -457,12 +365,6 @@ class OnboardingRepository {
           ? Map<String, dynamic>.from(raw['data'] as Map)
           : raw;
       final metrics = WellnessMetrics.fromJson(json);
-      final hasData =
-          metrics.height.isNotEmpty ||
-          metrics.weight.isNotEmpty ||
-          metrics.sleepHours.isNotEmpty ||
-          metrics.waterIntake.isNotEmpty;
-      if (hasData) await _saveWellnessToStorage(json);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,
@@ -473,34 +375,15 @@ class OnboardingRepository {
     return response;
   }
 
-  /// Loads cached weekly progress. Returns null if missing or invalid.
+  /// Cache disabled: always returns null.
   static Future<WeeklyProgressResponse?> loadCachedWeeklyProgress() async {
-    try {
-      final jsonStr = await _storage.read(key: _kStorageKeyWeeklyProgressCache);
-      if (jsonStr == null || jsonStr.isEmpty) return null;
-      final map = jsonDecode(jsonStr) as Map<String, dynamic>?;
-      if (map == null) return null;
-      return WeeklyProgressResponse.fromJson(map);
-    } catch (_) {
-      return null;
-    }
+    return null;
   }
 
   /// Clears weekly progress cache. Call on logout.
   static Future<void> clearWeeklyProgressCache() async {
     try {
       await _storage.delete(key: _kStorageKeyWeeklyProgressCache);
-    } catch (_) {}
-  }
-
-  static Future<void> _saveWeeklyProgressToStorage(
-    Map<String, dynamic> json,
-  ) async {
-    try {
-      await _storage.write(
-        key: _kStorageKeyWeeklyProgressCache,
-        value: jsonEncode(json),
-      );
     } catch (_) {}
   }
 
@@ -606,7 +489,7 @@ class OnboardingRepository {
     return response;
   }
 
-  /// GET users/me/progress/weekly. For Home screen. Caches on success.
+  /// GET users/me/progress/weekly. For Home screen.
   Future<ApiResponse> getWeeklyProgress() async {
     final response = await ApiServices.get(ApiEndpoints.usersMeProgressWeekly);
     if (response.success && response.data != null && response.data is Map) {
@@ -616,7 +499,6 @@ class OnboardingRepository {
           ? Map<String, dynamic>.from(raw['data'] as Map)
           : raw;
       final progress = WeeklyProgressResponse.fromJson(json);
-      await _saveWeeklyProgressToStorage(json);
       return ApiResponse(
         success: true,
         statusCode: response.statusCode,

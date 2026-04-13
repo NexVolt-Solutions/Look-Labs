@@ -1,13 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:looklabs/Core/Network/api_endpoints.dart';
 import 'package:looklabs/Core/Network/models/explore_domain.dart';
 import 'package:looklabs/Core/Network/api_response.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
-
-const _kStorageKeyExploreDomains = 'explore_domains_cache';
 
 /// Repository for explore domains (Home screen "Explore your plans").
 /// Uses GET domains/explore which requires authentication.
@@ -18,41 +13,14 @@ class ExploreDomainsRepository {
   static final ExploreDomainsRepository _instance = ExploreDomainsRepository._();
   static ExploreDomainsRepository get instance => _instance;
 
-  static const FlutterSecureStorage _storage = FlutterSecureStorage();
-
-  /// Loads cached domains from secure storage. Returns null if missing or invalid.
+  /// Cache disabled: always return null.
   static Future<List<ExploreDomain>?> loadCachedDomains() async {
-    try {
-      final jsonStr = await _storage.read(key: _kStorageKeyExploreDomains);
-      if (jsonStr == null || jsonStr.isEmpty) return null;
-      final decoded = jsonDecode(jsonStr);
-      if (decoded is List) {
-        return decoded
-            .map((e) => e is Map ? ExploreDomain.fromJson(Map<String, dynamic>.from(e)) : null)
-            .whereType<ExploreDomain>()
-            .where((d) => d.key.isNotEmpty)
-            .toList();
-      }
-      return null;
-    } catch (_) {
-      return null;
-    }
+    return null;
   }
 
-  /// Clears cached domains. Call after logout or when backend updates domains.
+  /// Cache disabled (no-op).
   static Future<void> clearDomainsCache() async {
-    try {
-      await _storage.delete(key: _kStorageKeyExploreDomains);
-    } catch (_) {}
-  }
-
-  static Future<void> _saveDomainsToStorage(List<ExploreDomain> domains) async {
-    try {
-      await _storage.write(
-        key: _kStorageKeyExploreDomains,
-        value: jsonEncode(domains.map((d) => d.toJson()).toList()),
-      );
-    } catch (_) {}
+    return;
   }
 
   static List<ExploreDomain> _parseDomains(dynamic data) {
@@ -70,7 +38,7 @@ class ExploreDomainsRepository {
   }
 
   /// GET domains/explore – list of domain objects for authenticated user.
-  /// Requires Bearer token. Caches result in secure storage.
+  /// Requires Bearer token. Cache disabled: always returns fresh API data.
   Future<ApiResponse> getExploreDomains() async {
     final response = await ApiServices.get(ApiEndpoints.domainsExplore);
 
@@ -90,10 +58,6 @@ class ExploreDomainsRepository {
     }
 
     final domains = _parseDomains(response.data ?? []);
-
-    if (domains.isNotEmpty) {
-      await _saveDomainsToStorage(domains);
-    }
 
     return ApiResponse(
       success: true,

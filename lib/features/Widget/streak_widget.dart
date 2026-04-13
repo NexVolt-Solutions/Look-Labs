@@ -80,9 +80,9 @@ class StreakWidget extends StatelessWidget {
                 titleText: title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                titleSize: titleSize ?? context.sp(14),
                 titleWeight: titleWeight ?? FontWeight.w600,
-                titleColor: titleColor ?? AppColors.iconColor,
+                titleColor: titleColor ?? AppColors.headingColor,
+                titleSize: titleSize ?? context.sp(16),
               ),
               SizedBox(height: context.sh(2)),
               Text.rich(
@@ -91,7 +91,6 @@ class StreakWidget extends StatelessWidget {
                     TextSpan(
                       text: richTitle ?? '0',
                       style: TextStyle(
-                        fontSize: richTitleSize ?? context.sp(26),
                         fontWeight: richTitleWeight ?? FontWeight.w600,
                         color: richTitleColor ?? AppColors.subHeadingColor,
                       ),
@@ -99,7 +98,6 @@ class StreakWidget extends StatelessWidget {
                     TextSpan(
                       text: richSubTitle ?? '',
                       style: TextStyle(
-                        fontSize: richSubTitleSize ?? context.sp(16),
                         fontWeight: richSubTitleWeight ?? FontWeight.w600,
                         color: richSubTitleColor ?? AppColors.subHeadingColor,
                       ),

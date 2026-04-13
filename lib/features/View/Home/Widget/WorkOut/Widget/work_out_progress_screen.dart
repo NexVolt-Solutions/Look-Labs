@@ -57,6 +57,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       Navigator.pop(context);
                     },
                   ),
+
                   SizedBox(height: context.sh(24)),
                   NormalText(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,16 +129,14 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       children: [
                         _progressBarCard(
                           context,
-                          label: 'Fitness Consistency',
-                          progress:
-                              yourProgressScreenViewModel.fitnessBarValue,
+                          label: 'Fitness consistency',
+                          progress: yourProgressScreenViewModel.fitnessBarValue,
                         ),
                         SizedBox(width: context.sw(12)),
                         _progressBarCard(
                           context,
-                          label: 'Calorie Balance',
-                          progress:
-                              yourProgressScreenViewModel.calorieBarValue,
+                          label: 'Calorie balance',
+                          progress: yourProgressScreenViewModel.calorieBarValue,
                         ),
                         SizedBox(width: context.sw(12)),
                         _progressBarCard(
@@ -146,6 +145,16 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                           progress:
                               yourProgressScreenViewModel.hydrationBarValue,
                         ),
+                        if (yourProgressScreenViewModel
+                            .showStrengthProgressBar) ...[
+                          SizedBox(width: context.sw(12)),
+                          _progressBarCard(
+                            context,
+                            label: 'Strength gain',
+                            progress:
+                                yourProgressScreenViewModel.strengthBarValue,
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -155,49 +164,47 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                     children: List.generate(
                       yourProgressScreenViewModel.buttonName.length,
                       (index) {
-                        final bool isSelected =
-                            yourProgressScreenViewModel.selectedIndex ==
+                        final period =
                             yourProgressScreenViewModel.buttonName[index];
+                        final bool isSelected =
+                            yourProgressScreenViewModel.selectedChartPeriod ==
+                            period;
                         return Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              right:
-                                  index <
-                                      yourProgressScreenViewModel
-                                              .buttonName
-                                              .length -
-                                          1
-                                  ? context.sw(6)
-                                  : 0,
+                          child: CustomContainer(
+                            radius: context.radiusR(10),
+                            onTap: () {
+                              yourProgressScreenViewModel.onChartPeriodTap(
+                                period,
+                              );
+                            },
+                            color: isSelected
+                                ? AppColors.buttonColor.withValues(alpha: 0.11)
+                                : AppColors.backGroundColor,
+                            border: isSelected
+                                ? Border.all(
+                                    color: AppColors.pimaryColor,
+                                    width: 1.5,
+                                  )
+                                : null,
+                            padding: context.paddingSymmetricR(
+                              horizontal: 8,
+                              vertical: 12,
                             ),
-                            child: CustomContainer(
-                              radius: context.radiusR(10),
-                              onTap: () {
-                                yourProgressScreenViewModel.selectIndex(index);
-                              },
-                              color: isSelected
-                                  ? AppColors.buttonColor.withValues(alpha: 0.11)
-                                  : AppColors.backGroundColor,
-                              border: isSelected
-                                  ? Border.all(
-                                      color: AppColors.pimaryColor,
-                                      width: 1.5,
-                                    )
-                                  : null,
-                              padding: context.paddingSymmetricR(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                              margin: EdgeInsets.zero,
-                              child: Center(
+                            margin: context.paddingSymmetricR(
+                              horizontal: 4,
+                              vertical: 0,
+                            ),
+                            child: Center(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
                                 child: Text(
-                                  yourProgressScreenViewModel.buttonName[index],
+                                  period,
+                                  maxLines: 1,
                                   style: TextStyle(
                                     fontSize: context.sp(14),
                                     fontWeight: FontWeight.w700,
                                     color: AppColors.seconderyColor,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
@@ -206,24 +213,42 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       },
                     ),
                   ),
-                  SizedBox(height: context.sh(16)),
-                  CustomContainer(
-                    radius: context.radiusR(10),
-                    color: AppColors.backGroundColor,
+                  SizedBox(height: context.sh(8)),
+                  PlanContainer(
                     padding: context.paddingSymmetricR(
                       horizontal: 10,
                       vertical: 10,
                     ),
-                    margin: EdgeInsets.only(bottom: context.sh(8)),
-                    child: Center(
-                      child: LineChartWidget(
-                        workoutChartData:
-                            yourProgressScreenViewModel.workoutChartData.isEmpty
-                            ? null
-                            : yourProgressScreenViewModel.workoutChartData,
-                      ),
-                    ),
+                    radius: BorderRadius.circular(context.radiusR(10)),
+                    isSelected: false,
+                    onTap: () {},
+                    child: yourProgressScreenViewModel.chartLoading
+                        ? SizedBox(
+                            height: context.sh(120),
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: SizedBox(
+                              width:
+                                  (yourProgressScreenViewModel
+                                              .chartDataForSelectedPeriod
+                                              .length *
+                                          56.0)
+                                      .clamp(320.0, 900.0),
+                              child: LineChartWidget(
+                                workoutChartData: yourProgressScreenViewModel
+                                    .chartDataForSelectedPeriod,
+                                yAxisMinimum: 0,
+                                yAxisMaximum: 100,
+                                valueDisplaySuffix: '%',
+                              ),
+                            ),
+                          ),
                   ),
+                  SizedBox(height: context.sh(8)),
                   PlanContainer(
                     padding: context.paddingSymmetricR(
                       horizontal: 12,
@@ -271,18 +296,36 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                             ),
                             SizedBox(width: context.sw(11)),
                             Expanded(
-                              child: NormalText(
-                                titleText:
-                                    yourProgressScreenViewModel
-                                        .postureInsight ??
-                                    yourProgressScreenViewModel.aiMessage ??
-                                    'Small daily workouts create big long-term results. You\'re doing great—keep up the momentum.',
-                                titleSize: context.sp(12),
-                                titleWeight: FontWeight.w600,
-                                titleColor: AppColors.subHeadingColor,
-                                // subText: 'Best done after waking up',
-                                // subSize: context.sp(10),
-                                // subWeight: FontWeight.w400,
+                              child: Builder(
+                                builder: (context) {
+                                  final vm = yourProgressScreenViewModel;
+                                  final title =
+                                      vm.insightCardTitle ??
+                                      vm.postureInsight ??
+                                      vm.aiMessage ??
+                                      'Small daily workouts create big long-term results. You\'re doing great—keep up the momentum.';
+                                  final body = vm.insightCardBody;
+                                  final sub =
+                                      (body != null &&
+                                          body.isNotEmpty &&
+                                          body != title)
+                                      ? body
+                                      : null;
+                                  return NormalText(
+                                    titleText: title,
+                                    subText: sub,
+                                    titleSize: context.sp(12),
+                                    titleWeight: FontWeight.w600,
+                                    titleColor: AppColors.subHeadingColor,
+                                    subSize: context.sp(11),
+                                    subWeight: FontWeight.w400,
+                                    subColor: AppColors.subHeadingColor
+                                        .withValues(alpha: 0.85),
+                                    sizeBoxheight: sub != null
+                                        ? context.sh(6)
+                                        : null,
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -294,8 +337,8 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                     title: 'Workout Consistency',
                     subtitle: 'Your workout activity this week',
                     pressentage:
-                        yourProgressScreenViewModel.displayWeekAverage > 0
-                        ? yourProgressScreenViewModel.displayWeekAverage
+                        yourProgressScreenViewModel.displayWorkoutWeekScore > 0
+                        ? yourProgressScreenViewModel.displayWorkoutWeekScore
                         : (yourProgressScreenViewModel.todayScore > 0
                               ? yourProgressScreenViewModel.todayScore
                               : (yourProgressScreenViewModel
@@ -304,7 +347,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                                     ? yourProgressScreenViewModel
                                           .fitnessConsistencyProgress
                                           .toDouble()
-                                    : 20.0)),
+                                    : 0.0)),
                   ),
                   SizedBox(height: context.sh(16)),
                   NormalText(
@@ -323,10 +366,9 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                           child: Row(
                             children: [
                               GestureDetector(
-                                onTap: () {
-                                  yourProgressScreenViewModel.toggleChecklist(
-                                    index,
-                                  );
+                                onTap: () async {
+                                  await yourProgressScreenViewModel
+                                      .toggleChecklist(index);
                                 },
                                 child: Container(
                                   height: context.sh(28),

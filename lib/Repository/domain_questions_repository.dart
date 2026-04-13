@@ -194,12 +194,25 @@ class DomainQuestionsRepository {
         if (!res.success || res.data is! Map) return null;
         data = Map<String, dynamic>.from(res.data as Map);
       }
-      final status = data['status']?.toString() ?? '';
+      final status = data['status']?.toString().toLowerCase() ?? '';
       if (status == 'completed' || status == 'ok') {
         return data;
       }
-      await Future<void>.delayed(interval);
-      data = null;
+      if (status == 'failed' || status == 'error') {
+        return data;
+      }
+      // Some domains return transitional states like `pending` / `in_progress`
+      // before reaching `completed`.
+      if (status.isEmpty ||
+          status == 'processing' ||
+          status == 'pending' ||
+          status == 'in_progress') {
+        await Future<void>.delayed(interval);
+        data = null;
+        continue;
+      }
+      // Unknown state: keep latest snapshot so caller can still render fallback UI.
+      return data;
     }
     return null;
   }
@@ -270,21 +283,13 @@ class DomainQuestionsRepository {
       );
     }
 
-    var profile = await AuthRepository.loadCachedProfile();
-    var userId = profile?.id ?? 0;
-    if (userId == 0) {
-      final meRes = await AuthRepository.instance.getMe();
-      if (meRes.success &&
-          meRes.data != null &&
-          meRes.data is UserProfileResponse) {
-        final p = meRes.data! as UserProfileResponse;
-        if (p.id != null && p.id! > 0) {
-          profile = p;
-          userId = p.id!;
-        }
-      }
-    }
-    if (userId == 0) {
+    final meRes = await AuthRepository.instance.getMe();
+    final userId = (meRes.success &&
+            meRes.data != null &&
+            meRes.data is UserProfileResponse)
+        ? (meRes.data! as UserProfileResponse).id ?? 0
+        : 0;
+    if (userId <= 0) {
       return ApiResponse(
         success: false,
         statusCode: 401,

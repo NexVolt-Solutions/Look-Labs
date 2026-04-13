@@ -48,13 +48,14 @@ class _AuthScreenState extends State<AuthScreen> {
           if (response.success && response.data != null) {
             final sessionId = OnboardingRepository.sessionId;
             if (sessionId != null && sessionId.isNotEmpty) {
-              final linkRes =
-                  await OnboardingRepository.instance.linkSessionToUser(sessionId);
+              final linkRes = await OnboardingRepository.instance
+                  .linkSessionToUser(sessionId);
               if (linkRes.success &&
                   linkRes.data != null &&
                   linkRes.data is Map) {
-                final domain =
-                    (linkRes.data as Map)['domain']?.toString().trim();
+                final domain = (linkRes.data as Map)['domain']
+                    ?.toString()
+                    .trim();
                 if (domain != null && domain.isNotEmpty) {
                   await AuthRepository.setSelectedDomain(domain);
                 }
@@ -94,7 +95,12 @@ class _AuthScreenState extends State<AuthScreen> {
           );
         }
       } else if (vm.errorMessage != null) {
-        if (mounted) ApiErrorHandler.showSnackBar(context, fallback: vm.errorMessage);
+        if (mounted) {
+          ApiErrorHandler.showSnackBar(
+            context,
+            fallback: vm.errorMessage,
+          );
+        }
       }
     } catch (e, _) {
       if (mounted) {
@@ -147,12 +153,17 @@ class _AuthScreenState extends State<AuthScreen> {
                     children: [
                       Image.asset(AppAssets.gmailIcon),
                       SizedBox(width: context.sw(8)),
-                      Text(
-                        AppText.continueWithGoogle,
-                        style: TextStyle(
-                          fontSize: context.sp(16),
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.subHeadingColor,
+                      Flexible(
+                        child: Text(
+                          AppText.continueWithGoogle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: context.sp(16),
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.subHeadingColor,
+                          ),
                         ),
                       ),
                     ],
@@ -168,12 +179,17 @@ class _AuthScreenState extends State<AuthScreen> {
                     children: [
                       Image.asset(AppAssets.appaleIcon),
                       SizedBox(width: context.sw(8)),
-                      Text(
-                        AppText.continueWithApple,
-                        style: TextStyle(
-                          fontSize: context.sp(16),
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.subHeadingColor,
+                      Flexible(
+                        child: Text(
+                          AppText.continueWithApple,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: context.sp(16),
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.subHeadingColor,
+                          ),
                         ),
                       ),
                     ],

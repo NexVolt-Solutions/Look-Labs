@@ -24,26 +24,24 @@ class WorkOutResultScreen extends StatefulWidget {
 }
 
 class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
-  // Widget _buildProgressChip(BuildContext context, String label) {
-  //   return Container(
-  //     padding: context.paddingSymmetricR(horizontal: 10, vertical: 6),
-  //     decoration: BoxDecoration(
-  //       color: AppColors.pimaryColor.withValues(alpha: 0.1),
-  //       borderRadius: BorderRadius.circular(context.radiusR(8)),
-  //     ),
-  //     child: NormalText(
-  //       titleText: label,
-  //       titleSize: context.sp(11),
-  //       titleWeight: FontWeight.w500,
-  //       titleColor: AppColors.subHeadingColor,
-  //     ),
-  //   );
-  // }
-
   @override
   void initState() {
     super.initState();
     if (widget.workoutData != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        context.read<WorkOutResultScreenViewModel>().setWorkoutData(
+          widget.workoutData!,
+        );
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant WorkOutResultScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.workoutData, widget.workoutData) &&
+        widget.workoutData != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         context.read<WorkOutResultScreenViewModel>().setWorkoutData(
@@ -69,15 +67,25 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
         child: CustomButton(
           isEnabled: !workOutResultViewModel.getStartedLoading,
           onTap: () async {
-            if (workOutResultViewModel.selectedIndex < 0) {
+            final vm = workOutResultViewModel;
+            if (!vm.hasGeneratedPlan && vm.selectedIndex < 0) {
               ApiErrorHandler.showSnackBar(
                 context,
                 fallback: 'Please select a focus',
               );
               return;
             }
-            final response = await workOutResultViewModel.generateWorkoutPlan(
-              selectedFocusIndex: workOutResultViewModel.selectedIndex,
+            if (vm.hasGeneratedPlan) {
+              if (!context.mounted) return;
+              Navigator.pushNamed(
+                context,
+                RoutesName.WorkOutProgressScreen,
+                arguments: vm.workoutData ?? widget.workoutData,
+              );
+              return;
+            }
+            final response = await vm.generateWorkoutPlan(
+              selectedFocusIndex: vm.selectedIndex,
               loadingSource:
                   WorkOutResultScreenViewModel.loadingSourceGetStarted,
             );
@@ -89,12 +97,13 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
             Navigator.pushNamed(
               context,
               RoutesName.WorkOutProgressScreen,
-              arguments:
-                  workOutResultViewModel.workoutData ?? widget.workoutData,
+              arguments: vm.workoutData ?? widget.workoutData,
             );
           },
           text: workOutResultViewModel.getStartedLoading
               ? 'Generating...'
+              : workOutResultViewModel.hasGeneratedPlan
+              ? 'Continue'
               : 'Get Started',
           color: AppColors.pimaryColor,
         ),
@@ -292,11 +301,8 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                   );
                 }),
               ),
-              SizedBox(height: context.sh(18)),
+              SizedBox(height: context.sh(16)),
             ],
-
-            // Today's Workout card – navigate to Daily Workout only after Get Started has run and we have exercises.
-            // API is called only from Get Started; tile never calls API. Arrow and navigation enabled only when we have plan data.
             if ((workOutResultViewModel.workoutData ?? widget.workoutData) !=
                 null) ...[
               Builder(
@@ -362,7 +368,9 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                           Icon(
                             Icons.lock_outline,
                             size: context.sh(24),
-                            color: AppColors.subHeadingColor.withValues(alpha: 0.5),
+                            color: AppColors.subHeadingColor.withValues(
+                              alpha: 0.5,
+                            ),
                           ),
                       ],
                     ),
@@ -393,15 +401,16 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.customContainerColorUp.withValues(alpha: 
-                              0.4,
+                            color: AppColors.customContainerColorUp.withValues(
+                              alpha: 0.4,
                             ),
                             offset: const Offset(3, 3),
                             blurRadius: 4,
                           ),
                           BoxShadow(
-                            color: AppColors.customContinerColorDown
-                                .withValues(alpha: 0.4),
+                            color: AppColors.customContinerColorDown.withValues(
+                              alpha: 0.4,
+                            ),
                             offset: const Offset(-3, -3),
                             blurRadius: 4,
                           ),

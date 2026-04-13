@@ -93,6 +93,82 @@ class ImageUploadRepository {
     );
   }
 
+  /// POST images/upload – domain image for AI analysis (skincare, haircare, etc.).
+  /// Query: [domain], optional [view] (e.g. front, left), [imageType] default `uploaded`.
+  Future<ApiResponse> uploadDomainImage(
+    String filePath, {
+    required String domain,
+    String? view,
+    String imageType = 'uploaded',
+  }) async {
+    final file = File(filePath);
+    if (!await file.exists()) {
+      return ApiResponse(
+        success: false,
+        statusCode: 0,
+        message: 'File not found',
+      );
+    }
+
+    final contentType = _mimeTypeFromPath(filePath);
+    final queryParams = <String, String>{
+      'domain': domain.trim().toLowerCase(),
+      'image_type': imageType,
+    };
+    final v = view?.trim();
+    if (v != null && v.isNotEmpty) queryParams['view'] = v;
+
+    final response = await ApiServices.multipartPost(
+      ApiEndpoints.imagesUpload,
+      files: [
+        MultipartFileItem(
+          fieldName: 'file',
+          filePath: filePath,
+          fileName: filePath.split(Platform.pathSeparator).last,
+          contentType: contentType,
+        ),
+      ],
+      queryParams: queryParams,
+    );
+
+    if (kDebugMode) {
+      debugPrint(
+        '[ImageUpload] domain=$domain view=$view statusCode=${response.statusCode}, success=${response.success}',
+      );
+    }
+
+    if (!response.success) {
+      return ApiResponse(
+        success: false,
+        statusCode: response.statusCode,
+        data: null,
+        message:
+            response.message ??
+            (response.statusCode == 401
+                ? 'Not authenticated'
+                : 'Could not upload image'),
+      );
+    }
+
+    final data = response.data;
+    if (data is! Map<String, dynamic>) {
+      return ApiResponse(
+        success: false,
+        statusCode: response.statusCode,
+        data: null,
+        message: 'Invalid response format',
+      );
+    }
+
+    final upload = SimpleImageUpload.fromJson(data);
+    return ApiResponse(
+      success: true,
+      statusCode: response.statusCode,
+      data: upload,
+      message: response.message,
+    );
+  }
+
   /// GET images/album – fetch user's album images.
   /// Optional [domain], [view], [status] (pending|processed|failed).
   Future<ApiResponse> getAlbumImages({

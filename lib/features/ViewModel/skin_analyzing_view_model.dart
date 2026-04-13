@@ -1,0 +1,411 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:looklabs/Core/Network/models/album_image.dart';
+import 'package:looklabs/Repository/domain_questions_repository.dart';
+import 'package:looklabs/Repository/image_upload_repository.dart';
+
+/// Parses [AlbumImage.analysisResult] into bullet lines (prefers `points` when present).
+List<String> parseAnalysisResultBullets(dynamic raw) {
+  if (raw == null) return [];
+  if (raw is String) {
+    final t = raw.trim();
+    if (t.isEmpty) return [];
+    if (t.startsWith('{') || t.startsWith('[')) {
+      try {
+        final decoded = jsonDecode(t) as Object?;
+        return parseAnalysisResultBullets(decoded);
+      } catch (_) {
+        return _splitLooseText(t);
+      }
+    }
+    return _splitLooseText(t);
+  }
+  if (raw is List) {
+    return raw
+        .map((e) => e?.toString().trim())
+        .whereType<String>()
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
+  if (raw is Map) {
+    // Backend: analysis_result.points as string list (e.g. "Hairloss: Low").
+    const keys = [
+      'points',
+      'findings',
+      'concerns',
+      'items',
+      'bullets',
+      'recommendations',
+      'summary_points',
+      'issues',
+      'observations',
+      'skin_concerns',
+    ];
+    for (final k in keys) {
+      if (raw[k] != null) {
+        final nested = parseAnalysisResultBullets(raw[k]);
+        if (nested.isNotEmpty) return nested;
+      }
+    }
+    final text = raw['summary'] ?? raw['text'] ?? raw['message'];
+    if (text != null) {
+      final nested = parseAnalysisResultBullets(text);
+      if (nested.isNotEmpty) return nested;
+    }
+  }
+  final s = raw.toString().trim();
+  return s.isEmpty ? [] : [s];
+}
+
+List<String> _splitLooseText(String t) {
+  return t
+      .split(RegExp(r'[\n\r]+|•\s*|\s*[·]\s*'))
+      .map((s) => s.replaceFirst(RegExp(r'^[-*]\s*'), '').trim())
+      .where((s) => s.isNotEmpty)
+      .toList();
+}
+
+List<String> _dedupePreserveOrder(List<String> items) {
+  final seen = <String>{};
+  final out = <String>[];
+  for (final s in items) {
+    final key = s.toLowerCase();
+    if (seen.add(key)) out.add(s);
+  }
+  return out;
+}
+
+/// Polls [GET images/album?domain=…] (~3s). Bullets come only from each image’s
+/// [AlbumImage.analysisResult] when `status` is processed (e.g. `points`).
+class SkinAnalyzingViewModel extends ChangeNotifier {
+  SkinAnalyzingViewModel({
+    String domain = 'skincare',
+    Duration pollInterval = const Duration(seconds: 3),
+    Duration timeout = const Duration(minutes: 2),
+  }) : _domain = domain,
+       _pollInterval = pollInterval,
+       _timeout = timeout;
+
+  final String _domain;
+  final Duration _pollInterval;
+  final Duration _timeout;
+
+  static const List<String> _views = ['front', 'back', 'right', 'left'];
+
+  final ImageUploadRepository _repo = ImageUploadRepository.instance;
+  DateTime? _startedAt;
+
+  /// Only one async poll loop runs at a time ([startPolling] is idempotent).
+  bool _pollLoopRunning = false;
+
+  List<String> _bullets = [];
+  int _loadingStepIndex = 1;
+  int _simulatedProgress = 5;
+  int _processedCount = 0;
+
+  /// Views whose newest row is still pending but an older processed row has bullets (for staging only).
+  int _interimReadyViewCount = 0;
+  String? _fetchError;
+  String? _analysisError;
+  bool _timedOut = false;
+  bool _pollingStopped = false;
+
+  /// Latest GET domains/{domain}/flow — [isFlowCompleted] when `status` is ok/completed.
+  bool _flowCompleted = false;
+
+  /// Throttle + backoff for GET …/flow (album is polled every [_pollInterval]; flow is stricter).
+  DateTime? _lastFlowPollAt;
+  DateTime? _flowBackoffUntil;
+
+  static const Duration _flowPollMinInterval = Duration(seconds: 10);
+  static const int _flow429DefaultBackoffSeconds = 50;
+
+  List<String> get analysisBullets => List.unmodifiable(_bullets);
+
+  static const List<String> _skinLoadingSteps = [
+    'Scanning skin texture and pore visibility',
+    'Detecting hydration and oil balance patterns',
+    'Checking acne, redness, and uneven tone',
+    'Preparing personalized skin care insights',
+    'Finalizing your routine recommendations',
+  ];
+
+  static const List<String> _hairLoadingSteps = [
+    'Scanning hair texture and density patterns',
+    'Assessing scalp health and moisture balance',
+    'Reviewing shedding, hairline, and volume signals',
+    'Preparing personalized hair care insights',
+    'Finalizing your routine recommendations',
+  ];
+
+  List<String> get _activeLoadingSteps {
+    switch (_domain) {
+      case 'haircare':
+        return _hairLoadingSteps;
+      default:
+        return _skinLoadingSteps;
+    }
+  }
+
+  /// Shown while album has no analysis lines yet; step count tracks the bar (simulated %).
+  List<String> get loadingBullets {
+    final steps = _activeLoadingSteps;
+    if (steps.isEmpty) return [];
+    final n = steps.length;
+    final byPoll = _loadingStepIndex.clamp(1, n);
+    final byProgress =
+        (progressPercent / 100 * n).ceil().clamp(1, n);
+    final k = byProgress > byPoll ? byProgress : byPoll;
+    return steps.take(k).toList(growable: false);
+  }
+
+  /// Show real AI bullets when available; otherwise show progressive loading steps.
+  List<String> get displayBullets =>
+      _bullets.isNotEmpty ? analysisBullets : loadingBullets;
+
+  /// Reveal bullets progressively with the loading/progress state.
+  List<String> get stagedBullets {
+    if (_bullets.isEmpty) return loadingBullets;
+    if (isFullyComplete) return analysisBullets;
+
+    // While still processing, reveal a subset tied to album views and to [progressPercent]
+    // so staged lines stay in sync with the progress bar (simulated + real %).
+    final total = _bullets.length;
+    final albumFactor = (_processedCount + _interimReadyViewCount).clamp(
+      0,
+      _views.length,
+    );
+    final progressFactor =
+        ((progressPercent / 100) * _views.length).round().clamp(
+      0,
+      _views.length,
+    );
+    final factor =
+        albumFactor > progressFactor ? albumFactor : progressFactor;
+    final count = factor == 0
+        ? 1
+        : ((factor * total) / _views.length).ceil().clamp(1, total);
+    return _bullets.take(count).toList(growable: false);
+  }
+
+  /// 0–100: real view progress + simulated filler, capped below 100 until [isFullyComplete]
+  /// so the bar never shows 100% while the spinner is still on.
+  int get progressPercent {
+    if (isFullyComplete) return 100;
+    final real = (_processedCount * 100 / _views.length).round().clamp(0, 100);
+    final sim = _simulatedProgress.clamp(0, 94);
+    return (real > sim ? real : sim).clamp(0, 99);
+  }
+
+  int get processedViewCount => _processedCount;
+
+  String? get fetchError => _fetchError;
+
+  /// e.g. a view returned status `failed`.
+  String? get analysisError => _analysisError;
+
+  bool get timedOut => _timedOut;
+
+  /// All four latest album rows processed with at least one parsed bullet from `analysis_result`.
+  bool get isAlbumAnalysisReady =>
+      _processedCount >= _views.length &&
+      _analysisError == null &&
+      _bullets.isNotEmpty;
+
+  /// GET domains/{domain}/flow reports a terminal success status.
+  bool get isFlowCompleted => _flowCompleted;
+
+  /// Album bullets ready **and** domain flow `status` is completed/ok (backend contract).
+  bool get isFullyComplete => isAlbumAnalysisReady && isFlowCompleted;
+
+  /// Prefer [isFullyComplete]; kept for call sites that only checked album state.
+  bool get isAllProcessed => isFullyComplete;
+
+  /// Auto-advance when analysis + flow are done, or on timeout if album bullets are ready.
+  bool get shouldAutoNavigateToRoutine =>
+      isFullyComplete || (_timedOut && isAlbumAnalysisReady);
+
+  /// Hide the main spinner when done, failed, or timed out.
+  bool get showBusyIndicator =>
+      !_pollingStopped &&
+      !isFullyComplete &&
+      _analysisError == null &&
+      !_timedOut;
+
+  void startPolling() {
+    if (_pollLoopRunning) return;
+    _pollLoopRunning = true;
+    _startedAt = DateTime.now();
+    _pollingStopped = false;
+    _lastFlowPollAt = null;
+    _flowBackoffUntil = null;
+    unawaited(_runPollLoop());
+  }
+
+  Future<void> _runPollLoop() async {
+    try {
+      while (!_pollingStopped) {
+        if (_startedAt != null &&
+            DateTime.now().difference(_startedAt!) > _timeout) {
+          _timedOut = true;
+          _stopPolling();
+          notifyListeners();
+          return;
+        }
+
+        await _pollOnce();
+
+        if (_pollingStopped) return;
+
+        await Future<void>.delayed(_pollInterval);
+      }
+    } finally {
+      _pollLoopRunning = false;
+    }
+  }
+
+  Future<void> _pollOnce() async {
+    if (_pollingStopped) return;
+
+    final response = await _repo.getAlbumImages(domain: _domain);
+    if (_pollingStopped) return;
+
+    if (!response.success) {
+      _fetchError = response.message ?? 'Could not load analysis status';
+      notifyListeners();
+      return;
+    }
+
+    _fetchError = null;
+
+    // While backend is still pending, reveal one "analyzing" step at a time and
+    // move progress smoothly so UI doesn't stay at 0%.
+    if (_loadingStepIndex < _activeLoadingSteps.length) {
+      _loadingStepIndex++;
+    }
+    if (_simulatedProgress < 94) {
+      _simulatedProgress += 5;
+      if (_simulatedProgress > 94) _simulatedProgress = 94;
+    }
+
+    final list = response.data is List<AlbumImage>
+        ? response.data as List<AlbumImage>
+        : const <AlbumImage>[];
+
+    var processed = 0;
+    var interimReady = 0;
+    var failedMessage = _analysisError;
+    final collected = <String>[];
+
+    for (final view in _views) {
+      final latest = AlbumImage.pickNewestByIdForView(list, view);
+      if (latest == null) continue;
+
+      if (AlbumImage.isTerminalProcessedStatus(latest.status)) {
+        processed++;
+        collected.addAll(parseAnalysisResultBullets(latest.analysisResult));
+        continue;
+      }
+
+      if (AlbumImage.isFailureStatus(latest.status)) {
+        failedMessage ??=
+            latest.errorMessage ??
+            'Analysis failed for ${view[0].toUpperCase()}${view.substring(1)} view.';
+        continue;
+      }
+
+      final fallback = AlbumImage.pickNewestProcessedForView(list, view);
+      if (fallback != null) {
+        final interim = parseAnalysisResultBullets(fallback.analysisResult);
+        if (interim.isNotEmpty) {
+          interimReady++;
+          collected.addAll(interim);
+        }
+      }
+    }
+
+    _processedCount = processed;
+    _interimReadyViewCount = interimReady;
+    _analysisError = failedMessage;
+    _bullets = _dedupePreserveOrder(collected);
+
+    if (_analysisError != null) {
+      _stopPolling();
+      notifyListeners();
+      return;
+    }
+
+    await _refreshFlowCompletedFlag();
+    if (_pollingStopped) return;
+
+    // Album: keep polling until latest per view is processed **and** bullets parse.
+    // Flow: GET domains/{domain}/flow must report completed/ok as well.
+    if (isFullyComplete) {
+      _simulatedProgress = 100;
+      _stopPolling();
+      notifyListeners();
+      return;
+    }
+
+    notifyListeners();
+  }
+
+  static bool _isFlowStatusComplete(Map<String, dynamic> data) {
+    final s = data['status']?.toString().toLowerCase().trim() ?? '';
+    return s == 'completed' || s == 'ok';
+  }
+
+  Future<void> _refreshFlowCompletedFlag() async {
+    if (_pollingStopped) return;
+    final now = DateTime.now();
+    if (_flowBackoffUntil != null && now.isBefore(_flowBackoffUntil!)) {
+      return;
+    }
+    if (_lastFlowPollAt != null &&
+        now.difference(_lastFlowPollAt!) < _flowPollMinInterval) {
+      return;
+    }
+    _lastFlowPollAt = now;
+
+    try {
+      final res = await DomainQuestionsRepository.instance.getDomainFlow(
+        _domain,
+      );
+      if (_pollingStopped) return;
+
+      // Rate limits / transient overload: do **not** clear [_flowCompleted].
+      // Otherwise a prior `completed` (before album finished) is wiped by 429 and the UI never reaches 100%.
+      if (res.statusCode == 429 ||
+          res.statusCode == 503 ||
+          res.statusCode == 502) {
+        final secs = res.retryAfterSeconds ?? _flow429DefaultBackoffSeconds;
+        _flowBackoffUntil = DateTime.now().add(
+          Duration(seconds: secs.clamp(5, 120)),
+        );
+        return;
+      }
+
+      if (res.success && res.data is Map) {
+        _flowCompleted = _isFlowStatusComplete(
+          Map<String, dynamic>.from(res.data as Map),
+        );
+      } else {
+        _flowCompleted = false;
+      }
+    } catch (_) {
+      // Network errors: keep last known [_flowCompleted].
+    }
+  }
+
+  void _stopPolling() {
+    _pollingStopped = true;
+  }
+
+  @override
+  void dispose() {
+    _stopPolling();
+    super.dispose();
+  }
+}

@@ -27,7 +27,6 @@ class RecoveryStreakSection extends StatelessWidget {
             title: 'Current Streak',
             richTitle: '${streak.currentStreak}',
             richSubTitle: ' days',
-            titleSize: context.sp(16),
           ),
           SizedBox(height: context.sh(6)),
           Divider(color: AppColors.iconColor, thickness: 0.5),
@@ -44,7 +43,10 @@ class RecoveryStreakSection extends StatelessWidget {
               Expanded(
                 child: PlanContainer(
                   margin: context.paddingSymmetricR(horizontal: 4),
-                  padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
+                  padding: context.paddingSymmetricR(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
                   radius: BorderRadius.circular(context.radiusR(10)),
                   isSelected: false,
                   onTap: () {},
@@ -62,7 +64,10 @@ class RecoveryStreakSection extends StatelessWidget {
               Expanded(
                 child: PlanContainer(
                   margin: context.paddingSymmetricR(horizontal: 4),
-                  padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
+                  padding: context.paddingSymmetricR(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
                   radius: BorderRadius.circular(context.radiusR(10)),
                   isSelected: false,
                   onTap: () {},
