@@ -53,8 +53,35 @@ import 'package:looklabs/Features/ViewModel/work_out_progress_screen_view_model.
 import 'package:looklabs/features/ViewModel/question_answer_view_model.dart';
 import 'package:provider/provider.dart';
 
+/// [Image.network] reports decode/load errors here even when [Image.errorBuilder]
+/// handles them; offline / bad DNS spams the console. Suppress only that path.
+bool _isBenignImageResourceNetworkFailure(FlutterErrorDetails details) {
+  if (details.library != 'image resource service') return false;
+  final msg = details.exception.toString();
+  return msg.contains('Failed host lookup') ||
+      msg.contains('SocketException') ||
+      msg.contains('HandshakeException') ||
+      msg.contains('Connection refused') ||
+      msg.contains('Connection reset') ||
+      msg.contains('Connection timed out') ||
+      msg.contains('Network is unreachable') ||
+      msg.contains('ClientException');
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final previousFlutterOnError = FlutterError.onError;
+  FlutterError.onError = (FlutterErrorDetails details) {
+    if (_isBenignImageResourceNetworkFailure(details)) {
+      return;
+    }
+    if (previousFlutterOnError != null) {
+      previousFlutterOnError(details);
+    } else {
+      FlutterError.presentError(details);
+    }
+  };
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await loadEnv();

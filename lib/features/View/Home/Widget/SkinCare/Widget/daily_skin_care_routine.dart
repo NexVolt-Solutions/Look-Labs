@@ -7,6 +7,7 @@ import 'package:looklabs/Features/Widget/line_chart_widget.dart';
 import 'package:looklabs/Features/Widget/speed_meter_widget.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
+import 'package:looklabs/Features/Widget/routine_detail_nav_card.dart';
 import 'package:looklabs/Features/Widget/simple_check_box.dart';
 import 'package:looklabs/Features/Widget/text_and_indector_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
@@ -77,7 +78,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                 );
               },
             ),
-            if (dailySkinCareRoutineViewModel.loading)
+            if (dailySkinCareRoutineViewModel.showRoutineRefreshing)
               Padding(
                 padding: EdgeInsets.only(top: context.sh(12)),
                 child: LinearProgressIndicator(
@@ -573,62 +574,47 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
               index,
             ) {
               final card = dailySkinCareRoutineViewModel.extraCards[index];
-              final isSelected =
-                  dailySkinCareRoutineViewModel.selectedExtraIndex == index;
               final title = card.title.trim();
               final subtitle = card.subtitle.trim();
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (title.isNotEmpty)
-                    NormalText(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      titleText: title,
-                      titleSize: context.sp(18),
-                      titleWeight: FontWeight.w600,
-                      titleColor: AppColors.headingColor,
-                    ),
-                  PlanContainer(
-                    isSelected: isSelected,
-                    padding: context.paddingSymmetricR(
-                      horizontal: 19,
-                      vertical: 23.5,
-                    ),
-                    onTap: () {
-                      dailySkinCareRoutineViewModel.selectExtraCard(index);
-                      if (card.isRemediesNav) {
-                        Navigator.pushNamed(
-                          context,
-                          RoutesName.SkinHomeRemediesScreen,
-                        );
-                      } else {
-                        Navigator.pushNamed(
-                          context,
-                          RoutesName.SkinTopProductScreen,
-                        );
-                      }
-                    },
-                    child: Row(
-                      children: [
-                        SizedBox(width: context.sw(12)),
-                        Expanded(
-                          child: Text(
-                            subtitle.isNotEmpty ? subtitle : title,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: context.sp(16),
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.subHeadingColor,
-                            ),
-                          ),
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom:
+                      index < dailySkinCareRoutineViewModel.extraCards.length - 1
+                      ? context.sh(22)
+                      : 0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (title.isNotEmpty)
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: context.sp(16),
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.headingColor,
                         ),
-                        SizedBox(width: context.sw(8)),
-                        Icon(Icons.arrow_forward_ios, size: 24),
-                      ],
+                      ),
+                    if (title.isNotEmpty) SizedBox(height: context.sh(10)),
+                    RoutineDetailNavCard(
+                      label: subtitle.isNotEmpty ? subtitle : title,
+                      useRemediesGradientStyle: card.isRemediesNav,
+                      onTap: () {
+                        if (card.isRemediesNav) {
+                          Navigator.pushNamed(
+                            context,
+                            RoutesName.SkinHomeRemediesScreen,
+                          );
+                        } else {
+                          Navigator.pushNamed(
+                            context,
+                            RoutesName.SkinTopProductScreen,
+                          );
+                        }
+                      },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             }),
             SizedBox(height: context.sh(30)),

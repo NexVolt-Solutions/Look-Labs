@@ -160,10 +160,24 @@ class HairReviewScans extends StatelessWidget {
                   !viewModel.uploading &&
                   (!viewModel.needsDomainUpload || viewModel.allSlotsFilled),
               onTap: () async {
-                final ok = await viewModel.uploadAllDomainImages();
-                if (!context.mounted) return;
-                if (!ok) return;
-                Navigator.pushNamed(context, RoutesName.HairAnalyzingScreen);
+                var navigatedEarly = false;
+                final ok = await viewModel.uploadAllDomainImages(
+                  onAnyStandardSlotProcessing: () {
+                    if (!context.mounted || navigatedEarly) return;
+                    navigatedEarly = true;
+                    Navigator.pushNamed(
+                      context,
+                      RoutesName.HairAnalyzingScreen,
+                    );
+                  },
+                );
+                if (!context.mounted || !ok) return;
+                if (!navigatedEarly) {
+                  Navigator.pushNamed(
+                    context,
+                    RoutesName.HairAnalyzingScreen,
+                  );
+                }
               },
             ),
           ],

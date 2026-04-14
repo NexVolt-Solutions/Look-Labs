@@ -7,8 +7,27 @@ import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/ViewModel/daily_hair_care_routine_view_model.dart';
 import 'package:provider/provider.dart';
 
-class HairHomeRemedies extends StatelessWidget {
+class HairHomeRemedies extends StatefulWidget {
   const HairHomeRemedies({super.key});
+
+  @override
+  State<HairHomeRemedies> createState() => _HairHomeRemediesState();
+}
+
+class _HairHomeRemediesState extends State<HairHomeRemedies> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final vm = context.read<DailyHairCareRoutineViewModel>();
+      if (vm.hairRemedies.isEmpty &&
+          vm.hairSafetyTips.isEmpty &&
+          !vm.showRoutineRefreshing) {
+        vm.loadHaircareRoutine();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +58,7 @@ class HairHomeRemedies extends StatelessWidget {
             SizedBox(height: context.sh(20)),
             if (remedies.isEmpty)
               Text(
-                vm.loading
+                vm.showRoutineRefreshing
                     ? 'Loading…'
                     : 'No remedies in your plan yet. Open Daily Hair Routine from Home after completing hair questions.',
                 style: TextStyle(

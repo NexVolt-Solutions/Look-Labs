@@ -10,8 +10,25 @@ import 'package:looklabs/Features/ViewModel/daily_hair_care_routine_view_model.d
 import 'package:looklabs/Features/ViewModel/hair_top_product_view_model.dart';
 import 'package:provider/provider.dart';
 
-class HairTopProduct extends StatelessWidget {
+class HairTopProduct extends StatefulWidget {
   const HairTopProduct({super.key});
+
+  @override
+  State<HairTopProduct> createState() => _HairTopProductState();
+}
+
+class _HairTopProductState extends State<HairTopProduct> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final vm = context.read<DailyHairCareRoutineViewModel>();
+      if (vm.hairProducts.isEmpty && !vm.showRoutineRefreshing) {
+        vm.loadHaircareRoutine();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +70,7 @@ class HairTopProduct extends StatelessWidget {
                       child: Padding(
                         padding: context.paddingSymmetricR(horizontal: 24),
                         child: Text(
-                          routineVm.loading
+                          routineVm.showRoutineRefreshing
                               ? 'Loading…'
                               : 'No product recommendations yet. Complete your hair assessment from Home.',
                           textAlign: TextAlign.center,

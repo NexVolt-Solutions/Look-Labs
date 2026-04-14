@@ -203,13 +203,10 @@ class AppBarContainer extends StatelessWidget {
                 : showHeart
                 ? GestureDetector(
                     onTap: onHeartTap,
-                    child: SvgPicture.asset(
-                      AppAssets.appaleIcon,
-                      fit: BoxFit.scaleDown,
-                      placeholderBuilder: (context) => const Icon(
-                        Icons.favorite_border,
-                        color: Colors.white,
-                      ),
+                    child: Icon(
+                      Icons.favorite_border,
+                      size: context.sw(22),
+                      color: AppColors.headingColor,
                     ),
                   )
                 : const SizedBox(),

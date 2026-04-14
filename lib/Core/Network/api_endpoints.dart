@@ -139,7 +139,7 @@ class ApiEndpoints {
   /// POST images/upload – domain analysis uploads (multipart file + query: domain, view, image_type).
   static const String imagesUpload = 'images/upload';
 
-  /// GET images/album – user's album images. Optional query: domain, view, status (pending|processed|failed).
+  /// GET images/album – user's album images. Optional query: domain, view, status (processing|processed|failed).
   static const String imagesAlbum = 'images/album';
 
   // Legal (e.g. privacy policy, terms – optional, for dynamic content from backend)

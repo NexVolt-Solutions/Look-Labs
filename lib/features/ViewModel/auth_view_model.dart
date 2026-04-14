@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -28,6 +29,7 @@ class AuthViewModel extends ChangeNotifier {
   UserModel? _user;
   UserProfileResponse? _profile;
   bool _isSelected = false;
+
   /// From last sign-in response: true = new user (show onboarding), false = returning (go to Home, do NOT create session).
   /// Default false when unknown – prefer skipping onboarding to avoid duplicate sessions for returning users.
   bool _isNewUser = false;
@@ -67,7 +69,9 @@ class AuthViewModel extends ChangeNotifier {
 
       final GoogleSignInAuthentication auth = await googleUser.authentication;
       final idToken = auth.idToken;
+      log('$idToken', name: 'AuthViewModel idToken');
       final accessToken = auth.accessToken;
+      log('$accessToken', name: 'AuthViewModel accessToken');
 
       if (idToken == null) {
         _errorMessage =
@@ -96,7 +100,9 @@ class AuthViewModel extends ChangeNotifier {
         _user = _parseUser(response.data);
         _isNewUser = _extractIsNewUser(data);
         if (kDebugMode) {
-          debugPrint('[Auth] is_new_user=$_isNewUser → ${_isNewUser ? "create session, onboarding" : "skip onboarding, go Home"}');
+          debugPrint(
+            '[Auth] is_new_user=$_isNewUser → ${_isNewUser ? "create session, onboarding" : "skip onboarding, go Home"}',
+          );
         }
         // Link is called in auth_screen after createAnonymousSession() for new users.
         if (!_isNewUser) {
@@ -146,6 +152,7 @@ class AuthViewModel extends ChangeNotifier {
       if (s == 'false' || s == '0') return false;
       return null;
     }
+
     final top = from(data['is_new_user']);
     if (top != null) return top;
     final nested = data['data'];
@@ -181,7 +188,10 @@ class AuthViewModel extends ChangeNotifier {
         _applyProfile(response.data as UserProfileResponse);
         _errorMessage = null;
       } else {
-        _errorMessage = ApiErrorHandler.userMessage(response, fallback: 'Could not load profile');
+        _errorMessage = ApiErrorHandler.userMessage(
+          response,
+          fallback: 'Could not load profile',
+        );
       }
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');

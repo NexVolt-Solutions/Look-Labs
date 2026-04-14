@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:looklabs/Core/Network/models/album_image.dart';
 import 'package:looklabs/Core/Network/models/workout_result_response.dart'
@@ -23,6 +25,10 @@ class SkincareRoutineExtraCard {
 class DailySkinCareRoutineViewModel extends ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
+
+  bool _flowPollInProgress = false;
+  int? _flowPollOwnerSeq;
+  bool get showRoutineRefreshing => _loading || _flowPollInProgress;
 
   String? _loadError;
   String? get loadError => _loadError;
@@ -76,10 +82,84 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
   int _selectedExtraIndex = -1;
   int get selectedExtraIndex => _selectedExtraIndex;
 
+  List<Map<String, dynamic>> _skincareRemedies = [];
+  List<Map<String, dynamic>> get skincareRemedies =>
+      List.unmodifiable(_skincareRemedies);
+
+  List<String> _skincareSafetyTips = [];
+  List<String> get skincareSafetyTips =>
+      List.unmodifiable(_skincareSafetyTips);
+
+  List<Map<String, dynamic>> _skincareProducts = [];
+  List<Map<String, dynamic>> get skincareProducts =>
+      List.unmodifiable(_skincareProducts);
+
   static const List<String> _slotViews = ['front', 'back', 'right', 'left'];
 
+  /// Bumped on every [loadSkincareRoutine] so an older in-flight request cannot
+  /// overwrite state after a rescan / new navigation (singleton VM at app root).
+  int _loadSeq = 0;
+
+  static bool _flowStatusIsProcessing(String? s) {
+    final v = s?.toLowerCase().trim() ?? '';
+    return v == 'processing' || v == 'pending' || v == 'in_progress';
+  }
+
+  static bool _flowStatusIsComplete(String? s) {
+    final v = s?.toLowerCase().trim() ?? '';
+    return v == 'completed' || v == 'ok';
+  }
+
+  static const Duration _flowPollInterval = Duration(seconds: 3);
+  static const int _flowPollMaxRounds = 45;
+
+  Future<void> _pollUntilSkincareFlowCompleted(int seq) async {
+    if (seq != _loadSeq) return;
+    _flowPollOwnerSeq = seq;
+    _flowPollInProgress = true;
+    notifyListeners();
+    const domain = 'skincare';
+    try {
+      for (var i = 0; i < _flowPollMaxRounds; i++) {
+        await Future<void>.delayed(_flowPollInterval);
+        if (seq != _loadSeq) return;
+        final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
+          domain,
+        );
+        if (seq != _loadSeq) return;
+        if (flowRes.success && flowRes.data is Map) {
+          final map = Map<String, dynamic>.from(flowRes.data as Map);
+          if (kDebugMode) {
+            debugPrint(
+              '[SkincareRoutine] poll flow status=${map['status']} keys=${map.keys.join(", ")}',
+            );
+          }
+          final st = map['status']?.toString() ?? '';
+          if (_flowStatusIsComplete(st)) {
+            _applyFlowMap(map);
+            return;
+          }
+          final sl = st.toLowerCase();
+          if (sl == 'failed' || sl == 'error') {
+            _loadError =
+                flowRes.message ?? 'Routine generation failed. Tap Retry.';
+            return;
+          }
+        }
+      }
+      _loadError = 'Routine is still updating. Tap Retry to refresh.';
+    } finally {
+      if (_flowPollOwnerSeq == seq) {
+        _flowPollInProgress = false;
+        _flowPollOwnerSeq = null;
+        notifyListeners();
+      }
+    }
+  }
+
   Future<void> loadSkincareRoutine() async {
-    if (_loading) return;
+    final seq = ++_loadSeq;
+    _flowPollInProgress = false;
     _loading = true;
     _loadError = null;
     notifyListeners();
@@ -90,6 +170,8 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
       final albumRes = await ImageUploadRepository.instance.getAlbumImages(
         domain: 'skincare',
       );
+      if (seq != _loadSeq) return;
+
       if (albumRes.success && albumRes.data is List<AlbumImage>) {
         _applyAlbumScans(albumRes.data as List<AlbumImage>);
       }
@@ -97,6 +179,8 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
       final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
         'skincare',
       );
+      if (seq != _loadSeq) return;
+
       if (flowRes.success && flowRes.data is Map) {
         final map = Map<String, dynamic>.from(flowRes.data as Map);
         if (kDebugMode) {
@@ -105,12 +189,17 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
           );
         }
         _applyFlowMap(map);
+        if (_flowStatusIsProcessing(map['status']?.toString())) {
+          unawaited(_pollUntilSkincareFlowCompleted(seq));
+        }
       } else {
         _loadError = flowRes.message ?? 'Could not load domain flow.';
       }
     } finally {
-      _loading = false;
-      notifyListeners();
+      if (seq == _loadSeq) {
+        _loading = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -129,6 +218,9 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
     _concernsMeterHeading = null;
     _extraCards = [];
     _selectedExtraIndex = -1;
+    _skincareRemedies = [];
+    _skincareSafetyTips = [];
+    _skincareProducts = [];
   }
 
   void toggleTodayCheck(int index) {
@@ -156,9 +248,63 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
     final msg = data['ai_message']?.toString().trim();
     _aiMessage = (msg != null && msg.isNotEmpty) ? msg : null;
 
-    _applyIndicatorPages(data);
-    _applyRoutines(data);
+    if (!_isTransitionalProcessingSnapshot(data)) {
+      _parseRemediesAndProducts(data);
+      _applyIndicatorPages(data);
+      _applyRoutines(data);
+    }
     _applyExtraCards(data);
+  }
+
+  bool _isTransitionalProcessingSnapshot(Map<String, dynamic> data) {
+    if (!_flowStatusIsProcessing(data['status']?.toString())) return false;
+    const keys = <String>[
+      'ai_routine',
+      'ai_remedies',
+      'ai_products',
+      'ai_attributes',
+      'ai_health',
+      'ai_concerns',
+      'ai_exercises',
+    ];
+    for (final k in keys) {
+      if (data[k] != null) return false;
+    }
+    return true;
+  }
+
+  void _parseRemediesAndProducts(Map<String, dynamic> data) {
+    if (data.containsKey('ai_remedies')) {
+      _skincareRemedies = [];
+      _skincareSafetyTips = [];
+      final remedies = data['ai_remedies'];
+      if (remedies is Map) {
+        final m = Map<String, dynamic>.from(remedies);
+        final list = m['remedies'];
+        if (list is List) {
+          for (final e in list) {
+            if (e is Map) _skincareRemedies.add(Map<String, dynamic>.from(e));
+          }
+        }
+        final tips = m['safety_tips'];
+        if (tips is List) {
+          _skincareSafetyTips = tips
+              .map((e) => e.toString().trim())
+              .where((s) => s.isNotEmpty)
+              .toList();
+        }
+      }
+    }
+
+    if (data.containsKey('ai_products')) {
+      _skincareProducts = [];
+      final products = data['ai_products'];
+      if (products is List) {
+        for (final raw in products) {
+          if (raw is Map) _skincareProducts.add(Map<String, dynamic>.from(raw));
+        }
+      }
+    }
   }
 
   void _applyIndicatorPages(Map<String, dynamic> data) {
@@ -265,64 +411,24 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
     _extraCards = [];
     _selectedExtraIndex = -1;
 
-    final remedies = data['ai_remedies'];
-    if (remedies is Map && remedies.isNotEmpty) {
-      final m = Map<String, dynamic>.from(remedies);
-      final title = _firstNonEmptyString(m, const ['title', 'name']) ?? '';
-      final subtitle =
-          _firstNonEmptyString(m, const [
-            'subtitle',
-            'summary',
-            'description',
-          ]) ??
-          '';
-      if (title.isNotEmpty || subtitle.isNotEmpty) {
-        _extraCards.add(
-          SkincareRoutineExtraCard(
-            title: title,
-            subtitle: subtitle,
-            isRemediesNav: true,
-          ),
-        );
-      }
+    if (_skincareRemedies.isNotEmpty || _skincareSafetyTips.isNotEmpty) {
+      _extraCards.add(
+        const SkincareRoutineExtraCard(
+          title: 'Home Remedies',
+          subtitle: 'Home Remedies',
+          isRemediesNav: true,
+        ),
+      );
     }
-
-    final products = data['ai_products'];
-    if (products is List) {
-      for (final raw in products) {
-        if (raw is! Map) continue;
-        final m = Map<String, dynamic>.from(raw);
-        final title =
-            _firstNonEmptyString(m, const ['name', 'title', 'product_name']) ??
-            '';
-        final subtitle =
-            _firstNonEmptyString(m, const [
-              'subtitle',
-              'description',
-              'brand',
-            ]) ??
-            '';
-        if (title.isEmpty && subtitle.isEmpty) continue;
-        _extraCards.add(
-          SkincareRoutineExtraCard(
-            title: title,
-            subtitle: subtitle,
-            isRemediesNav: false,
-          ),
-        );
-      }
+    if (_skincareProducts.isNotEmpty) {
+      _extraCards.add(
+        const SkincareRoutineExtraCard(
+          title: 'Top Products',
+          subtitle: 'Top Products Picks For You',
+          isRemediesNav: false,
+        ),
+      );
     }
-  }
-
-  static String? _firstNonEmptyString(
-    Map<String, dynamic> m,
-    List<String> keys,
-  ) {
-    for (final k in keys) {
-      final v = m[k]?.toString().trim();
-      if (v != null && v.isNotEmpty) return v;
-    }
-    return null;
   }
 
   void _parseFlowProgress(dynamic p) {
@@ -500,5 +606,33 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
       return _indicatorSectionTitles[pageIndex].trim();
     }
     return '';
+  }
+
+  /// UI row for [SkinTopProduct] / [ProductWidget] (tags = API `tags`).
+  static Map<String, dynamic> productRowForListUi(
+    Map<String, dynamic> apiProduct,
+  ) {
+    final name = (apiProduct['name'] ?? apiProduct['title'] ?? '')
+        .toString()
+        .trim();
+    final overview = (apiProduct['overview'] ?? apiProduct['description'] ?? '')
+        .toString()
+        .trim();
+    final tod = (apiProduct['time_of_day'] ?? '').toString();
+    final tagsRaw = apiProduct['tags'];
+    final tags = <String>[];
+    if (tagsRaw is List) {
+      for (final t in tagsRaw) {
+        final s = t.toString().trim();
+        if (s.isNotEmpty) tags.add(s);
+      }
+    }
+    return {
+      'title': name,
+      'description': overview,
+      'time_of_day': tod,
+      'tags': tags,
+      'raw': apiProduct,
+    };
   }
 }

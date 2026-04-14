@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/linear_slider_widget.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
+import 'package:looklabs/Features/ViewModel/daily_hair_care_routine_view_model.dart';
 import 'package:looklabs/Features/ViewModel/skin_analyzing_view_model.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/app_text.dart';
@@ -43,7 +44,13 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
     final vm = _vm ?? context.read<SkinAnalyzingViewModel>();
     if (!vm.shouldAutoNavigateToRoutine) return;
     _navigated = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      try {
+        await context
+            .read<DailyHairCareRoutineViewModel>()
+            .loadHaircareRoutine();
+      } catch (_) {}
       if (!mounted) return;
       Navigator.pushReplacementNamed(
         context,
@@ -94,6 +101,18 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
                 showPercentage: false,
               ),
             ),
+            if (vm.showAlbumPendingSyncHint) ...[
+              SizedBox(height: context.sh(12)),
+              Text(
+                AppText.analyzingAlbumPendingHint,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: context.sp(11),
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.subHeadingColor,
+                ),
+              ),
+            ],
             if (vm.fetchError != null) ...[
               SizedBox(height: context.sh(16)),
               Text(

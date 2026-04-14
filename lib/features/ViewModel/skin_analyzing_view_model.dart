@@ -6,6 +6,12 @@ import 'package:looklabs/Core/Network/models/album_image.dart';
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/image_upload_repository.dart';
 
+// Album contract (haircare / skincare / etc.): new rows often return `status: "processing"`
+// immediately after upload (not `pending`). Treat `processing` like in-flight analysis.
+// UI: show the analyzing screen as soon as any standard-slot image is `processing`
+// (see [ReviewScansViewModel.uploadAllDomainImages] early-navigation callback).
+// Bullet list: **only** from GET album `analysis_result` (prefer `points`); no static copy.
+
 /// Parses [AlbumImage.analysisResult] into bullet lines (prefers `points` when present).
 List<String> parseAnalysisResultBullets(dynamic raw) {
   if (raw == null) return [];
@@ -77,12 +83,25 @@ List<String> _dedupePreserveOrder(List<String> items) {
   return out;
 }
 
-/// Polls [GET images/album?domain=…] (~3s). Bullets come only from each image’s
-/// [AlbumImage.analysisResult] when `status` is processed (e.g. `points`).
+/// Lines from album `analysis_result` for the analyzing screen — only server data (no static copy).
+/// Uses `analysis_result.points` when present; otherwise a bare list, else nothing.
+List<String> parseAlbumAnalysisPoints(dynamic analysisResult) {
+  if (analysisResult == null) return [];
+  if (analysisResult is Map) {
+    final p = analysisResult['points'];
+    if (p != null) return parseAnalysisResultBullets(p);
+    return [];
+  }
+  if (analysisResult is List) {
+    return parseAnalysisResultBullets(analysisResult);
+  }
+  return [];
+}
+
 class SkinAnalyzingViewModel extends ChangeNotifier {
   SkinAnalyzingViewModel({
     String domain = 'skincare',
-    Duration pollInterval = const Duration(seconds: 3),
+    Duration pollInterval = const Duration(seconds: 2),
     Duration timeout = const Duration(minutes: 2),
   }) : _domain = domain,
        _pollInterval = pollInterval,
@@ -101,12 +120,10 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
   bool _pollLoopRunning = false;
 
   List<String> _bullets = [];
-  int _loadingStepIndex = 1;
-  int _simulatedProgress = 5;
   int _processedCount = 0;
 
-  /// Views whose newest row is still pending but an older processed row has bullets (for staging only).
-  int _interimReadyViewCount = 0;
+  /// Views whose newest album row exists but is not yet terminal-processed (`processing`, etc.).
+  int _queuedViewCount = 0;
   String? _fetchError;
   String? _analysisError;
   bool _timedOut = false;
@@ -119,84 +136,42 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
   DateTime? _lastFlowPollAt;
   DateTime? _flowBackoffUntil;
 
-  static const Duration _flowPollMinInterval = Duration(seconds: 10);
+  /// Keep in line with [_pollInterval] so `/flow` can flip to `completed` soon after album does.
+  static const Duration _flowPollMinInterval = Duration(seconds: 3);
   static const int _flow429DefaultBackoffSeconds = 50;
 
   List<String> get analysisBullets => List.unmodifiable(_bullets);
 
-  static const List<String> _skinLoadingSteps = [
-    'Scanning skin texture and pore visibility',
-    'Detecting hydration and oil balance patterns',
-    'Checking acne, redness, and uneven tone',
-    'Preparing personalized skin care insights',
-    'Finalizing your routine recommendations',
-  ];
+  /// Bullet list built only from latest album rows’ `analysis_result` (see [_pollOnce]).
+  List<String> get displayBullets => analysisBullets;
 
-  static const List<String> _hairLoadingSteps = [
-    'Scanning hair texture and density patterns',
-    'Assessing scalp health and moisture balance',
-    'Reviewing shedding, hairline, and volume signals',
-    'Preparing personalized hair care insights',
-    'Finalizing your routine recommendations',
-  ];
+  List<String> get stagedBullets => analysisBullets;
 
-  List<String> get _activeLoadingSteps {
-    switch (_domain) {
-      case 'haircare':
-        return _hairLoadingSteps;
-      default:
-        return _skinLoadingSteps;
-    }
-  }
+  /// Credits both finished rows and in-flight `processing` rows so the bar does not snap to 0%
+  /// during rescans when every view’s **newest** row is still in the pipeline (strict `processed/n`
+  /// would be 0 while all four images are analyzing — see [_pollOnce]).
+  static const double _pipelineSlotWeight = 0.5;
 
-  /// Shown while album has no analysis lines yet; step count tracks the bar (simulated %).
-  List<String> get loadingBullets {
-    final steps = _activeLoadingSteps;
-    if (steps.isEmpty) return [];
-    final n = steps.length;
-    final byPoll = _loadingStepIndex.clamp(1, n);
-    final byProgress =
-        (progressPercent / 100 * n).ceil().clamp(1, n);
-    final k = byProgress > byPoll ? byProgress : byPoll;
-    return steps.take(k).toList(growable: false);
-  }
-
-  /// Show real AI bullets when available; otherwise show progressive loading steps.
-  List<String> get displayBullets =>
-      _bullets.isNotEmpty ? analysisBullets : loadingBullets;
-
-  /// Reveal bullets progressively with the loading/progress state.
-  List<String> get stagedBullets {
-    if (_bullets.isEmpty) return loadingBullets;
-    if (isFullyComplete) return analysisBullets;
-
-    // While still processing, reveal a subset tied to album views and to [progressPercent]
-    // so staged lines stay in sync with the progress bar (simulated + real %).
-    final total = _bullets.length;
-    final albumFactor = (_processedCount + _interimReadyViewCount).clamp(
-      0,
-      _views.length,
-    );
-    final progressFactor =
-        ((progressPercent / 100) * _views.length).round().clamp(
-      0,
-      _views.length,
-    );
-    final factor =
-        albumFactor > progressFactor ? albumFactor : progressFactor;
-    final count = factor == 0
-        ? 1
-        : ((factor * total) / _views.length).ceil().clamp(1, total);
-    return _bullets.take(count).toList(growable: false);
-  }
-
-  /// 0–100: real view progress + simulated filler, capped below 100 until [isFullyComplete]
-  /// so the bar never shows 100% while the spinner is still on.
+  /// Stays below 100 until both album bullets and `/flow` report completion (no timeout shortcut).
   int get progressPercent {
     if (isFullyComplete) return 100;
-    final real = (_processedCount * 100 / _views.length).round().clamp(0, 100);
-    final sim = _simulatedProgress.clamp(0, 94);
-    return (real > sim ? real : sim).clamp(0, 99);
+    final n = _views.length;
+    if (n == 0) return 0;
+    final frac =
+        (_processedCount + _pipelineSlotWeight * _queuedViewCount) / n;
+    final linear = (frac * 100).round().clamp(0, 100);
+    final allLatestTerminal =
+        _queuedViewCount == 0 && _processedCount >= n;
+    if (!allLatestTerminal) {
+      return linear.clamp(0, 99);
+    }
+    if (!isAlbumAnalysisReady) {
+      return linear.clamp(90, 99);
+    }
+    if (!isFlowCompleted) {
+      return linear.clamp(95, 99);
+    }
+    return 99;
   }
 
   int get processedViewCount => _processedCount;
@@ -223,9 +198,8 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
   /// Prefer [isFullyComplete]; kept for call sites that only checked album state.
   bool get isAllProcessed => isFullyComplete;
 
-  /// Auto-advance when analysis + flow are done, or on timeout if album bullets are ready.
-  bool get shouldAutoNavigateToRoutine =>
-      isFullyComplete || (_timedOut && isAlbumAnalysisReady);
+  /// Auto-advance only when album + `/flow` both agree (avoids leaving early at ~35% or on timeout).
+  bool get shouldAutoNavigateToRoutine => isFullyComplete;
 
   /// Hide the main spinner when done, failed, or timed out.
   bool get showBusyIndicator =>
@@ -234,13 +208,35 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
       _analysisError == null &&
       !_timedOut;
 
+  /// Under the progress bar while rows are still updating — including when some angles already
+  /// show points but others are still `processing` (avoids a silent gap between old bullets clearing
+  /// and the new batch finishing).
+  bool get showAlbumPendingSyncHint =>
+      !_pollingStopped &&
+      !isFullyComplete &&
+      _analysisError == null &&
+      _fetchError == null &&
+      (_bullets.isEmpty || _queuedViewCount > 0);
+
+  /// Clears UI + flow state so a new scan does not reuse a previous "completed" `/flow` snapshot.
+  void resetForNewScan() {
+    _bullets = [];
+    _processedCount = 0;
+    _queuedViewCount = 0;
+    _fetchError = null;
+    _analysisError = null;
+    _timedOut = false;
+    _flowCompleted = false;
+    _lastFlowPollAt = null;
+    _flowBackoffUntil = null;
+  }
+
   void startPolling() {
     if (_pollLoopRunning) return;
+    resetForNewScan();
     _pollLoopRunning = true;
     _startedAt = DateTime.now();
     _pollingStopped = false;
-    _lastFlowPollAt = null;
-    _flowBackoffUntil = null;
     unawaited(_runPollLoop());
   }
 
@@ -280,22 +276,12 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
 
     _fetchError = null;
 
-    // While backend is still pending, reveal one "analyzing" step at a time and
-    // move progress smoothly so UI doesn't stay at 0%.
-    if (_loadingStepIndex < _activeLoadingSteps.length) {
-      _loadingStepIndex++;
-    }
-    if (_simulatedProgress < 94) {
-      _simulatedProgress += 5;
-      if (_simulatedProgress > 94) _simulatedProgress = 94;
-    }
-
     final list = response.data is List<AlbumImage>
         ? response.data as List<AlbumImage>
         : const <AlbumImage>[];
 
     var processed = 0;
-    var interimReady = 0;
+    var queued = 0;
     var failedMessage = _analysisError;
     final collected = <String>[];
 
@@ -305,7 +291,7 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
 
       if (AlbumImage.isTerminalProcessedStatus(latest.status)) {
         processed++;
-        collected.addAll(parseAnalysisResultBullets(latest.analysisResult));
+        collected.addAll(parseAlbumAnalysisPoints(latest.analysisResult));
         continue;
       }
 
@@ -316,18 +302,13 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
         continue;
       }
 
-      final fallback = AlbumImage.pickNewestProcessedForView(list, view);
-      if (fallback != null) {
-        final interim = parseAnalysisResultBullets(fallback.analysisResult);
-        if (interim.isNotEmpty) {
-          interimReady++;
-          collected.addAll(interim);
-        }
-      }
+      // Newest row still in the pipeline (`processing`, etc.) — do **not** merge older
+      // processed rows into [_bullets] / readiness (avoids stale points during rescans).
+      queued++;
     }
 
     _processedCount = processed;
-    _interimReadyViewCount = interimReady;
+    _queuedViewCount = queued;
     _analysisError = failedMessage;
     _bullets = _dedupePreserveOrder(collected);
 
@@ -337,13 +318,20 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
       return;
     }
 
-    await _refreshFlowCompletedFlag();
+    // New uploads still processing: backend may clear `/flow` cache and re-run AI — do not trust an
+    // earlier `completed` until this batch finishes and we poll `/flow` again.
+    if (queued > 0) {
+      _flowCompleted = false;
+    }
+
+    final urgentFlowPoll =
+        processed >= _views.length && queued == 0 && _bullets.isNotEmpty;
+    await _refreshFlowCompletedFlag(urgent: urgentFlowPoll);
     if (_pollingStopped) return;
 
     // Album: keep polling until latest per view is processed **and** bullets parse.
     // Flow: GET domains/{domain}/flow must report completed/ok as well.
     if (isFullyComplete) {
-      _simulatedProgress = 100;
       _stopPolling();
       notifyListeners();
       return;
@@ -357,13 +345,14 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
     return s == 'completed' || s == 'ok';
   }
 
-  Future<void> _refreshFlowCompletedFlag() async {
+  Future<void> _refreshFlowCompletedFlag({bool urgent = false}) async {
     if (_pollingStopped) return;
     final now = DateTime.now();
     if (_flowBackoffUntil != null && now.isBefore(_flowBackoffUntil!)) {
       return;
     }
-    if (_lastFlowPollAt != null &&
+    if (!urgent &&
+        _lastFlowPollAt != null &&
         now.difference(_lastFlowPollAt!) < _flowPollMinInterval) {
       return;
     }

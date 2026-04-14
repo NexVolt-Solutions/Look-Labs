@@ -7,9 +7,29 @@ class AlbumImage {
         s == 'done';
   }
 
+  /// Image analysis not finished yet (API may use `processing` immediately after upload).
+  static bool isAnalysisPipelineStatus(String? status) {
+    final s = (status ?? '').toLowerCase();
+    return s == 'pending' ||
+        s == 'processing' ||
+        s == 'in_progress' ||
+        s == 'queued';
+  }
+
   static bool isFailureStatus(String? status) {
     final s = (status ?? '').toLowerCase();
     return s == 'failed' || s == 'error';
+  }
+
+  /// True when any [standardSlotViewKeys] view’s newest row is in [isAnalysisPipelineStatus].
+  static bool anyStandardSlotInAnalysisPipeline(List<AlbumImage> images) {
+    for (final v in standardSlotViewKeys) {
+      final latest = pickNewestByIdForView(images, v);
+      if (latest != null && isAnalysisPipelineStatus(latest.status)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   static List<AlbumImage> _imagesForView(
@@ -31,7 +51,7 @@ class AlbumImage {
     return matches.first;
   }
 
-  /// Newest terminal-processed row for this view (stable preview while a newer row is pending).
+  /// Newest terminal-processed row for this view (stable preview while a newer row is processing).
   static AlbumImage? pickNewestProcessedForView(
     List<AlbumImage> images,
     String viewKey,

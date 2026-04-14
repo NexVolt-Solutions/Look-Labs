@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:looklabs/Core/Network/api_endpoints.dart';
 import 'package:looklabs/Core/Network/api_response.dart';
@@ -170,7 +169,7 @@ class ImageUploadRepository {
   }
 
   /// GET images/album – fetch user's album images.
-  /// Optional [domain], [view], [status] (pending|processed|failed).
+  /// Optional [domain], [view], [status] (processing|processed|failed, etc.).
   Future<ApiResponse> getAlbumImages({
     String? domain,
     String? view,

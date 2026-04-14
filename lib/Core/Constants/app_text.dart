@@ -126,6 +126,9 @@ class AppText {
       'AI is studying your body structure, proportions, and skin tone to prepare your personalized fashion routine.';
   static const String aiStudyingHair =
       'AI is studying your hairs and preparing your personalized routine.';
+  /// Shown under the progress bar while album rows are still processing (placeholders until all four are processed).
+  static const String analyzingAlbumPendingHint =
+      'Your scan results will appear here as each photo finishes processing.';
   static const String aiStudyingSkin =
       'AI is studying your hairs and preparing your personalized routine.';
   static const String aiStudyingFace =

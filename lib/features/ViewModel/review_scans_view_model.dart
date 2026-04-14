@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Network/api_response.dart';
+import 'package:looklabs/Core/Network/models/album_image.dart';
 import 'package:looklabs/Repository/image_upload_repository.dart';
 
 /// Shared step index + optional domain uploads (skincare after API questions).
@@ -93,7 +94,13 @@ class ReviewScansViewModel extends ChangeNotifier {
   }
 
   /// Upload all four images via POST …/images/upload?domain=&view= (front|back|right|left).
-  Future<bool> uploadAllDomainImages() async {
+  ///
+  /// [onAnyStandardSlotProcessing] runs at most once: after a successful upload, when
+  /// GET album shows any standard-slot newest row in `processing` (etc.), so the app
+  /// can open the analyzing screen while remaining uploads finish.
+  Future<bool> uploadAllDomainImages({
+    void Function()? onAnyStandardSlotProcessing,
+  }) async {
     if (!needsDomainUpload) return true;
     if (!allSlotsFilled) {
       _uploadError = 'Please add a photo for each angle.';
@@ -106,6 +113,7 @@ class ReviewScansViewModel extends ChangeNotifier {
     notifyListeners();
 
     final domain = _uploadDomain!;
+    var firedEarlyNav = false;
     for (var i = 0; i < _imagePaths.length; i++) {
       final path = _imagePaths[i]!;
       final view = slotViewKeys[i];
@@ -122,6 +130,19 @@ class ReviewScansViewModel extends ChangeNotifier {
         );
         notifyListeners();
         return false;
+      }
+
+      if (onAnyStandardSlotProcessing != null && !firedEarlyNav) {
+        final albumRes = await ImageUploadRepository.instance.getAlbumImages(
+          domain: domain,
+        );
+        if (albumRes.success && albumRes.data is List<AlbumImage>) {
+          final list = albumRes.data as List<AlbumImage>;
+          if (AlbumImage.anyStandardSlotInAnalysisPipeline(list)) {
+            firedEarlyNav = true;
+            onAnyStandardSlotProcessing();
+          }
+        }
       }
     }
 

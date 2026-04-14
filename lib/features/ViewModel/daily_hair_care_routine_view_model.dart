@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:looklabs/Core/Network/models/album_image.dart';
 import 'package:looklabs/Core/Network/models/workout_result_response.dart'
@@ -5,7 +7,6 @@ import 'package:looklabs/Core/Network/models/workout_result_response.dart'
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/image_upload_repository.dart';
 
-/// One optional row under routines (from `ai_remedies` / `ai_products` on domain flow).
 class HairRoutineExtraCard {
   const HairRoutineExtraCard({
     required this.title,
@@ -16,13 +17,17 @@ class HairRoutineExtraCard {
   final String title;
   final String subtitle;
 
-  /// `true` → [RoutesName.HairHomeRemediesScreen], `false` → [RoutesName.HairTopProductScreen].
   final bool isRemediesNav;
 }
 
 class DailyHairCareRoutineViewModel extends ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
+
+  /// True while [loadHaircareRoutine] runs or we are polling `/flow` after a `processing` response.
+  bool _flowPollInProgress = false;
+  int? _flowPollOwnerSeq;
+  bool get showRoutineRefreshing => _loading || _flowPollInProgress;
 
   String? _loadError;
   String? get loadError => _loadError;
@@ -91,18 +96,71 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
 
   static const String _domain = 'haircare';
 
-  static bool _isCompletedFlowMap(Map<String, dynamic> data) {
-    final status = data['status']?.toString().toLowerCase().trim() ?? '';
-    if (status == 'completed') return true;
-    if (data['ai_attributes'] != null || data['ai_routine'] != null) {
-      return true;
-    }
-    return false;
+  /// Bumped on every [loadHaircareRoutine] so an older in-flight request cannot
+  /// overwrite state after a rescan / new navigation (singleton VM at app root).
+  int _loadSeq = 0;
+
+  static bool _flowStatusIsProcessing(String? s) {
+    final v = s?.toLowerCase().trim() ?? '';
+    return v == 'processing' || v == 'pending' || v == 'in_progress';
   }
 
-  /// Loads album + domain flow. When [prefetched] is a completed flow map (e.g. from navigation), applies it and still refreshes album.
-  Future<void> loadHaircareRoutine({Map<String, dynamic>? prefetched}) async {
-    if (_loading) return;
+  static bool _flowStatusIsComplete(String? s) {
+    final v = s?.toLowerCase().trim() ?? '';
+    return v == 'completed' || v == 'ok';
+  }
+
+  static const Duration _flowPollInterval = Duration(seconds: 3);
+  static const int _flowPollMaxRounds = 45;
+
+  Future<void> _pollUntilHaircareFlowCompleted(int seq) async {
+    if (seq != _loadSeq) return;
+    _flowPollOwnerSeq = seq;
+    _flowPollInProgress = true;
+    notifyListeners();
+    try {
+      for (var i = 0; i < _flowPollMaxRounds; i++) {
+        await Future<void>.delayed(_flowPollInterval);
+        if (seq != _loadSeq) return;
+        final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
+          _domain,
+        );
+        if (seq != _loadSeq) return;
+        if (flowRes.success && flowRes.data is Map) {
+          final map = Map<String, dynamic>.from(flowRes.data as Map);
+          if (kDebugMode) {
+            debugPrint(
+              '[HaircareRoutine] poll flow status=${map['status']} keys=${map.keys.join(", ")}',
+            );
+          }
+          final st = map['status']?.toString() ?? '';
+          if (_flowStatusIsComplete(st)) {
+            _applyFlowMap(map);
+            return;
+          }
+          final sl = st.toLowerCase();
+          if (sl == 'failed' || sl == 'error') {
+            _loadError =
+                flowRes.message ?? 'Routine generation failed. Tap Retry.';
+            return;
+          }
+        }
+      }
+      _loadError = 'Routine is still updating. Tap Retry to refresh.';
+    } finally {
+      if (_flowPollOwnerSeq == seq) {
+        _flowPollInProgress = false;
+        _flowPollOwnerSeq = null;
+        notifyListeners();
+      }
+    }
+  }
+
+  /// Loads album then **always** GET `domains/{domain}/flow` so the UI matches the server after
+  /// new scans (prefetch is ignored for data to avoid stale cached flow).
+  Future<void> loadHaircareRoutine() async {
+    final seq = ++_loadSeq;
+    _flowPollInProgress = false;
     _loading = true;
     _loadError = null;
     notifyListeners();
@@ -113,23 +171,17 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
       final albumRes = await ImageUploadRepository.instance.getAlbumImages(
         domain: _domain,
       );
+      if (seq != _loadSeq) return;
+
       if (albumRes.success && albumRes.data is List<AlbumImage>) {
         _applyAlbumScans(albumRes.data as List<AlbumImage>);
-      }
-
-      if (prefetched != null &&
-          prefetched.isNotEmpty &&
-          _isCompletedFlowMap(prefetched)) {
-        _applyFlowMap(Map<String, dynamic>.from(prefetched));
-        if (kDebugMode) {
-          debugPrint('[HaircareRoutine] applied prefetched completed flow');
-        }
-        return;
       }
 
       final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
         _domain,
       );
+      if (seq != _loadSeq) return;
+
       if (flowRes.success && flowRes.data is Map) {
         final map = Map<String, dynamic>.from(flowRes.data as Map);
         if (kDebugMode) {
@@ -138,12 +190,17 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
           );
         }
         _applyFlowMap(map);
+        if (_flowStatusIsProcessing(map['status']?.toString())) {
+          unawaited(_pollUntilHaircareFlowCompleted(seq));
+        }
       } else {
         _loadError = flowRes.message ?? 'Could not load domain flow.';
       }
     } finally {
-      _loading = false;
-      notifyListeners();
+      if (seq == _loadSeq) {
+        _loading = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -192,39 +249,64 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
     final msg = data['ai_message']?.toString().trim();
     _aiMessage = (msg != null && msg.isNotEmpty) ? msg : null;
 
-    _parseRemediesAndProducts(data);
-    _applyIndicatorPages(data);
-    _applyRoutines(data);
+    // `/flow` sometimes returns `processing` with only status/progress/redirect,
+    // which must not wipe a previously completed `ai_*` payload.
+    if (!_isTransitionalProcessingSnapshot(data)) {
+      _parseRemediesAndProducts(data);
+      _applyIndicatorPages(data);
+      _applyRoutines(data);
+    }
     _applyExtraCards(data);
   }
 
-  void _parseRemediesAndProducts(Map<String, dynamic> data) {
-    _hairRemedies = [];
-    _hairSafetyTips = [];
-    _hairProducts = [];
+  /// True when status is in-progress but the JSON carries no AI blocks yet.
+  bool _isTransitionalProcessingSnapshot(Map<String, dynamic> data) {
+    if (!_flowStatusIsProcessing(data['status']?.toString())) return false;
+    const keys = <String>[
+      'ai_routine',
+      'ai_remedies',
+      'ai_products',
+      'ai_attributes',
+      'ai_health',
+      'ai_concerns',
+      'ai_exercises',
+    ];
+    for (final k in keys) {
+      if (data[k] != null) return false;
+    }
+    return true;
+  }
 
-    final remedies = data['ai_remedies'];
-    if (remedies is Map) {
-      final m = Map<String, dynamic>.from(remedies);
-      final list = m['remedies'];
-      if (list is List) {
-        for (final e in list) {
-          if (e is Map) _hairRemedies.add(Map<String, dynamic>.from(e));
+  void _parseRemediesAndProducts(Map<String, dynamic> data) {
+    if (data.containsKey('ai_remedies')) {
+      _hairRemedies = [];
+      _hairSafetyTips = [];
+      final remedies = data['ai_remedies'];
+      if (remedies is Map) {
+        final m = Map<String, dynamic>.from(remedies);
+        final list = m['remedies'];
+        if (list is List) {
+          for (final e in list) {
+            if (e is Map) _hairRemedies.add(Map<String, dynamic>.from(e));
+          }
         }
-      }
-      final tips = m['safety_tips'];
-      if (tips is List) {
-        _hairSafetyTips = tips
-            .map((e) => e.toString().trim())
-            .where((s) => s.isNotEmpty)
-            .toList();
+        final tips = m['safety_tips'];
+        if (tips is List) {
+          _hairSafetyTips = tips
+              .map((e) => e.toString().trim())
+              .where((s) => s.isNotEmpty)
+              .toList();
+        }
       }
     }
 
-    final products = data['ai_products'];
-    if (products is List) {
-      for (final raw in products) {
-        if (raw is Map) _hairProducts.add(Map<String, dynamic>.from(raw));
+    if (data.containsKey('ai_products')) {
+      _hairProducts = [];
+      final products = data['ai_products'];
+      if (products is List) {
+        for (final raw in products) {
+          if (raw is Map) _hairProducts.add(Map<String, dynamic>.from(raw));
+        }
       }
     }
   }
@@ -297,19 +379,36 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
     _todayChecked = [];
     _nightChecked = [];
 
-    final routine = data['ai_routine'];
-    if (routine is Map) {
-      final r = Map<String, dynamic>.from(routine);
-      var today = _parseRoutineList(r['today']);
-      var night = _parseRoutineList(r['night']);
+    final routine =
+        _mapFromLooseJson(data['ai_routine']) ??
+        _mapFromLooseJson(data['aiRoutine']);
+    if (routine != null) {
+      final r = routine;
+      var today = _parseRoutineList(r['today'] ?? r['Today']);
+      var night = _parseRoutineList(r['night'] ?? r['Night']);
       if (today.isEmpty && night.isEmpty) {
         today = _parseRoutineList(r['morning']);
         night = _parseRoutineList(r['evening']);
+      }
+      if (today.isEmpty && night.isEmpty) {
+        today = _parseRoutineList(r['am']);
+        night = _parseRoutineList(r['pm']);
       }
       if (today.isNotEmpty || night.isNotEmpty) {
         _setRoutineLists(today, night);
         return;
       }
+    }
+
+    var today = _parseRoutineList(data['today'] ?? data['Today']);
+    var night = _parseRoutineList(data['night'] ?? data['Night']);
+    if (today.isEmpty && night.isEmpty) {
+      today = _parseRoutineList(data['morning']);
+      night = _parseRoutineList(data['evening']);
+    }
+    if (today.isNotEmpty || night.isNotEmpty) {
+      _setRoutineLists(today, night);
+      return;
     }
 
     final ex = data['ai_exercises'];
@@ -329,6 +428,36 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
         }
       }
     }
+
+    if (kDebugMode) {
+      final st = data['status']?.toString().toLowerCase() ?? '';
+      if ((st == 'completed' || st == 'ok') &&
+          _todayRoutine.isEmpty &&
+          _nightRoutine.isEmpty) {
+        debugPrint(
+          '[HaircareRoutine] completed flow but no routine steps parsed '
+          '(expected ai_routine.today / .night)',
+        );
+      }
+    }
+  }
+
+  static Map<String, dynamic>? _mapFromLooseJson(dynamic v) {
+    if (v == null) return null;
+    if (v is Map) {
+      return Map<String, dynamic>.from(v);
+    }
+    if (v is String) {
+      final s = v.trim();
+      if (s.isEmpty) return null;
+      try {
+        final decoded = jsonDecode(s);
+        if (decoded is Map) {
+          return Map<String, dynamic>.from(decoded);
+        }
+      } catch (_) {}
+    }
+    return null;
   }
 
   void _setRoutineLists(
@@ -345,75 +474,24 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
     _extraCards = [];
     _selectedExtraIndex = -1;
 
-    final remedies = data['ai_remedies'];
-    if (remedies is Map && remedies.isNotEmpty) {
-      final m = Map<String, dynamic>.from(remedies);
-      final title = _firstNonEmptyString(m, const ['title', 'name']) ?? '';
-      final subtitle =
-          _firstNonEmptyString(m, const [
-            'subtitle',
-            'summary',
-            'description',
-          ]) ??
-          '';
-      final inner = m['remedies'];
-      final n = inner is List ? inner.length : 0;
-      if (title.isNotEmpty || subtitle.isNotEmpty) {
-        _extraCards.add(
-          HairRoutineExtraCard(
-            title: title,
-            subtitle: subtitle.isNotEmpty ? subtitle : 'Home remedies',
-            isRemediesNav: true,
-          ),
-        );
-      } else if (n > 0) {
-        _extraCards.add(
-          HairRoutineExtraCard(
-            title: 'Home Remedies',
-            subtitle: '$n personalized picks for you',
-            isRemediesNav: true,
-          ),
-        );
-      }
+    if (_hairRemedies.isNotEmpty || _hairSafetyTips.isNotEmpty) {
+      _extraCards.add(
+        const HairRoutineExtraCard(
+          title: 'Home Remedies',
+          subtitle: 'Home Remedies',
+          isRemediesNav: true,
+        ),
+      );
     }
-
-    final products = data['ai_products'];
-    if (products is List) {
-      for (final raw in products) {
-        if (raw is! Map) continue;
-        final pm = Map<String, dynamic>.from(raw);
-        final pTitle =
-            _firstNonEmptyString(pm, const ['name', 'title', 'product_name']) ??
-            '';
-        final pSubtitle =
-            _firstNonEmptyString(pm, const [
-              'overview',
-              'subtitle',
-              'description',
-              'brand',
-            ]) ??
-            '';
-        if (pTitle.isEmpty && pSubtitle.isEmpty) continue;
-        _extraCards.add(
-          HairRoutineExtraCard(
-            title: pTitle,
-            subtitle: pSubtitle,
-            isRemediesNav: false,
-          ),
-        );
-      }
+    if (_hairProducts.isNotEmpty) {
+      _extraCards.add(
+        const HairRoutineExtraCard(
+          title: 'Top Products',
+          subtitle: 'Top Products Picks For You',
+          isRemediesNav: false,
+        ),
+      );
     }
-  }
-
-  static String? _firstNonEmptyString(
-    Map<String, dynamic> m,
-    List<String> keys,
-  ) {
-    for (final k in keys) {
-      final v = m[k]?.toString().trim();
-      if (v != null && v.isNotEmpty) return v;
-    }
-    return null;
   }
 
   void _parseFlowProgress(dynamic p) {
@@ -463,7 +541,15 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
       final title = (m['title'] ?? m['name'] ?? '').toString().trim();
       if (title.isEmpty) continue;
       final steps = m['steps'];
-      var subtitle = (m['description'] ?? m['details'] ?? '').toString().trim();
+      var subtitle =
+          (m['description'] ??
+                  m['details'] ??
+                  m['body'] ??
+                  m['instruction'] ??
+                  m['text'] ??
+                  '')
+              .toString()
+              .trim();
       if (subtitle.isEmpty && steps is List) {
         subtitle = steps.map((s) => '• $s').join('\n');
       }
@@ -475,7 +561,6 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
     return out;
   }
 
-  /// Maps API blocks to grid rows; `{ label, confidence }` becomes one row per attribute.
   static List<Map<String, dynamic>> _attrsToGridRows(
     Map<String, dynamic> attrs,
   ) {
