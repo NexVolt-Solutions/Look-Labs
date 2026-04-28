@@ -105,7 +105,50 @@ class QuitPornRecoveryRepository {
 
   List<RecoveryTaskItem> _parseDaily(Map<String, dynamic>? resultData) {
     final raw = resultData?['ai_progress']?['recovery_checklist'];
-    if (raw is! List || raw.isEmpty) return const [];
+    final detailedRaw = resultData?['ai_recovery']?['daily_tasks'];
+
+    final detailsByTitle = <String, Map<String, dynamic>>{};
+    if (detailedRaw is List) {
+      for (final row in detailedRaw) {
+        if (row is! Map) continue;
+        final m = Map<String, dynamic>.from(row);
+        final key = _strFrom(m['title'] ?? m['text']).toLowerCase();
+        if (key.isEmpty) continue;
+        detailsByTitle[key] = m;
+      }
+    }
+
+    if (raw is! List || raw.isEmpty) {
+      // Fallback: if checklist is missing, still use detailed daily_tasks.
+      if (detailedRaw is! List || detailedRaw.isEmpty) return const [];
+      final detailedItems = <RecoveryTaskItem>[];
+      for (var i = 0; i < detailedRaw.length; i++) {
+        final row = detailedRaw[i];
+        if (row is! Map) continue;
+        final m = Map<String, dynamic>.from(row);
+        final title = _strFrom(m['title'] ?? m['text']);
+        if (title.isEmpty) continue;
+        final durationMin = m['duration_min'];
+        final order = _orderFromMap(m, i);
+        detailedItems.add(
+          RecoveryTaskItem(
+            id: _strFrom(m['id'], fallback: 'daily_$order'),
+            title: title,
+            subtitle: _strFrom(
+              m['description'] ?? m['details'] ?? m['activity'],
+            ),
+            duration: durationMin == null
+                ? _strFrom(m['duration'] ?? m['time'])
+                : '${_intFrom(durationMin)} min',
+            completed: _boolFrom(m['completed']),
+            order: order,
+          ),
+        );
+      }
+      if (detailedItems.isEmpty) return const [];
+      detailedItems.sort((a, b) => a.order.compareTo(b.order));
+      return detailedItems;
+    }
 
     final items = <RecoveryTaskItem>[];
     for (var i = 0; i < raw.length; i++) {
@@ -114,30 +157,39 @@ class QuitPornRecoveryRepository {
         final m = Map<String, dynamic>.from(e);
         final title = _strFrom(m['title'] ?? m['text']);
         if (title.isEmpty) continue;
+        final details = detailsByTitle[title.toLowerCase()];
         final durationMin = m['duration_min'];
         final order = _orderFromMap(m, i);
         items.add(
           RecoveryTaskItem(
             id: _strFrom(m['id'], fallback: 'daily_$order'),
             title: title,
-            subtitle: _strFrom(m['subtitle'] ?? m['description']),
+            subtitle: _strFrom(
+              m['subtitle'] ?? m['description'] ?? details?['description'],
+            ),
             duration: durationMin == null
-                ? _strFrom(m['duration'])
+                ? _strFrom(m['duration'] ?? details?['duration'] ?? details?['time'])
                 : '${_intFrom(durationMin)} min',
-            completed: _boolFrom(m['completed']),
+            completed: _boolFrom(
+              m['completed'],
+              fallback: _boolFrom(details?['completed']),
+            ),
             order: order,
           ),
         );
       } else {
         final title = _strFrom(e);
         if (title.isEmpty) continue;
+        final details = detailsByTitle[title.toLowerCase()];
         items.add(
           RecoveryTaskItem(
             id: 'daily_$i',
             title: title,
-            subtitle: '',
-            duration: '',
-            completed: false,
+            subtitle: _strFrom(
+              details?['description'] ?? details?['details'] ?? details?['activity'],
+            ),
+            duration: _strFrom(details?['duration'] ?? details?['time']),
+            completed: _boolFrom(details?['completed']),
             order: i + 1,
           ),
         );

@@ -283,6 +283,7 @@ class HomeViewModel extends ChangeNotifier {
   /// Domains that have a flow API and result screen (check flow before questions).
   static const _flowDomains = {
     'workout',
+    'diet',
     'height',
     'quit_porn',
     'skincare',
@@ -331,11 +332,20 @@ class HomeViewModel extends ChangeNotifier {
     required String reviewScansRoute,
   }) async {
     if (!context.mounted) return;
+    final normalizedDomain = _normalizedDomainKey(domainKey);
+    final usesScanChoice =
+        normalizedDomain == 'skincare' ||
+        normalizedDomain == 'haircare' ||
+        normalizedDomain == 'workout';
+    if (!usesScanChoice) {
+      Navigator.pushNamed(context, reviewScansRoute, arguments: flowPayload);
+      return;
+    }
     final dailyRoute = RoutesName.dailyRoutineRouteForDomain(domainKey);
     final usePrevious = await _showScanChoiceDialog(
       context: context,
       domainKey: domainKey,
-      canUsePreviousData: dailyRoute != null && _isCompletedFlowPayload(flowPayload),
+      canUsePreviousData: dailyRoute != null,
     );
     if (!context.mounted || usePrevious == null) return;
     if (usePrevious && dailyRoute != null) {
@@ -350,7 +360,16 @@ class HomeViewModel extends ChangeNotifier {
     required String domainKey,
     required bool canUsePreviousData,
   }) {
-    final label = domainKey == 'haircare' ? 'hair' : 'skin';
+    final normalized = _normalizedDomainKey(domainKey);
+    final isWorkout = normalized == 'workout';
+    final label = normalized == 'haircare' ? 'hair' : 'skin';
+    final description = isWorkout
+        ? 'Do you want a new workout analysis or continue with your previous record?'
+        : 'Do you want a new $label scan or continue with your previous analysis?';
+    final newActionText = isWorkout ? 'New Analysis' : 'New Scan';
+    final previousActionText = isWorkout
+        ? 'Previous Record'
+        : 'Previous Record';
     return showDialog<bool>(
       context: context,
       builder: (ctx) {
@@ -380,7 +399,7 @@ class HomeViewModel extends ChangeNotifier {
                 ),
                 SizedBox(height: context.sh(8)),
                 Text(
-                  'Do you want a new $label scan or continue with your previous analysis?',
+                  description,
                   style: TextStyle(
                     fontSize: context.sp(13),
                     fontWeight: FontWeight.w500,
@@ -401,7 +420,7 @@ class HomeViewModel extends ChangeNotifier {
                         ),
                         child: Center(
                           child: Text(
-                            'New Scan',
+                            newActionText,
                             style: TextStyle(
                               fontSize: context.sp(13),
                               fontWeight: FontWeight.w700,
@@ -427,7 +446,7 @@ class HomeViewModel extends ChangeNotifier {
                           ),
                           child: Center(
                             child: Text(
-                              'Use Previous Data',
+                              previousActionText,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: context.sp(13),

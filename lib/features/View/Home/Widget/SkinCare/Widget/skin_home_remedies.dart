@@ -126,7 +126,7 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
 
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'Safety tips',
+                titleText: 'Safety Tips',
                 titleSize: context.sp(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.headingColor,

@@ -177,6 +177,9 @@ class _HeightIndicaterState extends State<HeightIndicater> {
   Widget build(BuildContext context) {
     final double barHeight = context.sh(20);
     final double thumbWidth = context.sw(44);
+    final String displayValue = widget.valueFormatter != null
+        ? widget.valueFormatter!(_value)
+        : '${(_value * 100).round()}%';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,9 +193,9 @@ class _HeightIndicaterState extends State<HeightIndicater> {
 
         SizedBox(height: context.sh(16)),
 
+        /// 🔹 SLIDER (thumb only) + fixed value on right
         Row(
           children: [
-            /// 🔹 SLIDER
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -208,48 +211,57 @@ class _HeightIndicaterState extends State<HeightIndicater> {
                     onTapDown: (details) {
                       _updateValue(details.localPosition, maxWidth);
                     },
-                    child: Container(
-                      height: barHeight,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(context.radiusR(10)),
-                        color: AppColors.backGroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.customContainerColorUp.withValues(alpha: 
-                              0.4,
-                            ),
-                            offset: const Offset(5, 5),
-                            blurRadius: 5,
-                            inset: true,
-                          ),
-                          BoxShadow(
-                            color: AppColors.customContinerColorDown
-                                .withValues(alpha: 0.4),
-                            offset: const Offset(-5, -5),
-                            blurRadius: 5,
-                            inset: true,
-                          ),
-                        ],
-                      ),
+                    child: SizedBox(
+                      height: context.sh(28),
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          /// ACTIVE BAR
-                          Container(
-                            height: barHeight,
-                            width: progressWidth,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                context.radiusR(10),
+                          Positioned(
+                            top: context.sh(4),
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              height: barHeight,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  context.radiusR(10),
+                                ),
+                                color: AppColors.backGroundColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.customContainerColorUp
+                                        .withValues(alpha: 0.4),
+                                    offset: const Offset(5, 5),
+                                    blurRadius: 5,
+                                    inset: true,
+                                  ),
+                                  BoxShadow(
+                                    color: AppColors.customContinerColorDown
+                                        .withValues(alpha: 0.4),
+                                    offset: const Offset(-5, -5),
+                                    blurRadius: 5,
+                                    inset: true,
+                                  ),
+                                ],
                               ),
-                              color: AppColors.pimaryColor,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  height: barHeight,
+                                  width: progressWidth,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                      context.radiusR(10),
+                                    ),
+                                    color: AppColors.pimaryColor,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-
-                          /// THUMB
                           Positioned(
                             left: thumbLeft,
-                            top: -context.sh(4),
+                            top: 0,
                             child: Container(
                               height: context.sh(28),
                               width: thumbWidth,
@@ -291,14 +303,9 @@ class _HeightIndicaterState extends State<HeightIndicater> {
                 },
               ),
             ),
-
             SizedBox(width: context.sw(8)),
-
-            /// 🔹 Value text (formatted or percentage)
             NormalText(
-              titleText: widget.valueFormatter != null
-                  ? widget.valueFormatter!(_value)
-                  : '${(_value * 100).round()}%',
+              titleText: displayValue,
               titleSize: context.sp(12),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,

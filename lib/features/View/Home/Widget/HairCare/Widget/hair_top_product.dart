@@ -53,24 +53,14 @@ class _HairTopProductState extends State<HairTopProduct> {
             Padding(
               padding: context.paddingSymmetricR(horizontal: 20),
               child: AppBarContainer(
-                title: 'Recommended Products',
+                title: 'Top Products',
                 onTap: () => Navigator.pop(context),
-                showHeart: true,
-                onHeartTap: () {},
+                // showHeart: true,
+                // onHeartTap: () {},
               ),
             ),
-            SizedBox(height: context.sh(20)),
-            Padding(
-              padding: context.paddingSymmetricR(horizontal: 20),
-              child: NormalText(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'Curated for your hair & scalp concerns',
-                titleSize: context.sp(18),
-                titleWeight: FontWeight.w600,
-                titleColor: AppColors.headingColor,
-              ),
-            ),
-            SizedBox(height: context.sh(20)),
+            SizedBox(height: context.sh(10)),
+            
             Expanded(
               child: rows.isEmpty
                   ? Center(

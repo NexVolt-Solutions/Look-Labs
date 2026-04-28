@@ -66,33 +66,35 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          top: context.sh(5),
-          left: context.sw(20),
-          right: context.sw(20),
-          bottom: context.sh(30),
-        ),
-        child: CustomButton(
-          text: AppText.next,
-          color: AppColors.pimaryColor,
-          isEnabled: vm.isFullyComplete,
-          onTap: vm.isFullyComplete
-              ? () async {
-                  try {
-                    await context
-                        .read<DailyHairCareRoutineViewModel>()
-                        .loadHaircareRoutine();
-                  } catch (_) {}
-                  if (!context.mounted) return;
-                  Navigator.pushReplacementNamed(
-                    context,
-                    RoutesName.DailyHairCareRoutineScreen,
-                  );
-                }
-              : null,
-        ),
-      ),
+      // bottomNavigationBar: Padding(
+      //   padding: EdgeInsets.only(
+      //     top: context.sh(5),
+      //     left: context.sw(20),
+      //     right: context.sw(20),
+      //     bottom: context.sh(30),
+      //   ),
+      //   child: CustomButton(
+      //     text: AppText.next,
+      //     color: AppColors.pimaryColor,
+      //     isEnabled: vm.isFullyComplete,
+      //     onTap: vm.isFullyComplete
+      //         ? () async {
+      //             try {
+      //               await context
+      //                   .read<DailyHairCareRoutineViewModel>()
+      //                   .loadHaircareRoutine();
+      //             } catch (_) {}
+      //             if (!context.mounted) return;
+      //             Navigator.pushReplacementNamed(
+      //               context,
+      //               RoutesName.DailyHairCareRoutineScreen,
+      //             );
+      //           }
+      //         : null,
+      //   ),
+      // ),
+   
+   
       body: SafeArea(
         child: ListView(
           padding: context.paddingSymmetricR(horizontal: 20),
@@ -185,7 +187,7 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          line,
+                            line.split('• ').last,
                           style: TextStyle(
                             fontSize: context.sp(12),
                             fontWeight: FontWeight.w400,

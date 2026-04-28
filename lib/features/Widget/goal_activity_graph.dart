@@ -34,126 +34,138 @@ class GoalActivityGraph extends StatelessWidget {
     return (containerH * ratio).clamp(context.sh(40), containerH);
   }
 
+  Widget _barColumn({
+    required BuildContext context,
+    required double value,
+    required double barHeight,
+    required double containerHeight,
+    required String bottomTitle,
+    required bool isGoal,
+    required String unitText,
+  }) {
+    final valueGap = context.sh(10);
+    return Column(
+      children: [
+        SizedBox(
+          height: containerHeight + context.sh(22),
+          width: context.sw(74),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: context.sw(55),
+                    height: barHeight,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(context.radiusR(10)),
+                        topRight: Radius.circular(context.radiusR(10)),
+                      ),
+                      border: Border.all(
+                        color: isGoal
+                            ? AppColors.pimaryColor
+                            : AppColors.backGroundColor,
+                        width: context.sw(1.5),
+                      ),
+                      color: isGoal
+                          ? AppColors.pimaryColor
+                          : AppColors.backGroundColor,
+                      boxShadow: isGoal
+                          ? [
+                              BoxShadow(
+                                color: AppColors.pimaryColor.withValues(alpha: .3),
+                                offset: const Offset(5, 5),
+                                blurRadius: 20,
+                              ),
+                              BoxShadow(
+                                color: AppColors.pimaryColor.withValues(alpha: .1),
+                                offset: const Offset(-5, -5),
+                                blurRadius: 20,
+                              ),
+                            ]
+                          : [
+                              BoxShadow(
+                                color: AppColors.customContainerColorUp.withValues(
+                                  alpha: 0.4,
+                                ),
+                                offset: const Offset(5, 5),
+                                blurRadius: 5,
+                              ),
+                              BoxShadow(
+                                color: AppColors.customContinerColorDown.withValues(
+                                  alpha: 0.4,
+                                ),
+                                offset: const Offset(-5, -5),
+                                blurRadius: 5,
+                              ),
+                            ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: barHeight + valueGap,
+                child: Center(
+                  child: NormalText(
+                    titleText: '${value.round()} $unitText',
+                    titleSize: context.sp(12),
+                    titleWeight: FontWeight.w600,
+                    titleColor: AppColors.subHeadingColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: context.sh(15)),
+        NormalText(
+          titleText: bottomTitle,
+          titleSize: context.sp(14),
+          titleWeight: FontWeight.w600,
+          titleColor: AppColors.subHeadingColor,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final containerHeight = maxBarHeight ?? context.sh(220);
-    final currentBarH = _barHeight(context, currentHeight, containerHeight);
-    final desiredBarH = _barHeight(context, desiredHeight, containerHeight);
+    final current = currentHeight ?? 0;
+    final desired = desiredHeight ?? 0;
+    final currentBarH = _barHeight(context, current, containerHeight);
+    final desiredBarH = _barHeight(context, desired, containerHeight);
+    final unitText = unit ?? 'cm';
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        // 🔹 Current Container
-        Column(
-          children: [
-            NormalText(
-              titleText: '$currentHeight ${unit ?? 'cm'}',
-              titleSize: context.sp(12),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.subHeadingColor,
-            ),
-            SizedBox(height: context.sh(15)),
-            SizedBox(
-              height: containerHeight,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: context.sw(55),
-                  height: currentBarH,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(context.radiusR(10)),
-                      topRight: Radius.circular(context.radiusR(10)),
-                    ),
-                    border: Border.all(
-                      color: AppColors.backGroundColor,
-                      width: context.sw(1.5),
-                    ),
-                    color: AppColors.backGroundColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.customContainerColorUp.withValues(alpha: 
-                          0.4,
-                        ),
-                        offset: const Offset(5, 5),
-                        blurRadius: 5,
-                      ),
-                      BoxShadow(
-                        color: AppColors.customContinerColorDown.withValues(alpha: 
-                          0.4,
-                        ),
-                        offset: const Offset(-5, -5),
-                        blurRadius: 5,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: context.sh(15)),
-            NormalText(
-              titleText: title1 ?? '',
-              titleSize: context.sp(14),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.subHeadingColor,
-            ),
-          ],
+        _barColumn(
+          context: context,
+          value: current,
+          barHeight: currentBarH,
+          containerHeight: containerHeight,
+          bottomTitle: title1 ?? '',
+          isGoal: false,
+          unitText: unitText,
         ),
-
         SizedBox(width: context.sw(16)),
-
-        // 🔹 Goal Container
-        Column(
-          children: [
-            NormalText(
-              titleText: '$desiredHeight ${unit ?? 'cm'}',
-              titleSize: context.sp(12),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.subHeadingColor,
-            ),
-            SizedBox(height: context.sh(15)),
-            SizedBox(
-              height: containerHeight,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: context.sw(55),
-                  height: desiredBarH,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(context.radiusR(10)),
-                      topRight: Radius.circular(context.radiusR(10)),
-                    ),
-                    border: Border.all(
-                      color: AppColors.pimaryColor,
-                      width: context.sw(1.5),
-                    ),
-                    color: AppColors.pimaryColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.pimaryColor.withValues(alpha: .3),
-                        offset: Offset(5, 5),
-                        blurRadius: 20,
-                      ),
-                      BoxShadow(
-                        color: AppColors.pimaryColor.withValues(alpha: .1),
-                        offset: Offset(-5, -5),
-                        blurRadius: 20,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: context.sh(15)),
-            NormalText(
-              titleText: title2 ?? '',
-              titleSize: context.sp(14),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.subHeadingColor,
-            ),
-          ],
+        _barColumn(
+          context: context,
+          value: desired,
+          barHeight: desiredBarH,
+          containerHeight: containerHeight,
+          bottomTitle: title2 ?? '',
+          isGoal: true,
+          unitText: unitText,
         ),
       ],
     );

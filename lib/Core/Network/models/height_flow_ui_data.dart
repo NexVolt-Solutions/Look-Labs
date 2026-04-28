@@ -14,6 +14,7 @@ class HeightFlowUiData {
     required this.dailyRoutineSubtitle,
     required this.routineExerciseCount,
     required this.routineEstimatedMinutes,
+    required this.todayFocusItems,
   });
 
   final String currentHeightRaw;
@@ -26,6 +27,7 @@ class HeightFlowUiData {
   final String dailyRoutineSubtitle;
   final int routineExerciseCount;
   final int routineEstimatedMinutes;
+  final List<Map<String, String>> todayFocusItems;
 
   static const String _fallbackInsight =
       'Consistency improves stamina, strength & posture over time.';
@@ -103,6 +105,22 @@ class HeightFlowUiData {
     return _fallbackDailySubtitle;
   }
 
+  static List<Map<String, String>> todayFocusFrom(Map<String, dynamic>? data) {
+    if (data == null) return const [];
+    final raw = data['ai_today_focus'];
+    if (raw is! List) return const [];
+    final out = <Map<String, String>>[];
+    for (final item in raw) {
+      if (item is! Map) continue;
+      final m = Map<String, dynamic>.from(item);
+      final title = (m['title'] ?? m['name'] ?? '').toString().trim();
+      final duration = (m['duration'] ?? '').toString().trim();
+      if (title.isEmpty && duration.isEmpty) continue;
+      out.add({'title': title, 'duration': duration});
+    }
+    return out;
+  }
+
   /// Full binding for result screen: [resultData] + parsed [lists] for stats tile.
   factory HeightFlowUiData.fromResult(
     Map<String, dynamic>? resultData,
@@ -121,6 +139,7 @@ class HeightFlowUiData {
       dailyRoutineSubtitle: dailySubtitleFrom(resultData),
       routineExerciseCount: lists.totalCount,
       routineEstimatedMinutes: lists.estimatedMinutesFromActivity,
+      todayFocusItems: todayFocusFrom(resultData),
     );
   }
 

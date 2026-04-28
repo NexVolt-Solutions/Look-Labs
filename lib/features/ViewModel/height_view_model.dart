@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 class HeightViewModel extends ChangeNotifier {
+  static const double minHeightCm = 120;
+  static const double maxHeightCm = 220;
+
   final PageController pageController = PageController();
 
-  final List<Map<String, dynamic>> heightQuestions = [
+  final List<Map<String, dynamic>> _heightQuestions = [
     {
       "title": "Family Growth",
       "question": "Did your parents or siblings reach their full adult height?",
@@ -39,6 +42,53 @@ class HeightViewModel extends ChangeNotifier {
   int currentStep = 0;
 
   final Map<int, int> selectedOptions = {};
+
+  double _currentHeightCm = 149;
+  double _desiredHeightCm = 150;
+
+  double get currentHeightCm => _currentHeightCm;
+  double get desiredHeightCm => _desiredHeightCm;
+  List<Map<String, dynamic>> get heightQuestions => _heightQuestions;
+
+  static double sliderToCm(double value) =>
+      (minHeightCm + (maxHeightCm - minHeightCm) * value).clamp(
+        minHeightCm,
+        maxHeightCm,
+      );
+
+  static double cmToSlider(double cm) =>
+      ((cm - minHeightCm) / (maxHeightCm - minHeightCm)).clamp(0.0, 1.0);
+
+  String formatCm(double value) => '${sliderToCm(value).round()} cm';
+
+  bool shouldHideQuestionText(int index) {
+    if (index < 0 || index >= _heightQuestions.length) return false;
+    final bool isLastScreen = index == _heightQuestions.length - 1;
+    if (!isLastScreen) return false;
+    final step = (_heightQuestions[index]['step']?.toString() ?? '')
+        .trim()
+        .toLowerCase();
+    if (step == 'height') return true;
+    final question =
+        (_heightQuestions[index]['question']?.toString() ?? '')
+            .trim()
+            .toLowerCase();
+    return question == 'what is your current and desired height?';
+  }
+
+  void setCurrentHeightFromSlider(double value) {
+    final next = sliderToCm(value);
+    if ((_currentHeightCm - next).abs() < 0.001) return;
+    _currentHeightCm = next;
+    notifyListeners();
+  }
+
+  void setDesiredHeightFromSlider(double value) {
+    final next = sliderToCm(value);
+    if ((_desiredHeightCm - next).abs() < 0.001) return;
+    _desiredHeightCm = next;
+    notifyListeners();
+  }
 
   /// 🔹 Page change listener
   void setStep(int index) {
@@ -76,6 +126,8 @@ class HeightViewModel extends ChangeNotifier {
   void reset() {
     currentStep = 0;
     selectedOptions.clear();
+    _currentHeightCm = 149;
+    _desiredHeightCm = 150;
     if (pageController.hasClients) {
       pageController.jumpToPage(0);
     }

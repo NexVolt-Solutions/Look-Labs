@@ -78,7 +78,7 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
               titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
             ),
-            SizedBox(height: context.sh(8)),
+            SizedBox(height: context.sh(12)),
             RecoveryTaskList(
               selectedSection: vm.selectedSection,
               taskItems: vm.selectedTaskItems,

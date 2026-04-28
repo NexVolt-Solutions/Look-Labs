@@ -33,8 +33,16 @@ class DomainFlowQuestionContent extends StatelessWidget {
     return _buildOptionsQuestion(context);
   }
 
+  bool _hideQuestionTextOnLastStep(BuildContext context) {
+    final vm = context.read<DomainQuestionViewModel>();
+    if (!vm.isOnLastQuestion) return false;
+    final step = question.step.trim().toLowerCase();
+    return question.isHeightGoalsInput || step == 'height';
+  }
+
   Widget _buildHeightGoalsQuestion(BuildContext context) {
     final vm = context.read<DomainQuestionViewModel>();
+    final hideQuestionText = _hideQuestionTextOnLastStep(context);
     final min = question.minConstraint ?? 100;
     final max = question.maxConstraint ?? 250;
     final unit = question.unitConstraint ?? 'cm';
@@ -55,7 +63,7 @@ class DomainFlowQuestionContent extends StatelessWidget {
       children: [
         NormalText(
           crossAxisAlignment: CrossAxisAlignment.start,
-          titleText: question.question,
+          titleText: hideQuestionText ? 'Your Height Goals' : question.question,
           titleSize: context.sp(16),
           titleWeight: FontWeight.w600,
           titleColor: AppColors.subHeadingColor,

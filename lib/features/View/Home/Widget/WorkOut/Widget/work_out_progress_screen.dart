@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart' hide BoxShadow;
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
-import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart' hide BoxDecoration;
 import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/activity_consistency_widget.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
@@ -12,6 +13,7 @@ import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
+import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/ViewModel/work_out_progress_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +49,18 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
 
       body: SafeArea(
         child: yourProgressScreenViewModel.progressLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CupertinoActivityIndicator(
+                      radius: 50,
+                      color: AppColors.pimaryColor,
+                    ),
+                     
+                  ],
+                ),
+              )
             : ListView(
                 padding: context.paddingSymmetricR(horizontal: 20),
                 children: [
@@ -94,7 +107,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       },
                     ),
                   ),
-                  SizedBox(height: context.sh(7)),
+                SizedBox(height: context.sh(7)),
                   Row(
                     children: [
                       CustomContainer(
@@ -106,6 +119,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                         color: AppColors.backGroundColor,
                         child: SvgPicture.asset(
                           AppAssets.graphIcon,
+                           color: AppColors.pimaryColor,
                           height: context.sh(24),
                           width: context.sw(24),
                           fit: BoxFit.scaleDown,
@@ -113,7 +127,7 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       ),
                       SizedBox(width: context.sw(12)),
                       NormalText(
-                        titleText: 'Your Progress',
+                        titleText: 'Workout Progress',
                         titleSize: context.sp(18),
                         titleWeight: FontWeight.w600,
                         titleColor: AppColors.subHeadingColor,
@@ -213,6 +227,9 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       },
                     ),
                   ),
+                 
+                 
+                 
                   SizedBox(height: context.sh(8)),
                   PlanContainer(
                     padding: context.paddingSymmetricR(
@@ -248,92 +265,59 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                             ),
                           ),
                   ),
-                  SizedBox(height: context.sh(8)),
+                    SizedBox(height: context.sh(10)),
                   PlanContainer(
+                    margin: context.paddingSymmetricR(horizontal: 0),
                     padding: context.paddingSymmetricR(
                       horizontal: 12,
                       vertical: 12,
                     ),
                     isSelected: false,
-                    onTap: () {},
-                    child: Column(
+                    onTap: () {
+                      final data = widget.workoutData ?? <String, dynamic>{};
+                      Navigator.pushNamed(
+                        context,
+                        RoutesName.DailyWorkoutRoutineScreen,
+                        arguments: data,
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              height: context.sh(28),
-                              width: context.sw(28),
-                              decoration: BoxDecoration(
-                                color: AppColors.backGroundColor,
-                                borderRadius: BorderRadius.circular(
-                                  context.radiusR(10),
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.customContainerColorUp
-                                        .withValues(alpha: 0.4),
-                                    offset: const Offset(3, 3),
-                                    blurRadius: 4,
-                                  ),
-                                  BoxShadow(
-                                    color: AppColors.customContinerColorDown
-                                        .withValues(alpha: 0.4),
-                                    offset: const Offset(-3, -3),
-                                    blurRadius: 4,
-                                  ),
-                                ],
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              NormalText(
+                                titleText: 'Today\'s Workout',
+                                titleSize: context.sp(16),
+                                titleWeight: FontWeight.w600,
+                                titleColor: AppColors.subHeadingColor,
                               ),
-                              child: Center(
-                                child: SizedBox(
-                                  height: context.sh(32),
-                                  width: context.sw(32),
-                                  child: SvgPicture.asset(
-                                    AppAssets.lightBulbIcon,
-                                    fit: BoxFit.scaleDown,
-                                  ),
+                              SizedBox(height: context.sh(4)),
+                              NormalText(
+                                titleText:
+                                    '${yourProgressScreenViewModel.todayCompleted}/${yourProgressScreenViewModel.todayTotal} exercises',
+                                titleSize: context.sp(12),
+                                titleWeight: FontWeight.w400,
+                                titleColor: AppColors.subHeadingColor.withValues(
+                                  alpha: 0.7,
                                 ),
                               ),
-                            ),
-                            SizedBox(width: context.sw(11)),
-                            Expanded(
-                              child: Builder(
-                                builder: (context) {
-                                  final vm = yourProgressScreenViewModel;
-                                  final title =
-                                      vm.insightCardTitle ??
-                                      vm.postureInsight ??
-                                      vm.aiMessage ??
-                                      'Small daily workouts create big long-term results. You\'re doing great—keep up the momentum.';
-                                  final body = vm.insightCardBody;
-                                  final sub =
-                                      (body != null &&
-                                          body.isNotEmpty &&
-                                          body != title)
-                                      ? body
-                                      : null;
-                                  return NormalText(
-                                    titleText: title,
-                                    subText: sub,
-                                    titleSize: context.sp(12),
-                                    titleWeight: FontWeight.w600,
-                                    titleColor: AppColors.subHeadingColor,
-                                    subSize: context.sp(11),
-                                    subWeight: FontWeight.w400,
-                                    subColor: AppColors.subHeadingColor
-                                        .withValues(alpha: 0.85),
-                                    sizeBoxheight: sub != null
-                                        ? context.sh(6)
-                                        : null,
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right,
+                          size: context.sh(24),
+                          color: AppColors.subHeadingColor,
                         ),
                       ],
                     ),
                   ),
-                  ActivityConsistencyWidget(
+                 
+                ActivityConsistencyWidget(
                     title: 'Workout Consistency',
                     subtitle: 'Your workout activity this week',
                     pressentage:
@@ -428,8 +412,93 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                       },
                     ),
                   ),
-                  SizedBox(height: context.sh(30)),
-                ],
+                  SizedBox(height: context.sh(20)),
+                   PlanContainer(
+                    padding: context.paddingSymmetricR(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    isSelected: false,
+                    onTap: () {},
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              height: context.sh(28),
+                              width: context.sw(28),
+                              decoration: BoxDecoration(
+                                color: AppColors.backGroundColor,
+                                borderRadius: BorderRadius.circular(
+                                  context.radiusR(10),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.customContainerColorUp
+                                        .withValues(alpha: 0.4),
+                                    offset: const Offset(3, 3),
+                                    blurRadius: 4,
+                                  ),
+                                  BoxShadow(
+                                    color: AppColors.customContinerColorDown
+                                        .withValues(alpha: 0.4),
+                                    offset: const Offset(-3, -3),
+                                    blurRadius: 4,
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: SizedBox(
+                                  height: context.sh(32),
+                                  width: context.sw(32),
+                                  child: SvgPicture.asset(
+                                    AppAssets.lightBulbIcon,
+                                    fit: BoxFit.scaleDown,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: context.sw(11)),
+                            Expanded(
+                              child: Builder(
+                                builder: (context) {
+                                  final vm = yourProgressScreenViewModel;
+                                  final title =
+                                      vm.insightCardTitle ??
+                                      vm.postureInsight ??
+                                      vm.aiMessage ??
+                                      'Small daily workouts create big long-term results. You\'re doing great—keep up the momentum.';
+                                  final body = vm.insightCardBody;
+                                  final sub =
+                                      (body != null &&
+                                          body.isNotEmpty &&
+                                          body != title)
+                                      ? body
+                                      : null;
+                                  return NormalText(
+                                    titleText: title,
+                                    subText: sub,
+                                    titleSize: context.sp(12),
+                                    titleWeight: FontWeight.w600,
+                                    titleColor: AppColors.subHeadingColor,
+                                    subSize: context.sp(11),
+                                    subWeight: FontWeight.w400,
+                                    subColor: AppColors.subHeadingColor
+                                        .withValues(alpha: 0.85),
+                                    sizeBoxheight: sub != null
+                                        ? context.sh(6)
+                                        : null,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: context.sh(20)),
+                  ],
               ),
       ),
     );

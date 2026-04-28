@@ -18,11 +18,12 @@ class HeightQuestion extends StatelessWidget {
     final data = vm.heightQuestions[index];
 
     final bool isLastScreen = index == vm.heightQuestions.length - 1;
+    final bool shouldHideQuestionText = vm.shouldHideQuestionText(index);
 
     return ListView(
       padding: context.paddingSymmetricR(horizontal: 20),
       children: [
-        if (!isLastScreen) ...[
+        if (!isLastScreen || !shouldHideQuestionText) ...[
           NormalText(
             titleText: data['question'],
             titleSize: context.sp(18),
@@ -65,25 +66,23 @@ class HeightQuestion extends StatelessWidget {
           GoalActivityGraph(
             title1: 'Current',
             title2: 'Goal',
-            currentHeight: 149,
-            desiredHeight: 150,
+            currentHeight: vm.currentHeightCm,
+            desiredHeight: vm.desiredHeightCm,
           ),
 
           SizedBox(height: context.sh(18)),
           HeightIndicater(
             title: 'Current Height',
-            initialValue: 0.6,
-            onChanged: (value) {
-              debugPrint('Current value: ${(value * 100).round()}%');
-            },
+            initialValue: HeightViewModel.cmToSlider(vm.currentHeightCm),
+            valueFormatter: vm.formatCm,
+            onChanged: vm.setCurrentHeightFromSlider,
           ),
           SizedBox(height: context.sh(18)),
           HeightIndicater(
             title: 'Desired Height',
-            initialValue: 0.6,
-            onChanged: (value) {
-              debugPrint('Current value: ${(value * 100).round()}%');
-            },
+            initialValue: HeightViewModel.cmToSlider(vm.desiredHeightCm),
+            valueFormatter: vm.formatCm,
+            onChanged: vm.setDesiredHeightFromSlider,
           ),
         ],
       ],

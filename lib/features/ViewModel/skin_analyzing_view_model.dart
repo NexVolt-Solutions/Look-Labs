@@ -6,8 +6,7 @@ import 'package:looklabs/Core/Network/models/album_image.dart';
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/image_upload_repository.dart';
 
-// Album contract (haircare / skincare / etc.): new rows often return `status: "processing"`
-// immediately after upload (not `pending`). Treat `processing` like in-flight analysis.
+ // immediately after upload (not `pending`). Treat `processing` like in-flight analysis.
 // UI: show the analyzing screen as soon as any standard-slot image is `processing`
 // (see [ReviewScansViewModel.uploadAllDomainImages] early-navigation callback).
 // Bullet list: **only** from GET album `analysis_result` (prefer `points`); no static copy.
@@ -120,6 +119,7 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
   bool _pollLoopRunning = false;
 
   List<String> _bullets = [];
+  List<String> _flowBullets = [];
   int _processedCount = 0;
   int _displayProgressPercent = 0;
 
@@ -143,8 +143,9 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
 
   List<String> get analysisBullets => List.unmodifiable(_bullets);
 
-  /// Bullet list built only from latest album rows’ `analysis_result` (see [_pollOnce]).
-  List<String> get displayBullets => analysisBullets;
+  /// Prefer latest album points; fallback to flow AI points while album is still processing.
+  List<String> get displayBullets =>
+      analysisBullets.isNotEmpty ? analysisBullets : List.unmodifiable(_flowBullets);
 
   List<String> get stagedBullets => analysisBullets;
 
@@ -224,6 +225,7 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
   /// Clears UI + flow state so a new scan does not reuse a previous "completed" `/flow` snapshot.
   void resetForNewScan() {
     _bullets = [];
+    _flowBullets = [];
     _processedCount = 0;
     _displayProgressPercent = 0;
     _queuedViewCount = 0;
@@ -396,9 +398,9 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
       }
 
       if (res.success && res.data is Map) {
-        _flowCompleted = _isFlowStatusComplete(
-          Map<String, dynamic>.from(res.data as Map),
-        );
+        final flowMap = Map<String, dynamic>.from(res.data as Map);
+        _flowCompleted = _isFlowStatusComplete(flowMap);
+        _flowBullets = _extractFlowAiBullets(flowMap);
       } else {
         _flowCompleted = false;
       }
@@ -409,6 +411,44 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
 
   void _stopPolling() {
     _pollingStopped = true;
+  }
+
+  static List<String> _extractFlowAiBullets(Map<String, dynamic> data) {
+    final out = <String>[];
+    for (final key in const ['ai_attributes', 'ai_health', 'ai_concerns']) {
+      final raw = data[key];
+      if (raw is! Map) continue;
+      final section = Map<String, dynamic>.from(raw);
+      section.forEach((k, v) {
+        if (k == 'title') return;
+        if (v is Map) {
+          final vm = Map<String, dynamic>.from(v);
+          final label = vm['label']?.toString().trim();
+          if (label != null && label.isNotEmpty) {
+            out.add('${_humanizeKey(k)}: $label');
+            return;
+          }
+        }
+        final text = v?.toString().trim() ?? '';
+        if (text.isNotEmpty) {
+          out.add('${_humanizeKey(k)}: $text');
+        }
+      });
+    }
+    return _dedupePreserveOrder(out);
+  }
+
+  static String _humanizeKey(String key) {
+    if (key.isEmpty) return key;
+    return key
+        .split(RegExp(r'[_\s]+'))
+        .where((p) => p.isNotEmpty)
+        .map(
+          (w) => w.length == 1
+              ? w.toUpperCase()
+              : '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}',
+        )
+        .join(' ');
   }
 
   @override

@@ -272,8 +272,8 @@ class WorkOutProgressScreenViewModel extends ChangeNotifier {
     } catch (_) {}
   }
 
-  /// Load today's completed-exercises, weekly-summary, and workout flow (`ai_progress` / `ai_attributes`).
-  Future<void> loadProgressData() async {
+   Future<void> loadProgressData() async {
+    if (_progressLoading) return;
     _progressLoading = true;
     notifyListeners();
     try {
@@ -645,13 +645,17 @@ class WorkOutProgressScreenViewModel extends ChangeNotifier {
 
   Future<void> _persistChecklistAfterDebounce() async {
     final recovery = _recoveryIndicesFromChecklist();
-    await WorkoutCompletionRepository.instance.saveCompleted(
-      DateTime.now(),
-      Set<int>.from(_exerciseCompletedIndices),
-      totalExercises: _todayTotal > 0 ? _todayTotal : 0,
-      recoveryCompletedIndices: recovery,
-    );
-    await refreshTodayCompletionFromApi();
+    try {
+      await WorkoutCompletionRepository.instance.saveCompleted(
+        DateTime.now(),
+        Set<int>.from(_exerciseCompletedIndices),
+        totalExercises: _todayTotal > 0 ? _todayTotal : 0,
+        recoveryCompletedIndices: recovery,
+      );
+  
+    } catch (_) {
+       await refreshTodayCompletionFromApi();
+    }
   }
 
   @override

@@ -55,7 +55,8 @@ class RecoveryStreakSection extends StatelessWidget {
                     title: 'Longest Streak',
                     richTitle: '${streak.longestStreak}',
                     richSubTitle: ' days',
-                    titleSize: context.sp(12),
+                    
+                    titleSize: context.sp(10),
                     richTitleSize: context.sp(14),
                     richSubTitleSize: context.sp(14),
                   ),
@@ -76,7 +77,7 @@ class RecoveryStreakSection extends StatelessWidget {
                     title: 'Next Goal',
                     richTitle: '${streak.nextGoal}',
                     richSubTitle: ' days',
-                    titleSize: context.sp(12),
+                    titleSize: context.sp(10),
                     richTitleSize: context.sp(14),
                     richSubTitleSize: context.sp(14),
                   ),

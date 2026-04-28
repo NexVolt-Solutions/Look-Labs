@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Model/quit_porn_recovery_ui_data.dart';
 import 'package:looklabs/Model/sales_data.dart';
+import 'package:looklabs/Repository/domain_progress_graph_repository.dart';
 import 'package:looklabs/Repository/quit_porn_recovery_repository.dart';
 
 class RecoveryPathScreenViewModel extends ChangeNotifier {
@@ -27,6 +28,25 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   final Map<String, List<SalesData>> chartByPeriod = {};
   bool _persistInFlight = false;
   bool _persistCoalesce = false;
+  final Set<String> _chartLoadInFlight = <String>{};
+  bool _actionInFlight = false;
+
+  void _log(String message) {
+    debugPrint('[RecoveryPathVM] $message');
+  }
+
+  String _lastPointLabel(List<SalesData> points) {
+    if (points.isEmpty) return 'empty';
+    final p = points.last;
+    return '${p.month}:${p.sales.toStringAsFixed(1)}';
+  }
+
+  String _bucketValueLabel(List<SalesData> points, String key) {
+    for (final p in points) {
+      if (p.month == key) return '${p.month}:${p.sales.toStringAsFixed(1)}';
+    }
+    return '$key:missing';
+  }
 
   List<RecoveryTaskItem> get selectedTaskItems {
     return selectedSection == 'Daily Plan'
@@ -50,6 +70,10 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
     uiData = _repository.parseUiData(resultData);
     dailyDone = uiData.dailyPlanItems.map((e) => e.completed).toList();
     exerciseDone = uiData.exerciseItems.map((e) => e.completed).toList();
+    _log(
+      'initialize dailyItems=${uiData.dailyPlanItems.length} '
+      'exerciseItems=${uiData.exerciseItems.length}',
+    );
     notifyListeners();
     await Future.wait([
       loadCompletionForToday(),
@@ -114,6 +138,8 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   void toggleDailyDoneAt(int index) {
     if (index < 0 || index >= dailyDone.length) return;
     dailyDone[index] = !dailyDone[index];
+    _log('toggleDaily index=$index checked=${dailyDone[index]}');
+    _applyLocalOverlayToLoadedCharts(notify: false);
     notifyListeners();
     _persistChecklistState();
   }
@@ -121,6 +147,8 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   void toggleExerciseDoneAt(int index) {
     if (index < 0 || index >= exerciseDone.length) return;
     exerciseDone[index] = !exerciseDone[index];
+    _log('toggleExercise index=$index checked=${exerciseDone[index]}');
+    _applyLocalOverlayToLoadedCharts(notify: false);
     notifyListeners();
     _persistChecklistState();
   }
@@ -130,37 +158,74 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
     bool force = false,
   }) async {
     if (!force && hasChartPeriod(periodLabel)) return;
+    if (_chartLoadInFlight.contains(periodLabel)) return;
+    _chartLoadInFlight.add(periodLabel);
+    _log('loadChart start period=$periodLabel force=$force');
     if (force) {
       chartByPeriod.remove(periodLabel);
     }
-    setChartLoading(true);
-    final points = await _repository.loadChartForPeriod(periodLabel);
-    putChartPeriod(periodLabel, points);
-    setChartLoading(false);
-  }
-
-  /// Refetch Week/Month/Year graphs after progress changes (one completion GET + parallel graphs).
-  Future<void> _refreshAllPeriodCharts() async {
-    chartByPeriod.clear();
-    notifyListeners();
-    setChartLoading(true);
-    notifyListeners();
-    final map = await _repository.loadPeriodChartsWithTodayOverlay(
-      periodButtons,
-    );
-    for (final e in map.entries) {
-      putChartPeriod(e.key, e.value);
+    final shouldShowLoader = force && chartByPeriod.isEmpty;
+    if (shouldShowLoader) {
+      setChartLoading(true);
     }
-    setChartLoading(false);
+    try {
+      final points = await _repository.loadChartForPeriod(periodLabel);
+      _log(
+        'loadChart api period=$periodLabel count=${points.length} '
+        'last=${_lastPointLabel(points)}',
+      );
+      putChartPeriod(periodLabel, points);
+      _applyLocalOverlayToLoadedCharts(notify: false);
+    } finally {
+      _chartLoadInFlight.remove(periodLabel);
+      _log('loadChart end period=$periodLabel loading=$chartLoading');
+      if (shouldShowLoader) {
+        setChartLoading(false);
+      }
+    }
   }
 
-  Future<void> _syncChartOverlaysAfterChecklist() async {
+  double get _localCompletionPercent {
+    final total = _totalChecklistItems;
+    if (total <= 0) return 0;
+    final done = _combinedCheckedIndices().length;
+    return (done * 100.0 / total).clamp(0.0, 100.0);
+  }
+
+  void _applyLocalOverlayToLoadedCharts({bool notify = true}) {
     if (chartByPeriod.isEmpty) return;
-    final next = await _repository.reapplyTodayOverlayToAll(chartByPeriod);
+    final now = DateTime.now();
+    final score = _localCompletionPercent;
+    _log(
+      'overlay start score=${score.toStringAsFixed(1)} '
+      'checked=${_combinedCheckedIndices().length}/$_totalChecklistItems',
+    );
+    final next = <String, List<SalesData>>{};
+    for (final e in chartByPeriod.entries) {
+      final bucketKey = DomainProgressGraphRepository.bucketKeyForLocalDate(
+        now,
+        e.key,
+      );
+      final before = _lastPointLabel(e.value);
+      final beforeBucket = _bucketValueLabel(e.value, bucketKey);
+      next[e.key] = DomainProgressGraphRepository.overlayTodayRoutineScore(
+        points: e.value,
+        periodLabel: e.key,
+        today: now,
+        score: score,
+      );
+      final after = _lastPointLabel(next[e.key]!);
+      final afterBucket = _bucketValueLabel(next[e.key]!, bucketKey);
+      _log(
+        'overlay period=${e.key} bucket=$bucketKey '
+        'bucketBefore=$beforeBucket bucketAfter=$afterBucket '
+        'lastBefore=$before lastAfter=$after',
+      );
+    }
     chartByPeriod
       ..clear()
       ..addAll(next);
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   Future<void> loadCompletionForToday() async {
@@ -189,6 +254,10 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
       });
     }
     completionLoaded = true;
+    _log(
+      'completionLoaded doneFromApi=${done?.length ?? 0} '
+      'combinedChecked=${_combinedCheckedIndices().length}/$_totalChecklistItems',
+    );
     notifyListeners();
   }
 
@@ -209,9 +278,14 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   Future<void> _persistChecklistState() async {
     if (_persistInFlight) {
       _persistCoalesce = true;
+      _log('persist coalesced');
       return;
     }
     _persistInFlight = true;
+    _log(
+      'persist start indices=${_combinedCheckedIndices().toList()} '
+      'total=$_totalChecklistItems',
+    );
     try {
       do {
         _persistCoalesce = false;
@@ -219,42 +293,61 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
           indices: _combinedCheckedIndices(),
           totalExercises: _totalChecklistItems,
         );
+        _log('persist round saved');
       } while (_persistCoalesce);
-      await _syncChartOverlaysAfterChecklist();
+      _applyLocalOverlayToLoadedCharts();
     } finally {
       _persistInFlight = false;
+      _log('persist end');
     }
   }
 
   Future<String> reportRelapse() async {
     final total = uiData.dailyPlanItems.length + uiData.exerciseItems.length;
     await _repository.reportRelapse(totalExercises: total);
+    _log('action reportRelapse total=$total');
     setSelectedAction(0);
     setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, false));
     setExerciseDone(List<bool>.filled(uiData.exerciseItems.length, false));
-    await _refreshAllPeriodCharts();
+    _applyLocalOverlayToLoadedCharts();
     return 'Relapse reported. Progress reset for today.';
   }
 
   Future<String> completeDay() async {
     final total = uiData.dailyPlanItems.length + uiData.exerciseItems.length;
     await _repository.completeDay(totalExercises: total);
+    _log('action completeDay total=$total');
     setSelectedAction(1);
     setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, true));
     setExerciseDone(List<bool>.filled(uiData.exerciseItems.length, true));
-    await _refreshAllPeriodCharts();
+    _applyLocalOverlayToLoadedCharts();
     return 'Day marked as completed.';
   }
 
   Future<void> onPeriodTap(String period) async {
-    setSelectedPeriod(period);
+    if (selectedPeriod == period) return;
+    if (hasChartPeriod(period)) {
+      setSelectedPeriod(period);
+      return;
+    }
+    // Keep current chart visible while loading next period.
     await loadChartForPeriod(period);
+    setSelectedPeriod(period);
   }
 
   Future<String> onActionTap(int actionIndex) async {
+    if (_actionInFlight) {
+      _log('action ignored: already in flight');
+      return 'Please wait...';
+    }
+    _actionInFlight = true;
+    try {
     if (actionIndex == 0) {
       return reportRelapse();
     }
     return completeDay();
+    } finally {
+      _actionInFlight = false;
+    }
   }
 }

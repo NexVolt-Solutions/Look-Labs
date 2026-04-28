@@ -86,9 +86,7 @@ class WorkoutCompletionRepository {
     return null;
   }
 
-  /// Persists completion for [date]. For domain `workout`, [completed_indices] are **exercise**
-  /// positions in the generated plan; [recoveryCompletedIndices] are indices into
-  /// `ai_progress.recovery_checklist` — separate concepts, same document in API.
+  
   Future<bool> saveCompleted(
     DateTime date,
     Set<int> indices, {

@@ -50,7 +50,7 @@ class _HairHomeRemediesState extends State<HairHomeRemedies> {
             SizedBox(height: context.sh(20)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'Recommended Home Remedies',
+              titleText: 'Recommended Remedies',
               titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
@@ -86,13 +86,11 @@ class _HairHomeRemediesState extends State<HairHomeRemedies> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          name,
-                          style: TextStyle(
-                            fontSize: context.sp(18),
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.subHeadingColor,
-                          ),
+                        NormalText(
+                          titleText: name,
+                          titleSize: context.sp(18),
+                          titleWeight: FontWeight.w600,
+                          titleColor: AppColors.subHeadingColor,
                         ),
                         if (steps.isNotEmpty) SizedBox(height: context.sh(8)),
                         ...steps.map(
@@ -101,22 +99,18 @@ class _HairHomeRemediesState extends State<HairHomeRemedies> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  '• ',
-                                  style: TextStyle(
-                                    fontSize: context.sp(12),
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.iconColor,
-                                  ),
+                                NormalText(
+                                  subText: '• ',
+                                  subSize: context.sp(12),
+                                  subWeight: FontWeight.w500,
+                                  subColor: AppColors.iconColor,
                                 ),
                                 Expanded(
-                                  child: Text(
-                                    line,
-                                    style: TextStyle(
-                                      fontSize: context.sp(12),
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.iconColor,
-                                    ),
+                                  child: NormalText(
+                                    titleText: line.split('• ').last,
+                                    titleSize: context.sp(12),
+                                    titleWeight: FontWeight.w400,
+                                    titleColor: AppColors.iconColor,
                                   ),
                                 ),
                               ],
@@ -132,7 +126,7 @@ class _HairHomeRemediesState extends State<HairHomeRemedies> {
               SizedBox(height: context.sh(16)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'Safety tips',
+                titleText: 'Safety Tips',
                 titleSize: context.sp(18),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.headingColor,
@@ -144,22 +138,18 @@ class _HairHomeRemediesState extends State<HairHomeRemedies> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '• ',
-                        style: TextStyle(
-                          fontSize: context.sp(12),
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.subHeadingColor,
-                        ),
+                      NormalText(
+                        titleText: '• ',
+                        titleSize: context.sp(12),
+                        titleWeight: FontWeight.w500,
+                        titleColor: AppColors.subHeadingColor,
                       ),
-                      Expanded(
-                        child: Text(
-                          line,
-                          style: TextStyle(
-                            fontSize: context.sp(16),
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.subHeadingColor,
-                          ),
+                        Expanded(
+                          child: NormalText(
+                          titleText: line.split('• ').last,
+                          titleSize: context.sp(16),
+                          titleWeight: FontWeight.w400,
+                          titleColor: AppColors.subHeadingColor,
                         ),
                       ),
                     ],

@@ -101,7 +101,7 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
             );
           },
           text: workOutResultViewModel.getStartedLoading
-              ? 'Generating...'
+              ? 'Loading...'
               : workOutResultViewModel.hasGeneratedPlan
               ? 'Continue'
               : 'Get Started',
@@ -303,82 +303,6 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
               ),
               SizedBox(height: context.sh(16)),
             ],
-            if ((workOutResultViewModel.workoutData ?? widget.workoutData) !=
-                null) ...[
-              Builder(
-                builder: (context) {
-                  final hasExercises =
-                      workOutResultViewModel.morningRoutineList.isNotEmpty ||
-                      workOutResultViewModel.eveningRoutineList.isNotEmpty;
-                  final data =
-                      workOutResultViewModel.workoutData ?? widget.workoutData;
-                  return PlanContainer(
-                    margin: context.paddingSymmetricR(horizontal: 0),
-                    padding: context.paddingSymmetricR(
-                      horizontal: 12,
-                      vertical: 12,
-                    ),
-                    isSelected: false,
-                    onTap: () {
-                      if (!hasExercises || data == null) {
-                        ApiErrorHandler.showSnackBar(
-                          context,
-                          fallback: 'Tap Get Started to generate your workout',
-                        );
-                        return;
-                      }
-                      Navigator.pushNamed(
-                        context,
-                        RoutesName.DailyWorkoutRoutineScreen,
-                        arguments: data,
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              NormalText(
-                                titleText: 'Today\'s Workout',
-                                titleSize: context.sp(16),
-                                titleWeight: FontWeight.w600,
-                                titleColor: AppColors.subHeadingColor,
-                              ),
-                              SizedBox(height: context.sh(4)),
-                              NormalText(
-                                titleText:
-                                    '${workOutResultViewModel.totalExercises ?? 0} exercises • ${workOutResultViewModel.totalDurationMin ?? 0} min',
-                                titleSize: context.sp(12),
-                                titleWeight: FontWeight.w400,
-                                titleColor: AppColors.subHeadingColor
-                                    .withValues(alpha: 0.7),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (hasExercises)
-                          Icon(
-                            Icons.chevron_right,
-                            size: context.sh(24),
-                            color: AppColors.subHeadingColor,
-                          )
-                        else
-                          Icon(
-                            Icons.lock_outline,
-                            size: context.sh(24),
-                            color: AppColors.subHeadingColor.withValues(
-                              alpha: 0.5,
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: context.sh(18)),
-            ],
             if (workOutResultViewModel.postureInsight.isNotEmpty) ...[
               PlanContainer(
                 margin: context.paddingSymmetricR(horizontal: 0),
@@ -436,16 +360,13 @@ class _WorkOutResultScreenState extends State<WorkOutResultScreen> {
                           : 'Posture Insight',
                       titleSize: context.sp(16),
                       titleWeight: FontWeight.w500,
-                      titleColor: AppColors.subHeadingColor,
-                      subText:
+                       subText:
                           workOutResultViewModel
                               .postureInsightMessage
                               .isNotEmpty
                           ? workOutResultViewModel.postureInsightMessage
                           : workOutResultViewModel.postureInsight,
-                      subSize: context.sp(12),
-                      subWeight: FontWeight.w600,
-                    ),
+                      ),
                   ],
                 ),
               ),

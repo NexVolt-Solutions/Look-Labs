@@ -89,7 +89,8 @@ class RoutesName {
       case 'workout':
         return WorkOutResultScreen; // Skip old WorkOut questions; go to result after domain questions
       case 'diet':
-        return DietScreen;
+        // After API domain questions, go to diet result (avoid old static diet question flow).
+        return DietResultScreen;
       case 'fashion':
         return FashionScreen;
       case 'height':
@@ -105,6 +106,8 @@ class RoutesName {
   static String? dailyRoutineRouteForDomain(String domain) {
     final d = domain.trim().toLowerCase();
     switch (d) {
+      case 'workout':
+        return WorkOutProgressScreen;
       case 'skincare':
       case 'skin_care':
       case 'skin':

@@ -21,6 +21,38 @@ class DailyHeightRoutineViewModel extends ChangeNotifier {
   int get totalExercises =>
       morningRoutineList.length + eveningRoutineList.length;
 
+  int get morningCompletedCount {
+    final total = morningRoutineList.length;
+    if (total == 0) return 0;
+    var done = 0;
+    for (var i = 0; i < total; i++) {
+      if (_completedIndices.contains(i)) done++;
+    }
+    return done;
+  }
+
+  int get eveningCompletedCount {
+    final total = eveningRoutineList.length;
+    if (total == 0) return 0;
+    final offset = morningRoutineList.length;
+    var done = 0;
+    for (var i = 0; i < total; i++) {
+      if (_completedIndices.contains(offset + i)) done++;
+    }
+    return done;
+  }
+
+  int _sectionPercent(int done, int total) {
+    if (total <= 0) return 0;
+    return ((done / total) * 100).round().clamp(0, 100);
+  }
+
+  int get morningCompletionPercent =>
+      _sectionPercent(morningCompletedCount, morningRoutineList.length);
+
+  int get eveningCompletionPercent =>
+      _sectionPercent(eveningCompletedCount, eveningRoutineList.length);
+
   Future<void> markExerciseDone(int index) async {
     if (_completedIndices.contains(index)) {
       _completedIndices.remove(index);

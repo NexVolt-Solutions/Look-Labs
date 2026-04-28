@@ -302,9 +302,13 @@ class Routes {
           builder: (_) => WorkOutProgressScreen(workoutData: workoutData),
         );
       case RoutesName.DietResultScreen:
+        final dietData =
+            settings.arguments != null && settings.arguments is Map
+            ? Map<String, dynamic>.from(settings.arguments as Map)
+            : null;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => DietResultScreen(),
+          builder: (_) => DietResultScreen(resultData: dietData),
         );
       case RoutesName.DailyDietRoutineScreen:
         return MaterialPageRoute(

@@ -47,7 +47,8 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
     final args =
         (route == RoutesName.WorkOutResultScreen ||
             route == RoutesName.HeightResultScreen ||
-            route == RoutesName.RecoveryPathScreen)
+            route == RoutesName.RecoveryPathScreen ||
+            route == RoutesName.DietResultScreen)
         ? data
         : null;
     Navigator.pushNamed(context, route, arguments: args);

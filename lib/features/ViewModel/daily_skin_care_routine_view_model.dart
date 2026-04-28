@@ -6,6 +6,7 @@ import 'package:looklabs/Core/Network/models/workout_result_response.dart'
     show WorkoutAiExercises, WorkoutExercise;
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/image_upload_repository.dart';
+import 'package:looklabs/Repository/workout_completion_repository.dart';
 
 /// One optional row under routines (from `ai_remedies` / `ai_products` on domain flow).
 class SkincareRoutineExtraCard {
@@ -102,6 +103,7 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
   /// Bumped on every [loadSkincareRoutine] so an older in-flight request cannot
   /// overwrite state after a rescan / new navigation (singleton VM at app root).
   int _loadSeq = 0;
+  bool _savingCompletion = false;
 
   static bool _flowStatusIsProcessing(String? s) {
     final v = s?.toLowerCase().trim() ?? '';
@@ -230,12 +232,14 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
     if (index < 0 || index >= _todayChecked.length) return;
     _todayChecked[index] = !_todayChecked[index];
     notifyListeners();
+    unawaited(_saveRoutineCompletionForToday());
   }
 
   void toggleNightCheck(int index) {
     if (index < 0 || index >= _nightChecked.length) return;
     _nightChecked[index] = !_nightChecked[index];
     notifyListeners();
+    unawaited(_saveRoutineCompletionForToday());
   }
 
   void selectExtraCard(int index) {
@@ -408,6 +412,57 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
     _nightRoutine = night;
     _todayChecked = List<bool>.filled(_todayRoutine.length, false);
     _nightChecked = List<bool>.filled(_nightRoutine.length, false);
+    unawaited(_loadRoutineCompletionForToday(_loadSeq));
+  }
+
+  Future<void> _loadRoutineCompletionForToday(int seq) async {
+    if (seq != _loadSeq) return;
+    final total = _todayRoutine.length + _nightRoutine.length;
+    if (total <= 0) return;
+    final data = await WorkoutCompletionRepository.instance.loadCompletedExercises(
+      DateTime.now(),
+      domain: 'skincare',
+    );
+    if (seq != _loadSeq || data == null) return;
+    final raw = data['completed_indices'];
+    if (raw is! List) return;
+    final done = raw
+        .map((e) => e is int ? e : int.tryParse(e?.toString() ?? ''))
+        .whereType<int>()
+        .where((i) => i >= 0 && i < total)
+        .toSet();
+    for (var i = 0; i < _todayChecked.length; i++) {
+      _todayChecked[i] = done.contains(i);
+    }
+    final offset = _todayChecked.length;
+    for (var i = 0; i < _nightChecked.length; i++) {
+      _nightChecked[i] = done.contains(offset + i);
+    }
+    notifyListeners();
+  }
+
+  Future<void> _saveRoutineCompletionForToday() async {
+    if (_savingCompletion) return;
+    _savingCompletion = true;
+    try {
+      final completed = <int>{};
+      for (var i = 0; i < _todayChecked.length; i++) {
+        if (_todayChecked[i]) completed.add(i);
+      }
+      final offset = _todayChecked.length;
+      for (var i = 0; i < _nightChecked.length; i++) {
+        if (_nightChecked[i]) completed.add(offset + i);
+      }
+      final total = _todayChecked.length + _nightChecked.length;
+      await WorkoutCompletionRepository.instance.saveCompleted(
+        DateTime.now(),
+        completed,
+        domain: 'skincare',
+        totalExercises: total,
+      );
+    } finally {
+      _savingCompletion = false;
+    }
   }
 
   void _applyExtraCards(Map<String, dynamic> data) {

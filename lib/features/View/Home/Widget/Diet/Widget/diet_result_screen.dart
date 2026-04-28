@@ -13,13 +13,26 @@ import 'package:looklabs/Features/ViewModel/diet_result_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
 class DietResultScreen extends StatefulWidget {
-  const DietResultScreen({super.key});
+  const DietResultScreen({super.key, this.resultData});
+
+  final Map<String, dynamic>? resultData;
 
   @override
   State<DietResultScreen> createState() => _DietResultScreenState();
 }
 
 class _DietResultScreenState extends State<DietResultScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<DietResultScreenViewModel>().initializeFromResult(
+        widget.resultData,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final dietResultScreenViewModel = Provider.of<DietResultScreenViewModel>(
@@ -56,27 +69,27 @@ class _DietResultScreenState extends State<DietResultScreen> {
             SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'Improve strength & track your workout progress',
+              titleText: 'Your personalized diet analysis is ready.',
               titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(height: context.sh(18)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                dietResultScreenViewModel.gridData.length,
-                (index) {
-                  return HeightWidgetCont(
-                    // padding: context.paddingSymmetricR(horizontal: 11.5, vertical: 14.5),
-                    title: dietResultScreenViewModel.gridData[index]['title'],
-                    subTitle:
-                        dietResultScreenViewModel.gridData[index]['subtitle'],
-                    imgPath: dietResultScreenViewModel.gridData[index]['image'],
-                  );
-                },
+            if (dietResultScreenViewModel.gridData.isNotEmpty)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  dietResultScreenViewModel.gridData.length,
+                  (index) {
+                    return HeightWidgetCont(
+                      title: dietResultScreenViewModel.gridData[index]['title'],
+                      subTitle:
+                          dietResultScreenViewModel.gridData[index]['subtitle'],
+                      imgPath: dietResultScreenViewModel.gridData[index]['image'],
+                    );
+                  },
+                ),
               ),
-            ),
             SizedBox(height: context.sh(18)),
             NormalText(
               titleText: 'Today\'s Focus',
@@ -86,58 +99,59 @@ class _DietResultScreenState extends State<DietResultScreen> {
             ),
             SizedBox(height: context.sh(12)),
 
-            Wrap(
-              spacing: context.sw(5),
-              runSpacing: context.sh(11),
-              children: List.generate(dietResultScreenViewModel.exData.length, (
-                btnIndex,
-              ) {
-                final bool isSelected = dietResultScreenViewModel.isSelected(
+            if (dietResultScreenViewModel.exData.isNotEmpty)
+              Wrap(
+                spacing: context.sw(5),
+                runSpacing: context.sh(11),
+                children: List.generate(dietResultScreenViewModel.exData.length, (
                   btnIndex,
-                );
+                ) {
+                  final bool isSelected = dietResultScreenViewModel.isSelected(
+                    btnIndex,
+                  );
 
-                return PlanContainer(
-                  isSelected: isSelected,
-                  radius: BorderRadius.circular(context.radiusR(16)),
-                  margin: context.paddingSymmetricR(horizontal: 0),
-                  padding: context.paddingSymmetricR(horizontal: 14, vertical: 10),
-                  onTap: () {
-                    dietResultScreenViewModel.selectExercise(btnIndex);
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Center(
-                        child: SizedBox(
-                          height: context.sh(20),
-                          width: context.sw(20),
-                          child: SvgPicture.asset(
-                            dietResultScreenViewModel.exData[btnIndex]['image'],
-                            fit: BoxFit.scaleDown,
-                            colorFilter: ColorFilter.mode(
-                              isSelected
-                                  ? AppColors.pimaryColor
-                                  : AppColors.subHeadingColor,
-                              BlendMode.srcIn,
+                  return PlanContainer(
+                    isSelected: isSelected,
+                    radius: BorderRadius.circular(context.radiusR(16)),
+                    margin: context.paddingSymmetricR(horizontal: 0),
+                    padding: context.paddingSymmetricR(horizontal: 14, vertical: 10),
+                    onTap: () {
+                      dietResultScreenViewModel.selectExercise(btnIndex);
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Center(
+                          child: SizedBox(
+                            height: context.sh(20),
+                            width: context.sw(20),
+                            child: SvgPicture.asset(
+                              dietResultScreenViewModel.exData[btnIndex]['image'],
+                              fit: BoxFit.scaleDown,
+                              colorFilter: ColorFilter.mode(
+                                isSelected
+                                    ? AppColors.pimaryColor
+                                    : AppColors.subHeadingColor,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: context.sw(8)),
-                      NormalText(
-                        titleText:
-                            dietResultScreenViewModel.exData[btnIndex]['title'],
-                        titleSize: context.sp(14),
-                        titleWeight: FontWeight.w500,
-                        titleColor: isSelected
-                            ? AppColors.pimaryColor
-                            : AppColors.subHeadingColor,
-                      ),
-                    ],
-                  ),
-                );
-              }),
-            ),
+                        SizedBox(width: context.sw(8)),
+                        NormalText(
+                          titleText:
+                              dietResultScreenViewModel.exData[btnIndex]['title'],
+                          titleSize: context.sp(14),
+                          titleWeight: FontWeight.w500,
+                          titleColor: isSelected
+                              ? AppColors.pimaryColor
+                              : AppColors.subHeadingColor,
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
             SizedBox(height: context.sh(18)),
             PlanContainer(
               padding: context.paddingSymmetricR(horizontal: 12, vertical: 12),
@@ -184,12 +198,11 @@ class _DietResultScreenState extends State<DietResultScreen> {
                   SizedBox(height: context.sh(8)),
 
                   NormalText(
-                    titleText: 'Posture Insight',
+                    titleText: dietResultScreenViewModel.insightTitle,
                     titleSize: context.sp(16),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
-                    subText:
-                        'Consistency improves stamina, strength & metabolism over time. Keep pushing!',
+                    subText: dietResultScreenViewModel.insightText,
                     subSize: context.sp(12),
                     subWeight: FontWeight.w600,
                   ),
@@ -206,11 +219,11 @@ class _DietResultScreenState extends State<DietResultScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   NormalText(
-                    titleText: 'Today\'s Meals',
+                    titleText: dietResultScreenViewModel.todayMealsTitle,
                     titleSize: context.sp(16),
                     titleWeight: FontWeight.w500,
                     titleColor: AppColors.subHeadingColor,
-                    subText: '3 meals + 2 snacks • 22 min prep',
+                    subText: dietResultScreenViewModel.todayMealsSubTitle,
                     subSize: context.sp(12),
                     subWeight: FontWeight.w600,
                   ),

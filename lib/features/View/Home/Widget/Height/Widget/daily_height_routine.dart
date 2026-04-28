@@ -23,6 +23,70 @@ class DailyHeightRoutineScreen extends StatefulWidget {
 }
 
 class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
+  Widget _buildSectionPercentCard(
+    BuildContext context, {
+    required String label,
+    required int percent,
+    required Widget icon,
+  }) {
+    return Expanded(
+      child: PlanContainer(
+        isSelected: false,
+        onTap: () {},
+        padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
+        child: Column(
+          children: [
+            Container(
+              height: context.sh(28),
+              width: context.sw(28),
+              decoration: BoxDecoration(
+                color: AppColors.backGroundColor,
+                borderRadius: BorderRadius.circular(context.radiusR(10)),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.customContainerColorUp.withValues(
+                      alpha: 0.4,
+                    ),
+                    offset: const Offset(3, 3),
+                    blurRadius: 4,
+                  ),
+                  BoxShadow(
+                    color: AppColors.customContinerColorDown.withValues(
+                      alpha: 0.4,
+                    ),
+                    offset: const Offset(-3, -3),
+                    blurRadius: 4,
+                  ),
+                ],
+              ),
+              child: Center(
+                child: SizedBox(
+                  height: context.sh(32),
+                  width: context.sw(32),
+                  child: icon,
+                ),
+              ),
+            ),
+            SizedBox(height: context.sh(6)),
+            NormalText(
+              titleText: '$percent%',
+              titleSize: context.sp(12),
+              titleWeight: FontWeight.w600,
+              titleColor: AppColors.subHeadingColor,
+            ),
+            SizedBox(height: context.sh(2)),
+            NormalText(
+              titleText: label,
+              titleSize: context.sp(10),
+              titleWeight: FontWeight.w400,
+              titleColor: AppColors.subHeadingColor,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -189,9 +253,39 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                   HeightFlowUiData.dailySubtitleFrom(widget.resultData),
               titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
-              titleColor: AppColors.subHeadingColor,
-            ),
+             ),
             SizedBox(height: context.sh(18)),
+            if (hasAny)
+              Row(
+                children: [
+                  _buildSectionPercentCard(
+                    context,
+                    label: 'Evening',
+                    percent: vm.eveningCompletionPercent,
+                    icon: const SizedBox(
+                      child: Icon(
+                        Icons.nightlight_round,
+                        size: 20,
+                        color: AppColors.pimaryColor,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: context.sw(12)),
+                  _buildSectionPercentCard(
+                    context,
+                    label: 'Morning',
+                    percent: vm.morningCompletionPercent,
+                    icon: SvgPicture.asset(
+                      AppAssets.sunIcon,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.fireColor,
+                        BlendMode.srcIn,
+                      ),
+                      fit: BoxFit.scaleDown,
+                    ),
+                  ),
+                ],
+              ),
             if (!hasAny)
               Padding(
                 padding: EdgeInsets.only(top: context.sh(24)),
@@ -283,7 +377,7 @@ class _DailyHeightRoutineScreenState extends State<DailyHeightRoutineScreen> {
                 ),
               if (vm.morningRoutineList.isNotEmpty &&
                   vm.eveningRoutineList.isNotEmpty)
-                SizedBox(height: context.sh(16)),
+                // SizedBox(height: context.sh(16)),
               if (vm.eveningRoutineList.isNotEmpty)
                 PlanContainer(
                   padding: context.paddingSymmetricR(

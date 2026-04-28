@@ -81,23 +81,22 @@ class RecoveryProgressSection extends StatelessWidget {
           radius: BorderRadius.circular(context.radiusR(10)),
           isSelected: false,
           onTap: () {},
-          child: chartLoading
-              ? SizedBox(
-                  height: context.sh(120),
-                  child: const Center(child: CircularProgressIndicator()),
-                )
-              : SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    width: (chartData.length * 56.0).clamp(320.0, 900.0),
-                    child: LineChartWidget(
-                      workoutChartData: chartData,
-                      yAxisMinimum: 0,
-                      yAxisMaximum: 100,
-                      valueDisplaySuffix: '%',
-                    ),
-                  ),
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 180),
+            opacity: chartLoading ? 0.75 : 1,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: (chartData.length * 56.0).clamp(320.0, 900.0),
+                child: LineChartWidget(
+                  workoutChartData: chartData,
+                  yAxisMinimum: 0,
+                  yAxisMaximum: 100,
+                  valueDisplaySuffix: '%',
                 ),
+              ),
+            ),
+          ),
         ),
         SizedBox(height: context.sh(10)),
         SizedBox(
