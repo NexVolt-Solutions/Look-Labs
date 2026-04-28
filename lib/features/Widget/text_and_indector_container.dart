@@ -23,7 +23,7 @@ class TextAndIndectorContiner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: context.paddingSymmetricR(horizontal: 20, vertical: 10),
+      padding: context.paddingSymmetricR(horizontal: 16, vertical: 10),
       margin: context.paddingSymmetricR(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(context.radiusR(16)),
@@ -48,23 +48,30 @@ class TextAndIndectorContiner extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            title ?? '',
-            style: TextStyle(
+title?.split(' ').first ?? '',            style: TextStyle(
               fontSize: context.sp(12),
               fontWeight: FontWeight.w600,
               color: AppColors.notSelectedColor,
             ),
           ),
           Text(
-            subTitle ?? '',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: context.sp(16.32),
+            title?.split(' ').last ?? '',
+              style: TextStyle(
+              fontSize: context.sp(14),
               fontWeight: FontWeight.w600,
               color: AppColors.subHeadingColor,
             ),
           ),
+          // Text(
+          //   subTitle ?? '',
+          //   maxLines: 2,
+          //   overflow: TextOverflow.ellipsis,
+          //   style: TextStyle(
+          //     fontSize: context.sp(16.32),
+          //     fontWeight: FontWeight.w600,
+          //     color: AppColors.subHeadingColor,
+          //   ),
+          // ),
           if (progress != null || usePlaceholderProgress)
             LinearSliderWidget(
               showTopIcon: false,

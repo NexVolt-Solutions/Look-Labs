@@ -18,6 +18,13 @@ class HairTopProduct extends StatefulWidget {
 }
 
 class _HairTopProductState extends State<HairTopProduct> {
+  ({bool hasAm, bool hasPm}) _timeFlags(String raw) {
+    final t = raw.toUpperCase();
+    final hasAm = t.contains('AM');
+    final hasPm = t.contains('PM');
+    return (hasAm: hasAm, hasPm: hasPm);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -87,24 +94,24 @@ class _HairTopProductState extends State<HairTopProduct> {
                       itemBuilder: (context, index) {
                         final row = rows[index];
                         final tags = (row['tags'] as List?)?.cast<String>() ?? [];
-                        final tod =
-                            (row['time_of_day'] as String? ?? '').toUpperCase();
-                        final isPmOnly =
-                            tod.contains('PM') && !tod.contains('AM');
-                        final isFirstIndex = index == 0;
+                        final rawTod =
+                            (row['time_of_day'] as String? ?? '').trim();
+                        final flags = _timeFlags(rawTod);
+                        final icon1 = flags.hasPm
+                            ? AppAssets.nightIcon
+                            : (flags.hasAm ? AppAssets.sunIcon : null);
+                        final secondIcon = flags.hasAm && flags.hasPm
+                            ? AppAssets.sunIcon
+                            : null;
 
                         return ProductWidget(
                           index: index,
                           title: row['title'] as String?,
                           disc: row['description'] as String?,
-                          icon1: isPmOnly
-                              ? AppAssets.nightIcon
-                              : AppAssets.sunIcon,
-                          secondIcon: isFirstIndex ? null : AppAssets.sunIcon,
-                          text: isFirstIndex
-                              ? (row['time_of_day'] as String?)
-                              : null,
-                          showGradient: !isFirstIndex,
+                          icon1: icon1,
+                          secondIcon: secondIcon,
+                          text: null,
+                          showGradient: flags.hasAm && flags.hasPm,
                           viewmodel: selectionVm,
                           tagLabels: tags,
                           onTap: () {

@@ -3,8 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/custom_container.dart';
 import 'package:looklabs/Features/Widget/custom_stepper.dart';
+import 'package:looklabs/Features/Widget/light_card_widget.dart';
 import 'package:looklabs/Features/Widget/line_chart_widget.dart';
-import 'package:looklabs/Features/Widget/speed_meter_widget.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Features/Widget/routine_detail_nav_card.dart';
@@ -28,12 +28,12 @@ class DailySkinCareRoutine extends StatefulWidget {
 }
 
 class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
-  late PageController _pageController;
+  final PageController _pageController = PageController();
+  int _currentIndicatorPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<ProgressViewModel>().loadProgressForWeek();
@@ -47,11 +47,14 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
     super.dispose();
   }
 
-  String _formatPercent(dynamic pers) {
-    final s = pers?.toString().trim() ?? '';
-    if (s.isEmpty) return '';
-    if (s.contains('%')) return s;
-    return '$s%';
+  bool _hasDisplayData(Map<String, dynamic> item) {
+    final title = item['title']?.toString().trim() ?? '';
+    final subTitle = item['subTitle']?.toString().trim() ?? '';
+    final hasLabelData = title.isNotEmpty || subTitle.isNotEmpty;
+    final hasPercentData =
+        item['pers']?.toString().trim().isNotEmpty == true ||
+        item['progress'] is num;
+    return hasLabelData && hasPercentData;
   }
 
   @override
@@ -59,6 +62,29 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
     final dailySkinCareRoutineViewModel = context
         .watch<DailySkinCareRoutineViewModel>();
     final progressViewModel = context.watch<ProgressViewModel>();
+    final indicatorPages = dailySkinCareRoutineViewModel.indicatorPages;
+    final visiblePageIndices = <int>[];
+    final visibleIndicatorPages = <List<Map<String, dynamic>>>[];
+    for (var i = 0; i < indicatorPages.length; i++) {
+      final filteredPage = indicatorPages[i].where(_hasDisplayData).toList();
+      if (filteredPage.isEmpty) continue;
+      visiblePageIndices.add(i);
+      visibleIndicatorPages.add(filteredPage);
+    }
+    final hasVisibleIndicatorPages = visibleIndicatorPages.isNotEmpty;
+    if (hasVisibleIndicatorPages &&
+        _currentIndicatorPage >= visibleIndicatorPages.length) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final target = visibleIndicatorPages.length - 1;
+        if (_currentIndicatorPage != target) {
+          setState(() => _currentIndicatorPage = target);
+        }
+        if (_pageController.hasClients) {
+          _pageController.jumpToPage(target);
+        }
+      });
+    }
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
@@ -67,228 +93,12 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
           padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
-              title: 'Daily Skin Care Routine',
+              title: 'Daily Skin Routine',
               onTap: () {
                 Navigator.pop(context);
               },
-              onRescanTap: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  RoutesName.SkinReviewScansScreen,
-                );
-              },
+               
             ),
-            if (dailySkinCareRoutineViewModel.showRoutineRefreshing)
-              Padding(
-                padding: EdgeInsets.only(top: context.sh(12)),
-                child: LinearProgressIndicator(
-                  color: AppColors.pimaryColor,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-            if (dailySkinCareRoutineViewModel.loadError != null)
-              Padding(
-                padding: EdgeInsets.only(top: context.sh(8)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      dailySkinCareRoutineViewModel.loadError!,
-                      style: TextStyle(
-                        color: AppColors.redColor,
-                        fontSize: context.sp(12),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () =>
-                          dailySkinCareRoutineViewModel.loadSkincareRoutine(),
-                      child: Text(
-                        'Retry',
-                        style: TextStyle(
-                          color: AppColors.pimaryColor,
-                          fontSize: context.sp(14),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            if (dailySkinCareRoutineViewModel.aiMessage != null &&
-                dailySkinCareRoutineViewModel.aiMessage!.trim().isNotEmpty)
-              Padding(
-                padding: EdgeInsets.only(top: context.sh(12)),
-                child: Text(
-                  dailySkinCareRoutineViewModel.aiMessage!,
-                  style: TextStyle(
-                    fontSize: context.sp(13),
-                    color: AppColors.subHeadingColor,
-                  ),
-                ),
-              ),
-            if (dailySkinCareRoutineViewModel.flowProgressPercent != null ||
-                (dailySkinCareRoutineViewModel.flowProgressSummary != null &&
-                    dailySkinCareRoutineViewModel
-                        .flowProgressSummary!
-                        .isNotEmpty))
-              Padding(
-                padding: EdgeInsets.only(top: context.sh(8)),
-                child: Text(
-                  [
-                    if (dailySkinCareRoutineViewModel.flowProgressPercent !=
-                        null)
-                      '${dailySkinCareRoutineViewModel.flowProgressPercent!.toStringAsFixed(0)}%',
-                    if (dailySkinCareRoutineViewModel.flowProgressSummary !=
-                            null &&
-                        dailySkinCareRoutineViewModel
-                            .flowProgressSummary!
-                            .isNotEmpty)
-                      dailySkinCareRoutineViewModel.flowProgressSummary!,
-                  ].join(' · '),
-                  style: TextStyle(
-                    fontSize: context.sp(12),
-                    color: AppColors.subHeadingColor,
-                  ),
-                ),
-              ),
-            if (dailySkinCareRoutineViewModel.flowStatus != null &&
-                dailySkinCareRoutineViewModel.flowStatus!.isNotEmpty)
-              Padding(
-                padding: EdgeInsets.only(top: context.sh(4)),
-                child: Text(
-                  'Status: ${dailySkinCareRoutineViewModel.flowStatus}',
-                  style: TextStyle(
-                    fontSize: context.sp(11),
-                    color: AppColors.subHeadingColor.withValues(alpha: 0.85),
-                  ),
-                ),
-              ),
-            SizedBox(height: context.sh(24)),
-
-            if (dailySkinCareRoutineViewModel.hasIndicatorGrid)
-              SizedBox(
-                height: context.sh(400),
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount:
-                      dailySkinCareRoutineViewModel.indicatorPages.length,
-                  itemBuilder: (_, pageIndex) {
-                    final pageData =
-                        dailySkinCareRoutineViewModel.indicatorPages[pageIndex];
-                    final isLastPage =
-                        pageIndex ==
-                        dailySkinCareRoutineViewModel.indicatorPages.length - 1;
-                    final showConcernsMeter =
-                        isLastPage && pageData.length >= 2;
-
-                    return SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CustomStepper(
-                            currentStep: pageIndex,
-                            steps: dailySkinCareRoutineViewModel
-                                .indicatorStepperLabels,
-                          ),
-                          SizedBox(height: context.sh(12)),
-                          if (dailySkinCareRoutineViewModel
-                              .sectionHeadingForPage(pageIndex)
-                              .isNotEmpty)
-                            Row(
-                              children: [
-                                SvgPicture.asset(
-                                  AppAssets.starIcon,
-                                  height: context.sh(24),
-                                  width: context.sw(24),
-                                  colorFilter: const ColorFilter.mode(
-                                    AppColors.pimaryColor,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                SizedBox(width: context.sw(8)),
-                                Expanded(
-                                  child: Text(
-                                    dailySkinCareRoutineViewModel
-                                        .sectionHeadingForPage(pageIndex),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: context.sp(18),
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.headingColor,
-                                      fontFamily: 'Raleway',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          if (!showConcernsMeter)
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    childAspectRatio: 4 / 3,
-                                  ),
-                              itemCount: pageData.length,
-                              itemBuilder: (_, index) {
-                                final item = pageData[index];
-                                final raw = item['progress'];
-                                final progress = raw is num
-                                    ? raw.toDouble()
-                                    : double.tryParse(raw?.toString() ?? '');
-                                return TextAndIndectorContiner(
-                                  title: item['title']?.toString(),
-                                  subTitle: item['subTitle']?.toString(),
-                                  pers: item['pers']?.toString(),
-                                  progress: progress,
-                                  usePlaceholderProgress: false,
-                                );
-                              },
-                            ),
-                          if (showConcernsMeter)
-                            SpeedMeterWidget(
-                              box1Title: pageData[0]['title']?.toString(),
-                              box1subTitle: pageData[0]['subTitle']?.toString(),
-                              box2Title: pageData[1]['title']?.toString(),
-                              box2subTitle: pageData[1]['subTitle']?.toString(),
-                              box1per: _formatPercent(pageData[0]['pers']),
-                              box2per: _formatPercent(pageData[1]['pers']),
-                              smHTitle: dailySkinCareRoutineViewModel
-                                  .concernsMeterHeading,
-                              smTitle: pageData[0]['title']?.toString() ?? '',
-                              smsSubTitle:
-                                  pageData[0]['subTitle']?.toString() ?? '',
-                              gaugeNeedleValue:
-                                  SpeedMeterWidget.needleFromConcernRows(
-                                pageData,
-                              ),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-            if (dailySkinCareRoutineViewModel.hasIndicatorGrid &&
-                dailySkinCareRoutineViewModel.indicatorPages.length > 1) ...[
-              SizedBox(height: context.sh(12)),
-              Center(
-                child: SmoothPageIndicator(
-                  controller: _pageController,
-                  count: dailySkinCareRoutineViewModel.indicatorPages.length,
-                  effect: ExpandingDotsEffect(
-                    dotHeight: context.sh(8),
-                    dotWidth: context.sw(8),
-                    expansionFactor: 3,
-                    spacing: 6,
-                    activeDotColor: AppColors.pimaryColor,
-                    dotColor: AppColors.pimaryColor.withValues(alpha: 0.3),
-                  ),
-                ),
-              ),
-            ],
 
             SizedBox(height: context.sh(18)),
             SizedBox(
@@ -317,7 +127,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                         margin: EdgeInsets.only(right: context.sw(12)),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.pimaryColor),
+                          border: Border.all(color: AppColors.pimaryColor,width: 2),
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
@@ -362,20 +172,171 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
               ),
             ),
 
-            SizedBox(height: context.sh(18)),
-            NormalText(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'Today’s Routine',
-              titleSize: context.sp(18),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.headingColor,
-            ),
-            SizedBox(height: context.sh(10)),
+            if (dailySkinCareRoutineViewModel.showRoutineRefreshing)
+              Padding(
+                padding: EdgeInsets.only(top: context.sh(12)),
+                child: LinearProgressIndicator(
+                  color: AppColors.pimaryColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            if (dailySkinCareRoutineViewModel.loadError != null)
+              Padding(
+                padding: EdgeInsets.only(top: context.sh(8)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      dailySkinCareRoutineViewModel.loadError!,
+                      style: TextStyle(
+                        color: AppColors.redColor,
+                        fontSize: context.sp(12),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          dailySkinCareRoutineViewModel.loadSkincareRoutine(),
+                      child: Text(
+                        'Retry',
+                        style: TextStyle(
+                          color: AppColors.pimaryColor,
+                          fontSize: context.sp(14),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            if (hasVisibleIndicatorPages)
+              CustomStepper(
+                currentStep: _currentIndicatorPage.clamp(
+                  0,
+                  visibleIndicatorPages.length - 1,
+                ),
+                steps: visiblePageIndices
+                    .map(
+                      (i) => dailySkinCareRoutineViewModel
+                          .sectionHeadingForPage(i),
+                    )
+                    .map((s) => s.trim().isEmpty ? ' ' : s.trim())
+                    .toList(),
+              ),
+            // if (hasVisibleIndicatorPages)
+            //   SizedBox(height: context.sh(12)),
+            if (hasVisibleIndicatorPages)
+              SizedBox(
+                height: context.sh(265),
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    if (!mounted || _currentIndicatorPage == index) return;
+                    setState(() => _currentIndicatorPage = index);
+                  },
+                  itemCount: visibleIndicatorPages.length,
+                  itemBuilder: (_, pageIndex) {
+                    final pageData = visibleIndicatorPages[pageIndex];
+                    final sourcePageIndex = visiblePageIndices[pageIndex];
+
+                    return SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if (dailySkinCareRoutineViewModel
+                              .sectionHeadingForPage(sourcePageIndex)
+                              .isNotEmpty)
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  AppAssets.starIcon,
+                                  height: context.sh(24),
+                                  width: context.sw(24),
+                                  colorFilter: const ColorFilter.mode(
+                                    AppColors.pimaryColor,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                SizedBox(width: context.sw(8)),
+                                Expanded(
+                                  child: Text(
+                                    dailySkinCareRoutineViewModel
+                                        .sectionHeadingForPage(sourcePageIndex),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: context.sp(18),
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.headingColor,
+                                      fontFamily: 'Raleway',
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 4 / 3,
+                                ),
+                            itemCount: pageData.length,
+                            itemBuilder: (_, index) {
+                              final item = pageData[index];
+                              final raw = item['progress'];
+                              final progress = raw is num
+                                  ? raw.toDouble()
+                                  : double.tryParse(raw?.toString() ?? '');
+                              return TextAndIndectorContiner(
+                                title: item['title']?.toString(),
+                                subTitle: item['subTitle']?.toString(),
+                                pers: item['pers']?.toString(),
+                                progress: progress,
+                                usePlaceholderProgress: false,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+            if (hasVisibleIndicatorPages &&
+                visibleIndicatorPages.length > 1) ...[
+              SizedBox(height: context.sh(12)),
+              Center(
+                child: SmoothPageIndicator(
+                  controller: _pageController,
+                  count: visibleIndicatorPages.length,
+                  effect: ExpandingDotsEffect(
+                    dotHeight: context.sh(8),
+                    dotWidth: context.sw(8),
+                    expansionFactor: 3,
+                    spacing: 6,
+                    activeDotColor: AppColors.pimaryColor,
+                    dotColor: AppColors.pimaryColor.withValues(alpha: 0.3),
+                  ),
+                ),
+              ),
+            ],
+            SizedBox(height: context.sh(12)),
+            if (dailySkinCareRoutineViewModel.todayRoutine.isNotEmpty)
+              NormalText(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                titleText: 'Today’s Routine',
+                titleSize: context.sp(18),
+                titleWeight: FontWeight.w600,
+                titleColor: AppColors.headingColor,
+              ),
+            SizedBox(height: context.sh(8)),
             if (dailySkinCareRoutineViewModel.todayRoutine.isNotEmpty)
               PlanContainer(
                 padding: context.paddingSymmetricR(
                   horizontal: 14,
-                  vertical: 18,
+                  vertical: 14,
                 ),
                 isSelected: false,
                 onTap: () {},
@@ -419,7 +380,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                                     style: TextStyle(
                                       fontSize: context.sp(10),
                                       fontWeight: FontWeight.w400,
-                                      color: AppColors.subHeadingColor,
+                                      color: AppColors.grey,
                                     ),
                                   ),
                                 ],
@@ -433,7 +394,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                 ),
               ),
 
-            SizedBox(height: context.sh(12)),
+            SizedBox(height: context.sh(8)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: 'Night’s Routine',
@@ -441,12 +402,12 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
               titleWeight: FontWeight.w600,
               titleColor: AppColors.headingColor,
             ),
-            SizedBox(height: context.sh(12)),
+            SizedBox(height: context.sh(8)),
             if (dailySkinCareRoutineViewModel.nightRoutine.isNotEmpty)
               PlanContainer(
                 padding: context.paddingSymmetricR(
                   horizontal: 14,
-                  vertical: 18,
+                  vertical: 14,
                 ),
                 isSelected: false,
                 onTap: () {},
@@ -503,7 +464,7 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                   ),
                 ),
               ),
-            SizedBox(height: context.sh(10)),
+            SizedBox(height: context.sh(12)),
 
             Row(
               children: List.generate(progressViewModel.buttonName.length, (
@@ -579,7 +540,8 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
               return Padding(
                 padding: EdgeInsets.only(
                   bottom:
-                      index < dailySkinCareRoutineViewModel.extraCards.length - 1
+                      index <
+                          dailySkinCareRoutineViewModel.extraCards.length - 1
                       ? context.sh(22)
                       : 0,
                 ),
@@ -587,13 +549,11 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (title.isNotEmpty)
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: context.sp(16),
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.headingColor,
-                        ),
+                      NormalText(
+                        titleText: title,
+                        titleSize: context.sp(18),
+                        titleWeight: FontWeight.w600,
+                        titleColor: AppColors.headingColor,
                       ),
                     if (title.isNotEmpty) SizedBox(height: context.sh(10)),
                     RoutineDetailNavCard(
@@ -616,7 +576,12 @@ class _DailySkinCareRoutineState extends State<DailySkinCareRoutine> {
                   ],
                 ),
               );
-            }),
+            }),         SizedBox(height: context.sh(24)),
+            if (dailySkinCareRoutineViewModel.aiMessage != null &&
+                dailySkinCareRoutineViewModel.aiMessage!.isNotEmpty) ...[
+              SizedBox(height: context.sh(12)),
+              LightCardWidget(text: dailySkinCareRoutineViewModel.aiMessage!),
+            ],
             SizedBox(height: context.sh(30)),
           ],
         ),
@@ -633,7 +598,8 @@ class _SkincareRoutineProgressChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (progressViewModel.progressLoading) {
+    if (progressViewModel.progressLoading &&
+        !progressViewModel.hasProgressSnapshot) {
       return SizedBox(
         height: context.sh(200),
         child: Center(
@@ -653,9 +619,24 @@ class _SkincareRoutineProgressChart extends StatelessWidget {
     final pts = progressViewModel.progressDays
         .map((d) => SalesData(d.day, d.score.toDouble()))
         .toList();
-    if (pts.isEmpty) {
-      return SizedBox(height: context.sh(120));
+    if (pts.isNotEmpty) {
+      return LineChartWidget(workoutChartData: pts);
     }
-    return LineChartWidget(workoutChartData: pts);
+
+    // Fallback: graph API can return empty `scores` for all domains.
+    // In that case, show domain-level overview points instead of blank space.
+    final domainPts = progressViewModel.progressDomains
+        .where((d) => d.hasData || d.score > 0)
+        .map((d) => SalesData(d.domain, d.score.toDouble()))
+        .toList();
+    if (domainPts.isNotEmpty) {
+      return LineChartWidget(
+        workoutChartData: domainPts,
+        yAxisMinimum: 0,
+        yAxisMaximum: 100,
+        valueDisplaySuffix: '%',
+      );
+    }
+    return SizedBox(height: context.sh(120));
   }
 }

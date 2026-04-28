@@ -274,7 +274,9 @@ class _DailyHairCareRoutineState extends State<DailyHairCareRoutine> {
                     final isLastPage =
                         pageIndex == vm.indicatorPages.length - 1;
                     final showConcernsMeter =
-                        isLastPage && pageData.length >= 2;
+                        vm.useConcernsSpeedometer &&
+                        isLastPage &&
+                        pageData.length >= 2;
 
                     return SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -602,7 +604,8 @@ class _HairRoutineProgressChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (progressViewModel.progressLoading) {
+    if (progressViewModel.progressLoading &&
+        !progressViewModel.hasProgressSnapshot) {
       return SizedBox(
         height: context.sh(200),
         child: Center(
@@ -622,9 +625,23 @@ class _HairRoutineProgressChart extends StatelessWidget {
     final pts = progressViewModel.progressDays
         .map((d) => SalesData(d.day, d.score.toDouble()))
         .toList();
-    if (pts.isEmpty) {
-      return SizedBox(height: context.sh(120));
+    if (pts.isNotEmpty) {
+      return LineChartWidget(workoutChartData: pts);
     }
-    return LineChartWidget(workoutChartData: pts);
+
+    final domainPts = progressViewModel.progressDomains
+        .where((d) => d.hasData || d.score > 0)
+        .map((d) => SalesData(d.domain, d.score.toDouble()))
+        .toList();
+    if (domainPts.isNotEmpty) {
+      return LineChartWidget(
+        workoutChartData: domainPts,
+        yAxisMinimum: 0,
+        yAxisMaximum: 100,
+        valueDisplaySuffix: '%',
+      );
+    }
+
+    return SizedBox(height: context.sh(120));
   }
 }

@@ -34,7 +34,7 @@ class AppColors {
   static const Color black = Color(0x1A000000);
   static const Color customContinerColorDown = Color(0xFFFFFFFF);
   static const Color customContainerColorUp = Color(0xFFAEAEC0);
-  static const Color grey = Colors.grey;
+  static const Color grey = Color(0xff56656C);
 
   static const LinearGradient blackWhiteGradient = LinearGradient(
     begin: Alignment.topCenter,

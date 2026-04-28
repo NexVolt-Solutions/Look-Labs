@@ -3,6 +3,7 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart'
     hide BoxDecoration;
+import 'package:looklabs/Features/Widget/normal_text.dart';
 
 class RoutineDetailNavCard extends StatelessWidget {
   const RoutineDetailNavCard({
@@ -56,16 +57,11 @@ class RoutineDetailNavCard extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    label,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: context.sp(16),
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.headingColor,
-                      height: 1.25,
-                    ),
+                  child: NormalText (
+                    titleText: label,
+                    titleSize: context.sp(16),
+                    titleWeight: FontWeight.bold,
+                    titleColor: AppColors.headingColor,
                   ),
                 ),
                 SizedBox(width: context.sw(8)),

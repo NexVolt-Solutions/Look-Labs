@@ -53,8 +53,6 @@ import 'package:looklabs/Features/ViewModel/work_out_progress_screen_view_model.
 import 'package:looklabs/features/ViewModel/question_answer_view_model.dart';
 import 'package:provider/provider.dart';
 
-/// [Image.network] reports decode/load errors here even when [Image.errorBuilder]
-/// handles them; offline / bad DNS spams the console. Suppress only that path.
 bool _isBenignImageResourceNetworkFailure(FlutterErrorDetails details) {
   if (details.library != 'image resource service') return false;
   final msg = details.exception.toString();

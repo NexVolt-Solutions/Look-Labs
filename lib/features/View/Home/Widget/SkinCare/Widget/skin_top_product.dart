@@ -18,6 +18,13 @@ class SkinTopProduct extends StatefulWidget {
 }
 
 class _SkinTopProductState extends State<SkinTopProduct> {
+  ({bool hasAm, bool hasPm}) _timeFlags(String raw) {
+    final t = raw.toUpperCase();
+    final hasAm = t.contains('AM');
+    final hasPm = t.contains('PM');
+    return (hasAm: hasAm, hasPm: hasPm);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -41,43 +48,37 @@ class _SkinTopProductState extends State<SkinTopProduct> {
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
-        child: Column(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: context.paddingSymmetricR(horizontal: 20),
-              child: AppBarContainer(
-                title: 'Recommended Products',
-                onTap: () => Navigator.pop(context),
-                showHeart: true,
-                onHeartTap: () {},
-              ),
+              child: AppBarContainer(title: 'Top Products', onTap: () => Navigator.pop(context)),
             ),
-            SizedBox(height: context.sh(20)),
+            SizedBox(height: context.sh(24)),
             Padding(
               padding: context.paddingSymmetricR(horizontal: 20),
               child: NormalText(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                titleText: 'Curated for your skin concerns',
-                titleSize: context.sp(18),
-                titleWeight: FontWeight.w600,
-                titleColor: AppColors.headingColor,
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 subAlign: TextAlign.start,
+                 subText: 'Curated for your skin concerns',
+                 subSize: context.sp(16),
+                 subWeight: FontWeight.w600,
+                 subColor: AppColors.headingColor,
               ),
             ),
-            SizedBox(height: context.sh(20)),
+            SizedBox(height: context.sh(10)),
             Expanded(
               child: rows.isEmpty
                   ? Center(
                       child: Padding(
                         padding: context.paddingSymmetricR(horizontal: 24),
-                        child: Text(
-                          routineVm.showRoutineRefreshing
+                        child: NormalText(
+                          subAlign: TextAlign.center,
+                          subText: routineVm.showRoutineRefreshing
                               ? 'Loading…'
                               : 'No product recommendations yet. Complete your skincare assessment.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: context.sp(14),
-                            color: AppColors.subHeadingColor,
-                          ),
+                          subSize: context.sp(14),
+                          subColor: AppColors.subHeadingColor,
                         ),
                       ),
                     )
@@ -88,24 +89,24 @@ class _SkinTopProductState extends State<SkinTopProduct> {
                         final row = rows[index];
                         final tags =
                             (row['tags'] as List?)?.cast<String>() ?? [];
-                        final tod =
-                            (row['time_of_day'] as String? ?? '').toUpperCase();
-                        final isPmOnly =
-                            tod.contains('PM') && !tod.contains('AM');
-                        final isFirstIndex = index == 0;
+                        final rawTod = (row['time_of_day'] as String? ?? '')
+                            .trim();
+                        final flags = _timeFlags(rawTod);
+                        final icon1 = flags.hasPm
+                            ? AppAssets.nightIcon
+                            : (flags.hasAm ? AppAssets.sunIcon : null);
+                        final secondIcon = flags.hasAm && flags.hasPm
+                            ? AppAssets.sunIcon
+                            : null;
 
                         return ProductWidget(
                           index: index,
                           title: row['title'] as String?,
                           disc: row['description'] as String?,
-                          icon1: isPmOnly
-                              ? AppAssets.nightIcon
-                              : AppAssets.sunIcon,
-                          secondIcon: isFirstIndex ? null : AppAssets.sunIcon,
-                          text: isFirstIndex
-                              ? (row['time_of_day'] as String?)
-                              : null,
-                          showGradient: !isFirstIndex,
+                          icon1: icon1,
+                          secondIcon: secondIcon,
+                          text: null,
+                          showGradient: flags.hasAm && flags.hasPm,
                           viewmodel: selectionVm,
                           tagLabels: tags,
                           onTap: () {

@@ -1,11 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Network/models/explore_domain.dart';
 import 'package:looklabs/Core/Network/models/weekly_progress_response.dart';
 import 'package:looklabs/Core/Network/models/wellness_metrics.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
+import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/explore_domains_repository.dart';
@@ -328,10 +331,123 @@ class HomeViewModel extends ChangeNotifier {
     required String reviewScansRoute,
   }) async {
     if (!context.mounted) return;
-    Navigator.pushNamed(
-      context,
-      reviewScansRoute,
-      arguments: flowPayload,
+    final dailyRoute = RoutesName.dailyRoutineRouteForDomain(domainKey);
+    final usePrevious = await _showScanChoiceDialog(
+      context: context,
+      domainKey: domainKey,
+      canUsePreviousData: dailyRoute != null && _isCompletedFlowPayload(flowPayload),
+    );
+    if (!context.mounted || usePrevious == null) return;
+    if (usePrevious && dailyRoute != null) {
+      Navigator.pushNamed(context, dailyRoute);
+      return;
+    }
+    Navigator.pushNamed(context, reviewScansRoute, arguments: flowPayload);
+  }
+
+  Future<bool?> _showScanChoiceDialog({
+    required BuildContext context,
+    required String domainKey,
+    required bool canUsePreviousData,
+  }) {
+    final label = domainKey == 'haircare' ? 'hair' : 'skin';
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.symmetric(
+            horizontal: context.sw(24),
+            vertical: context.sh(24),
+          ),
+          child: PlanContainer(
+            isSelected: false,
+            onTap: () {},
+            margin: EdgeInsets.zero,
+            padding: context.paddingSymmetricR(horizontal: 16, vertical: 16),
+            radius: BorderRadius.circular(context.radiusR(14)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Choose an option',
+                  style: TextStyle(
+                    fontSize: context.sp(18),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.headingColor,
+                  ),
+                ),
+                SizedBox(height: context.sh(8)),
+                Text(
+                  'Do you want a new $label scan or continue with your previous analysis?',
+                  style: TextStyle(
+                    fontSize: context.sp(13),
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.subHeadingColor,
+                  ),
+                ),
+                SizedBox(height: context.sh(16)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: PlanContainer(
+                        isSelected: false,
+                        onTap: () => Navigator.pop(ctx, false),
+                        margin: EdgeInsets.zero,
+                        padding: context.paddingSymmetricR(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                        child: Center(
+                          child: Text(
+                            'New Scan',
+                            style: TextStyle(
+                              fontSize: context.sp(13),
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.subHeadingColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: context.sw(10)),
+                    Expanded(
+                      child: Opacity(
+                        opacity: canUsePreviousData ? 1 : 0.45,
+                        child: PlanContainer(
+                          isSelected: false,
+                          onTap: canUsePreviousData
+                              ? () => Navigator.pop(ctx, true)
+                              : null,
+                          margin: EdgeInsets.zero,
+                          padding: context.paddingSymmetricR(
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Use Previous Data',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: context.sp(13),
+                                fontWeight: FontWeight.w700,
+                                color: canUsePreviousData
+                                    ? AppColors.pimaryColor
+                                    : AppColors.subHeadingColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

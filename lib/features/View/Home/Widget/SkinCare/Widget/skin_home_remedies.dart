@@ -57,14 +57,16 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
             ),
             SizedBox(height: context.sh(20)),
             if (remedies.isEmpty)
-              Text(
-                vm.showRoutineRefreshing
+              NormalText(
+                subAlign: TextAlign.center,
+                titleText: vm.showRoutineRefreshing
                     ? 'Loading…'
                     : 'No remedies in your plan yet. Open Daily Skin Care Routine after completing skincare flow.',
-                style: TextStyle(
-                  fontSize: context.sp(14),
-                  color: AppColors.subHeadingColor,
-                ),
+                subText: 'No remedies in your plan yet. Open Daily Skin Care Routine after completing skincare flow.',
+                titleSize: context.sp(14),
+                titleColor: AppColors.subHeadingColor,
+                subSize: context.sp(14),
+                subColor: AppColors.subHeadingColor,
               )
             else
               ...remedies.map((r) {
@@ -78,58 +80,50 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                     if (t.isNotEmpty) steps.add(t);
                   }
                 }
-                return Padding(
-                  padding: EdgeInsets.only(bottom: context.sh(16)),
-                  child: PlanContainer(
-                    isSelected: false,
-                    onTap: () {},
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: TextStyle(
-                            fontSize: context.sp(18),
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.subHeadingColor,
+                return PlanContainer(
+                  isSelected: false,
+                  onTap: () {},
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      NormalText(
+                        titleText: name,
+                        titleSize: context.sp(16),
+                        titleWeight: FontWeight.w600,
+                        titleColor: AppColors.subHeadingColor,
+                      ),
+                      if (steps.isNotEmpty) SizedBox(height: context.sh(8)),
+                      ...steps.map(
+                        (line) => Padding(
+                          padding: EdgeInsets.only(bottom: context.sh(6)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              NormalText(
+                                titleText: '• ',
+                                titleSize: context.sp(12),
+                                titleWeight: FontWeight.w500,
+                                titleColor: AppColors.grey,
+                              ),
+                              Expanded(
+                                child: NormalText(
+                                  titleText: line,
+                                  titleSize: context.sp(12),
+                                  titleWeight: FontWeight.w400,
+                                  titleColor: AppColors.grey,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        if (steps.isNotEmpty) SizedBox(height: context.sh(8)),
-                        ...steps.map(
-                          (line) => Padding(
-                            padding: EdgeInsets.only(bottom: context.sh(6)),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '• ',
-                                  style: TextStyle(
-                                    fontSize: context.sp(12),
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.iconColor,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    line,
-                                    style: TextStyle(
-                                      fontSize: context.sp(12),
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.iconColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               }),
             if (tips.isNotEmpty) ...[
-              SizedBox(height: context.sh(16)),
+                            SizedBox(height: context.sh(8)),
+
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 titleText: 'Safety tips',
@@ -138,31 +132,15 @@ class _SkinHomeRemediesState extends State<SkinHomeRemedies> {
                 titleColor: AppColors.headingColor,
               ),
               SizedBox(height: context.sh(12)),
-              ...tips.map(
+
+               ...tips.map(
                 (line) => Padding(
                   padding: EdgeInsets.only(bottom: context.sh(6)),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '• ',
-                        style: TextStyle(
-                          fontSize: context.sp(12),
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.subHeadingColor,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          line,
-                          style: TextStyle(
-                            fontSize: context.sp(16),
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.subHeadingColor,
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: NormalText(
+                    titleText: '• $line',
+                    titleSize: context.sp(12),
+                    titleWeight: FontWeight.w400,
+                    titleColor: AppColors.headingColor,
                   ),
                 ),
               ),

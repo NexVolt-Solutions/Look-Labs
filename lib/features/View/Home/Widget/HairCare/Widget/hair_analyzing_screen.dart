@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
+import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/linear_slider_widget.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/ViewModel/daily_hair_care_routine_view_model.dart';
@@ -65,6 +66,33 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(
+          top: context.sh(5),
+          left: context.sw(20),
+          right: context.sw(20),
+          bottom: context.sh(30),
+        ),
+        child: CustomButton(
+          text: AppText.next,
+          color: AppColors.pimaryColor,
+          isEnabled: vm.isFullyComplete,
+          onTap: vm.isFullyComplete
+              ? () async {
+                  try {
+                    await context
+                        .read<DailyHairCareRoutineViewModel>()
+                        .loadHaircareRoutine();
+                  } catch (_) {}
+                  if (!context.mounted) return;
+                  Navigator.pushReplacementNamed(
+                    context,
+                    RoutesName.DailyHairCareRoutineScreen,
+                  );
+                }
+              : null,
+        ),
+      ),
       body: SafeArea(
         child: ListView(
           padding: context.paddingSymmetricR(horizontal: 20),
@@ -136,7 +164,7 @@ class _HairAnalyzingScreenState extends State<HairAnalyzingScreen> {
               ),
             ],
             SizedBox(height: context.sh(24)),
-            ...vm.stagedBullets.asMap().entries.map((entry) {
+            ...vm.displayBullets.asMap().entries.map((entry) {
               final index = entry.key;
               final line = entry.value;
               return AnimatedOpacity(

@@ -21,6 +21,9 @@ class HairRoutineExtraCard {
 }
 
 class DailyHairCareRoutineViewModel extends ChangeNotifier {
+  /// Domain-level presentation rule: only haircare uses concerns speedometer.
+  bool get useConcernsSpeedometer => true;
+
   bool _loading = false;
   bool get loading => _loading;
 

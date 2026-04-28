@@ -23,6 +23,9 @@ class SkincareRoutineExtraCard {
 }
 
 class DailySkinCareRoutineViewModel extends ChangeNotifier {
+  /// Domain-level presentation rule: skincare keeps concerns as cards (no meter).
+  bool get useConcernsSpeedometer => false;
+
   bool _loading = false;
   bool get loading => _loading;
 

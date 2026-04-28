@@ -93,11 +93,11 @@ class ImageUploadRepository {
   }
 
   /// POST images/upload – domain image for AI analysis (skincare, haircare, etc.).
-  /// Query: [domain], optional [view] (e.g. front, left), [imageType] default `uploaded`.
+  /// Query requires [domain] + [view] (front|back|right|left), [imageType] default `uploaded`.
   Future<ApiResponse> uploadDomainImage(
     String filePath, {
     required String domain,
-    String? view,
+    required String view,
     String imageType = 'uploaded',
   }) async {
     final file = File(filePath);
@@ -112,10 +112,9 @@ class ImageUploadRepository {
     final contentType = _mimeTypeFromPath(filePath);
     final queryParams = <String, String>{
       'domain': domain.trim().toLowerCase(),
+      'view': view.trim().toLowerCase(),
       'image_type': imageType,
     };
-    final v = view?.trim();
-    if (v != null && v.isNotEmpty) queryParams['view'] = v;
 
     final response = await ApiServices.multipartPost(
       ApiEndpoints.imagesUpload,
@@ -168,9 +167,7 @@ class ImageUploadRepository {
     );
   }
 
-  /// GET images/album – fetch user's album images.
-  /// Optional [domain], [view], [status] (processing|processed|failed, etc.).
-  Future<ApiResponse> getAlbumImages({
+    Future<ApiResponse> getAlbumImages({
     String? domain,
     String? view,
     String? status,

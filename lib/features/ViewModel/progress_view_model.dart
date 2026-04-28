@@ -35,6 +35,7 @@ class ProgressViewModel extends ChangeNotifier {
 
   bool get progressLoading => _progressLoading;
   String? get progressError => _progressError;
+  bool get hasProgressSnapshot => _graph != null || _overview != null;
 
   /// Overall first score (Before Progress) and latest score (After Progress) from graph.
   num get overallFirst => _graph?.overallFirst ?? 0;
@@ -63,8 +64,6 @@ class ProgressViewModel extends ChangeNotifier {
     if (_progressLoading) return;
     _progressLoading = true;
     _progressError = null;
-    _graph = null;
-    _overview = null;
     notifyListeners();
 
     final graphResponse = await OnboardingRepository.instance.getProgressGraph(
@@ -116,10 +115,12 @@ class ProgressViewModel extends ChangeNotifier {
   /// X axis = days/dates (horizontal), Y axis = score (vertical).
   /// Weekly = day names, Monthly = Week 1–4 (aggregated), Yearly = month names.
   List<WeeklyProgressDay> get progressDays {
-    if (_graph == null || _graph!.domains.isEmpty) return const [];
+    final period = (_graph?.period ?? selectedPeriodParam).toLowerCase();
+    if (_graph == null || _graph!.domains.isEmpty) {
+      return _defaultProgressDaysForPeriod(period);
+    }
     for (final d in _graph!.domains) {
       if (d.scores.isNotEmpty) {
-        final period = _graph!.period.toLowerCase();
         final mapped =
             d.scores
                 .map(
@@ -137,7 +138,43 @@ class ProgressViewModel extends ChangeNotifier {
         return mapped;
       }
     }
-    return const [];
+    return _defaultProgressDaysForPeriod(period);
+  }
+
+  static List<WeeklyProgressDay> _defaultProgressDaysForPeriod(String period) {
+    if (period == 'monthly') {
+      return const [
+        WeeklyProgressDay(day: 'Week 1', score: 0),
+        WeeklyProgressDay(day: 'Week 2', score: 0),
+        WeeklyProgressDay(day: 'Week 3', score: 0),
+        WeeklyProgressDay(day: 'Week 4', score: 0),
+      ];
+    }
+    if (period == 'yearly') {
+      return const [
+        WeeklyProgressDay(day: 'Jan', score: 0),
+        WeeklyProgressDay(day: 'Feb', score: 0),
+        WeeklyProgressDay(day: 'Mar', score: 0),
+        WeeklyProgressDay(day: 'Apr', score: 0),
+        WeeklyProgressDay(day: 'May', score: 0),
+        WeeklyProgressDay(day: 'Jun', score: 0),
+        WeeklyProgressDay(day: 'Jul', score: 0),
+        WeeklyProgressDay(day: 'Aug', score: 0),
+        WeeklyProgressDay(day: 'Sep', score: 0),
+        WeeklyProgressDay(day: 'Oct', score: 0),
+        WeeklyProgressDay(day: 'Nov', score: 0),
+        WeeklyProgressDay(day: 'Dec', score: 0),
+      ];
+    }
+    return const [
+      WeeklyProgressDay(day: 'Mon', score: 0),
+      WeeklyProgressDay(day: 'Tue', score: 0),
+      WeeklyProgressDay(day: 'Wed', score: 0),
+      WeeklyProgressDay(day: 'Thu', score: 0),
+      WeeklyProgressDay(day: 'Fri', score: 0),
+      WeeklyProgressDay(day: 'Sat', score: 0),
+      WeeklyProgressDay(day: 'Sun', score: 0),
+    ];
   }
 
   /// Aggregate monthly data by week: one point per Week 1–4 (average score).

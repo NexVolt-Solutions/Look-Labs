@@ -101,7 +101,7 @@ List<String> parseAlbumAnalysisPoints(dynamic analysisResult) {
 class SkinAnalyzingViewModel extends ChangeNotifier {
   SkinAnalyzingViewModel({
     String domain = 'skincare',
-    Duration pollInterval = const Duration(seconds: 2),
+    Duration pollInterval = const Duration(seconds: 3),
     Duration timeout = const Duration(minutes: 2),
   }) : _domain = domain,
        _pollInterval = pollInterval,
@@ -121,6 +121,7 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
 
   List<String> _bullets = [];
   int _processedCount = 0;
+  int _displayProgressPercent = 0;
 
   /// Views whose newest album row exists but is not yet terminal-processed (`processing`, etc.).
   int _queuedViewCount = 0;
@@ -152,8 +153,7 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
   /// would be 0 while all four images are analyzing — see [_pollOnce]).
   static const double _pipelineSlotWeight = 0.5;
 
-  /// Stays below 100 until both album bullets and `/flow` report completion (no timeout shortcut).
-  int get progressPercent {
+  int _calculateRawProgressPercent() {
     if (isFullyComplete) return 100;
     final n = _views.length;
     if (n == 0) return 0;
@@ -173,6 +173,9 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
     }
     return 99;
   }
+
+  /// Monotonic UI progress: never decreases within the same scan run.
+  int get progressPercent => _displayProgressPercent;
 
   int get processedViewCount => _processedCount;
 
@@ -222,6 +225,7 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
   void resetForNewScan() {
     _bullets = [];
     _processedCount = 0;
+    _displayProgressPercent = 0;
     _queuedViewCount = 0;
     _fetchError = null;
     _analysisError = null;
@@ -282,16 +286,22 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
 
     var processed = 0;
     var queued = 0;
-    var failedMessage = _analysisError;
+    // Recompute failure state from the latest album snapshot each poll.
+    // Keeping previous value can preserve stale errors from an earlier scan/poll
+    // and incorrectly stop loading for a new in-flight batch.
+    String? failedMessage;
     final collected = <String>[];
 
     for (final view in _views) {
       final latest = AlbumImage.pickNewestByIdForView(list, view);
       if (latest == null) continue;
 
+      // Show real AI bullets as soon as backend attaches preview points, even while
+      // the latest row is still `processing`.
+      collected.addAll(parseAlbumAnalysisPoints(latest.analysisResult));
+
       if (AlbumImage.isTerminalProcessedStatus(latest.status)) {
         processed++;
-        collected.addAll(parseAlbumAnalysisPoints(latest.analysisResult));
         continue;
       }
 
@@ -310,7 +320,10 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
     _processedCount = processed;
     _queuedViewCount = queued;
     _analysisError = failedMessage;
-    _bullets = _dedupePreserveOrder(collected);
+    final nextBullets = _dedupePreserveOrder(collected);
+    if (nextBullets.isNotEmpty) {
+      _bullets = nextBullets;
+    }
 
     if (_analysisError != null) {
       _stopPolling();
@@ -329,9 +342,15 @@ class SkinAnalyzingViewModel extends ChangeNotifier {
     await _refreshFlowCompletedFlag(urgent: urgentFlowPoll);
     if (_pollingStopped) return;
 
+    final rawProgress = _calculateRawProgressPercent();
+    if (rawProgress > _displayProgressPercent) {
+      _displayProgressPercent = rawProgress;
+    }
+
     // Album: keep polling until latest per view is processed **and** bullets parse.
     // Flow: GET domains/{domain}/flow must report completed/ok as well.
     if (isFullyComplete) {
+      _displayProgressPercent = 100;
       _stopPolling();
       notifyListeners();
       return;

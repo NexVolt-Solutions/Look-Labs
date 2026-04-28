@@ -16,24 +16,23 @@ class HairProductDetailScreen extends StatelessWidget {
       api = Map<String, dynamic>.from(args);
     }
     final data = AiProductApiFields.fromMap(api);
-    final appTitle = data.title.isNotEmpty ? data.title : 'Product';
-
+ 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: Padding(
-        padding: EdgeInsetsGeometry.only(
-          top: context.sh(5),
-          left: context.sw(20),
-          right: context.sw(20),
-          bottom: context.sh(30),
-        ),
-        child: CustomButton(
-          text: 'Add to Routine',
-          color: AppColors.pimaryColor,
-          isEnabled: true,
-          onTap: () {},
-        ),
-      ),
+      // bottomNavigationBar: Padding(
+      //   padding: EdgeInsetsGeometry.only(
+      //     top: context.sh(5),
+      //     left: context.sw(20),
+      //     right: context.sw(20),
+      //     bottom: context.sh(30),
+      //   ),
+      //   child: CustomButton(
+      //     text: 'Add to Routine',
+      //     color: AppColors.pimaryColor,
+      //     isEnabled: true,
+      //     onTap: () {},
+      //   ),
+      // ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -41,7 +40,7 @@ class HairProductDetailScreen extends StatelessWidget {
             Padding(
               padding: context.paddingSymmetricR(horizontal: 20),
               child: AppBarContainer(
-                title: appTitle,
+                title: "Product Detail",
                 onTap: () => Navigator.pop(context),
               ),
             ),

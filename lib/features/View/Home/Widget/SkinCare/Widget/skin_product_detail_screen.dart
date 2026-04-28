@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:looklabs/Features/Widget/ai_product_detail_body.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
-import 'package:looklabs/Features/Widget/custom_button.dart';
-import 'package:looklabs/Core/Constants/app_colors.dart';
+ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
 class SkinProductDetailScreen extends StatelessWidget {
@@ -16,24 +15,23 @@ class SkinProductDetailScreen extends StatelessWidget {
       api = Map<String, dynamic>.from(args);
     }
     final data = AiProductApiFields.fromMap(api);
-    final appTitle = data.title.isNotEmpty ? data.title : 'Product';
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: Padding(
-        padding: EdgeInsetsGeometry.only(
-          top: context.sh(5),
-          left: context.sw(20),
-          right: context.sw(20),
-          bottom: context.sh(30),
-        ),
-        child: CustomButton(
-          text: 'Add to Routine',
-          color: AppColors.pimaryColor,
-          isEnabled: true,
-          onTap: () {},
-        ),
-      ),
+      // bottomNavigationBar: Padding(
+      //   padding: EdgeInsetsGeometry.only(
+      //     top: context.sh(5),
+      //     left: context.sw(20),
+      //     right: context.sw(20),
+      //     bottom: context.sh(30),
+      //   ),
+      //   child: CustomButton(
+      //     text: 'Add to Routine',
+      //     color: AppColors.pimaryColor,
+      //     isEnabled: true,
+      //     onTap: () {},
+      //   ),
+      // ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -41,7 +39,8 @@ class SkinProductDetailScreen extends StatelessWidget {
             Padding(
               padding: context.paddingSymmetricR(horizontal: 20),
               child: AppBarContainer(
-                title: appTitle,
+                title: "Product Details",
+
                 onTap: () => Navigator.pop(context),
               ),
             ),

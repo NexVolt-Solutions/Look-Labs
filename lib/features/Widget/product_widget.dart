@@ -395,14 +395,13 @@ class ProductWidget extends StatelessWidget {
 
           /// 🔹 BUTTON TAGS
           Wrap(
-            spacing: context.sw(8),
-            runSpacing: context.sh(8),
+            spacing: context.sw(12),
+            // runSpacing: context.sh(8),
             children: List.generate(_resolvedTags().length, (btnIndex) {
               return PlanContainer(
                 padding: context.paddingSymmetricR(horizontal: 12, vertical: 8),
                 radius: BorderRadius.circular(context.radiusR(16)),
                 isSelected: false,
-                onTap: () {},
                 child: NormalText(
                   titleText: _resolvedTags()[btnIndex],
                   titleSize: context.sp(10),
@@ -413,9 +412,6 @@ class ProductWidget extends StatelessWidget {
             }),
           ),
 
-          SizedBox(height: context.sh(12)),
-
-          /// 🔹 VIEW DETAILS BUTTON
           PlanContainer(
             isSelected: viewmodel?.selectedIndex == index,
             onTap: () {
@@ -424,10 +420,15 @@ class ProductWidget extends StatelessWidget {
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text('View Details'),
-                SizedBox(width: 4),
-                Icon(Icons.arrow_forward_ios, size: 18),
+              children: [
+                NormalText(
+                  titleText: 'View Details',
+                  titleSize: context.sp(14),
+                  titleWeight: FontWeight.bold,
+                  titleColor: AppColors.subHeadingColor,
+                ),
+                SizedBox(width: context.sw(8)),
+                Icon(Icons.arrow_forward_ios, size: context.sh(16)),
               ],
             ),
           ),

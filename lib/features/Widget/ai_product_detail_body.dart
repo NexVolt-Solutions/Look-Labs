@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Features/Widget/network_image_with_fallback.dart';
@@ -35,10 +37,20 @@ class AiProductApiFields {
     return AiProductApiFields(
       title: _string(m, const ['name', 'title', 'product_name']),
       overview: _string(m, const ['overview', 'description', 'summary']),
-      howToUse: _stringList(m['how_to_use']),
+      howToUse: _stringListFromKeys(m, const [
+        'how_to_use',
+        'howToUse',
+        'usage',
+        'steps',
+      ]),
       whenToUse: _string(m, const ['when_to_use', 'when']),
-      dontUseWith: _stringList(m['dont_use_with']),
-      tags: _stringList(m['tags']),
+      dontUseWith: _stringListFromKeys(m, const [
+        'dont_use_with',
+        'dontUseWith',
+        'avoid_with',
+        'avoidWith',
+      ]),
+      tags: _stringListFromKeys(m, const ['tags', 'tag_list']),
       timeOfDay: (m['time_of_day'] ?? '').toString().trim(),
       imageUrl: _imageUrl(m),
       confidencePercent: _confidence(m),
@@ -63,10 +75,44 @@ class AiProductApiFields {
     return '';
   }
 
+  static List<String> _stringListFromKeys(
+    Map<String, dynamic> m,
+    List<String> keys,
+  ) {
+    for (final k in keys) {
+      if (!m.containsKey(k)) continue;
+      final parsed = _stringList(m[k]);
+      if (parsed.isNotEmpty) return parsed;
+    }
+    return const [];
+  }
+
   static List<String> _stringList(dynamic raw) {
-    if (raw is! List) return [];
-    return raw
-        .map((e) => e.toString().trim())
+    if (raw == null) return const [];
+    if (raw is List) {
+      return raw
+          .expand((e) {
+            if (e is Map) {
+              final mapped = Map<String, dynamic>.from(e);
+              return [
+                mapped['name'],
+                mapped['title'],
+                mapped['label'],
+                mapped['value'],
+                mapped['text'],
+              ];
+            }
+            return [e];
+          })
+          .map((e) => e?.toString().trim() ?? '')
+          .where((s) => s.isNotEmpty)
+          .toList();
+    }
+    final text = raw.toString().trim();
+    if (text.isEmpty) return const [];
+    return text
+        .split(RegExp(r'[\n\r]+|,|•'))
+        .map((s) => s.trim())
         .where((s) => s.isNotEmpty)
         .toList();
   }
@@ -108,74 +154,26 @@ class AiProductDetailBody extends StatelessWidget {
 
   final AiProductApiFields data;
 
+  ({bool hasAm, bool hasPm}) _timeFlags(String raw) {
+    final t = raw.toUpperCase();
+    final hasAm = t.contains('AM');
+    final hasPm = t.contains('PM');
+    return (hasAm: hasAm, hasPm: hasPm);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: context.paddingSymmetricR(horizontal: 20),
+      padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
       children: [
-        if (data.timeOfDay.isNotEmpty) ...[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              padding: context.paddingSymmetricR(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.backGroundColor,
-                borderRadius: BorderRadius.circular(context.radiusR(8)),
-                border: Border.all(
-                  color: AppColors.white.withValues(alpha: 0.2),
-                  width: 1,
-                ),
-              ),
-              child: Text(
-                data.timeOfDay,
-                style: TextStyle(
-                  fontSize: context.sp(11),
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.subHeadingColor,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: context.sh(12)),
-        ],
-        SizedBox(
-          height: context.sh(220),
-          width: context.sw(220),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: data.imageUrl != null
-                ? NetworkImageWithFallback(
-                    url: data.imageUrl!,
-                    width: context.sw(220),
-                    height: context.sh(220),
-                    fit: BoxFit.contain,
-                    fallbackSize: 64,
-                  )
-                : ColoredBox(
-                    color: AppColors.backGroundColor,
-                    child: Center(
-                      child: Icon(
-                        Icons.photo_outlined,
-                        size: context.sp(56),
-                        color: AppColors.subHeadingColor.withValues(alpha: 0.45),
-                      ),
-                    ),
-                  ),
-          ),
-        ),
-        SizedBox(height: context.sh(20)),
         if (data.overview.isNotEmpty) ...[
           NormalText(
             crossAxisAlignment: CrossAxisAlignment.start,
             titleText: 'Product overview',
             titleSize: context.sp(18),
-            titleWeight: FontWeight.w600,
-            titleColor: AppColors.headingColor,
             sizeBoxheight: context.sh(12),
             subText: data.overview,
             subSize: context.sp(12),
-            subColor: AppColors.subHeadingColor,
-            subWeight: FontWeight.w400,
           ),
           SizedBox(height: context.sh(12)),
         ],
@@ -183,17 +181,13 @@ class AiProductDetailBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           titleText: 'How to use',
           titleSize: context.sp(18),
-          titleWeight: FontWeight.w600,
-          titleColor: AppColors.headingColor,
           sizeBoxheight: context.sh(12),
         ),
         if (data.howToUse.isEmpty)
-          Text(
-            '—',
-            style: TextStyle(
-              fontSize: context.sp(12),
-              color: AppColors.subHeadingColor,
-            ),
+          NormalText(
+            subText: '—',
+            subSize: context.sp(12),
+            subColor: AppColors.subHeadingColor,
           )
         else
           ...data.howToUse.map(
@@ -202,22 +196,16 @@ class AiProductDetailBody extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '• ',
-                    style: TextStyle(
-                      fontSize: context.sp(12),
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.subHeadingColor,
-                    ),
+                  NormalText(
+                    subText: '• ',
+                    subSize: context.sp(12),
+                    subColor: AppColors.subHeadingColor,
                   ),
                   Expanded(
-                    child: Text(
-                      line,
-                      style: TextStyle(
-                        fontSize: context.sp(12),
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.subHeadingColor,
-                      ),
+                    child: NormalText(
+                      subText: line,
+                      subSize: context.sp(12),
+                      subColor: AppColors.subHeadingColor,
                     ),
                   ),
                 ],
@@ -229,40 +217,21 @@ class AiProductDetailBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           titleText: 'When to use',
           titleSize: context.sp(18),
-          titleWeight: FontWeight.w600,
-          titleColor: AppColors.headingColor,
           sizeBoxheight: context.sh(12),
         ),
         if (data.whenToUse.isEmpty)
-          Text(
-            '—',
-            style: TextStyle(
-              fontSize: context.sp(12),
-              color: AppColors.subHeadingColor,
-            ),
-          )
+          NormalText(subText: '—', subSize: context.sp(12))
         else
           Padding(
             padding: EdgeInsets.only(bottom: context.sh(6)),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '• ',
-                  style: TextStyle(
-                    fontSize: context.sp(12),
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.subHeadingColor,
-                  ),
-                ),
+                NormalText(subText: '• ', subSize: context.sp(12)),
                 Expanded(
-                  child: Text(
-                    data.whenToUse,
-                    style: TextStyle(
-                      fontSize: context.sp(12),
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.subHeadingColor,
-                    ),
+                  child: NormalText(
+                    subText: data.whenToUse,
+                    subSize: context.sp(12),
                   ),
                 ),
               ],
@@ -281,90 +250,86 @@ class AiProductDetailBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               titleText: 'Don’t use with',
               titleSize: context.sp(18),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.headingColor,
             ),
           ],
         ),
+        SizedBox(height: context.sh(8)),
+
         if (data.dontUseWith.isEmpty)
-          Padding(
-            padding: EdgeInsets.only(top: context.sh(8)),
-            child: Text(
-              '—',
-              style: TextStyle(
-                fontSize: context.sp(12),
-                color: AppColors.subHeadingColor,
-              ),
-            ),
+          NormalText(
+            subText: '—',
+            subSize: context.sp(12),
+            subColor: AppColors.subHeadingColor,
           )
         else
-          Padding(
-            padding: EdgeInsets.only(top: context.sh(8)),
-            child: Wrap(
-              spacing: context.sw(6),
-              runSpacing: context.sh(6),
-              children: data.dontUseWith
-                  .map(
-                    (t) => PlanContainer(
-                      isSelected: false,
-                      onTap: () {},
-                      child: NormalText(
-                        titleText: t,
-                        titleColor: AppColors.subHeadingColor,
-                        titleSize: context.sp(10),
-                        titleWeight: FontWeight.w600,
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        if (data.tags.isNotEmpty) ...[
-          SizedBox(height: context.sh(16)),
-          NormalText(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            titleText: 'Tags',
-            titleSize: context.sp(18),
-            titleWeight: FontWeight.w600,
-            titleColor: AppColors.headingColor,
-          ),
-          SizedBox(height: context.sh(8)),
           Wrap(
-            spacing: context.sw(6),
-            runSpacing: context.sh(6),
-            children: data.tags
+            spacing: context.sw(8),
+            children: data.dontUseWith
                 .map(
                   (t) => PlanContainer(
+                    margin: context.paddingSymmetricR(vertical: 8),
+                    padding: context.paddingSymmetricR(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    radius: BorderRadius.circular(context.radiusR(10)),
                     isSelected: false,
                     onTap: () {},
                     child: NormalText(
-                      titleText: t,
-                      titleColor: AppColors.subHeadingColor,
-                      titleSize: context.sp(10),
-                      titleWeight: FontWeight.w600,
+                      subText: t,
+                      subSize: context.sp(12),
+                      subColor: AppColors.subHeadingColor,
+                      subWeight: FontWeight.w600,
                     ),
                   ),
                 )
                 .toList(),
           ),
-        ],
-        if (data.confidencePercent != null) ...[
-          SizedBox(height: context.sh(16)),
-          NormalText(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            titleText: 'Confidence',
-            titleSize: context.sp(18),
-            titleWeight: FontWeight.w600,
-            titleColor: AppColors.headingColor,
-            sizeBoxheight: context.sh(8),
-            subText: '${data.confidencePercent}%',
-            subSize: context.sp(12),
-            subColor: AppColors.subHeadingColor,
-            subWeight: FontWeight.w400,
-          ),
-        ],
-        SizedBox(height: context.sh(12)),
-      ],
+        // if (data.tags.isNotEmpty) ...[
+        //   SizedBox(height: context.sh(16)),
+        //   NormalText(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     titleText: 'Tags',
+        //     titleSize: context.sp(18),
+        //     titleWeight: FontWeight.w600,
+        //     titleColor: AppColors.headingColor,
+        //   ),
+        //   SizedBox(height: context.sh(8)),
+        //   Wrap(
+        //     spacing: context.sw(6),
+        //     runSpacing: context.sh(6),
+        //     children: data.tags
+        //         .map(
+        //           (t) => PlanContainer(
+        //             isSelected: false,
+        //             onTap: () {},
+        //             child: NormalText(
+        //               titleText: t,
+        //               titleColor: AppColors.subHeadingColor,
+        //               titleSize: context.sp(10),
+        //               titleWeight: FontWeight.w600,
+        //             ),
+        //           ),
+        //         )
+        //         .toList(),
+        //   ),
+        // ],
+        // if (data.confidencePercent != null) ...[
+        //   SizedBox(height: context.sh(16)),
+        //   NormalText(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     titleText: 'Confidence',
+        //     titleSize: context.sp(18),
+        //     titleWeight: FontWeight.w600,
+        //     titleColor: AppColors.headingColor,
+        //     sizeBoxheight: context.sh(8),
+        //     subText: '${data.confidencePercent}%',
+        //     subSize: context.sp(12),
+        //     subColor: AppColors.subHeadingColor,
+        //     subWeight: FontWeight.w400,
+        //   ),
+        // ],
+       ],
     );
   }
 }
