@@ -66,33 +66,36 @@ class _SkinAnalyzingScreenState extends State<SkinAnalyzingScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          top: context.sh(5),
-          left: context.sw(20),
-          right: context.sw(20),
-          bottom: context.sh(30),
-        ),
-        child: CustomButton(
-          text: AppText.next,
-          color: AppColors.pimaryColor,
-          isEnabled: vm.isFullyComplete,
-          onTap: vm.isFullyComplete
-              ? () async {
-                  try {
-                    await context
-                        .read<DailySkinCareRoutineViewModel>()
-                        .loadSkincareRoutine();
-                  } catch (_) {}
-                  if (!context.mounted) return;
-                  Navigator.pushReplacementNamed(
-                    context,
-                    RoutesName.DailySkinCareRoutineScreen,
-                  );
-                }
-              : null,
-        ),
-      ),
+      // bottomNavigationBar: Padding(
+      //   padding: EdgeInsets.only(
+      //     top: context.sh(5),
+      //     left: context.sw(20),
+      //     right: context.sw(20),
+      //     bottom: context.sh(30),
+      //   ),
+      //   child: CustomButton(
+      //     text: AppText.next,
+      //     color: AppColors.pimaryColor,
+      //     isEnabled: vm.isFullyComplete,
+      //     onTap: vm.isFullyComplete
+      //         ? () async {
+      //             try {
+      //               await context
+      //                   .read<DailySkinCareRoutineViewModel>()
+      //                   .loadSkincareRoutine();
+      //             } catch (_) {}
+      //             if (!context.mounted) return;
+      //             Navigator.pushReplacementNamed(
+      //               context,
+      //               RoutesName.DailySkinCareRoutineScreen,
+      //             );
+      //           }
+      //         : null,
+      //   ),
+      // ),
+    
+    
+    
       body: SafeArea(
         child: ListView(
           padding: context.paddingSymmetricR(horizontal: 20),
@@ -176,7 +179,7 @@ class _SkinAnalyzingScreenState extends State<SkinAnalyzingScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '• ',
+                         '• ',
                         style: TextStyle(
                           fontSize: context.sp(16),
                           fontWeight: FontWeight.w400,
@@ -185,7 +188,7 @@ class _SkinAnalyzingScreenState extends State<SkinAnalyzingScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          line,
+                          line.split('• ').last,
                           style: TextStyle(
                             fontSize: context.sp(12),
                             fontWeight: FontWeight.w400,
