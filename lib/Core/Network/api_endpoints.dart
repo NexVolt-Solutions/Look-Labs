@@ -94,6 +94,10 @@ class ApiEndpoints {
   static const String subscriptionsMeStatus = 'subscriptions/me/status';
 
   // In-App Purchase (validate, restore, products; webhooks are server-only)
+  static const String iapPlans = 'iap/plans';
+  static const String iapEntitlement = 'iap/entitlement';
+  static const String iapUpgradePreview = 'iap/upgrade-preview';
+  static const String iapAssignDomains = 'iap/assign-domains';
   static const String iapValidateReceipt = 'iap/validate-receipt';
   static const String iapRestorePurchases = 'iap/restore-purchases';
   static const String iapProducts = 'iap/products';

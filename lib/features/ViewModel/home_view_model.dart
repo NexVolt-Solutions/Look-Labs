@@ -13,6 +13,9 @@ import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/explore_domains_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
+import 'package:looklabs/Repository/subscription_repository.dart';
+import 'package:looklabs/Core/Network/models/iap_entitlement_response.dart';
+import 'package:looklabs/Core/Network/models/subscription_status_response.dart';
 
 class HomeViewModel extends ChangeNotifier {
   String _normalizedDomainKey(String key) {
@@ -56,18 +59,31 @@ class HomeViewModel extends ChangeNotifier {
   bool _domainsLoading = false;
   String? _domainsError;
   String? _selectedDomain;
+  bool _entitlementLoading = false;
+  String? _entitlementError;
+  bool _hasActiveSubscription = false;
+  final Set<String> _unlockedDomainKeys = <String>{};
 
   bool get domainsLoading => _domainsLoading;
   String? get domainsError => _domainsError;
   bool get hasExploreDomains => _domains.isNotEmpty;
+  bool get entitlementLoading => _entitlementLoading;
+  String? get entitlementError => _entitlementError;
+  bool get hasActiveSubscription => _hasActiveSubscription;
+  Set<String> get unlockedDomainKeys => Set<String>.from(_unlockedDomainKeys);
 
   /// User's goal/domain from onboarding (goal screen or link response). Only this domain is tappable on Home.
   String? get selectedDomain => _selectedDomain;
 
   /// True if this domain key is enabled (tappable). When no goal is stored, none are enabled (all show Pro badge); otherwise only the selected goal is enabled.
   bool isDomainEnabled(String key) {
+    final normalized = _normalizedDomainKey(key);
+    if (_unlockedDomainKeys.isNotEmpty) {
+      return _unlockedDomainKeys.contains(normalized);
+    }
+    if (_hasActiveSubscription) return true;
     if (_selectedDomain == null || _selectedDomain!.isEmpty) return false;
-    return key.trim().toLowerCase() == _selectedDomain!.trim().toLowerCase();
+    return normalized == _selectedDomain!.trim().toLowerCase();
   }
 
   /// True when user has not selected a goal yet (all plans show Pro badge; tap prompts to select goal).
@@ -86,6 +102,8 @@ class HomeViewModel extends ChangeNotifier {
       _domains = [];
       _domainsLoading = false;
       _domainsError = null;
+      _unlockedDomainKeys.clear();
+      _hasActiveSubscription = false;
       notifyListeners();
       return;
     }
@@ -103,6 +121,7 @@ class HomeViewModel extends ChangeNotifier {
       );
     }
     _selectedDomain = await AuthRepository.getSelectedDomain();
+    await loadEntitlement();
     notifyListeners();
   }
 
@@ -111,6 +130,8 @@ class HomeViewModel extends ChangeNotifier {
     if (!_hasAuthToken) {
       _domains = [];
       _domainsError = null;
+      _unlockedDomainKeys.clear();
+      _hasActiveSubscription = false;
       notifyListeners();
       return;
     }
@@ -130,6 +151,48 @@ class HomeViewModel extends ChangeNotifier {
       }
     }
     _selectedDomain = await AuthRepository.getSelectedDomain();
+    await loadEntitlement();
+    notifyListeners();
+  }
+
+  Future<void> loadEntitlement() async {
+    if (_entitlementLoading) return;
+    _entitlementLoading = true;
+    _entitlementError = null;
+    notifyListeners();
+
+    final entRes = await SubscriptionRepository.instance.getIapEntitlement();
+    if (entRes.success && entRes.data is IapEntitlementResponse) {
+      final ent = entRes.data as IapEntitlementResponse;
+      _hasActiveSubscription = ent.isActive;
+      _unlockedDomainKeys
+        ..clear()
+        ..addAll(ent.unlockedDomainIds.map(_normalizedDomainKey));
+      _entitlementLoading = false;
+      notifyListeners();
+      return;
+    }
+
+    final statusRes = await SubscriptionRepository.instance.getSubscriptionStatus();
+    if (statusRes.success && statusRes.data is SubscriptionStatusResponse) {
+      final status = statusRes.data as SubscriptionStatusResponse;
+      _hasActiveSubscription = status.active;
+      if (_hasActiveSubscription) {
+        _unlockedDomainKeys
+          ..clear()
+          ..addAll(
+            _domains.map((d) => _normalizedDomainKey(d.key)),
+          );
+      } else {
+        _unlockedDomainKeys.clear();
+      }
+      _entitlementError = null;
+    } else {
+      _entitlementError = statusRes.userMessageOrFallback(
+        'Could not load subscription status',
+      );
+    }
+    _entitlementLoading = false;
     notifyListeners();
   }
 
@@ -474,23 +537,9 @@ class HomeViewModel extends ChangeNotifier {
     if (_domains.isEmpty || index < 0 || index >= _domains.length) return;
     final key = _normalizedDomainKey(_domains[index].key);
     if (!isDomainEnabled(key)) {
-      final message = hasNoGoalSelected
-          ? 'Please select your goal first to unlock plans.'
-          : 'This plan is not your selected goal. Only your chosen goal is available to use.';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          behavior: SnackBarBehavior.floating,
-          action: hasNoGoalSelected
-              ? SnackBarAction(
-                  label: 'Select goal',
-                  onPressed: () {
-                    Navigator.pushNamed(context, RoutesName.GaolScreen);
-                  },
-                )
-              : null,
-        ),
-      );
+      await Navigator.pushNamed(context, RoutesName.SubscriptionPlanScreen);
+      if (!context.mounted) return;
+      await loadEntitlement();
       return;
     }
 

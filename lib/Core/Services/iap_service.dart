@@ -16,6 +16,8 @@ class IapService {
 
   final InAppPurchase _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
+  final Map<String, List<String>> _pendingSelectedDomainsByProduct =
+      <String, List<String>>{};
   bool _initialized = false;
   bool _storeAvailable = false;
   bool get isAvailable => _initialized && _storeAvailable;
@@ -43,31 +45,51 @@ class IapService {
     for (final p in purchases) {
       if (p.status == PurchaseStatus.purchased || p.status == PurchaseStatus.restored) {
         // Validate with backend (caller may do this after purchase flow)
-        _validatePurchase(p);
+        final selected = _pendingSelectedDomainsByProduct[p.productID] ?? const [];
+        _validatePurchase(p, selectedDomainIds: selected);
+        _pendingSelectedDomainsByProduct.remove(p.productID);
       } else if (p.status == PurchaseStatus.error) {
         debugPrint('[IAP] Purchase error: ${p.error?.message}');
+        _pendingSelectedDomainsByProduct.remove(p.productID);
+      }
+      if (p.pendingCompletePurchase) {
+        _iap.completePurchase(p);
       }
     }
   }
 
-  Future<void> _validatePurchase(PurchaseDetails p) async {
+  Future<void> _validatePurchase(
+    PurchaseDetails p, {
+    List<String> selectedDomainIds = const [],
+  }) async {
     final productId = p.productID;
     final serverData = p.verificationData.serverVerificationData;
     if (serverData.isEmpty) return;
+    final txn = p.purchaseID;
+    final provider = Platform.isAndroid ? 'google' : 'apple';
+    final idempotencyKey = txn != null && txn.isNotEmpty
+        ? '$provider-$txn'
+        : '$provider-$productId';
     if (Platform.isAndroid) {
       final req = ValidateReceiptRequest(
-        platform: 'android',
+        provider: 'google',
         productId: productId,
+        selectedDomainIds: selectedDomainIds,
         purchaseToken: serverData,
-        orderId: p.purchaseID,
+        orderId: txn,
+        platformTransactionId: txn,
+        idempotencyKey: idempotencyKey,
       );
       await SubscriptionRepository.instance.validateReceipt(req);
     } else if (Platform.isIOS) {
       final req = ValidateReceiptRequest(
-        platform: 'ios',
+        provider: 'apple',
         productId: productId,
+        selectedDomainIds: selectedDomainIds,
         receiptData: serverData,
-        transactionId: p.purchaseID,
+        transactionId: txn,
+        platformTransactionId: txn,
+        idempotencyKey: idempotencyKey,
       );
       await SubscriptionRepository.instance.validateReceipt(req);
     }
@@ -85,11 +107,15 @@ class IapService {
   }
 
   /// Start purchase flow for [productId]. User completes in store. On success, receipt is validated with backend via stream.
-  Future<bool> buySubscription(String productId) async {
+  Future<bool> buySubscription(
+    String productId, {
+    List<String> selectedDomainIds = const [],
+  }) async {
     if (!_initialized) await initialize();
     if (!_storeAvailable) return false;
     final products = await loadProducts({productId});
     if (products.isEmpty) return false;
+    _pendingSelectedDomainsByProduct[productId] = selectedDomainIds;
     final product = products.first;
     final purchaseParam = PurchaseParam(productDetails: product);
     return _iap.buyNonConsumable(purchaseParam: purchaseParam);
@@ -100,6 +126,7 @@ class IapService {
     if (!_initialized) await initialize();
     if (!_storeAvailable) return false;
     await _iap.restorePurchases();
+    await SubscriptionRepository.instance.restorePurchases();
     return true;
   }
 
