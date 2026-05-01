@@ -67,8 +67,7 @@ class AuthRepository {
     return response;
   }
 
-  /// Clear tokens locally without calling logout API. Use when refresh fails (expired/invalid).
-  static Future<void> clearTokensLocally() async {
+   static Future<void> clearTokensLocally() async {
     ApiServices.setAuthToken(null);
     DietRepository.instance.clearFlowCache();
     try {
