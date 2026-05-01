@@ -13,13 +13,26 @@ import 'package:looklabs/Features/ViewModel/weekly_plan_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
 class WeeklyPlanScreen extends StatefulWidget {
-  const WeeklyPlanScreen({super.key});
+  const WeeklyPlanScreen({super.key, this.resultData});
+
+  final Map<String, dynamic>? resultData;
 
   @override
   State<WeeklyPlanScreen> createState() => _WeeklyPlanScreenState();
 }
 
 class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<WeeklyPlanScreenViewModel>().initializeFromFlow(
+        widget.resultData,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final weeklyPlanScreenViewModel = Provider.of<WeeklyPlanScreenViewModel>(
@@ -40,7 +53,7 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
             SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'Daily style themes to keep you sharp',
+              titleText: weeklyPlanScreenViewModel.headerTitle,
               titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
@@ -234,8 +247,7 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
             SizedBox(height: context.sh(8)),
             if (weeklyPlanScreenViewModel.showClothingCard)
               ButtonCard(
-                title: weeklyPlanScreenViewModel
-                    .titleData[weeklyPlanScreenViewModel.selectedIndex],
+                title: weeklyPlanScreenViewModel.selectedSeasonCardTitle,
                 listData: weeklyPlanScreenViewModel.clothingFits,
               ),
           ],

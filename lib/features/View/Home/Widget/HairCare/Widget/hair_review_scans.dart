@@ -194,7 +194,7 @@ class HairReviewScans extends StatelessWidget {
             SizedBox(height: context.sh(24)),
             CustomStepper(
               currentStep: viewModel.stepperHighlightStep,
-              steps: ReviewScansViewModel.stepperStepTitles,
+              steps: viewModel.stepperStepTitles,
             ),
             SizedBox(height: context.sh(20)),
             NormalText(
@@ -234,7 +234,7 @@ class HairReviewScans extends StatelessWidget {
                       (viewModel.imagePathForSlot(index)?.isNotEmpty ??
                           false) ||
                       viewModel.currentStep == index,
-                  angleTitle: ReviewScansViewModel.slotLabels[index],
+                  angleTitle: viewModel.slotLabels[index],
                 );
               },
             ),

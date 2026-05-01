@@ -82,15 +82,27 @@ class QuitPornRecoveryRepository {
     final streakMap = streakMapRaw is Map
         ? Map<String, dynamic>.from(streakMapRaw)
         : <String, dynamic>{};
+    final summaryStreakRaw = resultData?['ai_summary']?['streak'];
+    final summaryStreak = summaryStreakRaw is Map
+        ? Map<String, dynamic>.from(summaryStreakRaw)
+        : <String, dynamic>{};
 
     final streak = RecoveryStreakData(
-      currentStreak: _intFrom(streakMap['current_streak']),
-      longestStreak: _intFrom(streakMap['longest_streak']),
-      nextGoal: _intFrom(streakMap['next_goal']),
-      streakMessage: _strFrom(streakMap['streak_message']),
+      currentStreak: _intFrom(
+        streakMap['current_streak'] ?? summaryStreak['current_streak'],
+      ),
+      longestStreak: _intFrom(
+        streakMap['longest_streak'] ?? summaryStreak['longest_streak'],
+      ),
+      nextGoal: _intFrom(streakMap['next_goal'] ?? summaryStreak['next_goal']),
+      streakMessage: _strFrom(
+        streakMap['streak_message'] ?? summaryStreak['streak_message'],
+      ),
     );
 
-    final insight = _strFrom(resultData?['ai_message']);
+    final insight = _strFrom(
+      resultData?['ai_message'] ?? resultData?['progress_screen']?['insight_text'],
+    );
 
     final daily = _parseDaily(resultData);
     final exercise = _parseExercise(resultData);
@@ -201,7 +213,10 @@ class QuitPornRecoveryRepository {
   }
 
   List<RecoveryTaskItem> _parseExercise(Map<String, dynamic>? resultData) {
-    final raw = resultData?['ai_recovery']?['daily_tasks'];
+    final raw =
+        resultData?['ai_recovery']?['exercises'] ??
+        resultData?['daily_plan']?['exercises'] ??
+        resultData?['ai_recovery']?['daily_tasks'];
     if (raw is! List || raw.isEmpty) return const [];
 
     final items = <RecoveryTaskItem>[];
@@ -217,7 +232,9 @@ class QuitPornRecoveryRepository {
         RecoveryTaskItem(
           id: _strFrom(m['id'], fallback: 'exercise_$order'),
           title: title,
-          subtitle: _strFrom(m['description'] ?? m['details'] ?? m['activity']),
+          subtitle: _strFrom(
+            m['subtitle'] ?? m['description'] ?? m['details'] ?? m['activity'],
+          ),
           duration: durationMin == null
               ? _strFrom(m['duration'] ?? m['time'])
               : '${_intFrom(durationMin)} min',

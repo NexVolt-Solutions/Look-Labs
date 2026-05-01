@@ -380,22 +380,35 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ChangeNotifierProvider(
-            create: (_) => ReviewScansViewModel(),
+            create: (_) => ReviewScansViewModel(
+              uploadDomain: 'fashion',
+              slotViewKeys: const ['front', 'back'],
+              slotLabels: const ['Front View', 'Back View'],
+              stepperStepTitles: const ['Front', 'Back'],
+            ),
             child: const FashionReviewScanScreen(),
           ),
         );
       case RoutesName.FashionProfileScreen:
+        final fashionData =
+            settings.arguments != null && settings.arguments is Map
+            ? Map<String, dynamic>.from(settings.arguments as Map)
+            : null;
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ChangeNotifierProvider(
             create: (_) => FashionProfileScreenViewModel(),
-            child: const FashionProfileScreen(),
+            child: FashionProfileScreen(resultData: fashionData),
           ),
         );
       case RoutesName.WeeklyPlanScreen:
+        final weeklyData =
+            settings.arguments != null && settings.arguments is Map
+            ? Map<String, dynamic>.from(settings.arguments as Map)
+            : null;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => WeeklyPlanScreen(),
+          builder: (_) => WeeklyPlanScreen(resultData: weeklyData),
         );
       case RoutesName.AllTrackedFood:
         return MaterialPageRoute(

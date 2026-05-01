@@ -36,6 +36,9 @@ class ApiEndpoints {
   static String domainsGeneratePlan(String domain) =>
       'domains/$domain/generate-plan';
 
+  /// POST domains/diet/generate-meal-plan – generate meal plan from diet preferences.
+  static const String dietGenerateMealPlan = 'domains/diet/generate-meal-plan';
+
   static String domainsCompletedExercises(String domain) =>
       'domains/${domain.toLowerCase().trim()}/completed-exercises';
 

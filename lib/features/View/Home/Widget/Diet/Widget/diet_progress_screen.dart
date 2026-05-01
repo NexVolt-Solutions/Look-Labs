@@ -25,6 +25,62 @@ class DietProgressScreen extends StatefulWidget {
 
 class _DietProgressScreenState extends State<DietProgressScreen> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<DietProgressScreenViewModel>().initialize();
+    });
+  }
+
+  Widget _metricCard(
+    BuildContext context, {
+    required String value,
+    required String label,
+    required String icon,
+    String? iconUrl,
+  }) {
+    return SizedBox(
+      width: context.sw(105),
+      child: HeightWidgetCont(
+        title: value,
+        subTitle: label,
+        imgPath: icon,
+        iconUrl: iconUrl,
+      ),
+    );
+  }
+
+  Widget _miniProgressCard(
+    BuildContext context, {
+    required String title,
+    required double progress,
+  }) {
+    return PlanContainer(
+      padding: context.paddingSymmetricR(horizontal: 10, vertical: 12),
+      isSelected: false,
+      onTap: () {},
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          NormalText(
+            titleText: title,
+            titleSize: context.sp(13),
+            titleWeight: FontWeight.w600,
+            titleColor: AppColors.subHeadingColor,
+          ),
+          SizedBox(height: context.sh(8)),
+          LinearSliderWidget(
+            progress: progress,
+            height: context.sh(8),
+            animatedConHeight: context.sh(8),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final dietProgressScreenViewModel =
         Provider.of<DietProgressScreenViewModel>(context);
@@ -44,26 +100,33 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
             SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText:
-                  'Track your fitness, consistency, and recovery over time',
+              titleText: dietProgressScreenViewModel.subtitle,
               titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(height: context.sh(8)),
-            SizedBox(
-              height: context.sh(135),
-              child: ListView.builder(
-                itemCount: 4,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return HeightWidgetCont(
-                    title: '2300',
-                    subTitle: 'Weekly Cal',
-                    imgPath: AppAssets.fatLossIcon,
+            Row(
+              children: [
+                ...List.generate(dietProgressScreenViewModel.topStats.length, (index) {
+                  final stat = dietProgressScreenViewModel.topStats[index];
+                  final icon = index == 0
+                      ? AppAssets.fatLossIcon
+                      : index == 1
+                      ? AppAssets.consisIcon
+                      : AppAssets.graphIcon;
+                  return Padding(
+                    padding: EdgeInsets.only(right: index == dietProgressScreenViewModel.topStats.length - 1 ? 0 : context.sw(8)),
+                    child: _metricCard(
+                      context,
+                      value: stat['value']?.toString() ?? '',
+                      label: stat['label']?.toString() ?? '',
+                      icon: icon,
+                      iconUrl: stat['icon_url']?.toString(),
+                    ),
                   );
-                },
-              ),
+                }),
+              ],
             ),
             SizedBox(height: context.sh(8)),
 
@@ -89,75 +152,64 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
                 ),
               ],
             ),
-            SizedBox(height: context.sh(2)),
-            SizedBox(
-              height: context.sh(130), // ✅ SAFE HEIGHT
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(right: context.sw(15)),
-                    child: SizedBox(
-                      width: context.sw(220),
-                      child: PlanContainer(
-                        padding: context.paddingSymmetricR(horizontal: 7, vertical: 24),
-                        isSelected: false,
-                        onTap: () {},
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            NormalText(
-                              titleText: 'Fitness Consistency',
-                              titleSize: context.sp(16),
-                              titleWeight: FontWeight.w500,
-                              titleColor: AppColors.subHeadingColor,
-                            ),
-                            SizedBox(height: context.sh(12)),
-                            LinearSliderWidget(
-                              progress: 10,
-                              height: context.sh(12),
-                              animatedConHeight: context.sh(12),
-                            ),
-                          ],
-                        ),
+            SizedBox(height: context.sh(10)),
+            if (dietProgressScreenViewModel.miniBars.isNotEmpty)
+              Row(
+                children: List.generate(dietProgressScreenViewModel.miniBars.length, (index) {
+                  final item = dietProgressScreenViewModel.miniBars[index];
+                  return Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: index == dietProgressScreenViewModel.miniBars.length - 1 ? 0 : context.sw(10)),
+                      child: _miniProgressCard(
+                        context,
+                        title: item['title']?.toString() ?? '',
+                        progress: item['percent'] is num
+                            ? (item['percent'] as num).toDouble()
+                            : 0,
                       ),
                     ),
                   );
-                },
+                }),
               ),
-            ),
             SizedBox(height: context.sh(16)),
 
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(
                 dietProgressScreenViewModel.buttonName.length,
                 (index) {
                   final bool isSelected =
                       dietProgressScreenViewModel.selectedIndex ==
                       dietProgressScreenViewModel.buttonName[index];
-                  return CustomContainer(
-                    radius: context.radiusR(10),
-                    onTap: () {
-                      dietProgressScreenViewModel.selectIndex(index);
-                    },
-                    color: isSelected
-                        ? AppColors.buttonColor.withValues(alpha: 0.11)
-                        : AppColors.backGroundColor,
-                    border: isSelected
-                        ? Border.all(color: AppColors.pimaryColor, width: 1.5)
-                        : null,
-                    padding: context.paddingSymmetricR(horizontal: 37, vertical: 13),
-                    margin: EdgeInsets.only(right: 8),
-                    child: Center(
-                      child: Text(
-                        dietProgressScreenViewModel.buttonName[index],
-                        style: TextStyle(
-                          fontSize: context.sp(14),
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.seconderyColor,
+                  return Expanded(
+                    child: CustomContainer(
+                      radius: context.radiusR(10),
+                      onTap: () {
+                        dietProgressScreenViewModel.selectIndex(index);
+                      },
+                      color: isSelected
+                          ? AppColors.buttonColor.withValues(alpha: 0.11)
+                          : AppColors.backGroundColor,
+                      border: isSelected
+                          ? Border.all(color: AppColors.pimaryColor, width: 1.5)
+                          : null,
+                      padding: context.paddingSymmetricR(
+                        horizontal: 12,
+                        vertical: 13,
+                      ),
+                      margin: EdgeInsets.only(
+                        right: index ==
+                                dietProgressScreenViewModel.buttonName.length - 1
+                            ? 0
+                            : 8,
+                      ),
+                      child: Center(
+                        child: Text(
+                          dietProgressScreenViewModel.buttonName[index],
+                          style: TextStyle(
+                            fontSize: context.sp(14),
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.seconderyColor,
+                          ),
                         ),
                       ),
                     ),
@@ -171,95 +223,106 @@ class _DietProgressScreenState extends State<DietProgressScreen> {
               color: AppColors.backGroundColor,
               padding: context.paddingSymmetricR(horizontal: 10, vertical: 10),
               margin: EdgeInsets.only(bottom: context.sh(20)),
-              child: Center(child: LineChartWidget()),
-            ),
-            ActivityConsistencyWidget(
-              title: 'Workout Consistency',
-              subtitle: 'Your workout activity this week',
-              pressentage: 20,
-            ),
-            SizedBox(height: context.sh(6)),
-            LightCardWidget(
-              text:
-                  'Consistency improves stamina, strength & posture over time.',
-            ),
-            SizedBox(height: context.sh(16)),
-            NormalText(
-              titleText: 'Daily Recovery Checklist',
-              titleSize: context.sp(18),
-              titleWeight: FontWeight.w600,
-              titleColor: AppColors.subHeadingColor,
-            ),
-            SizedBox(height: context.sh(16)),
-            Column(
-              children: List.generate(
-                dietProgressScreenViewModel.checkBoxName.length,
-                (index) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: context.sh(12)),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            dietProgressScreenViewModel.toggleChecklist(index);
-                          },
-                          child: Container(
-                            height: context.sh(28),
-                            width: context.sw(28),
-                            decoration: BoxDecoration(
-                              color: AppColors.backGroundColor,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.customContainerColorUp
-                                      .withValues(alpha: 0.4),
-                                  offset: const Offset(3, 3),
-                                  blurRadius: 4,
-                                  inset: true,
-                                ),
-                                BoxShadow(
-                                  color: AppColors.customContinerColorDown
-                                      .withValues(alpha: 0.4),
-                                  offset: const Offset(-3, -3),
-                                  blurRadius: 4,
-                                  inset: true,
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child:
-                                  dietProgressScreenViewModel
-                                      .selectedChecklist[index]
-                                  ? Icon(
-                                      Icons.check,
-                                      size: context.sh(16),
-                                      color: AppColors.pimaryColor,
-                                    )
-                                  : NormalText(
-                                      titleText: '${index + 1}',
-                                      titleSize: context.sp(12),
-                                    ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(width: context.sw(12)),
-
-                        Expanded(
-                          child: NormalText(
-                            titleText:
-                                dietProgressScreenViewModel.checkBoxName[index],
-                            titleSize: context.sp(16),
-                            titleWeight: FontWeight.w600,
-                            titleColor: AppColors.subHeadingColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+              child: Center(
+                child: LineChartWidget(
+                  workoutChartData: dietProgressScreenViewModel.chartData,
+                  yAxisMinimum: 0,
+                  yAxisMaximum: 100,
+                  valueDisplaySuffix: '%',
+                ),
               ),
             ),
+            ActivityConsistencyWidget(
+              title: dietProgressScreenViewModel.mainConsistency['title']
+                  ?.toString(),
+              subtitle: dietProgressScreenViewModel.mainConsistency['subtitle']
+                  ?.toString(),
+              pressentage:
+                  (dietProgressScreenViewModel.mainConsistency['percent'] is num)
+                  ? (dietProgressScreenViewModel.mainConsistency['percent']
+                            as num)
+                        .toDouble()
+                  : 0,
+            ),
+            SizedBox(height: context.sh(6)),
+            if (dietProgressScreenViewModel.insightText.isNotEmpty)
+              LightCardWidget(
+                text: dietProgressScreenViewModel.insightText,
+              ),
+            SizedBox(height: context.sh(16)),
+            if (dietProgressScreenViewModel.checkBoxName.isNotEmpty) ...[
+              NormalText(
+                titleText: 'Daily Recovery Checklist',
+                titleSize: context.sp(18),
+                titleWeight: FontWeight.w600,
+                titleColor: AppColors.subHeadingColor,
+              ),
+              SizedBox(height: context.sh(16)),
+              Column(
+                children: List.generate(
+                  dietProgressScreenViewModel.checkBoxName.length,
+                  (index) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: context.sh(12)),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              dietProgressScreenViewModel.toggleChecklist(index);
+                            },
+                            child: Container(
+                              height: context.sh(28),
+                              width: context.sw(28),
+                              decoration: BoxDecoration(
+                                color: AppColors.backGroundColor,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.customContainerColorUp
+                                        .withValues(alpha: 0.4),
+                                    offset: const Offset(3, 3),
+                                    blurRadius: 4,
+                                    inset: true,
+                                  ),
+                                  BoxShadow(
+                                    color: AppColors.customContinerColorDown
+                                        .withValues(alpha: 0.4),
+                                    offset: const Offset(-3, -3),
+                                    blurRadius: 4,
+                                    inset: true,
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child:
+                                    dietProgressScreenViewModel
+                                        .selectedChecklist[index]
+                                    ? Icon(
+                                        Icons.check,
+                                        size: context.sh(14),
+                                        color: AppColors.pimaryColor,
+                                      )
+                                    : null,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: context.sw(12)),
+                          Expanded(
+                            child: NormalText(
+                              titleText:
+                                  dietProgressScreenViewModel.checkBoxName[index],
+                              titleSize: context.sp(14),
+                              titleWeight: FontWeight.w500,
+                              titleColor: AppColors.subHeadingColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
             SizedBox(height: context.sh(30)),
           ],
         ),

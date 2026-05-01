@@ -4,14 +4,23 @@ import 'package:looklabs/Core/Constants/app_assets.dart';
 class WeeklyPlanScreenViewModel extends ChangeNotifier {
   bool isBestClothingSelected = false;
   int selectedIndex = -1;
+  String headerTitle = 'Daily style themes to keep you sharp';
+  Map<String, dynamic> _seasonalStyle = const {};
+  final List<String> _seasonKeys = [];
 
   /// Filled from API only; no mock fallback.
   List<String> clothingFits = [];
 
   /// Select season index. clothingFits must be set from API (no fallback data).
   void selectIndex(int index) {
+    if (index < 0 || index >= _seasonKeys.length) return;
     selectedIndex = index;
-    clothingFits = [];
+    final key = _seasonKeys[index];
+    final seasonRaw = _seasonalStyle[key];
+    final season = seasonRaw is Map
+        ? Map<String, dynamic>.from(seasonRaw)
+        : <String, dynamic>{};
+    clothingFits = _toStringList(season['outfit_combinations']);
     notifyListeners();
   }
 
@@ -22,18 +31,7 @@ class WeeklyPlanScreenViewModel extends ChangeNotifier {
   }
 
   bool get showClothingCard => selectedIndex != -1 && clothingFits.isNotEmpty;
-  List<Map<String, dynamic>> heightRoutineList = [
-    {
-      'time': 'Neck Stretches',
-      'activity': '3 min exercises',
-      'details': 'Tilt head left & right for 10 seconds',
-    },
-    {
-      'time': 'Spine Alignment',
-      'activity': '5 min exercises',
-      'details': 'Sit straight and stretch your spine',
-    },
-  ];
+  List<Map<String, dynamic>> heightRoutineList = [];
 
   // int selectedIndex = -1; // ✔ tick state
   int expandedIndex = -1; // ⬇️ dropdown state
@@ -55,14 +53,86 @@ class WeeklyPlanScreenViewModel extends ChangeNotifier {
 
   bool isSelected(int index) => selectedIndex == index;
 
-  List<Map<String, dynamic>> buttonName = [
-    {'image': AppAssets.sunIcon, 'title': 'Summer'},
-    {'image': AppAssets.rainIcon, 'title': 'Monson'},
-    {'image': AppAssets.winterIcon, 'title': 'Winter'},
-  ];
+  List<Map<String, dynamic>> buttonName = [];
   final List<String> titleData = [
     'Outfit Combinations',
     'Recommended Fabrics',
     'Footwear',
   ];
+
+  String get selectedSeasonCardTitle {
+    if (selectedIndex < 0 || selectedIndex >= buttonName.length) {
+      return titleData.first;
+    }
+    return '${buttonName[selectedIndex]['title']} ${titleData.first}';
+  }
+
+  void initializeFromFlow(Map<String, dynamic>? args) {
+    final rawDaily = args?['daily_plan'];
+    final daily = rawDaily is Map
+        ? Map<String, dynamic>.from(rawDaily)
+        : <String, dynamic>{};
+    final subtitle = (daily['subtitle']?.toString() ?? '').trim();
+    if (subtitle.isNotEmpty) headerTitle = subtitle;
+
+    final weeklyRaw = daily['weekly_plan'];
+    heightRoutineList = [];
+    if (weeklyRaw is List) {
+      for (final row in weeklyRaw) {
+        if (row is! Map) continue;
+        final m = Map<String, dynamic>.from(row);
+        final day = (m['day']?.toString() ?? '').trim();
+        final theme = (m['theme']?.toString() ?? '').trim();
+        if (day.isEmpty && theme.isEmpty) continue;
+        heightRoutineList.add({
+          'time': day,
+          'activity': theme,
+          'details': 'Style focus for $day: $theme',
+        });
+      }
+    }
+
+    final seasonalRaw = daily['seasonal_style'];
+    _seasonalStyle = seasonalRaw is Map
+        ? Map<String, dynamic>.from(seasonalRaw)
+        : <String, dynamic>{};
+    final tabs = _toStringList(daily['season_tabs']);
+    _seasonKeys
+      ..clear()
+      ..addAll(
+        tabs.isNotEmpty ? tabs : _seasonalStyle.keys.map((e) => '$e').toList(),
+      );
+
+    buttonName = _seasonKeys.map((season) {
+      final lower = season.toLowerCase();
+      final icon = lower == 'summer'
+          ? AppAssets.sunIcon
+          : lower == 'monsoon'
+          ? AppAssets.rainIcon
+          : AppAssets.winterIcon;
+      return {
+        'image': icon,
+        'title': '${season[0].toUpperCase()}${season.substring(1)}',
+      };
+    }).toList();
+
+    final defaultSeason = (daily['default_season']?.toString() ?? '').trim();
+    selectedIndex = _seasonKeys.indexWhere(
+      (e) => e.toLowerCase() == defaultSeason.toLowerCase(),
+    );
+    if (selectedIndex < 0 && _seasonKeys.isNotEmpty) selectedIndex = 0;
+    if (selectedIndex >= 0) {
+      selectIndex(selectedIndex);
+    } else {
+      notifyListeners();
+    }
+  }
+
+  List<String> _toStringList(dynamic raw) {
+    if (raw is! List) return const <String>[];
+    return raw
+        .map((e) => (e?.toString() ?? '').trim())
+        .where((e) => e.isNotEmpty)
+        .toList(growable: false);
+  }
 }

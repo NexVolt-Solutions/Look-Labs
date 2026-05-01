@@ -4,6 +4,7 @@ import 'package:looklabs/Core/Network/api_endpoints.dart';
 import 'package:looklabs/Core/Network/api_response.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Network/models/user_profile_response.dart';
+import 'package:looklabs/Repository/diet_repository.dart';
 
 const _kStorageKeyAuthToken = 'api_auth_token';
 const _kStorageKeyRefreshToken = 'api_refresh_token';
@@ -69,6 +70,7 @@ class AuthRepository {
   /// Clear tokens locally without calling logout API. Use when refresh fails (expired/invalid).
   static Future<void> clearTokensLocally() async {
     ApiServices.setAuthToken(null);
+    DietRepository.instance.clearFlowCache();
     try {
       await _storage.delete(key: _kStorageKeyAuthToken);
       await _storage.delete(key: _kStorageKeyRefreshToken);
@@ -93,6 +95,7 @@ class AuthRepository {
     );
 
     ApiServices.setAuthToken(null);
+    DietRepository.instance.clearFlowCache();
     try {
       await _storage.delete(key: _kStorageKeyAuthToken);
       await _storage.delete(key: _kStorageKeyRefreshToken);
@@ -230,6 +233,7 @@ class AuthRepository {
   Future<ApiResponse> deleteAccount() async {
     final response = await ApiServices.delete(ApiEndpoints.usersMe);
     ApiServices.setAuthToken(null);
+    DietRepository.instance.clearFlowCache();
     try {
       await _storage.delete(key: _kStorageKeyAuthToken);
       await _storage.delete(key: _kStorageKeyRefreshToken);

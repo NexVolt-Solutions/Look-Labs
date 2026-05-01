@@ -132,6 +132,49 @@ class WorkoutCompletionRepository {
     return false;
   }
 
+  /// Partial update for completed-exercises.
+  ///
+  /// Sends only provided fields so callers can update routine or recovery
+  /// independently without overwriting the other dimension.
+  Future<bool> saveCompletedPartial(
+    DateTime date, {
+    String domain = 'workout',
+    Set<int>? completedIndices,
+    int? totalExercises,
+    Set<int>? recoveryCompletedIndices,
+  }) async {
+    final dateStr = _dateStr(date);
+    final body = <String, dynamic>{'date': dateStr};
+    if (completedIndices != null) {
+      body['completed_indices'] = completedIndices.toList()..sort();
+    }
+    if (totalExercises != null) {
+      body['total_exercises'] = totalExercises;
+    }
+    if (recoveryCompletedIndices != null) {
+      body['recovery_completed_indices'] = recoveryCompletedIndices.toList()
+        ..sort();
+    }
+
+    final endpoint = ApiEndpoints.domainsCompletedExercises(domain);
+    final response = await ApiServices.put(endpoint, body: body);
+    if (response.success) {
+      if (kDebugMode) {
+        debugPrint(
+          '[RoutineCompletion] domain=$domain partial save success for $dateStr '
+          'fields={completed:${completedIndices != null}, total:${totalExercises != null}, recovery:${recoveryCompletedIndices != null}}',
+        );
+      }
+      return true;
+    }
+    if (kDebugMode) {
+      debugPrint(
+        '[RoutineCompletion] domain=$domain partial save failed (${response.statusCode})',
+      );
+    }
+    return false;
+  }
+
   /// GET weekly-summary. Returns map on success; `null` on failure (no empty stub).
   Future<Map<String, dynamic>?> getWeeklySummary() async {
     final response = await ApiServices.get(ApiEndpoints.workoutWeeklySummary);

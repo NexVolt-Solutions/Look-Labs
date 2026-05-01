@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/height_widget_cont.dart';
+import 'package:looklabs/Features/Widget/network_image_with_fallback.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
@@ -69,25 +70,30 @@ class _DietResultScreenState extends State<DietResultScreen> {
             SizedBox(height: context.sh(24)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'Your personalized diet analysis is ready.',
+              titleText: dietResultScreenViewModel.subtitle,
               titleSize: context.sp(16),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
             ),
             SizedBox(height: context.sh(18)),
             if (dietResultScreenViewModel.gridData.isNotEmpty)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  dietResultScreenViewModel.gridData.length,
-                  (index) {
-                    return HeightWidgetCont(
-                      title: dietResultScreenViewModel.gridData[index]['title'],
-                      subTitle:
-                          dietResultScreenViewModel.gridData[index]['subtitle'],
-                      imgPath: dietResultScreenViewModel.gridData[index]['image'],
-                    );
-                  },
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    dietResultScreenViewModel.gridData.length,
+                    (index) {
+                      return HeightWidgetCont(
+                        title: dietResultScreenViewModel.gridData[index]['title'],
+                        subTitle:
+                            dietResultScreenViewModel.gridData[index]['subtitle'],
+                        imgPath: dietResultScreenViewModel.gridData[index]['image'],
+                        iconUrl:
+                            dietResultScreenViewModel.gridData[index]['icon_url'],
+                      );
+                    },
+                  ),
                 ),
               ),
             SizedBox(height: context.sh(18)),
@@ -218,69 +224,78 @@ class _DietResultScreenState extends State<DietResultScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  NormalText(
-                    titleText: dietResultScreenViewModel.todayMealsTitle,
-                    titleSize: context.sp(16),
-                    titleWeight: FontWeight.w500,
-                    titleColor: AppColors.subHeadingColor,
-                    subText: dietResultScreenViewModel.todayMealsSubTitle,
-                    subSize: context.sp(12),
-                    subWeight: FontWeight.w600,
+                  Expanded(
+                    child: NormalText(
+                      titleText: dietResultScreenViewModel.todayMealsTitle,
+                      titleSize: context.sp(16),
+                      titleWeight: FontWeight.w500,
+                      titleColor: AppColors.subHeadingColor,
+                      subText: dietResultScreenViewModel.todayMealsSubTitle,
+                      subSize: context.sp(12),
+                      subWeight: FontWeight.w600,
+                    ),
                   ),
-                  Container(
-                    padding: context.paddingSymmetricR(horizontal: 6, vertical: 6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(context.radiusR(10)),
-                      gradient: const LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          Color(0xFFD0F040),
-                          Color(0xFFFFFFFF),
-                          Color(0xFFFFE5E2),
+                  SizedBox(width: context.sw(10)),
+                  if (dietResultScreenViewModel.badgeIcons.isNotEmpty)
+                    Container(
+                      padding: context.paddingSymmetricR(
+                        horizontal: 6,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(context.radiusR(10)),
+                        gradient: const LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color(0xFFD0F040),
+                            Color(0xFFFFFFFF),
+                            Color(0xFFFFE5E2),
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.customContainerColorUp.withValues(
+                              alpha: 0.4,
+                            ),
+                            offset: const Offset(5, 5),
+                            blurRadius: 5,
+                          ),
+                          BoxShadow(
+                            color: AppColors.customContinerColorDown.withValues(
+                              alpha: 0.4,
+                            ),
+                            offset: const Offset(-5, -5),
+                            blurRadius: 5,
+                          ),
                         ],
                       ),
-
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.customContainerColorUp.withValues(alpha: 
-                            0.4,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(
+                          dietResultScreenViewModel.badgeIcons.length > 2
+                              ? 2
+                              : dietResultScreenViewModel.badgeIcons.length,
+                          (i) => Padding(
+                            padding: EdgeInsets.only(
+                              left: i == 0 ? 0 : context.sw(4),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                context.radiusR(999),
+                              ),
+                              child: NetworkImageWithFallback(
+                                url: dietResultScreenViewModel.badgeIcons[i],
+                                height: context.sh(i == 0 ? 20 : 16),
+                                width: context.sw(i == 0 ? 20 : 16),
+                                fit: BoxFit.cover,
+                                fallbackSize: 20,
+                              ),
+                            ),
                           ),
-                          offset: const Offset(5, 5),
-                          blurRadius: 5,
                         ),
-                        BoxShadow(
-                          color: AppColors.customContinerColorDown.withValues(alpha: 
-                            0.4,
-                          ),
-                          offset: const Offset(-5, -5),
-                          blurRadius: 5,
-                        ),
-                      ],
+                      ),
                     ),
-
-                    /// 🔹 Badge Content
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        /// First Icon
-                        SvgPicture.asset(
-                          AppAssets.sunIcon,
-                          height: context.sh(20),
-                          width: context.sw(20),
-                          placeholderBuilder: (_) => const Icon(Icons.image),
-                        ),
-
-                        SizedBox(width: context.sw(4)),
-                        SvgPicture.asset(
-                          AppAssets.nightIcon,
-                          height: context.sh(16),
-                          width: context.sw(16),
-                          placeholderBuilder: (_) => const Icon(Icons.image),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),

@@ -197,7 +197,7 @@ class SkinReviewScans extends StatelessWidget {
 
             CustomStepper(
               currentStep: viewModel.stepperHighlightStep,
-              steps: ReviewScansViewModel.stepperStepTitles,
+              steps: viewModel.stepperStepTitles,
             ),
             SizedBox(height: context.sh(20)),
             NormalText(
@@ -232,7 +232,7 @@ class SkinReviewScans extends StatelessWidget {
                       (viewModel.imagePathForSlot(index)?.isNotEmpty ??
                           false) ||
                       viewModel.currentStep == index,
-                  angleTitle: ReviewScansViewModel.slotLabels[index],
+                  angleTitle: viewModel.slotLabels[index],
                 );
               },
             ),

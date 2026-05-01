@@ -6,6 +6,7 @@ import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/height_widget_cont.dart';
+import 'package:looklabs/Features/Widget/network_image_with_fallback.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
@@ -13,19 +14,36 @@ import 'package:looklabs/Features/ViewModel/fashion_profile_screen_view_model.da
 import 'package:provider/provider.dart';
 
 class FashionProfileScreen extends StatefulWidget {
-  const FashionProfileScreen({super.key});
+  const FashionProfileScreen({super.key, this.resultData});
+
+  final Map<String, dynamic>? resultData;
 
   @override
   State<FashionProfileScreen> createState() => _FashionProfileScreenState();
 }
 
 class _FashionProfileScreenState extends State<FashionProfileScreen> {
-  final List<String> clothingFits = [
-    'Fitted shirts',
-    'Slim jeans',
-    'Tailored jackets',
-    'Casual wear',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<FashionProfileScreenViewModel>().initializeFromResult(
+        widget.resultData,
+      );
+    });
+  }
+
+  Color _paletteColor(String hex) {
+    final cleaned = hex.trim().replaceAll('#', '');
+    if (cleaned.length == 6) {
+      return Color(int.parse('FF$cleaned', radix: 16));
+    }
+    if (cleaned.length == 8) {
+      return Color(int.parse(cleaned, radix: 16));
+    }
+    return AppColors.backGroundColor;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +64,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
           padding: context.paddingSymmetricR(horizontal: 20),
           children: [
             AppBarContainer(
-              title: 'Your Style Profile',
+              title: fashionProfileScreenViewModel.profileTitle,
               onTap: () {
                 Navigator.pop(context);
               },
@@ -56,7 +74,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
 
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'AI analysis complete',
+              titleText: fashionProfileScreenViewModel.subtitle,
               titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
@@ -65,12 +83,13 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
             SizedBox(
               height: context.sh(140),
               child: ListView.builder(
-                itemCount: 4,
+                itemCount: fashionProfileScreenViewModel.profileTraits.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
+                  final trait = fashionProfileScreenViewModel.profileTraits[index];
                   return HeightWidgetCont(
-                    title: '2300',
-                    subTitle: 'Weekly Cal',
+                    title: trait['value']?.toString() ?? '',
+                    subTitle: trait['label']?.toString() ?? '',
                     imgPath: AppAssets.fatLossIcon,
                   );
                 },
@@ -81,7 +100,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
 
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'AI analysis complete',
+              titleText: 'Review Scans',
               titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
@@ -92,9 +111,10 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
             SizedBox(
               height: context.sh(190),
               child: ListView.builder(
-                itemCount: 3,
+                itemCount: fashionProfileScreenViewModel.reviewScans.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
+                  final scan = fashionProfileScreenViewModel.reviewScans[index];
                   return Column(
                     children: [
                       Container(
@@ -107,16 +127,18 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            'assets/Picsart_25-12-27_23-56-38-946.jpg',
+                          child: NetworkImageWithFallback(
+                            url: scan['url']?.toString() ?? '',
                             fit: BoxFit.cover,
+                            width: context.sw(158),
+                            height: context.sh(150),
                           ),
                         ),
                       ),
                       SizedBox(height: context.sh(8)),
                       NormalText(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        titleText: 'LeftSide',
+                        titleText: scan['label']?.toString() ?? '',
                         titleSize: context.sp(14),
                         titleWeight: FontWeight.w600,
                         titleColor: AppColors.subHeadingColor,
@@ -201,7 +223,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: clothingFits.map((item) {
+                    children: fashionProfileScreenViewModel.stylesToAvoid.map((item) {
                       return PlanContainer(
                         margin: context.paddingSymmetricR(vertical: 0),
                         radius: BorderRadius.circular(context.radiusR(10)),
@@ -263,7 +285,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: clothingFits.map((item) {
+                    children: fashionProfileScreenViewModel.bestClothingFits.map((item) {
                       return PlanContainer(
                         margin: context.paddingSymmetricR(vertical: 0),
                         radius: BorderRadius.circular(context.radiusR(10)),
@@ -322,7 +344,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: clothingFits.map((item) {
+                    children: fashionProfileScreenViewModel.warmPalette.map((item) {
                       return PlanContainer(
                         margin: context.paddingSymmetricR(vertical: 0),
                         radius: BorderRadius.circular(context.radiusR(10)),
@@ -330,6 +352,11 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                         isSelected: false,
                         onTap: () {},
                         child: ClipRRect(
+                          child: Container(
+                            height: context.sh(18),
+                            width: context.sw(18),
+                            color: _paletteColor(item),
+                          ),
                           borderRadius: BorderRadiusGeometry.circular(
                             context.radiusR(10),
                           ),
@@ -343,7 +370,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
             SizedBox(height: context.sh(18)),
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
-              titleText: 'Weekly Plan',
+              titleText: fashionProfileScreenViewModel.weeklyTitle,
               titleSize: context.sp(18),
               titleWeight: FontWeight.w600,
               titleColor: AppColors.subHeadingColor,
@@ -357,7 +384,11 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
 
                 Future.delayed(const Duration(milliseconds: 150), () {
                           if (!context.mounted) return;
-                  Navigator.pushNamed(context, RoutesName.WeeklyPlanScreen);
+                  Navigator.pushNamed(
+                    context,
+                    RoutesName.WeeklyPlanScreen,
+                    arguments: {'daily_plan': fashionProfileScreenViewModel.dailyPlan},
+                  );
                 });
               },
               child: Row(
@@ -365,7 +396,7 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                 children: [
                   NormalText(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    titleText: 'Style themes to keep you sharp',
+                    titleText: fashionProfileScreenViewModel.weeklySubtitle,
                     titleSize: context.sp(18),
                     titleWeight: FontWeight.w600,
                     titleColor: AppColors.headingColor,

@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
-import 'package:looklabs/Features/Widget/app_bar_container.dart';
-import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
-import 'package:looklabs/Features/Widget/custom_stepper.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
-import 'package:looklabs/Features/View/Home/Widget/Diet/diet_question_screen.dart';
-import 'package:looklabs/Features/ViewModel/diet_view_model.dart';
-import 'package:provider/provider.dart';
 
 class DietScreen extends StatefulWidget {
   const DietScreen({super.key});
@@ -18,91 +13,40 @@ class DietScreen extends StatefulWidget {
 }
 
 class _DietScreenState extends State<DietScreen> {
+  bool _navigated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _navigated) return;
+      _navigated = true;
+      Navigator.pushReplacementNamed(
+        context,
+        RoutesName.DomainQuestionScreen,
+        arguments: 'diet',
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<DietViewModel>(context);
-    final isLast = vm.currentStep == vm.dietQuestions.length - 1;
-    final index = vm.currentStep;
-    final data = vm.dietQuestions[index];
-
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
-
-      bottomNavigationBar: Padding(
-        padding: EdgeInsetsGeometry.only(
-          top: context.sh(5),
-          left: context.sw(20),
-          right: context.sw(20),
-          bottom: context.sh(30),
-        ),
-        child: CustomButton(
-          crossAxisAlignment: CrossAxisAlignment.center,
-
-          text: isLast ? 'Complete' : 'Next',
-          color: AppColors.pimaryColor,
-          isEnabled: true,
-          onTap: () {
-            if (isLast) {
-              Navigator.pushNamed(context, RoutesName.DietResultScreen);
-            } else {
-              vm.next();
-            }
-          },
-        ),
-      ),
-
-      body: SafeArea(
+      body: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            if (index != 0)
-              Padding(
-                padding: context.paddingSymmetricR(horizontal: 20),
-                child: AppBarContainer(title: data['title'], onTap: vm.back),
-              ),
-
-            SizedBox(height: context.sh(10)),
-
-            /// 🔹 Title
-            if (index == 0)
-              NormalText(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                titleText: data['title'],
-                titleSize: context.sp(20),
-                titleWeight: FontWeight.w600,
-                titleColor: AppColors.headingColor,
-              ),
-
-            SizedBox(height: context.sh(20)),
-
-            /// 🔹 Stepper
-            Padding(
-              padding: context.paddingSymmetricR(horizontal: 20),
-              child: CustomStepper(
-                currentStep: index,
-                steps: const [
-                  'Hydration',
-                  'Acne',
-                  'Skin',
-                  'Sun',
-                  'Routine',
-                  'Sense',
-                ],
-              ),
+            CupertinoActivityIndicator(
+              color: AppColors.pimaryColor,
+              radius: context.sw(16),
             ),
-
-            SizedBox(height: context.sh(20)),
-
-            /// 🔹 PageView
-            Expanded(
-              child: PageView.builder(
-                controller: vm.pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: vm.setStep,
-                itemCount: vm.dietQuestions.length,
-                itemBuilder: (_, index) {
-                  return DietQuestion(index: index);
-                },
-              ),
+            SizedBox(height: context.sh(12)),
+            NormalText(
+              titleText: 'Loading diet questions...',
+              titleSize: context.sp(14),
+              titleWeight: FontWeight.w500,
+              titleColor: AppColors.subHeadingColor,
             ),
           ],
         ),

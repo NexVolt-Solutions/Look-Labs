@@ -49,7 +49,7 @@ class FacialReviewScansScreen extends StatelessWidget {
 
             CustomStepper(
               currentStep: viewModel.stepperHighlightStep,
-              steps: ReviewScansViewModel.stepperStepTitles,
+              steps: viewModel.stepperStepTitles,
             ),
             SizedBox(height: context.sh(20)),
             NormalText(
@@ -77,7 +77,7 @@ class FacialReviewScansScreen extends StatelessWidget {
                 mainAxisSpacing: context.sh(12),
                 childAspectRatio: 0.62,
               ),
-              itemCount: 4,
+              itemCount: viewModel.slotCount,
               itemBuilder: (context, index) {
                 return ReviewScanTile(
                   onTapCapture: () => viewModel.selectStep(index),
@@ -85,7 +85,7 @@ class FacialReviewScansScreen extends StatelessWidget {
                   isSelected:
                       (viewModel.imagePathForSlot(index)?.isNotEmpty ?? false) ||
                           viewModel.currentStep == index,
-                  angleTitle: ReviewScansViewModel.slotLabels[index],
+                  angleTitle: viewModel.slotLabels[index],
                 );
               },
             ),
