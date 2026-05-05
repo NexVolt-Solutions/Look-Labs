@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:looklabs/Core/Constants/app_assets.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
-import 'package:looklabs/Features/Widget/network_image_with_fallback.dart';
 import 'package:looklabs/Core/Constants/app_colors.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
@@ -153,13 +150,6 @@ class AiProductDetailBody extends StatelessWidget {
   const AiProductDetailBody({super.key, required this.data});
 
   final AiProductApiFields data;
-
-  ({bool hasAm, bool hasPm}) _timeFlags(String raw) {
-    final t = raw.toUpperCase();
-    final hasAm = t.contains('AM');
-    final hasPm = t.contains('PM');
-    return (hasAm: hasAm, hasPm: hasPm);
-  }
 
   @override
   Widget build(BuildContext context) {

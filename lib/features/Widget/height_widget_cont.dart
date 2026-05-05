@@ -44,7 +44,7 @@ class HeightWidgetCont extends StatelessWidget {
     return Image.network(
       url,
       fit: BoxFit.scaleDown,
-      errorBuilder: (_, __, ___) {
+      errorBuilder: (_, error, stackTrace) {
         return _buildImage(context, imgPath ?? AppAssets.heightIcon);
       },
     );

@@ -352,13 +352,13 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
                         isSelected: false,
                         onTap: () {},
                         child: ClipRRect(
+                          borderRadius: BorderRadiusGeometry.circular(
+                            context.radiusR(10),
+                          ),
                           child: Container(
                             height: context.sh(18),
                             width: context.sw(18),
                             color: _paletteColor(item),
-                          ),
-                          borderRadius: BorderRadiusGeometry.circular(
-                            context.radiusR(10),
                           ),
                         ),
                       );

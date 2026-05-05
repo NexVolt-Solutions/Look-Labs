@@ -117,7 +117,7 @@ class WeeklyPlanScreenViewModel extends ChangeNotifier {
     _seasonKeys
       ..clear()
       ..addAll(
-        tabs.isNotEmpty ? tabs : _seasonalStyle.keys.map((e) => '$e').toList(),
+        tabs.isNotEmpty ? tabs : _seasonalStyle.keys.map((e) => e.toString()).toList(),
       );
 
     buttonName = _seasonKeys.map((season) {

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:looklabs/Features/Widget/app_bar_container.dart';
-import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/linear_slider_widget.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/ViewModel/daily_hair_care_routine_view_model.dart';

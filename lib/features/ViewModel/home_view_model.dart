@@ -556,6 +556,7 @@ class HomeViewModel extends ChangeNotifier {
         return;
       }
 
+      if (!context.mounted) return;
       _setLoadingDomain(null);
       _navigateToDomainQuestions(context, key);
     } catch (_) {

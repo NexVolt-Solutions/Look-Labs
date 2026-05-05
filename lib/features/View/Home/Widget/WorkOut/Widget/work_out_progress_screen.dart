@@ -119,7 +119,10 @@ class _WorkOutProgressScreenState extends State<WorkOutProgressScreen> {
                         color: AppColors.backGroundColor,
                         child: SvgPicture.asset(
                           AppAssets.graphIcon,
-                           color: AppColors.pimaryColor,
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.pimaryColor,
+                            BlendMode.srcIn,
+                          ),
                           height: context.sh(24),
                           width: context.sw(24),
                           fit: BoxFit.scaleDown,
