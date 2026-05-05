@@ -5,11 +5,10 @@ import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 import 'package:looklabs/Features/Widget/neu_text_fied.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
 import 'package:looklabs/Features/Widget/plan_container.dart';
-import 'package:looklabs/features/ViewModel/question_answer_view_model.dart';
+import 'package:looklabs/Features/ViewModel/question_answer_view_model.dart';
 import 'package:provider/provider.dart';
 
-/// Renders a single [FlowQuestion]: text input, number input, or option list.
-class FlowQuestionContent extends StatelessWidget {
+ class FlowQuestionContent extends StatelessWidget {
   final FlowQuestion question;
 
   const FlowQuestionContent({super.key, required this.question});

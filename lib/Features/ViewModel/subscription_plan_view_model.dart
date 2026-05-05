@@ -1,12 +1,11 @@
-import 'dart:io' show Platform;
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:looklabs/Core/Constants/app_assets.dart';
-import 'package:looklabs/Core/Network/api_response.dart';
-import 'package:looklabs/Core/Network/models/iap_request_response.dart';
 import 'package:looklabs/Core/Network/models/iap_entitlement_response.dart';
+import 'package:looklabs/Core/Network/models/iap_request_response.dart';
 import 'package:looklabs/Core/Network/models/subscription_plan_response.dart';
 import 'package:looklabs/Core/Services/iap_service.dart';
 import 'package:looklabs/Repository/subscription_repository.dart';
@@ -86,15 +85,16 @@ class SubscriptionPlanViewModel extends ChangeNotifier {
     _error = null;
     notifyListeners();
 
-    ApiResponse plansRes = await SubscriptionRepository.instance.getIapPlans();
-    if (!(plansRes.success && plansRes.data is SubscriptionPlanResponse)) {
-      plansRes = await SubscriptionRepository.instance.getPlans();
-    }
+    final plansRes = await SubscriptionRepository.instance.getPlans();
 
     if (plansRes.success && plansRes.data is SubscriptionPlanResponse) {
       _plans = (plansRes.data as SubscriptionPlanResponse)
           .plans
-          .where((p) => p.resolveProductId(isIos: true).isNotEmpty || p.productId.isNotEmpty)
+          .where(
+            (p) =>
+                p.resolveProductId(isIos: true).isNotEmpty ||
+                p.productId.isNotEmpty,
+          )
           .toList();
       if (_plans.isEmpty) {
         _error = 'No plans available right now';
@@ -142,7 +142,7 @@ class SubscriptionPlanViewModel extends ChangeNotifier {
       return false;
     }
     if (!isDomainSelectionValid) {
-      _error = 'Please select exactly ${selectedPlanMaxDomains} domains';
+      _error = 'Please select exactly $selectedPlanMaxDomains domains';
       notifyListeners();
       return false;
     }
@@ -150,8 +150,7 @@ class SubscriptionPlanViewModel extends ChangeNotifier {
     _isPurchasing = true;
     _error = null;
     notifyListeners();
-    // Optional pre-check for backend-driven upgrade restrictions/pricing.
-    final preview = await SubscriptionRepository.instance.upgradePreview(
+    final preview = await SubscriptionRepository.instance.previewUpgrade(
       UpgradePreviewRequest(
         targetPlanCode: plan.planCode.isNotEmpty ? plan.planCode : plan.id,
         provider: isIos ? 'apple' : 'google',
@@ -187,15 +186,13 @@ class SubscriptionPlanViewModel extends ChangeNotifier {
     return started;
   }
 
-  /// Poll backend entitlement for a short window after purchase start.
-  /// Returns true as soon as backend marks subscription active.
   Future<bool> waitForEntitlementActivation({
     Duration timeout = const Duration(seconds: 20),
     Duration interval = const Duration(seconds: 2),
   }) async {
     final end = DateTime.now().add(timeout);
     while (DateTime.now().isBefore(end)) {
-      final res = await SubscriptionRepository.instance.getIapEntitlement();
+      final res = await SubscriptionRepository.instance.getEntitlement();
       if (res.success && res.data is IapEntitlementResponse) {
         final ent = res.data as IapEntitlementResponse;
         if (ent.isActive) return true;
@@ -230,7 +227,6 @@ class SubscriptionPlanViewModel extends ChangeNotifier {
       'subtitle': 'See your glow-up potential with rev6fal-time AI previews',
       'image': AppAssets.instIcon,
     },
-
     {
       'title': 'Privacy First',
       'subtitle': 'Your photos are encrypted and never shared',

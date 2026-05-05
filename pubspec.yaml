@@ -35,6 +35,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: /Users/mac/.cursor/projects/Users-mac-Look-Labs/assets/image-4a4feb34-1d12-4b91-b7ea-8bdc25f072a9.png
+  adaptive_icon_foreground: /Users/mac/.cursor/projects/Users-mac-Look-Labs/assets/image-4a4feb34-1d12-4b91-b7ea-8bdc25f072a9.png
+  adaptive_icon_background: "#FFFFFF"
 
 flutter:
   uses-material-design: true

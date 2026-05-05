@@ -13,111 +13,80 @@ import 'package:looklabs/Repository/auth_repository.dart';
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/explore_domains_repository.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
-import 'package:looklabs/Repository/subscription_repository.dart';
-import 'package:looklabs/Core/Network/models/iap_entitlement_response.dart';
-import 'package:looklabs/Core/Network/models/subscription_status_response.dart';
-
 part 'home_view_model_data.dart';
 part 'home_view_model_flow.dart';
 part 'home_view_model_flow_dialogs.dart';
 
 class HomeViewModel extends ChangeNotifier {
-  String _normalizedDomainKey(String key) {
-    final d = key.trim().toLowerCase();
-    switch (d) {
-      case 'skin':
-        return 'skincare';
-      case 'skin_care':
-        return 'skincare';
-      case 'hair':
-        return 'haircare';
-      case 'hair_care':
-        return 'haircare';
-      default:
-        return d;
-    }
-  }
+  static const Set<String> _flowDomains = <String>{
+    'skincare',
+    'haircare',
+    'workout',
+    'fashion',
+    'diet',
+    'height',
+    'quit_porn',
+  };
 
-  bool get _hasAuthToken {
-    final t = ApiServices.authToken;
-    return t != null && t.trim().isNotEmpty;
-  }
+  List<ExploreDomain> _domains = <ExploreDomain>[];
+  bool _domainsLoading = false;
+  String? _domainsError;
+  String? _selectedDomain;
+  String? _loadingDomainKey;
 
   WellnessMetrics? _wellness;
   bool _wellnessLoading = false;
   String? _wellnessError;
 
-  WellnessMetrics? get wellness => _wellness;
-  bool get wellnessLoading => _wellnessLoading;
-  String? get wellnessError => _wellnessError;
-
   WeeklyProgressResponse? _weeklyProgress;
   bool _weeklyProgressLoading = false;
   String? _weeklyProgressError;
+
+  bool get _hasAuthToken => (ApiServices.authToken ?? '').trim().isNotEmpty;
+
+  List<Map<String, dynamic>> get gridData => _gridData(this);
+  List<Map<String, dynamic>> get homeOverViewData => _homeOverViewData(this);
+  List<Map<String, dynamic>> get listViewData => _listViewData(this);
+
+  bool get domainsLoading => _domainsLoading;
+  String? get domainsError => _domainsError;
+  bool get hasExploreDomains => _domains.isNotEmpty;
+  bool get hasNoGoalSelected => (_selectedDomain ?? '').trim().isEmpty;
+
+  WellnessMetrics? get wellness => _wellness;
+  bool get wellnessLoading => _wellnessLoading;
+  String? get wellnessError => _wellnessError;
 
   WeeklyProgressResponse? get weeklyProgress => _weeklyProgress;
   bool get weeklyProgressLoading => _weeklyProgressLoading;
   String? get weeklyProgressError => _weeklyProgressError;
 
-  List<ExploreDomain> _domains = [];
-  bool _domainsLoading = false;
-  String? _domainsError;
-  String? _selectedDomain;
-  bool _entitlementLoading = false;
-  String? _entitlementError;
-  bool _hasActiveSubscription = false;
-  final Set<String> _unlockedDomainKeys = <String>{};
+  bool isLoadingDomain(String key) =>
+      _loadingDomainKey == _normalizedDomainKey(key);
 
-  bool get domainsLoading => _domainsLoading;
-  String? get domainsError => _domainsError;
-  bool get hasExploreDomains => _domains.isNotEmpty;
-  bool get entitlementLoading => _entitlementLoading;
-  String? get entitlementError => _entitlementError;
-  bool get hasActiveSubscription => _hasActiveSubscription;
-  Set<String> get unlockedDomainKeys => Set<String>.from(_unlockedDomainKeys);
-
-  /// User's goal/domain from onboarding (goal screen or link response). Only this domain is tappable on Home.
-  String? get selectedDomain => _selectedDomain;
-
-  /// True if this domain key is enabled (tappable). When no goal is stored, none are enabled (all show Pro badge); otherwise only the selected goal is enabled.
-  bool isDomainEnabled(String key) {
-    final normalized = _normalizedDomainKey(key);
-    if (_unlockedDomainKeys.isNotEmpty) {
-      return _unlockedDomainKeys.contains(normalized);
-    }
-    if (_hasActiveSubscription) return true;
-    if (_selectedDomain == null || _selectedDomain!.isEmpty) return false;
-    return normalized == _selectedDomain!.trim().toLowerCase();
+  String _normalizedDomainKey(String domain) {
+    var d = domain.trim().toLowerCase();
+    if (d == 'skin' || d == 'skin_care') return 'skincare';
+    if (d == 'hair' || d == 'hair_care') return 'haircare';
+    if (d == 'quitporn' || d == 'quit-porn') return 'quit_porn';
+    return d;
   }
 
-  /// True when user has not selected a goal yet (all plans show Pro badge; tap prompts to select goal).
-  bool get hasNoGoalSelected =>
-      _selectedDomain == null || _selectedDomain!.isEmpty;
-  Future<void> loadDomainsForExplore() => _loadDomainsForExplore(this);
-  Future<void> refreshDomainsForExplore() => _refreshDomainsForExplore(this);
-  List<Map<String, dynamic>> get homeOverViewData => _homeOverViewData(this);
-  Future<void> loadWellness() => _loadWellness(this);
-  Future<void> loadWeeklyProgress() => _loadWeeklyProgress(this);
-  List<Map<String, dynamic>> get listViewData => _listViewData(this);
-  List<Map<String, dynamic>> get gridData => _gridData(this);
-
-  /// Domains that have a flow API and result screen (check flow before questions).
-  static const _flowDomains = {
-    'workout',
-    'diet',
-    'height',
-    'quit_porn',
-    'skincare',
-    'haircare',
-    'fashion',
-  };
-
-  String? _loadingDomainKey;
-  String? get loadingDomainKey => _loadingDomainKey;
-  bool isLoadingDomain(String key) =>
-      _loadingDomainKey?.toLowerCase() == key.toLowerCase();
+  bool isDomainEnabled(String domainKey) {
+    final selected = _normalizedDomainKey(_selectedDomain ?? '');
+    if (selected.isEmpty) return false;
+    return selected == _normalizedDomainKey(domainKey);
+  }
 
   void _notify() => notifyListeners();
+
+  Future<void> loadDomainsForExplore() => _loadDomainsForExplore(this);
+
+  Future<void> refreshDomainsForExplore() => _refreshDomainsForExplore(this);
+
+  Future<void> loadWellness() => _loadWellness(this);
+
+  Future<void> loadWeeklyProgress() => _loadWeeklyProgress(this);
 
   Future<void> onItemTap(int index, BuildContext context) =>
       _onItemTap(this, index, context);

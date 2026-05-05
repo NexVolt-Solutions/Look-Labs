@@ -10,7 +10,7 @@ import 'package:looklabs/Core/Network/api_error_handler.dart';
 import 'package:looklabs/Core/Routes/routes_name.dart';
 import 'package:looklabs/Features/View/QuestionScreen/flow_question_content.dart';
 import 'package:looklabs/Repository/onboarding_repository.dart';
-import 'package:looklabs/features/ViewModel/question_answer_view_model.dart';
+import 'package:looklabs/Features/ViewModel/question_answer_view_model.dart';
 import 'package:provider/provider.dart';
 
 class QuestionScreen extends StatefulWidget {

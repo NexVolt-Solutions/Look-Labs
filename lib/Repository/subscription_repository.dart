@@ -3,6 +3,7 @@ import 'package:looklabs/Core/Network/api_response.dart';
 import 'package:looklabs/Core/Network/api_services.dart';
 import 'package:looklabs/Core/Network/models/iap_entitlement_response.dart';
 import 'package:looklabs/Core/Network/models/iap_request_response.dart';
+import 'package:looklabs/Core/Network/models/subscription_plan_response.dart';
 
 /// Repository for IAP domain-plan APIs.
 class SubscriptionRepository {
@@ -13,24 +14,23 @@ class SubscriptionRepository {
 
   /// GET iap/plans – canonical plan contract and provider product mappings.
   Future<ApiResponse> getPlans() async {
-    return ApiServices.get(ApiEndpoints.iapPlans);
+    final response = await ApiServices.get(ApiEndpoints.iapPlans);
+    if (response.success && response.data is Map<String, dynamic>) {
+      final data = SubscriptionPlanResponse.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+      return ApiResponse(
+        success: true,
+        statusCode: response.statusCode,
+        data: data,
+        message: response.message,
+      );
+    }
+    return response;
   }
 
   /// GET iap/entitlement – current entitlement source of truth.
   Future<ApiResponse> getEntitlement() async {
-    return ApiServices.get(ApiEndpoints.iapEntitlement);
-  }
-
-  /// POST iap/upgrade-preview – preview target plan price and credits.
-  Future<ApiResponse> previewUpgrade(UpgradePreviewRequest request) async {
-    return ApiServices.post(
-      ApiEndpoints.iapUpgradePreview,
-      body: request.toJson(),
-    );
-  }
-
-  /// GET iap/entitlement – domain access entitlements.
-  Future<ApiResponse> getIapEntitlement() async {
     final response = await ApiServices.get(ApiEndpoints.iapEntitlement);
     if (response.success && response.data is Map<String, dynamic>) {
       final data = IapEntitlementResponse.fromJson(
@@ -44,6 +44,14 @@ class SubscriptionRepository {
       );
     }
     return response;
+  }
+
+  /// POST iap/upgrade-preview – preview target plan price and credits.
+  Future<ApiResponse> previewUpgrade(UpgradePreviewRequest request) async {
+    return ApiServices.post(
+      ApiEndpoints.iapUpgradePreview,
+      body: request.toJson(),
+    );
   }
 
   /// POST iap/validate-receipt – after store purchase. Requires auth.

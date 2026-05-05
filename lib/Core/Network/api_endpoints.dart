@@ -86,23 +86,12 @@ class ApiEndpoints {
   /// GET users/me/progress/graph – score history for all domains. Query: period=weekly|monthly|yearly.
   static const String usersMeProgressGraph = 'users/me/progress/graph';
 
-  // Subscriptions (requires auth unless noted)
-  static const String subscriptionPlans = 'subscriptions/plans';
-  static const String subscriptions = 'subscriptions';
-  static const String subscriptionsMe = 'subscriptions/me';
-  static String subscriptionById(String id) => 'subscriptions/$id';
-  static String subscriptionCancel(String id) => 'subscriptions/$id/cancel';
-  static String subscriptionReactivate(String id) =>
-      'subscriptions/$id/reactivate';
-  static const String subscriptionsMeStatus = 'subscriptions/me/status';
-
-  // In-App Purchase (validate, restore, products; webhooks are server-only)
+  // In-App Purchase (domain-based contract; webhooks are server-only)
   static const String iapPlans = 'iap/plans';
   static const String iapEntitlement = 'iap/entitlement';
   static const String iapUpgradePreview = 'iap/upgrade-preview';
   static const String iapAssignDomains = 'iap/assign-domains';
   static const String iapValidateReceipt = 'iap/validate-receipt';
-  static const String iapAssignDomains = 'iap/assign-domains';
   static const String iapRestorePurchases = 'iap/restore-purchases';
   static const String iapWebhookApple = 'iap/webhooks/apple';
   static const String iapWebhookGoogle = 'iap/webhooks/google';

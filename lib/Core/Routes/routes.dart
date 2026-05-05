@@ -64,8 +64,7 @@ import 'package:looklabs/Features/ViewModel/recovery_path_screen_view_model.dart
 import 'package:looklabs/Features/ViewModel/review_scans_view_model.dart';
 import 'package:looklabs/Features/View/SplahScreen/splash_screen.dart';
 import 'package:looklabs/Features/View/StartScreen/start_screen.dart';
-import 'package:looklabs/Features/View/Subscription%20Plan/subscription_plan_screen.dart';
-
+ 
 class Routes {
   static Route<dynamic> _route(RouteSettings settings, Widget child) {
     return MaterialPageRoute(settings: settings, builder: (_) => child);
@@ -87,8 +86,7 @@ class Routes {
         return _route(settings, GaolScreen());
       case RoutesName.OnBoardScreen:
         return _route(settings, OnBoardScreen());
-      case RoutesName.SubscriptionPlanScreen:
-        return _route(settings, SubscriptionPlanScreen());
+   
       case RoutesName.CardDetailsScreen:
         return _route(settings, CardDetailsScreen());
       case RoutesName.PurchaseScreen:

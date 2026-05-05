@@ -4,13 +4,22 @@ extension IapProviderValue on IapProvider {
   String get value => this == IapProvider.apple ? 'apple' : 'google';
 }
 
-/// Request body for POST iap/upgrade-preview.
 class UpgradePreviewRequest {
-  final String planCode; // domain_1 | domain_2 | domain_3 | domain_all
+  final String targetPlanCode;
+  final List<String> selectedDomainIds;
+  final String provider; // "google" | "apple"
 
-  const UpgradePreviewRequest({required this.planCode});
+  const UpgradePreviewRequest({
+    required this.targetPlanCode,
+    required this.provider,
+    this.selectedDomainIds = const [],
+  });
 
-  Map<String, dynamic> toJson() => {'plan_code': planCode};
+  Map<String, dynamic> toJson() => {
+        'plan_code': targetPlanCode,
+        'selected_domain_ids': selectedDomainIds,
+        'provider': provider,
+      };
 }
 
 /// Request body for POST iap/validate-receipt.
@@ -39,10 +48,9 @@ class ValidateReceiptRequest {
 
   Map<String, dynamic> toJson() => {
         'provider': provider,
-        // Backward-compatible alias for older backend contracts.
-        'platform': provider == 'google' ? 'android' : 'ios',
         'product_id': productId,
-        if (selectedDomainIds.isNotEmpty) 'selected_domain_ids': selectedDomainIds,
+        if (selectedDomainIds.isNotEmpty)
+          'selected_domain_ids': selectedDomainIds,
         if (purchaseToken != null) 'purchase_token': purchaseToken,
         if (orderId != null) 'order_id': orderId,
         if (receiptData != null) 'receipt_data': receiptData,
@@ -55,11 +63,13 @@ class ValidateReceiptRequest {
 
 /// Request body for POST iap/assign-domains.
 class AssignDomainsRequest {
-  final List<String> domains;
+  final List<String> domainIdsToAdd;
 
-  const AssignDomainsRequest({this.domains = const []});
+  const AssignDomainsRequest({this.domainIdsToAdd = const []});
 
-  Map<String, dynamic> toJson() => {'domains': domains};
+  Map<String, dynamic> toJson() => {
+        'domains': domainIdsToAdd,
+      };
 }
 
 /// Request body for POST iap/restore-purchases. Send list of purchases from store.
@@ -95,30 +105,4 @@ class RestorePurchaseItem {
         if (orderId != null) 'order_id': orderId,
         if (transactionId != null) 'transaction_id': transactionId,
       };
-}
-
-class UpgradePreviewRequest {
-  final String targetPlanCode;
-  final List<String> selectedDomainIds;
-  final String provider; // "google" | "apple"
-
-  const UpgradePreviewRequest({
-    required this.targetPlanCode,
-    required this.provider,
-    this.selectedDomainIds = const [],
-  });
-
-  Map<String, dynamic> toJson() => {
-        'target_plan_code': targetPlanCode,
-        'selected_domain_ids': selectedDomainIds,
-        'provider': provider,
-      };
-}
-
-class AssignDomainsRequest {
-  final List<String> domainIdsToAdd;
-
-  const AssignDomainsRequest({this.domainIdsToAdd = const []});
-
-  Map<String, dynamic> toJson() => {'domain_ids_to_add': domainIdsToAdd};
 }

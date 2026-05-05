@@ -1,4 +1,4 @@
-/// Response from GET subscriptions/plans. Adjust fields to match backend.
+/// Response from GET iap/plans.
 class SubscriptionPlanResponse {
   final List<SubscriptionPlan> plans;
 

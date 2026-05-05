@@ -50,7 +50,7 @@ import 'package:looklabs/Features/ViewModel/weekly_plan_screen_view_model.dart';
 import 'package:looklabs/Features/ViewModel/work_out_result_screen_view_model.dart';
 import 'package:looklabs/Features/ViewModel/work_out_view_model.dart';
 import 'package:looklabs/Features/ViewModel/work_out_progress_screen_view_model.dart';
-import 'package:looklabs/features/ViewModel/question_answer_view_model.dart';
+import 'package:looklabs/Features/ViewModel/question_answer_view_model.dart';
 import 'package:provider/provider.dart';
 
 bool _isBenignImageResourceNetworkFailure(FlutterErrorDetails details) {

@@ -97,7 +97,7 @@ class IapService {
     await SubscriptionRepository.instance.getEntitlement();
   }
 
-  /// Load products by IDs (from GET subscriptions/plans product_id). Returns store product details.
+  /// Load products by IDs from iap/plans mapping. Returns store product details.
   Future<List<ProductDetails>> loadProducts(Set<String> productIds) async {
     if (!_initialized) await initialize();
     if (!_storeAvailable || productIds.isEmpty) return [];
@@ -128,7 +128,9 @@ class IapService {
     if (!_initialized) await initialize();
     if (!_storeAvailable) return false;
     await _iap.restorePurchases();
-    await SubscriptionRepository.instance.restorePurchases();
+    await SubscriptionRepository.instance.restorePurchases(
+      const RestorePurchasesRequest(),
+    );
     return true;
   }
 
