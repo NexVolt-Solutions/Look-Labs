@@ -7,6 +7,9 @@ import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 import 'package:looklabs/Core/Network/models/user_profile_response.dart';
 import 'package:looklabs/Repository/auth_repository.dart';
 
+part 'domain_questions_repository_flow.dart';
+part 'domain_questions_repository_submit.dart';
+
 /// Payload for one domain answer to submit.
 class DomainAnswerPayload {
   final int questionId;
@@ -160,62 +163,18 @@ class DomainQuestionsRepository {
     );
   }
 
-  /// GET domains/{domain}/flow – poll for completion when status is "processing".
-  Future<ApiResponse> getDomainFlow(String domain) async {
-    final effectiveDomain = await _effectiveDomain(domain);
-    if (effectiveDomain.isEmpty) {
-      return ApiResponse(
-        success: false,
-        statusCode: 400,
-        message: 'Domain is required',
-      );
-    }
-    final endpoint = ApiEndpoints.domainsFlow(effectiveDomain);
-    return ApiServices.get(endpoint);
-  }
-
-  /// Poll domains/{domain}/flow every [interval] until status is "completed".
-  /// Pass [lastKnownResponse] when you already called [getDomainFlow] and got
-  /// e.g. `processing` — avoids an immediate duplicate GET on the first poll tick.
+  Future<ApiResponse> getDomainFlow(String domain) => _getDomainFlow(domain);
   Future<Map<String, dynamic>?> pollDomainFlowUntilCompleted(
     String domain, {
     Map<String, dynamic>? lastKnownResponse,
     Duration interval = const Duration(seconds: 3),
     Duration timeout = const Duration(minutes: 2),
-  }) async {
-    final stopAt = DateTime.now().add(timeout);
-    Map<String, dynamic>? data = lastKnownResponse != null
-        ? Map<String, dynamic>.from(lastKnownResponse)
-        : null;
-
-    while (DateTime.now().isBefore(stopAt)) {
-      if (data == null) {
-        final res = await getDomainFlow(domain);
-        if (!res.success || res.data is! Map) return null;
-        data = Map<String, dynamic>.from(res.data as Map);
-      }
-      final status = data['status']?.toString().toLowerCase() ?? '';
-      if (status == 'completed' || status == 'ok') {
-        return data;
-      }
-      if (status == 'failed' || status == 'error') {
-        return data;
-      }
-      // Some domains return transitional states like `pending` / `in_progress`
-      // before reaching `completed`.
-      if (status.isEmpty ||
-          status == 'processing' ||
-          status == 'pending' ||
-          status == 'in_progress') {
-        await Future<void>.delayed(interval);
-        data = null;
-        continue;
-      }
-      // Unknown state: keep latest snapshot so caller can still render fallback UI.
-      return data;
-    }
-    return null;
-  }
+  }) => _pollDomainFlowUntilCompleted(
+    domain,
+    lastKnownResponse: lastKnownResponse,
+    interval: interval,
+    timeout: timeout,
+  );
 
   /// POST domains/{domain}/answers – submit one answer. Body: { question_id, domain, answer }.
   /// Returns full response (current, next, progress, redirect) for step-by-step flow.
@@ -223,47 +182,7 @@ class DomainQuestionsRepository {
     String domain,
     int questionId,
     String answer,
-  ) async {
-    final effectiveDomain = await _effectiveDomain(domain);
-    if (effectiveDomain.isEmpty) {
-      return ApiResponse(
-        success: false,
-        statusCode: 400,
-        message: 'Domain is required',
-      );
-    }
-    final endpoint = ApiEndpoints.domainsAnswers(effectiveDomain);
-    final response = await ApiServices.post(
-      endpoint,
-      body: {
-        'question_id': questionId,
-        'domain': effectiveDomain,
-        'answer': answer,
-      },
-    );
-    if (!response.success) {
-      if (kDebugMode) {
-        debugPrint(
-          '[DomainAnswers] domain=$effectiveDomain questionId=$questionId statusCode=${response.statusCode}',
-        );
-      }
-      return response;
-    }
-    DomainAnswersResponse? data;
-    if (response.data is Map) {
-      try {
-        data = DomainAnswersResponse.fromJson(
-          Map<String, dynamic>.from(response.data as Map),
-        );
-      } catch (_) {}
-    }
-    return ApiResponse(
-      success: true,
-      statusCode: response.statusCode,
-      data: data,
-      message: response.message,
-    );
-  }
+  ) => _submitSingleAnswer(domain, questionId, answer);
 
   /// POST domains/{domain}/answers – submit each answer (one request per question).
   /// Submits sequentially so the last response (status "completed") contains ai_attributes, ai_exercises, etc.
@@ -271,69 +190,5 @@ class DomainQuestionsRepository {
   Future<ApiResponse> submitDomainAnswers(
     String domain,
     List<DomainAnswerPayload> answers,
-  ) async {
-    final effectiveDomain = await _effectiveDomain(domain);
-    if (effectiveDomain.isEmpty || answers.isEmpty) {
-      return ApiResponse(
-        success: false,
-        statusCode: 400,
-        message: answers.isEmpty
-            ? 'No answers to submit'
-            : 'Domain is required',
-      );
-    }
-
-    final meRes = await AuthRepository.instance.getMe();
-    final userId = (meRes.success &&
-            meRes.data != null &&
-            meRes.data is UserProfileResponse)
-        ? (meRes.data! as UserProfileResponse).id ?? 0
-        : 0;
-    if (userId <= 0) {
-      return ApiResponse(
-        success: false,
-        statusCode: 401,
-        message: 'User not found. Please sign in again.',
-      );
-    }
-
-    final endpoint = ApiEndpoints.domainsAnswers(effectiveDomain);
-    // Submit sequentially so the last response has status "completed" with ai_attributes, ai_exercises, etc.
-    Map<String, dynamic>? lastResponseData;
-    for (var i = 0; i < answers.length; i++) {
-      final payload = answers[i];
-      final response = await ApiServices.post(
-        endpoint,
-        body: {
-          'question_id': payload.questionId,
-          'domain': effectiveDomain,
-          'answer': payload.answer,
-          if (userId > 0) 'user_id': userId,
-        },
-      );
-      if (!response.success) {
-        if (kDebugMode) {
-          debugPrint(
-            '[DomainAnswers] domain=$effectiveDomain questionId=${payload.questionId} statusCode=${response.statusCode}',
-          );
-        }
-        return response;
-      }
-      if (response.data is Map) {
-        lastResponseData = Map<String, dynamic>.from(response.data as Map);
-      }
-    }
-
-    if (kDebugMode) {
-      debugPrint(
-        '[DomainAnswers] domain=$effectiveDomain submitted ${answers.length} answers',
-      );
-    }
-    return ApiResponse(
-      success: true,
-      statusCode: 200,
-      data: lastResponseData,
-      message: null,
-    );
-  }
+  ) => _submitDomainAnswers(domain, answers);
 }

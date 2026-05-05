@@ -21,6 +21,7 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
   bool _loading = true;
   Map<String, dynamic>? _flowData;
   List<String> _insights = const [];
+  bool _hasNavigated = false;
 
   @override
   void initState() {
@@ -49,6 +50,35 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
     _insights = _extractInsights(payload);
     _loading = false;
     setState(() {});
+    if (_shouldAutoNavigateOnCompleted(payload)) {
+      _goToProfile();
+    }
+  }
+
+  bool _isFlowCompleted(Map<String, dynamic>? payload) {
+    if (payload == null) return false;
+    final status = (payload['status']?.toString() ?? '').toLowerCase().trim();
+    if (status == 'completed' || status == 'ok') return true;
+    final redirect = (payload['redirect']?.toString() ?? '')
+        .toLowerCase()
+        .trim();
+    return redirect == 'completed_flow';
+  }
+
+  bool _shouldAutoNavigateOnCompleted(Map<String, dynamic>? payload) {
+    if (!_isFlowCompleted(payload)) return false;
+    // If insights are available, let the user read them and continue manually.
+    return _insights.isEmpty;
+  }
+
+  void _goToProfile() {
+    if (!mounted || _hasNavigated) return;
+    _hasNavigated = true;
+    Navigator.pushReplacementNamed(
+      context,
+      RoutesName.FashionProfileScreen,
+      arguments: _flowData,
+    );
   }
 
   List<String> _extractInsights(Map<String, dynamic>? payload) {
@@ -76,16 +106,10 @@ class _FashionAnalyzingScreenState extends State<FashionAnalyzingScreen> {
           bottom: context.sh(30),
         ),
         child: CustomButton(
-          text: _loading ? 'Analyzing...' : AppText.next,
+          text: _loading ? 'Analyzing...' : 'Continue',
           color: AppColors.pimaryColor,
           isEnabled: !_loading,
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              RoutesName.FashionProfileScreen,
-              arguments: _flowData,
-            );
-          },
+          onTap: _goToProfile,
         ),
       ),
       body: SafeArea(
