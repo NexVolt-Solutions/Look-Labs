@@ -56,7 +56,7 @@ class IapService {
     if (serverData.isEmpty) return;
     if (Platform.isAndroid) {
       final req = ValidateReceiptRequest(
-        platform: 'android',
+        provider: IapProvider.google.value,
         productId: productId,
         purchaseToken: serverData,
         orderId: p.purchaseID,
@@ -64,13 +64,15 @@ class IapService {
       await SubscriptionRepository.instance.validateReceipt(req);
     } else if (Platform.isIOS) {
       final req = ValidateReceiptRequest(
-        platform: 'ios',
+        provider: IapProvider.apple.value,
         productId: productId,
         receiptData: serverData,
         transactionId: p.purchaseID,
       );
       await SubscriptionRepository.instance.validateReceipt(req);
     }
+    // Keep UI gating synchronized with backend source of truth.
+    await SubscriptionRepository.instance.getEntitlement();
   }
 
   /// Load products by IDs (from GET subscriptions/plans product_id). Returns store product details.
