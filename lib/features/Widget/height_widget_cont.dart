@@ -10,6 +10,7 @@ class HeightWidgetCont extends StatelessWidget {
   final String? subTitle;
   final String? imgPath;
   final EdgeInsets? padding;
+  final String? iconUrl;
 
   const HeightWidgetCont({
     super.key,
@@ -17,6 +18,7 @@ class HeightWidgetCont extends StatelessWidget {
     this.subTitle,
     this.imgPath,
     this.padding,
+    this.iconUrl,
   });
 
   static bool _isSvg(String path) {
@@ -38,11 +40,21 @@ class HeightWidgetCont extends StatelessWidget {
     return Image.asset(path, fit: BoxFit.scaleDown);
   }
 
+  Widget _buildNetworkImage(BuildContext context, String url) {
+    return Image.network(
+      url,
+      fit: BoxFit.scaleDown,
+      errorBuilder: (_, error, stackTrace) {
+        return _buildImage(context, imgPath ?? AppAssets.heightIcon);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: context.sh(120),
+        height: context.sh(128),
         width: context.sw(150),
 
         margin: EdgeInsetsGeometry.only(right: context.sw(12)),
@@ -63,7 +75,7 @@ class HeightWidgetCont extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: EdgeInsetsGeometry.only(top: context.sh(13)),
+          padding: EdgeInsetsGeometry.only(top: context.sh(10)),
           child: Column(
             children: [
               Container(
@@ -89,23 +101,25 @@ class HeightWidgetCont extends StatelessWidget {
                   child: SizedBox(
                     height: context.sh(20),
                     width: context.sw(20),
-                    child: _buildImage(
-                      context,
-                      imgPath ?? AppAssets.heightIcon,
-                    ),
+                    child: (iconUrl != null && iconUrl!.trim().isNotEmpty)
+                        ? _buildNetworkImage(context, iconUrl!)
+                        : _buildImage(
+                            context,
+                            imgPath ?? AppAssets.heightIcon,
+                          ),
                   ),
                 ),
               ),
-              SizedBox(height: context.sh(9)),
+              SizedBox(height: context.sh(6)),
               NormalText(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 titleText: title ?? 'title',
-                titleSize: context.sp(14),
+                titleSize: context.sp(13),
                 titleWeight: FontWeight.w600,
                 titleColor: AppColors.subHeadingColor,
-                sizeBoxheight: context.sh(3),
+                sizeBoxheight: context.sh(2),
                 subText: subTitle ?? 'subTitle',
-                subSize: context.sp(12),
+                subSize: context.sp(11),
                 subWeight: FontWeight.w400,
                 subColor: AppColors.iconColor,
               ),

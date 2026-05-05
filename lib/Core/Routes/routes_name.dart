@@ -92,7 +92,8 @@ class RoutesName {
         // After API domain questions, go to diet result (avoid old static diet question flow).
         return DietResultScreen;
       case 'fashion':
-        return FashionScreen;
+        // After API domain questions → fashion scan review flow.
+        return FashionReviewScanScreen;
       case 'height':
         return HeightResultScreen; // Skip HeightScreen questions; go to result after domain questions
       case 'quit_porn':
@@ -102,8 +103,7 @@ class RoutesName {
     }
   }
 
-  /// Daily routine screen for domains that use the 4-angle scan flow (reached after upload + analyzing).
-  static String? dailyRoutineRouteForDomain(String domain) {
+   static String? dailyRoutineRouteForDomain(String domain) {
     final d = domain.trim().toLowerCase();
     switch (d) {
       case 'workout':

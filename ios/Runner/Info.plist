@@ -40,7 +40,7 @@
 					<key>UISceneConfigurationName</key>
 					<string>flutter</string>
 					<key>UISceneDelegateClassName</key>
-					<string>FlutterSceneDelegate</string>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
 					<key>UISceneStoryboardFile</key>
 					<string>Main</string>
 				</dict>
@@ -70,6 +70,9 @@
 	<string>This app needs access to your photo library to upload progress images.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app uses the camera to capture skin photos for AI analysis.</string>
+	<!-- Google Sign-In: must match iOS OAuth client in Google Cloud / Firebase (same as CLIENT_ID in GoogleService-Info.plist) -->
+	<key>GIDClientID</key>
+	<string>599895027153-aksrj4i879m7kclai3hktq4rhpo3n57j.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

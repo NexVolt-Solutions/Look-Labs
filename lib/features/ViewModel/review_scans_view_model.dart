@@ -7,11 +7,33 @@ import 'package:looklabs/Repository/image_upload_repository.dart';
 
 /// Shared step index + optional domain uploads (skincare after API questions).
 class ReviewScansViewModel extends ChangeNotifier {
-  ReviewScansViewModel({String? uploadDomain})
+  ReviewScansViewModel({
+    String? uploadDomain,
+    List<String>? slotViewKeys,
+    List<String>? slotLabels,
+    List<String>? stepperStepTitles,
+  })
     : _uploadDomain =
           uploadDomain != null && uploadDomain.trim().isNotEmpty
           ? uploadDomain.trim().toLowerCase()
-          : null;
+          : null,
+      _activeSlotViewKeys = _normalizeList(
+        slotViewKeys,
+        fallback: _defaultSlotViewKeys,
+      ),
+      _activeSlotLabels = _normalizeList(slotLabels, fallback: _defaultSlotLabels),
+      _activeStepperStepTitles = _normalizeList(
+        stepperStepTitles,
+        fallback: _defaultStepperStepTitles,
+      ) {
+    final slotCount = [
+      _activeSlotViewKeys.length,
+      _activeSlotLabels.length,
+      _activeStepperStepTitles.length,
+    ].reduce((a, b) => a < b ? a : b);
+    _activeSlotCount = slotCount <= 0 ? _defaultSlotViewKeys.length : slotCount;
+    _imagePaths = List<String?>.filled(_activeSlotCount, null);
+  }
 
   /// When set (e.g. `skincare`), user must pick 4 photos and [uploadAllDomainImages] runs on Continue.
   final String? _uploadDomain;
@@ -20,31 +42,41 @@ class ReviewScansViewModel extends ChangeNotifier {
   int currentStep = 0;
 
   /// Local file paths: index order Front, Back, Right, Left (matches UI + API [slotViewKeys]).
-  final List<String?> _imagePaths = List<String?>.filled(4, null);
+  late final List<String?> _imagePaths;
+  late final int _activeSlotCount;
+  final List<String> _activeSlotViewKeys;
+  final List<String> _activeSlotLabels;
+  final List<String> _activeStepperStepTitles;
 
   bool _uploading = false;
   String? _uploadError;
 
-  static const List<String> slotViewKeys = [
+  static const List<String> _defaultSlotViewKeys = [
     'front',
     'back',
     'right',
     'left',
   ];
 
-  static const List<String> slotLabels = [
+  static const List<String> _defaultSlotLabels = [
     'Front View',
     'Back View',
     'Right View',
     'Left View',
   ];
 
-  static const List<String> stepperStepTitles = [
+  static const List<String> _defaultStepperStepTitles = [
     'Front',
     'Back',
     'Right',
     'Left',
   ];
+
+  List<String> get slotLabels => _activeSlotLabels.take(_activeSlotCount).toList();
+  List<String> get stepperStepTitles => _activeStepperStepTitles
+      .take(_activeSlotCount)
+      .toList();
+  int get slotCount => _activeSlotCount;
 
   /// First incomplete slot for stepper (check = filled before this index).
   int get stepperHighlightStep {
@@ -116,7 +148,7 @@ class ReviewScansViewModel extends ChangeNotifier {
     var firedEarlyNav = false;
     for (var i = 0; i < _imagePaths.length; i++) {
       final path = _imagePaths[i]!;
-      final view = slotViewKeys[i];
+      final view = _activeSlotViewKeys[i];
       final ApiResponse response =
           await ImageUploadRepository.instance.uploadDomainImage(
             path,
@@ -149,5 +181,17 @@ class ReviewScansViewModel extends ChangeNotifier {
     _uploading = false;
     notifyListeners();
     return true;
+  }
+
+  static List<String> _normalizeList(
+    List<String>? value, {
+    required List<String> fallback,
+  }) {
+    if (value == null || value.isEmpty) return List<String>.from(fallback);
+    final out = value
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList(growable: false);
+    return out.isEmpty ? List<String>.from(fallback) : out;
   }
 }

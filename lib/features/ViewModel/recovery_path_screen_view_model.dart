@@ -13,8 +13,9 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   bool _initialized = false;
 
   RecoveryPathUiData uiData = RecoveryPathUiData.empty();
-  final List<String> periodButtons = const ['Week', 'Month', 'Year'];
-  final List<Map<String, String>> repButtons = const [
+  List<String> periodButtons = ['Week', 'Month', 'Year'];
+  List<String> sectionTabs = ['Daily Plan', 'Exercise'];
+  List<Map<String, String>> repButtons = [
     {'image': AppAssets.reportIcon, 'text': 'Report Relapse'},
     {'image': AppAssets.doneIcon, 'text': 'Complete day'},
   ];
@@ -49,24 +50,31 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
   }
 
   List<RecoveryTaskItem> get selectedTaskItems {
-    return selectedSection == 'Daily Plan'
-        ? uiData.dailyPlanItems
-        : uiData.exerciseItems;
+    return _isExerciseSection ? uiData.exerciseItems : uiData.dailyPlanItems;
   }
 
   List<bool> get selectedTaskDone {
-    return selectedSection == 'Daily Plan' ? dailyDone : exerciseDone;
+    return _isExerciseSection ? exerciseDone : dailyDone;
   }
 
   String get taskSectionTitle {
-    return selectedSection == 'Daily Plan'
-        ? 'Your Daily Tasks'
-        : 'Mental & Physical Exercises';
+    return _isExerciseSection
+        ? 'Mental & Physical Exercises'
+        : 'Your Daily Tasks';
+  }
+
+  bool get _isExerciseSection {
+    final key = selectedSection.trim().toLowerCase();
+    return key == 'exercise' ||
+        key == 'exercises' ||
+        key == 'exercise_plan' ||
+        key == 'exercise plan';
   }
 
   Future<void> initialize(Map<String, dynamic>? resultData) async {
     if (_initialized) return;
     _initialized = true;
+    _applyUiConfig(resultData);
     uiData = _repository.parseUiData(resultData);
     dailyDone = uiData.dailyPlanItems.map((e) => e.completed).toList();
     exerciseDone = uiData.exerciseItems.map((e) => e.completed).toList();
@@ -81,76 +89,122 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
     ]);
   }
 
-  void setSelectedSection(String section) {
-    selectedSection = section;
-    notifyListeners();
-  }
-
-  void setSelectedPeriod(String period) {
-    selectedPeriod = period;
-    notifyListeners();
-  }
-
-  void setSelectedAction(int index) {
-    selectedAction = index;
-    notifyListeners();
-  }
-
-  void setChartLoading(bool value) {
-    chartLoading = value;
-    notifyListeners();
-  }
-
-  void putChartPeriod(String period, List<SalesData> data) {
-    chartByPeriod[period] = data;
-    notifyListeners();
-  }
-
-  bool hasChartPeriod(String period) => chartByPeriod.containsKey(period);
-
-  List<SalesData>? chartFor(String period) => chartByPeriod[period];
-
-  void ensureChecklistLengths(int dailyLen, int exerciseLen) {
-    if (dailyDone.length != dailyLen) {
-      dailyDone = List<bool>.filled(dailyLen, false);
+  void _applyUiConfig(Map<String, dynamic>? resultData) {
+    final progressScreenRaw = resultData?['progress_screen'];
+    final progressScreen = progressScreenRaw is Map
+        ? Map<String, dynamic>.from(progressScreenRaw)
+        : <String, dynamic>{};
+    final periodTabsRaw = progressScreen['period_tabs'];
+    if (periodTabsRaw is List) {
+      final mapped = periodTabsRaw
+          .map((e) => _normalizePeriodLabel(e?.toString() ?? ''))
+          .where((e) => e.isNotEmpty)
+          .toList(growable: false);
+      if (mapped.isNotEmpty) {
+        periodButtons = mapped;
+      }
     }
-    if (exerciseDone.length != exerciseLen) {
-      exerciseDone = List<bool>.filled(exerciseLen, false);
+    if (!periodButtons.contains(selectedPeriod)) {
+      selectedPeriod = periodButtons.first;
     }
-    notifyListeners();
+
+    final dailyPlanRaw = resultData?['daily_plan'];
+    final dailyPlan = dailyPlanRaw is Map
+        ? Map<String, dynamic>.from(dailyPlanRaw)
+        : <String, dynamic>{};
+    final tabsRaw = dailyPlan['tabs'];
+    if (tabsRaw is List) {
+      final mapped = tabsRaw
+          .map((e) => _normalizeSectionLabel(e?.toString() ?? ''))
+          .where((e) => e.isNotEmpty)
+          .toList(growable: false);
+      if (mapped.isNotEmpty) {
+        sectionTabs = mapped.length >= 2
+            ? mapped.take(2).toList(growable: false)
+            : <String>[mapped.first, 'Exercise'];
+      }
+    }
+
+    final defaultTab = (dailyPlan['default_tab']?.toString() ?? '')
+        .trim()
+        .toLowerCase();
+    final exerciseTabLabel = sectionTabs.firstWhere(
+      (e) => _isExerciseLabel(e),
+      orElse: () => sectionTabs.length > 1 ? sectionTabs[1] : 'Exercise',
+    );
+    final dailyTabLabel = sectionTabs.firstWhere(
+      (e) => !_isExerciseLabel(e),
+      orElse: () => sectionTabs.isNotEmpty ? sectionTabs.first : 'Daily Plan',
+    );
+    if (defaultTab == 'exercise' ||
+        defaultTab == 'exercises' ||
+        defaultTab == 'exercise_plan' ||
+        defaultTab == 'exercise plan') {
+      selectedSection = exerciseTabLabel;
+    } else if (defaultTab == 'daily_plan' || defaultTab == 'daily plan') {
+      selectedSection = dailyTabLabel;
+    } else if (!sectionTabs.contains(selectedSection) && sectionTabs.isNotEmpty) {
+      selectedSection = sectionTabs.first;
+    }
+
+    final actionsRaw = dailyPlan['actions'];
+    if (actionsRaw is List) {
+      final parsed = <Map<String, String>>[];
+      for (var i = 0; i < actionsRaw.length && i < 2; i++) {
+        final row = actionsRaw[i];
+        if (row is! Map) continue;
+        final m = Map<String, dynamic>.from(row);
+        final label = (m['label']?.toString() ?? '').trim();
+        if (label.isEmpty) continue;
+        parsed.add({
+          'image': i == 0 ? AppAssets.reportIcon : AppAssets.doneIcon,
+          'text': label,
+        });
+      }
+      if (parsed.length == 2) {
+        repButtons = parsed;
+      }
+    }
   }
 
-  void setCompletionLoaded(bool value) {
-    completionLoaded = value;
-    notifyListeners();
+  String _normalizePeriodLabel(String raw) {
+    final k = raw.trim().toLowerCase();
+    switch (k) {
+      case 'week':
+        return 'Week';
+      case 'month':
+        return 'Month';
+      case 'year':
+        return 'Year';
+      default:
+        return '';
+    }
   }
 
-  void setDailyDone(List<bool> value) {
-    dailyDone = value;
-    notifyListeners();
+  String _normalizeSectionLabel(String raw) {
+    final k = raw.trim().toLowerCase();
+    switch (k) {
+      case 'daily_plan':
+      case 'daily plan':
+        return 'Daily Plan';
+      case 'exercise':
+      case 'exercises':
+      case 'exercise_plan':
+      case 'exercise plan':
+        return 'Exercise';
+      default:
+        if (k.isEmpty) return '';
+        if (k.length == 1) return k.toUpperCase();
+        return '${k[0].toUpperCase()}${k.substring(1)}';
+    }
   }
 
-  void setExerciseDone(List<bool> value) {
-    exerciseDone = value;
-    notifyListeners();
-  }
-
-  void toggleDailyDoneAt(int index) {
-    if (index < 0 || index >= dailyDone.length) return;
-    dailyDone[index] = !dailyDone[index];
-    _log('toggleDaily index=$index checked=${dailyDone[index]}');
-    _applyLocalOverlayToLoadedCharts(notify: false);
-    notifyListeners();
-    _persistChecklistState();
-  }
-
-  void toggleExerciseDoneAt(int index) {
-    if (index < 0 || index >= exerciseDone.length) return;
-    exerciseDone[index] = !exerciseDone[index];
-    _log('toggleExercise index=$index checked=${exerciseDone[index]}');
-    _applyLocalOverlayToLoadedCharts(notify: false);
-    notifyListeners();
-    _persistChecklistState();
+  bool _isExerciseLabel(String value) {
+    final k = value.trim().toLowerCase();
+    return k == 'exercise' ||
+        k == 'exercises' ||
+        k == 'exercise_plan' ||
+        k == 'exercise plan';
   }
 
   Future<void> loadChartForPeriod(
@@ -185,12 +239,146 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
     }
   }
 
-  double get _localCompletionPercent {
-    final total = _totalChecklistItems;
-    if (total <= 0) return 0;
-    final done = _combinedCheckedIndices().length;
-    return (done * 100.0 / total).clamp(0.0, 100.0);
+  Future<void> onPeriodTap(String period) async {
+    if (selectedPeriod == period) return;
+    if (hasChartPeriod(period)) {
+      setSelectedPeriod(period);
+      return;
+    }
+    // Keep current chart visible while loading next period.
+    await loadChartForPeriod(period);
+    setSelectedPeriod(period);
   }
+
+  Future<String> onActionTap(int actionIndex) async {
+    if (_actionInFlight) {
+      _log('action ignored: already in flight');
+      return 'Please wait...';
+    }
+    _actionInFlight = true;
+    try {
+      if (actionIndex == 0) {
+        return reportRelapse();
+      }
+      return completeDay();
+    } finally {
+      _actionInFlight = false;
+    }
+  }
+
+  Future<void> loadCompletionForToday() async {
+    final done = await _repository.loadCompletedToday();
+    ensureChecklistLengths(
+      uiData.dailyPlanItems.length,
+      uiData.exerciseItems.length,
+    );
+    if (done == null) {
+      dailyDone = List<bool>.generate(
+        uiData.dailyPlanItems.length,
+        (i) => uiData.dailyPlanItems[i].completed,
+      );
+      exerciseDone = List<bool>.generate(
+        uiData.exerciseItems.length,
+        (i) => uiData.exerciseItems[i].completed,
+      );
+    } else {
+      dailyDone = List<bool>.generate(uiData.dailyPlanItems.length, (i) {
+        return uiData.dailyPlanItems[i].completed || done.contains(i);
+      });
+      final exerciseOffset = uiData.dailyPlanItems.length;
+      exerciseDone = List<bool>.generate(uiData.exerciseItems.length, (i) {
+        return uiData.exerciseItems[i].completed ||
+            done.contains(exerciseOffset + i);
+      });
+    }
+    completionLoaded = true;
+    _log(
+      'completionLoaded doneFromApi=${done?.length ?? 0} '
+      'combinedChecked=${_combinedCheckedIndices().length}/$_totalChecklistItems',
+    );
+    notifyListeners();
+  }
+
+  Future<String> reportRelapse() async {
+    final total = uiData.dailyPlanItems.length + uiData.exerciseItems.length;
+    await _repository.reportRelapse(totalExercises: total);
+    _log('action reportRelapse total=$total');
+    setSelectedAction(0);
+    setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, false));
+    setExerciseDone(List<bool>.filled(uiData.exerciseItems.length, false));
+    _applyLocalOverlayToLoadedCharts();
+    return 'Relapse reported. Progress reset for today.';
+  }
+
+  Future<String> completeDay() async {
+    final total = uiData.dailyPlanItems.length + uiData.exerciseItems.length;
+    await _repository.completeDay(totalExercises: total);
+    _log('action completeDay total=$total');
+    setSelectedAction(1);
+    setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, true));
+    setExerciseDone(List<bool>.filled(uiData.exerciseItems.length, true));
+    _applyLocalOverlayToLoadedCharts();
+    return 'Day marked as completed.';
+  }
+
+  Future<void> _persistChecklistState() async {
+    if (_persistInFlight) {
+      _persistCoalesce = true;
+      _log('persist coalesced');
+      return;
+    }
+    _persistInFlight = true;
+    _log(
+      'persist start indices=${_combinedCheckedIndices().toList()} '
+      'total=$_totalChecklistItems',
+    );
+    try {
+      do {
+        _persistCoalesce = false;
+        await _repository.saveCheckedIndices(
+          indices: _combinedCheckedIndices(),
+          totalExercises: _totalChecklistItems,
+        );
+        _log('persist round saved');
+      } while (_persistCoalesce);
+      _applyLocalOverlayToLoadedCharts();
+    } finally {
+      _persistInFlight = false;
+      _log('persist end');
+    }
+  }
+
+  void toggleDailyDoneAt(int index) {
+    if (index < 0 || index >= dailyDone.length) return;
+    dailyDone[index] = !dailyDone[index];
+    _log('toggleDaily index=$index checked=${dailyDone[index]}');
+    _applyLocalOverlayToLoadedCharts(notify: false);
+    notifyListeners();
+    _persistChecklistState();
+  }
+
+  void toggleExerciseDoneAt(int index) {
+    if (index < 0 || index >= exerciseDone.length) return;
+    exerciseDone[index] = !exerciseDone[index];
+    _log('toggleExercise index=$index checked=${exerciseDone[index]}');
+    _applyLocalOverlayToLoadedCharts(notify: false);
+    notifyListeners();
+    _persistChecklistState();
+  }
+
+  Set<int> _combinedCheckedIndices() {
+    final indices = <int>{};
+    for (var i = 0; i < dailyDone.length; i++) {
+      if (dailyDone[i]) indices.add(i);
+    }
+    final offset = dailyDone.length;
+    for (var i = 0; i < exerciseDone.length; i++) {
+      if (exerciseDone[i]) indices.add(offset + i);
+    }
+    return indices;
+  }
+
+  int get _totalChecklistItems => dailyDone.length + exerciseDone.length;
 
   void _applyLocalOverlayToLoadedCharts({bool notify = true}) {
     if (chartByPeriod.isEmpty) return;
@@ -228,126 +416,64 @@ class RecoveryPathScreenViewModel extends ChangeNotifier {
     if (notify) notifyListeners();
   }
 
-  Future<void> loadCompletionForToday() async {
-    final done = await _repository.loadCompletedToday();
-    ensureChecklistLengths(
-      uiData.dailyPlanItems.length,
-      uiData.exerciseItems.length,
-    );
-    if (done == null) {
-      dailyDone = List<bool>.generate(
-        uiData.dailyPlanItems.length,
-        (i) => uiData.dailyPlanItems[i].completed,
-      );
-      exerciseDone = List<bool>.generate(
-        uiData.exerciseItems.length,
-        (i) => uiData.exerciseItems[i].completed,
-      );
-    } else {
-      dailyDone = List<bool>.generate(uiData.dailyPlanItems.length, (i) {
-        return uiData.dailyPlanItems[i].completed || done.contains(i);
-      });
-      final exerciseOffset = uiData.dailyPlanItems.length;
-      exerciseDone = List<bool>.generate(uiData.exerciseItems.length, (i) {
-        return uiData.exerciseItems[i].completed ||
-            done.contains(exerciseOffset + i);
-      });
+  double get _localCompletionPercent {
+    final total = _totalChecklistItems;
+    if (total <= 0) return 0;
+    final done = _combinedCheckedIndices().length;
+    return (done * 100.0 / total).clamp(0.0, 100.0);
+  }
+
+  void ensureChecklistLengths(int dailyLen, int exerciseLen) {
+    if (dailyDone.length != dailyLen) {
+      dailyDone = List<bool>.filled(dailyLen, false);
     }
-    completionLoaded = true;
-    _log(
-      'completionLoaded doneFromApi=${done?.length ?? 0} '
-      'combinedChecked=${_combinedCheckedIndices().length}/$_totalChecklistItems',
-    );
+    if (exerciseDone.length != exerciseLen) {
+      exerciseDone = List<bool>.filled(exerciseLen, false);
+    }
     notifyListeners();
   }
 
-  Set<int> _combinedCheckedIndices() {
-    final indices = <int>{};
-    for (var i = 0; i < dailyDone.length; i++) {
-      if (dailyDone[i]) indices.add(i);
-    }
-    final offset = dailyDone.length;
-    for (var i = 0; i < exerciseDone.length; i++) {
-      if (exerciseDone[i]) indices.add(offset + i);
-    }
-    return indices;
+  void setSelectedSection(String section) {
+    selectedSection = section;
+    notifyListeners();
   }
 
-  int get _totalChecklistItems => dailyDone.length + exerciseDone.length;
-
-  Future<void> _persistChecklistState() async {
-    if (_persistInFlight) {
-      _persistCoalesce = true;
-      _log('persist coalesced');
-      return;
-    }
-    _persistInFlight = true;
-    _log(
-      'persist start indices=${_combinedCheckedIndices().toList()} '
-      'total=$_totalChecklistItems',
-    );
-    try {
-      do {
-        _persistCoalesce = false;
-        await _repository.saveCheckedIndices(
-          indices: _combinedCheckedIndices(),
-          totalExercises: _totalChecklistItems,
-        );
-        _log('persist round saved');
-      } while (_persistCoalesce);
-      _applyLocalOverlayToLoadedCharts();
-    } finally {
-      _persistInFlight = false;
-      _log('persist end');
-    }
+  void setSelectedPeriod(String period) {
+    selectedPeriod = period;
+    notifyListeners();
   }
 
-  Future<String> reportRelapse() async {
-    final total = uiData.dailyPlanItems.length + uiData.exerciseItems.length;
-    await _repository.reportRelapse(totalExercises: total);
-    _log('action reportRelapse total=$total');
-    setSelectedAction(0);
-    setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, false));
-    setExerciseDone(List<bool>.filled(uiData.exerciseItems.length, false));
-    _applyLocalOverlayToLoadedCharts();
-    return 'Relapse reported. Progress reset for today.';
+  void setSelectedAction(int index) {
+    selectedAction = index;
+    notifyListeners();
   }
 
-  Future<String> completeDay() async {
-    final total = uiData.dailyPlanItems.length + uiData.exerciseItems.length;
-    await _repository.completeDay(totalExercises: total);
-    _log('action completeDay total=$total');
-    setSelectedAction(1);
-    setDailyDone(List<bool>.filled(uiData.dailyPlanItems.length, true));
-    setExerciseDone(List<bool>.filled(uiData.exerciseItems.length, true));
-    _applyLocalOverlayToLoadedCharts();
-    return 'Day marked as completed.';
+  void setChartLoading(bool value) {
+    chartLoading = value;
+    notifyListeners();
   }
 
-  Future<void> onPeriodTap(String period) async {
-    if (selectedPeriod == period) return;
-    if (hasChartPeriod(period)) {
-      setSelectedPeriod(period);
-      return;
-    }
-    // Keep current chart visible while loading next period.
-    await loadChartForPeriod(period);
-    setSelectedPeriod(period);
+  void putChartPeriod(String period, List<SalesData> data) {
+    chartByPeriod[period] = data;
+    notifyListeners();
   }
 
-  Future<String> onActionTap(int actionIndex) async {
-    if (_actionInFlight) {
-      _log('action ignored: already in flight');
-      return 'Please wait...';
-    }
-    _actionInFlight = true;
-    try {
-    if (actionIndex == 0) {
-      return reportRelapse();
-    }
-    return completeDay();
-    } finally {
-      _actionInFlight = false;
-    }
+  bool hasChartPeriod(String period) => chartByPeriod.containsKey(period);
+
+  List<SalesData>? chartFor(String period) => chartByPeriod[period];
+
+  void setCompletionLoaded(bool value) {
+    completionLoaded = value;
+    notifyListeners();
+  }
+
+  void setDailyDone(List<bool> value) {
+    dailyDone = value;
+    notifyListeners();
+  }
+
+  void setExerciseDone(List<bool> value) {
+    exerciseDone = value;
+    notifyListeners();
   }
 }

@@ -36,6 +36,9 @@ class ApiEndpoints {
   static String domainsGeneratePlan(String domain) =>
       'domains/$domain/generate-plan';
 
+  /// POST domains/diet/generate-meal-plan – generate meal plan from diet preferences.
+  static const String dietGenerateMealPlan = 'domains/diet/generate-meal-plan';
+
   static String domainsCompletedExercises(String domain) =>
       'domains/${domain.toLowerCase().trim()}/completed-exercises';
 
@@ -99,8 +102,8 @@ class ApiEndpoints {
   static const String iapUpgradePreview = 'iap/upgrade-preview';
   static const String iapAssignDomains = 'iap/assign-domains';
   static const String iapValidateReceipt = 'iap/validate-receipt';
+  static const String iapAssignDomains = 'iap/assign-domains';
   static const String iapRestorePurchases = 'iap/restore-purchases';
-  static const String iapProducts = 'iap/products';
   static const String iapWebhookApple = 'iap/webhooks/apple';
   static const String iapWebhookGoogle = 'iap/webhooks/google';
 

@@ -17,13 +17,6 @@ class RoutineDetailNavCard extends StatelessWidget {
   final bool useRemediesGradientStyle;
   final VoidCallback onTap;
 
-  static const _border = Color(0xFFE0DFE6);
-  static const _remedyGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFFF4F2FA), Color(0xFFECE8F5)],
-  );
-
   @override
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(context.radiusR(18));
@@ -57,7 +50,7 @@ class RoutineDetailNavCard extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: NormalText (
+                  child: NormalText(
                     titleText: label,
                     titleSize: context.sp(16),
                     titleWeight: FontWeight.bold,

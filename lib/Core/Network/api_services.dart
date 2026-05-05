@@ -96,6 +96,40 @@ class ApiServices {
     return url;
   }
 
+  static ApiResponse _timeoutResponse() {
+    return ApiResponse(
+      success: false,
+      statusCode: 408,
+      message: 'Request timeout',
+    );
+  }
+
+  static ApiResponse _noInternetResponse() {
+    return ApiResponse(
+      success: false,
+      statusCode: 0,
+      message: 'No internet connection',
+    );
+  }
+
+  static ApiResponse _sslMismatchResponse() {
+    return ApiResponse(
+      success: false,
+      statusCode: 0,
+      message:
+          'SSL error: hostname does not match server certificate. Set BASE_URL in api.env to the exact URL whose certificate matches (e.g. https://api.yourdomain.com/v1). For local dev use https://localhost or https://YOUR_IP.',
+    );
+  }
+
+  static ApiResponse _unknownErrorResponse(Object error) {
+    return ApiResponse(success: false, statusCode: 0, message: error.toString());
+  }
+
+  static String? _encodeBody(Object? body) {
+    if (body is Map || body is List) return jsonEncode(body);
+    return body?.toString();
+  }
+
   /// On 401 (except for refresh endpoint), try onUnauthorized once and retry the request if it returns true.
   static Future<ApiResponse> _retryOn401(
     String endpoint,
@@ -135,26 +169,13 @@ class ApiServices {
           .timeout(Duration(seconds: ApiConfig.receiveTimeout));
       return ApiResponse.fromHttpResponse(response);
     } on TimeoutException {
-      return ApiResponse(
-        success: false,
-        statusCode: 408,
-        message: 'Request timeout',
-      );
+      return _timeoutResponse();
     } on SocketException {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: 'No internet connection',
-      );
+      return _noInternetResponse();
     } on HandshakeException {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message:
-            'SSL error: hostname does not match server certificate. Set BASE_URL in api.env to the exact URL whose certificate matches (e.g. https://api.yourdomain.com/v1). For local dev use https://localhost or https://YOUR_IP.',
-      );
+      return _sslMismatchResponse();
     } catch (e) {
-      return ApiResponse(success: false, statusCode: 0, message: e.toString());
+      return _unknownErrorResponse(e);
     }
   }
 
@@ -188,33 +209,18 @@ class ApiServices {
           .post(
             Uri.parse(url),
             headers: headers ?? _headers,
-            body: body is Map || body is List
-                ? jsonEncode(body)
-                : body?.toString(),
+            body: _encodeBody(body),
           )
           .timeout(Duration(seconds: ApiConfig.sendTimeout));
       return ApiResponse.fromHttpResponse(response);
     } on TimeoutException {
-      return ApiResponse(
-        success: false,
-        statusCode: 408,
-        message: 'Request timeout',
-      );
+      return _timeoutResponse();
     } on SocketException {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: 'No internet connection',
-      );
+      return _noInternetResponse();
     } on HandshakeException {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message:
-            'SSL error: hostname does not match server certificate. Set BASE_URL in api.env to the exact URL whose certificate matches (e.g. https://api.yourdomain.com/v1). For local dev use https://localhost or https://YOUR_IP.',
-      );
+      return _sslMismatchResponse();
     } catch (e) {
-      return ApiResponse(success: false, statusCode: 0, message: e.toString());
+      return _unknownErrorResponse(e);
     }
   }
 
@@ -248,26 +254,16 @@ class ApiServices {
           .put(
             Uri.parse(url),
             headers: headers ?? _headers,
-            body: body is Map || body is List
-                ? jsonEncode(body)
-                : body?.toString(),
+            body: _encodeBody(body),
           )
           .timeout(Duration(seconds: ApiConfig.sendTimeout));
       return ApiResponse.fromHttpResponse(response);
     } on TimeoutException {
-      return ApiResponse(
-        success: false,
-        statusCode: 408,
-        message: 'Request timeout',
-      );
+      return _timeoutResponse();
     } on SocketException {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: 'No internet connection',
-      );
+      return _noInternetResponse();
     } catch (e) {
-      return ApiResponse(success: false, statusCode: 0, message: e.toString());
+      return _unknownErrorResponse(e);
     }
   }
 
@@ -301,26 +297,16 @@ class ApiServices {
           .patch(
             Uri.parse(url),
             headers: headers ?? _headers,
-            body: body is Map || body is List
-                ? jsonEncode(body)
-                : body?.toString(),
+            body: _encodeBody(body),
           )
           .timeout(Duration(seconds: ApiConfig.sendTimeout));
       return ApiResponse.fromHttpResponse(response);
     } on TimeoutException {
-      return ApiResponse(
-        success: false,
-        statusCode: 408,
-        message: 'Request timeout',
-      );
+      return _timeoutResponse();
     } on SocketException {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: 'No internet connection',
-      );
+      return _noInternetResponse();
     } catch (e) {
-      return ApiResponse(success: false, statusCode: 0, message: e.toString());
+      return _unknownErrorResponse(e);
     }
   }
 
@@ -354,26 +340,16 @@ class ApiServices {
           .delete(
             Uri.parse(url),
             headers: headers ?? _headers,
-            body: body is Map || body is List
-                ? jsonEncode(body)
-                : body?.toString(),
+            body: _encodeBody(body),
           )
           .timeout(Duration(seconds: ApiConfig.receiveTimeout));
       return ApiResponse.fromHttpResponse(response);
     } on TimeoutException {
-      return ApiResponse(
-        success: false,
-        statusCode: 408,
-        message: 'Request timeout',
-      );
+      return _timeoutResponse();
     } on SocketException {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: 'No internet connection',
-      );
+      return _noInternetResponse();
     } catch (e) {
-      return ApiResponse(success: false, statusCode: 0, message: e.toString());
+      return _unknownErrorResponse(e);
     }
   }
 
@@ -437,19 +413,11 @@ class ApiServices {
       final response = await http.Response.fromStream(streamedResponse);
       return ApiResponse.fromHttpResponse(response);
     } on TimeoutException {
-      return ApiResponse(
-        success: false,
-        statusCode: 408,
-        message: 'Request timeout',
-      );
+      return _timeoutResponse();
     } on SocketException {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: 'No internet connection',
-      );
+      return _noInternetResponse();
     } catch (e) {
-      return ApiResponse(success: false, statusCode: 0, message: e.toString());
+      return _unknownErrorResponse(e);
     }
   }
 
@@ -489,19 +457,11 @@ class ApiServices {
       final response = await http.Response.fromStream(streamedResponse);
       return ApiResponse.fromHttpResponse(response);
     } on TimeoutException {
-      return ApiResponse(
-        success: false,
-        statusCode: 408,
-        message: 'Request timeout',
-      );
+      return _timeoutResponse();
     } on SocketException {
-      return ApiResponse(
-        success: false,
-        statusCode: 0,
-        message: 'No internet connection',
-      );
+      return _noInternetResponse();
     } catch (e) {
-      return ApiResponse(success: false, statusCode: 0, message: e.toString());
+      return _unknownErrorResponse(e);
     }
   }
 }

@@ -4,25 +4,20 @@ import 'package:looklabs/Core/Network/models/domain_answers_response.dart';
 import 'package:looklabs/Core/Network/models/onboarding_flow_response.dart';
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 
-/// ViewModel for domain question screen. Step-by-step flow: one question at a time,
-/// submit each answer to API, use response.current as next question.
+ 
 class DomainQuestionViewModel extends ChangeNotifier {
   DomainQuestionViewModel({required this.domain});
 
   final String domain;
   bool _disposed = false;
 
-  /// Current question to show (from API: initial from GET, then from POST response.current).
   FlowQuestion? _currentQuestion;
   DomainProgressInfo? _progress;
 
-  /// Total question count from initial load (for stepper before progress is available).
   int _totalQuestionCount = 0;
 
-  /// Distinct `step` keys from all loaded questions (API order / seq).
   List<String> _stepperStepKeys = [];
 
-  /// Question ids in flow order (from `allQuestions`); used for last-question CTA.
   List<int> _questionIdsInOrder = [];
   bool _loading = false;
   String? _error;
@@ -49,24 +44,20 @@ class DomainQuestionViewModel extends ChangeNotifier {
   String? get error => _error;
   bool get hasQuestion => _currentQuestion != null;
 
-  /// For compatibility with DomainFlowQuestionContent – single question as list.
   List<FlowQuestion> get currentStepQuestions {
     final q = _currentQuestion;
     return q != null ? [q] : [];
   }
 
-  /// Step title from current question.
   String get currentStepTitle {
     final q = _currentQuestion;
     if (q == null || q.step.isEmpty) return '';
     return _humanizeStepKey(q.step);
   }
 
-  /// Humanized step labels for [CustomStepper] (same style as [currentStepTitle]).
   List<String> get stepperLabels =>
       _stepperStepKeys.map(_humanizeStepKey).toList();
 
-  /// Index of the current question’s `step` in [stepperLabels], for stepper highlight.
   int get stepperCurrentStepIndex {
     final q = _currentQuestion;
     if (q == null || _stepperStepKeys.isEmpty) return 0;
@@ -92,16 +83,12 @@ class DomainQuestionViewModel extends ChangeNotifier {
     return keys;
   }
 
-  /// Progress percent (0–100) for stepper/indicator.
   double get progressPercent => _progress?.progressPercent ?? 0;
 
-  /// Total questions for progress display.
   int get totalQuestions => _progress?.total ?? _totalQuestionCount;
 
-  /// Answered count for progress display.
   int get answeredCount => _progress?.answered ?? 0;
 
-  /// True when the shown question is the last in the flow (primary button: "Start analysis").
   bool get isOnLastQuestion {
     final q = _currentQuestion;
     if (q == null) return false;
@@ -113,7 +100,6 @@ class DomainQuestionViewModel extends ChangeNotifier {
     return answeredCount >= t - 1;
   }
 
-  /// True if current question is fully answered.
   bool get isCurrentStepComplete {
     final q = _currentQuestion;
     if (q == null) return false;
@@ -175,7 +161,6 @@ class DomainQuestionViewModel extends ChangeNotifier {
     return _flowMultiAnswers[questionId]?.contains(optionIndex) ?? false;
   }
 
-  /// Build answer string for current question (for API submit).
   String? _buildAnswerForQuestion(FlowQuestion q) {
     if (q.type == 'text' || q.type == 'number' || q.type == 'numeric') {
       return _flowTextAnswers[q.id]?.trim();
@@ -195,7 +180,6 @@ class DomainQuestionViewModel extends ChangeNotifier {
     return idx < options.length ? options[idx] : idx.toString();
   }
 
-  /// Load first question from API (GET domains/{domain}/questions, take first).
   Future<void> loadQuestions() async {
     if (_loading) return;
     _loading = true;
@@ -251,10 +235,7 @@ class DomainQuestionViewModel extends ChangeNotifier {
     _notifyIfNotDisposed();
   }
 
-  /// Submit current answer to API. Body: { question_id, domain, answer }.
-  /// On success: updates current question from response.current, progress from response.progress.
-  /// Returns (success, rawResponseData) – rawResponseData for result screen when done.
-  Future<(bool success, Map<String, dynamic>? responseData)>
+     Future<(bool success, Map<String, dynamic>? responseData)>
   submitCurrentAnswer() async {
     final q = _currentQuestion;
     if (q == null || _submitting || _disposed) return (false, null);
@@ -282,18 +263,15 @@ class DomainQuestionViewModel extends ChangeNotifier {
     final data = response.data;
     if (data is DomainAnswersResponse) {
       _progress = data.progress;
-      // Clear answer for current question before moving to next
-      _flowAnswers.remove(q.id);
+       _flowAnswers.remove(q.id);
       _flowTextAnswers.remove(q.id);
       _flowMultiAnswers.remove(q.id);
 
-      // Next question: response.current is the next question to show
-      _currentQuestion = data.questionToShow;
+       _currentQuestion = data.questionToShow;
       _submitError = null;
       _notifyIfNotDisposed();
 
-      // Done when no more question (status processing/completed, redirect)
-      if (_currentQuestion == null) {
+       if (_currentQuestion == null) {
         return (true, data.raw);
       }
       return (true, null); // More questions – caller stays on screen

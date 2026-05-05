@@ -67,38 +67,30 @@ import 'package:looklabs/Features/View/StartScreen/start_screen.dart';
 import 'package:looklabs/Features/View/Subscription%20Plan/subscription_plan_screen.dart';
 
 class Routes {
+  static Route<dynamic> _route(RouteSettings settings, Widget child) {
+    return MaterialPageRoute(settings: settings, builder: (_) => child);
+  }
+
+  static Map<String, dynamic>? _mapArgs(RouteSettings settings) {
+    return settings.arguments != null && settings.arguments is Map
+        ? Map<String, dynamic>.from(settings.arguments as Map)
+        : null;
+  }
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RoutesName.SplashScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => SplashScreen(),
-        );
+        return _route(settings, SplashScreen());
       case RoutesName.HealtDetailsScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => HealtDetailsScreen(),
-        );
+        return _route(settings, HealtDetailsScreen());
       case RoutesName.GaolScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => GaolScreen(),
-        );
+        return _route(settings, GaolScreen());
       case RoutesName.OnBoardScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => OnBoardScreen(),
-        );
+        return _route(settings, OnBoardScreen());
       case RoutesName.SubscriptionPlanScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => SubscriptionPlanScreen(),
-        );
+        return _route(settings, SubscriptionPlanScreen());
       case RoutesName.CardDetailsScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => CardDetailsScreen(),
-        );
+        return _route(settings, CardDetailsScreen());
       case RoutesName.PurchaseScreen:
         return MaterialPageRoute(
           settings: settings,
@@ -256,60 +248,26 @@ class Routes {
           builder: (_) => SkinProductDetailScreen(),
         );
       case RoutesName.DailyHeightRoutineScreen:
-        final heightRoutineData =
-            settings.arguments != null && settings.arguments is Map
-            ? Map<String, dynamic>.from(settings.arguments as Map)
-            : null;
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) =>
-              DailyHeightRoutineScreen(resultData: heightRoutineData),
+        final heightRoutineData = _mapArgs(settings);
+        return _route(
+          settings,
+          DailyHeightRoutineScreen(resultData: heightRoutineData),
         );
       case RoutesName.HeightResultScreen:
-        final heightData =
-            settings.arguments != null && settings.arguments is Map
-            ? Map<String, dynamic>.from(settings.arguments as Map)
-            : null;
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => HeightResultScreen(resultData: heightData),
-        );
+        final heightData = _mapArgs(settings);
+        return _route(settings, HeightResultScreen(resultData: heightData));
       case RoutesName.WorkOutResultScreen:
-        final workoutData =
-            settings.arguments != null && settings.arguments is Map
-            ? Map<String, dynamic>.from(settings.arguments as Map)
-            : null;
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => WorkOutResultScreen(workoutData: workoutData),
-        );
+        final workoutData = _mapArgs(settings);
+        return _route(settings, WorkOutResultScreen(workoutData: workoutData));
       case RoutesName.DailyWorkoutRoutineScreen:
-        final workoutData =
-            settings.arguments != null && settings.arguments is Map
-            ? Map<String, dynamic>.from(settings.arguments as Map)
-            : null;
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => DailyWorkoutRoutine(workoutData: workoutData),
-        );
+        final workoutData = _mapArgs(settings);
+        return _route(settings, DailyWorkoutRoutine(workoutData: workoutData));
       case RoutesName.WorkOutProgressScreen:
-        final workoutData =
-            settings.arguments != null && settings.arguments is Map
-            ? Map<String, dynamic>.from(settings.arguments as Map)
-            : null;
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => WorkOutProgressScreen(workoutData: workoutData),
-        );
+        final workoutData = _mapArgs(settings);
+        return _route(settings, WorkOutProgressScreen(workoutData: workoutData));
       case RoutesName.DietResultScreen:
-        final dietData =
-            settings.arguments != null && settings.arguments is Map
-            ? Map<String, dynamic>.from(settings.arguments as Map)
-            : null;
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => DietResultScreen(resultData: dietData),
-        );
+        final dietData = _mapArgs(settings);
+        return _route(settings, DietResultScreen(resultData: dietData));
       case RoutesName.DailyDietRoutineScreen:
         return MaterialPageRoute(
           settings: settings,
@@ -359,10 +317,7 @@ class Routes {
           builder: (_) => FacialProgressScreen(),
         );
       case RoutesName.RecoveryPathScreen:
-        final quitPornData =
-            settings.arguments != null && settings.arguments is Map
-            ? Map<String, dynamic>.from(settings.arguments as Map)
-            : null;
+        final quitPornData = _mapArgs(settings);
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ChangeNotifierProvider(
@@ -380,23 +335,27 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ChangeNotifierProvider(
-            create: (_) => ReviewScansViewModel(),
+            create: (_) => ReviewScansViewModel(
+              uploadDomain: 'fashion',
+              slotViewKeys: const ['front', 'back'],
+              slotLabels: const ['Front View', 'Back View'],
+              stepperStepTitles: const ['Front', 'Back'],
+            ),
             child: const FashionReviewScanScreen(),
           ),
         );
       case RoutesName.FashionProfileScreen:
+        final fashionData = _mapArgs(settings);
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ChangeNotifierProvider(
             create: (_) => FashionProfileScreenViewModel(),
-            child: const FashionProfileScreen(),
+            child: FashionProfileScreen(resultData: fashionData),
           ),
         );
       case RoutesName.WeeklyPlanScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => WeeklyPlanScreen(),
-        );
+        final weeklyData = _mapArgs(settings);
+        return _route(settings, WeeklyPlanScreen(resultData: weeklyData));
       case RoutesName.AllTrackedFood:
         return MaterialPageRoute(
           settings: settings,

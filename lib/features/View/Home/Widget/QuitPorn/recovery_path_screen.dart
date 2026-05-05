@@ -69,8 +69,9 @@ class _RecoveryPathScreenState extends State<RecoveryPathScreen> {
             LightCardWidget(text: vm.uiData.insightText),
             SizedBox(height: context.sh(12)),
             RecoverySectionTabs(
+              
               selectedSection: vm.selectedSection,
-              onSectionChanged: vm.setSelectedSection,
+              onSectionChanged: vm.setSelectedSection, tabs: vm.sectionTabs,
             ),
             SizedBox(height: context.sh(12)),
             NormalText(

@@ -10,6 +10,7 @@ import 'package:looklabs/Features/Widget/app_bar_container.dart';
 import 'package:looklabs/Features/Widget/custom_button.dart';
 import 'package:looklabs/Features/Widget/custom_stepper.dart';
 import 'package:looklabs/Features/Widget/normal_text.dart';
+import 'package:looklabs/Repository/diet_repository.dart';
 import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:provider/provider.dart';
 
@@ -44,6 +45,9 @@ class _DomainQuestionScreenState extends State<DomainQuestionScreen> {
     Navigator.pop(context);
     final route = RoutesName.routeForDomain(widget.domain);
     if (!mounted || route == null) return;
+    if (widget.domain.trim().toLowerCase() == 'diet' && data.isNotEmpty) {
+      DietRepository.instance.setFlowCache(data);
+    }
     final args =
         (route == RoutesName.WorkOutResultScreen ||
             route == RoutesName.HeightResultScreen ||

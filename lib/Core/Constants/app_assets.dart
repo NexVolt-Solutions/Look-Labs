@@ -94,6 +94,13 @@ class AppAssets {
   static const String waringIcon = "assets/Icon/waringIcon.svg";
   static const String rainIcon = "assets/Icon/rainIcon.svg";
   static const String winterIcon = "assets/Icon/coolIcon.svg";
+  static const String dayMondayIcon = "assets/Icon/day_monday.png";
+  static const String dayTuesdayIcon = "assets/Icon/day_tuesday.png";
+  static const String dayWednesdayIcon = "assets/Icon/day_wednesday.png";
+  static const String dayThursdayIcon = "assets/Icon/day_thursday.png";
+  static const String dayFridayIcon = "assets/Icon/day_friday.png";
+  static const String daySaturdayIcon = "assets/Icon/day_saturday.png";
+  static const String daySundayIcon = "assets/Icon/day_sunday.png";
 
   //Home Grid Images
   static const String skinCare = "assets/home/SkinCare.jpg";

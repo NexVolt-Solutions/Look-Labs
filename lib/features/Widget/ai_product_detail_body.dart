@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:looklabs/Core/Constants/app_assets.dart';
-import 'package:looklabs/Features/Widget/normal_text.dart';
-import 'package:looklabs/Features/Widget/plan_container.dart';
-import 'package:looklabs/Features/Widget/network_image_with_fallback.dart';
-import 'package:looklabs/Core/Constants/app_colors.dart';
+import 'package:looklabs/Features/Widget/ai_product_detail_sections.dart';
 import 'package:looklabs/Core/Constants/size_extension.dart';
 
 /// Fields read from a domain-flow `ai_products` item (same shape for hair / skin).
@@ -154,137 +149,15 @@ class AiProductDetailBody extends StatelessWidget {
 
   final AiProductApiFields data;
 
-  ({bool hasAm, bool hasPm}) _timeFlags(String raw) {
-    final t = raw.toUpperCase();
-    final hasAm = t.contains('AM');
-    final hasPm = t.contains('PM');
-    return (hasAm: hasAm, hasPm: hasPm);
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: context.paddingSymmetricR(horizontal: 20, vertical: 30),
       children: [
-        if (data.overview.isNotEmpty) ...[
-          NormalText(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            titleText: 'Product overview',
-            titleSize: context.sp(18),
-            sizeBoxheight: context.sh(12),
-            subText: data.overview,
-            subSize: context.sp(12),
-          ),
-          SizedBox(height: context.sh(12)),
-        ],
-        NormalText(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          titleText: 'How to use',
-          titleSize: context.sp(18),
-          sizeBoxheight: context.sh(12),
-        ),
-        if (data.howToUse.isEmpty)
-          NormalText(
-            subText: '—',
-            subSize: context.sp(12),
-            subColor: AppColors.subHeadingColor,
-          )
-        else
-          ...data.howToUse.map(
-            (line) => Padding(
-              padding: EdgeInsets.only(bottom: context.sh(6)),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  NormalText(
-                    subText: '• ',
-                    subSize: context.sp(12),
-                    subColor: AppColors.subHeadingColor,
-                  ),
-                  Expanded(
-                    child: NormalText(
-                      subText: line,
-                      subSize: context.sp(12),
-                      subColor: AppColors.subHeadingColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        SizedBox(height: context.sh(12)),
-        NormalText(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          titleText: 'When to use',
-          titleSize: context.sp(18),
-          sizeBoxheight: context.sh(12),
-        ),
-        if (data.whenToUse.isEmpty)
-          NormalText(subText: '—', subSize: context.sp(12))
-        else
-          Padding(
-            padding: EdgeInsets.only(bottom: context.sh(6)),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                NormalText(subText: '• ', subSize: context.sp(12)),
-                Expanded(
-                  child: NormalText(
-                    subText: data.whenToUse,
-                    subSize: context.sp(12),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        SizedBox(height: context.sh(12)),
-        Row(
-          children: [
-            Icon(
-              Icons.star_rounded,
-              size: context.sp(26),
-              color: AppColors.pimaryColor,
-            ),
-            SizedBox(width: context.sw(8)),
-            NormalText(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              titleText: 'Don’t use with',
-              titleSize: context.sp(18),
-            ),
-          ],
-        ),
-        SizedBox(height: context.sh(8)),
-
-        if (data.dontUseWith.isEmpty)
-          NormalText(
-            subText: '—',
-            subSize: context.sp(12),
-            subColor: AppColors.subHeadingColor,
-          )
-        else
-          Wrap(
-            spacing: context.sw(8),
-            children: data.dontUseWith
-                .map(
-                  (t) => PlanContainer(
-                    margin: context.paddingSymmetricR(vertical: 8),
-                    padding: context.paddingSymmetricR(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    radius: BorderRadius.circular(context.radiusR(10)),
-                    isSelected: false,
-                    onTap: () {},
-                    child: NormalText(
-                      subText: t,
-                      subSize: context.sp(12),
-                      subColor: AppColors.subHeadingColor,
-                      subWeight: FontWeight.w600,
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
+        ProductOverviewSection(overview: data.overview),
+        HowToUseSection(items: data.howToUse),
+        WhenToUseSection(value: data.whenToUse),
+        DontUseWithSection(items: data.dontUseWith),
         // if (data.tags.isNotEmpty) ...[
         //   SizedBox(height: context.sh(16)),
         //   NormalText(
