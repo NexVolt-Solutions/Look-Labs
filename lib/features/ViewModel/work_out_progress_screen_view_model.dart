@@ -9,11 +9,9 @@ import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/workout_completion_repository.dart';
 import 'package:looklabs/Repository/workout_progress_graph_repository.dart';
 
-/// Progress + metrics UI. **Exercise completion** (`completed_indices`, score, today N/M) comes
-/// from `GET/PUT completed-exercises`. **Recovery checklist** is a separate checklist (labels from
-/// flow `ai_progress.recovery_checklist`; done state in `recovery_completed_indices`). Flow
-/// `ai_attributes.workout_summary` is not used for exercise counts — those come from completion + plan.
-class WorkOutProgressScreenViewModel extends ChangeNotifier {
+ class WorkOutProgressScreenViewModel extends ChangeNotifier {
+  static const String _domainKey = 'workout';
+
   WorkOutProgressScreenViewModel({
     WorkoutProgressGraphRepository? graphRepository,
   }) : _graphRepository =
@@ -225,13 +223,8 @@ class WorkOutProgressScreenViewModel extends ChangeNotifier {
       final result = WorkoutResultResponse.fromJson(data);
       if (result.aiProgress != null) {
         _applyAiProgressFields(result.aiProgress!);
-      } else if (data['ai_progress'] is Map) {
-        try {
-          final p = WorkoutAiProgress.fromJson(
-            Map<String, dynamic>.from(data['ai_progress'] as Map),
-          );
-          _applyAiProgressFields(p);
-        } catch (_) {}
+      } else {
+        _applyAiProgressFromRawMap(data);
       }
       if (result.aiAttributes != null) {
         final a = result.aiAttributes!;
@@ -272,6 +265,17 @@ class WorkOutProgressScreenViewModel extends ChangeNotifier {
     } catch (_) {}
   }
 
+  void _applyAiProgressFromRawMap(Map<String, dynamic> data) {
+    final raw = data['ai_progress'];
+    if (raw is! Map) return;
+    try {
+      final parsed = WorkoutAiProgress.fromJson(
+        Map<String, dynamic>.from(raw),
+      );
+      _applyAiProgressFields(parsed);
+    } catch (_) {}
+  }
+
    Future<void> loadProgressData() async {
     if (_progressLoading) return;
     _progressLoading = true;
@@ -281,7 +285,7 @@ class WorkOutProgressScreenViewModel extends ChangeNotifier {
       final results = await Future.wait<Object?>([
         WorkoutCompletionRepository.instance.loadCompletedExercises(now),
         WorkoutCompletionRepository.instance.getWeeklySummary(),
-        DomainQuestionsRepository.instance.getDomainFlow('workout'),
+        DomainQuestionsRepository.instance.getDomainFlow(_domainKey),
       ]);
       final todayData = results[0] as Map<String, dynamic>?;
       final weekly = results[1] as Map<String, dynamic>?;
@@ -586,14 +590,8 @@ class WorkOutProgressScreenViewModel extends ChangeNotifier {
 
       if (result.aiProgress != null) {
         _applyAiProgressFields(result.aiProgress!);
-      } else if (data['ai_progress'] is Map) {
-        try {
-          _applyAiProgressFields(
-            WorkoutAiProgress.fromJson(
-              Map<String, dynamic>.from(data['ai_progress'] as Map),
-            ),
-          );
-        } catch (_) {}
+      } else {
+        _applyAiProgressFromRawMap(data);
       }
       if (result.aiAttributes != null) {
         final a = result.aiAttributes!;

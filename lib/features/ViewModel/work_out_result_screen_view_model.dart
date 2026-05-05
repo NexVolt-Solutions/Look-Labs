@@ -466,30 +466,8 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
       // Routine and plan counts: only overwrite when incoming data has plan
       if (result.aiExercises != null) {
         final ex = result.aiExercises!;
-        _morningRoutineList = ex.morning
-            .map(
-              (e) => {
-                'seq': e.seq,
-                'time': e.title,
-                'activity': e.duration,
-                'details': e.steps.isNotEmpty
-                    ? e.steps.map((s) => '• $s').join('\n')
-                    : '',
-              },
-            )
-            .toList();
-        _eveningRoutineList = ex.evening
-            .map(
-              (e) => {
-                'seq': e.seq,
-                'time': e.title,
-                'activity': e.duration,
-                'details': e.steps.isNotEmpty
-                    ? e.steps.map((s) => '• $s').join('\n')
-                    : '',
-              },
-            )
-            .toList();
+        _morningRoutineList = ex.morning.map(_routineRowFromExercise).toList();
+        _eveningRoutineList = ex.evening.map(_routineRowFromExercise).toList();
       } else if (!keepExistingPlan) {
         _morningRoutineList = [];
         _eveningRoutineList = [];
@@ -509,6 +487,15 @@ class WorkOutResultScreenViewModel extends ChangeNotifier {
       }
       notifyListeners();
     } catch (_) {}
+  }
+
+  static Map<String, dynamic> _routineRowFromExercise(WorkoutExercise e) {
+    return {
+      'seq': e.seq,
+      'time': e.title,
+      'activity': e.duration,
+      'details': e.steps.isNotEmpty ? e.steps.map((s) => '• $s').join('\n') : '',
+    };
   }
 
   void _capturePlanInputsSnapshotAfterGenerate({
