@@ -8,8 +8,7 @@ import 'package:looklabs/Repository/domain_questions_repository.dart';
 import 'package:looklabs/Repository/image_upload_repository.dart';
 import 'package:looklabs/Repository/workout_completion_repository.dart';
 
-/// One optional row under routines (from `ai_remedies` / `ai_products` on domain flow).
-class SkincareRoutineExtraCard {
+ class SkincareRoutineExtraCard {
   const SkincareRoutineExtraCard({
     required this.title,
     required this.subtitle,
@@ -19,13 +18,13 @@ class SkincareRoutineExtraCard {
   final String title;
   final String subtitle;
 
-  /// `true` → [RoutesName.SkinHomeRemediesScreen], `false` → [RoutesName.SkinTopProductScreen].
-  final bool isRemediesNav;
+   final bool isRemediesNav;
 }
 
 class DailySkinCareRoutineViewModel extends ChangeNotifier {
-  /// Domain-level presentation rule: skincare keeps concerns as cards (no meter).
-  bool get useConcernsSpeedometer => false;
+  static const String _domainKey = 'skincare';
+
+   bool get useConcernsSpeedometer => false;
 
   bool _loading = false;
   bool get loading => _loading;
@@ -123,13 +122,12 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
     _flowPollOwnerSeq = seq;
     _flowPollInProgress = true;
     notifyListeners();
-    const domain = 'skincare';
     try {
       for (var i = 0; i < _flowPollMaxRounds; i++) {
         await Future<void>.delayed(_flowPollInterval);
         if (seq != _loadSeq) return;
         final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
-          domain,
+          _domainKey,
         );
         if (seq != _loadSeq) return;
         if (flowRes.success && flowRes.data is Map) {
@@ -173,7 +171,7 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
       _resetPresentationState();
 
       final albumRes = await ImageUploadRepository.instance.getAlbumImages(
-        domain: 'skincare',
+        domain: _domainKey,
       );
       if (seq != _loadSeq) return;
 
@@ -182,7 +180,7 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
       }
 
       final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
-        'skincare',
+        _domainKey,
       );
       if (seq != _loadSeq) return;
 
@@ -260,7 +258,7 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
       _applyIndicatorPages(data);
       _applyRoutines(data);
     }
-    _applyExtraCards(data);
+    _applyExtraCards();
   }
 
   bool _isTransitionalProcessingSnapshot(Map<String, dynamic> data) {
@@ -421,7 +419,7 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
     if (total <= 0) return;
     final data = await WorkoutCompletionRepository.instance.loadCompletedExercises(
       DateTime.now(),
-      domain: 'skincare',
+      domain: _domainKey,
     );
     if (seq != _loadSeq || data == null) return;
     final raw = data['completed_indices'];
@@ -457,7 +455,7 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
       await WorkoutCompletionRepository.instance.saveCompleted(
         DateTime.now(),
         completed,
-        domain: 'skincare',
+        domain: _domainKey,
         totalExercises: total,
       );
     } finally {
@@ -465,7 +463,7 @@ class DailySkinCareRoutineViewModel extends ChangeNotifier {
     }
   }
 
-  void _applyExtraCards(Map<String, dynamic> data) {
+  void _applyExtraCards() {
     _extraCards = [];
     _selectedExtraIndex = -1;
 

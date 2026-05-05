@@ -103,8 +103,7 @@ class AuthRepository {
     return response;
   }
 
-  /// Persist the user's selected domain from onboarding (e.g. PATCH link response). Used for domains/questions and domains/answers.
-  static Future<void> setSelectedDomain(String? domain) async {
+   static Future<void> setSelectedDomain(String? domain) async {
     try {
       final normalized = _normalizeSelectedDomain(domain);
       if (normalized.isEmpty) {
@@ -223,13 +222,11 @@ class AuthRepository {
     return getMe();
   }
 
-  /// PATCH /api/v1/users/me – update name, age, gender, profile_image, notifications_enabled.
-  Future<ApiResponse> updateProfile(Map<String, dynamic> body) async {
+   Future<ApiResponse> updateProfile(Map<String, dynamic> body) async {
     return ApiServices.patch(ApiEndpoints.usersMe, body: body);
   }
 
-  /// DELETE /api/v1/users/me – deletes current user and all data. Clears local tokens after call.
-  Future<ApiResponse> deleteAccount() async {
+   Future<ApiResponse> deleteAccount() async {
     final response = await ApiServices.delete(ApiEndpoints.usersMe);
     ApiServices.setAuthToken(null);
     DietRepository.instance.clearFlowCache();

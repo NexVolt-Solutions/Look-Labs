@@ -288,10 +288,10 @@ class HomeViewModel extends ChangeNotifier {
     'quit_porn',
     'skincare',
     'haircare',
+    'fashion',
   };
 
-  /// Key of domain currently loading (shows overlay on that card only).
-  String? _loadingDomainKey;
+   String? _loadingDomainKey;
   String? get loadingDomainKey => _loadingDomainKey;
   bool isLoadingDomain(String key) =>
       _loadingDomainKey?.toLowerCase() == key.toLowerCase();
@@ -336,23 +336,81 @@ class HomeViewModel extends ChangeNotifier {
     final usesScanChoice =
         normalizedDomain == 'skincare' ||
         normalizedDomain == 'haircare' ||
-        normalizedDomain == 'workout';
+        normalizedDomain == 'workout' ||
+        normalizedDomain == 'fashion';
     if (!usesScanChoice) {
       Navigator.pushNamed(context, reviewScansRoute, arguments: flowPayload);
       return;
     }
-    final dailyRoute = RoutesName.dailyRoutineRouteForDomain(domainKey);
+    final previousRoute = _previousRecordRouteForDomain(domainKey);
+    final hasPreviousData = _hasPreviousDataForDomain(
+      domainKey: domainKey,
+      flowPayload: flowPayload,
+    );
+    final canUsePreviousData = previousRoute != null && hasPreviousData;
+    if (!canUsePreviousData) {
+      Navigator.pushNamed(context, reviewScansRoute, arguments: flowPayload);
+      return;
+    }
     final usePrevious = await _showScanChoiceDialog(
       context: context,
       domainKey: domainKey,
-      canUsePreviousData: dailyRoute != null,
+      canUsePreviousData: canUsePreviousData,
     );
     if (!context.mounted || usePrevious == null) return;
-    if (usePrevious && dailyRoute != null) {
-      Navigator.pushNamed(context, dailyRoute);
+    final resolvedPreviousRoute = previousRoute;
+    if (usePrevious) {
+      Navigator.pushNamed(
+        context,
+        resolvedPreviousRoute,
+        arguments: flowPayload,
+      );
       return;
     }
     Navigator.pushNamed(context, reviewScansRoute, arguments: flowPayload);
+  }
+
+  String? _previousRecordRouteForDomain(String domainKey) {
+    final normalized = _normalizedDomainKey(domainKey);
+    if (normalized == 'fashion') return RoutesName.FashionProfileScreen;
+    return RoutesName.dailyRoutineRouteForDomain(domainKey);
+  }
+
+  bool _hasPreviousDataForDomain({
+    required String domainKey,
+    required Map<String, dynamic> flowPayload,
+  }) {
+    final normalized = _normalizedDomainKey(domainKey);
+    if (normalized == 'fashion') {
+      final summary = flowPayload['ai_summary'];
+      if (summary is Map && summary.isNotEmpty) return true;
+      final attrs = flowPayload['ai_attributes'];
+      if (attrs is List && attrs.isNotEmpty) return true;
+      final recs = flowPayload['recommendations'];
+      if (recs is List && recs.isNotEmpty) return true;
+      final result = flowPayload['result'];
+      if (result is Map && result.isNotEmpty) return true;
+      return false;
+    }
+
+    const resultKeys = {
+      'ai_message',
+      'ai_progress',
+      'ai_recovery',
+      'ai_attributes',
+      'ai_exercises',
+      'result',
+      'recommendations',
+    };
+    for (final key in resultKeys) {
+      final value = flowPayload[key];
+      if (value == null) continue;
+      if (value is Map && value.isEmpty) continue;
+      if (value is List && value.isEmpty) continue;
+      if (value.toString().trim().isEmpty) continue;
+      return true;
+    }
+    return false;
   }
 
   Future<bool?> _showScanChoiceDialog({
@@ -362,7 +420,10 @@ class HomeViewModel extends ChangeNotifier {
   }) {
     final normalized = _normalizedDomainKey(domainKey);
     final isWorkout = normalized == 'workout';
-    final label = normalized == 'haircare' ? 'hair' : 'skin';
+    final isFashion = normalized == 'fashion';
+    final label = normalized == 'haircare'
+        ? 'hair'
+        : (isFashion ? 'fashion' : 'skin');
     final description = isWorkout
         ? 'Do you want a new workout analysis or continue with your previous record?'
         : 'Do you want a new $label scan or continue with your previous analysis?';
@@ -474,23 +535,7 @@ class HomeViewModel extends ChangeNotifier {
     if (_domains.isEmpty || index < 0 || index >= _domains.length) return;
     final key = _normalizedDomainKey(_domains[index].key);
     if (!isDomainEnabled(key)) {
-      final message = hasNoGoalSelected
-          ? 'Please select your goal first to unlock plans.'
-          : 'This plan is not your selected goal. Only your chosen goal is available to use.';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          behavior: SnackBarBehavior.floating,
-          action: hasNoGoalSelected
-              ? SnackBarAction(
-                  label: 'Select goal',
-                  onPressed: () {
-                    Navigator.pushNamed(context, RoutesName.GaolScreen);
-                  },
-                )
-              : null,
-        ),
-      );
+      _showDomainLockedMessage(context);
       return;
     }
 
@@ -499,79 +544,115 @@ class HomeViewModel extends ChangeNotifier {
 
     if (_loadingDomainKey == key) return;
 
-    _loadingDomainKey = key;
-    notifyListeners();
+    _setLoadingDomain(key);
 
     try {
-      if (isFlowDomain) {
-        final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
-          key,
-        );
-        if (!context.mounted) return;
-        if (flowRes.success && flowRes.data is Map) {
-          final data = Map<String, dynamic>.from(flowRes.data as Map);
-          final status = data['status']?.toString() ?? '';
-          final isCompleted = _isCompletedFlowPayload(data);
-          // Only navigate to result when the backend says the flow is completed.
-          // status "ok" means there are questions to answer (current/next provided).
-          if (isCompleted) {
-            _loadingDomainKey = null;
-            notifyListeners();
-            await _openCompletedScanDomainFromHome(
-              context: context,
-              domainKey: key,
-              flowPayload: data,
-              reviewScansRoute: resultRoute,
-            );
-            return;
-          }
-          if (status == 'ok') {
-            _loadingDomainKey = null;
-            notifyListeners();
-            Navigator.pushNamed(
-              context,
-              RoutesName.DomainQuestionScreen,
-              arguments: key,
-            );
-            return;
-          }
-          if (status == 'processing') {
-            _showFlowLoading(context);
-            final completed = await DomainQuestionsRepository.instance
-                .pollDomainFlowUntilCompleted(key, lastKnownResponse: data);
-            if (context.mounted) Navigator.of(context).pop();
-            if (!context.mounted) return;
-            _loadingDomainKey = null;
-            notifyListeners();
-            if (completed != null) {
-              await _openCompletedScanDomainFromHome(
-                context: context,
-                domainKey: key,
-                flowPayload: Map<String, dynamic>.from(completed),
-                reviewScansRoute: resultRoute,
-              );
-              return;
-            }
-            ApiErrorHandler.showSnackBar(
-              context,
-              fallback: 'Processing timed out. Please try again.',
-            );
-            return;
-          }
-        }
+      if (isFlowDomain &&
+          await _handleFlowDomainTap(
+            context: context,
+            key: key,
+            reviewScansRoute: resultRoute,
+          )) {
+        return;
       }
 
-      _loadingDomainKey = null;
-      notifyListeners();
-      Navigator.pushNamed(
-        context,
-        RoutesName.DomainQuestionScreen,
-        arguments: key,
-      );
+      _setLoadingDomain(null);
+      _navigateToDomainQuestions(context, key);
     } catch (_) {
-      _loadingDomainKey = null;
-      notifyListeners();
+      _setLoadingDomain(null);
     }
+  }
+
+  void _setLoadingDomain(String? key) {
+    _loadingDomainKey = key;
+    notifyListeners();
+  }
+
+  void _showDomainLockedMessage(BuildContext context) {
+    final message = hasNoGoalSelected
+        ? 'Please select your goal first to unlock plans.'
+        : 'This plan is not your selected goal. Only your chosen goal is available to use.';
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        action: hasNoGoalSelected
+            ? SnackBarAction(
+                label: 'Select goal',
+                onPressed: () {
+                  Navigator.pushNamed(context, RoutesName.GaolScreen);
+                },
+              )
+            : null,
+      ),
+    );
+  }
+
+  void _navigateToDomainQuestions(BuildContext context, String key) {
+    Navigator.pushNamed(
+      context,
+      RoutesName.DomainQuestionScreen,
+      arguments: key,
+    );
+  }
+
+  Future<bool> _handleFlowDomainTap({
+    required BuildContext context,
+    required String key,
+    required String reviewScansRoute,
+  }) async {
+    final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(key);
+    if (!context.mounted) return true;
+    if (!(flowRes.success && flowRes.data is Map)) {
+      return false;
+    }
+
+    final data = Map<String, dynamic>.from(flowRes.data as Map);
+    final status = data['status']?.toString() ?? '';
+    final isCompleted = _isCompletedFlowPayload(data);
+    if (isCompleted) {
+      _setLoadingDomain(null);
+      await _openCompletedScanDomainFromHome(
+        context: context,
+        domainKey: key,
+        flowPayload: data,
+        reviewScansRoute: reviewScansRoute,
+      );
+      return true;
+    }
+
+    if (status == 'ok') {
+      _setLoadingDomain(null);
+      _navigateToDomainQuestions(context, key);
+      return true;
+    }
+
+    if (status != 'processing') {
+      return false;
+    }
+
+    _showFlowLoading(context);
+    final completed = await DomainQuestionsRepository.instance
+        .pollDomainFlowUntilCompleted(key, lastKnownResponse: data);
+    if (context.mounted) Navigator.of(context).pop();
+    if (!context.mounted) return true;
+
+    _setLoadingDomain(null);
+    if (completed != null) {
+      await _openCompletedScanDomainFromHome(
+        context: context,
+        domainKey: key,
+        flowPayload: Map<String, dynamic>.from(completed),
+        reviewScansRoute: reviewScansRoute,
+      );
+      return true;
+    }
+
+    ApiErrorHandler.showSnackBar(
+      context,
+      fallback: 'Processing timed out. Please try again.',
+    );
+    return true;
   }
 
   void _showFlowLoading(BuildContext context) {

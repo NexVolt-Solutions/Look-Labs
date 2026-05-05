@@ -98,7 +98,7 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
 
   static const List<String> _slotViews = ['front', 'back', 'right', 'left'];
 
-  static const String _domain = 'haircare';
+  static const String _domainKey = 'haircare';
 
   /// Bumped on every [loadHaircareRoutine] so an older in-flight request cannot
   /// overwrite state after a rescan / new navigation (singleton VM at app root).
@@ -128,7 +128,7 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
         await Future<void>.delayed(_flowPollInterval);
         if (seq != _loadSeq) return;
         final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
-          _domain,
+          _domainKey,
         );
         if (seq != _loadSeq) return;
         if (flowRes.success && flowRes.data is Map) {
@@ -161,9 +161,7 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
     }
   }
 
-  /// Loads album then **always** GET `domains/{domain}/flow` so the UI matches the server after
-  /// new scans (prefetch is ignored for data to avoid stale cached flow).
-  Future<void> loadHaircareRoutine() async {
+    Future<void> loadHaircareRoutine() async {
     final seq = ++_loadSeq;
     _flowPollInProgress = false;
     _loading = true;
@@ -174,7 +172,7 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
       _resetPresentationState();
 
       final albumRes = await ImageUploadRepository.instance.getAlbumImages(
-        domain: _domain,
+        domain: _domainKey,
       );
       if (seq != _loadSeq) return;
 
@@ -183,7 +181,7 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
       }
 
       final flowRes = await DomainQuestionsRepository.instance.getDomainFlow(
-        _domain,
+        _domainKey,
       );
       if (seq != _loadSeq) return;
 
@@ -263,7 +261,7 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
       _applyIndicatorPages(data);
       _applyRoutines(data);
     }
-    _applyExtraCards(data);
+    _applyExtraCards();
   }
 
   /// True when status is in-progress but the JSON carries no AI blocks yet.
@@ -484,7 +482,7 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
     if (total <= 0) return;
     final data = await WorkoutCompletionRepository.instance.loadCompletedExercises(
       DateTime.now(),
-      domain: _domain,
+      domain: _domainKey,
     );
     if (seq != _loadSeq || data == null) return;
     final raw = data['completed_indices'];
@@ -520,7 +518,7 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
       await WorkoutCompletionRepository.instance.saveCompleted(
         DateTime.now(),
         completed,
-        domain: _domain,
+        domain: _domainKey,
         totalExercises: total,
       );
     } finally {
@@ -528,7 +526,7 @@ class DailyHairCareRoutineViewModel extends ChangeNotifier {
     }
   }
 
-  void _applyExtraCards(Map<String, dynamic> data) {
+  void _applyExtraCards() {
     _extraCards = [];
     _selectedExtraIndex = -1;
 

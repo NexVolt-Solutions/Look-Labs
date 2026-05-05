@@ -70,13 +70,13 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
               },
             ),
 
-            SizedBox(height: context.sh(24)),
+            SizedBox(height: context.sh(20)),
 
             NormalText(
               crossAxisAlignment: CrossAxisAlignment.start,
               titleText: fashionProfileScreenViewModel.subtitle,
               titleSize: context.sp(18),
-              titleWeight: FontWeight.w600,
+              titleWeight: FontWeight.w500,
               titleColor: AppColors.subHeadingColor,
             ),
 
@@ -394,13 +394,19 @@ class _FashionProfileScreenState extends State<FashionProfileScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  NormalText(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    titleText: fashionProfileScreenViewModel.weeklySubtitle,
-                    titleSize: context.sp(18),
-                    titleWeight: FontWeight.w600,
-                    titleColor: AppColors.headingColor,
+                  Expanded(
+                    child: Text(
+                      fashionProfileScreenViewModel.weeklySubtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: context.sp(18),
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.headingColor,
+                      ),
+                    ),
                   ),
+                  SizedBox(width: context.sw(8)),
                   const Icon(Icons.arrow_forward_ios, size: 20),
                 ],
               ),

@@ -10,6 +10,8 @@ class WeeklyPlanScreenViewModel extends ChangeNotifier {
 
   /// Filled from API only; no mock fallback.
   List<String> clothingFits = [];
+  List<String> recommendedFabrics = [];
+  List<String> footwear = [];
 
   /// Select season index. clothingFits must be set from API (no fallback data).
   void selectIndex(int index) {
@@ -21,6 +23,8 @@ class WeeklyPlanScreenViewModel extends ChangeNotifier {
         ? Map<String, dynamic>.from(seasonRaw)
         : <String, dynamic>{};
     clothingFits = _toStringList(season['outfit_combinations']);
+    recommendedFabrics = _toStringList(season['recommended_fabrics']);
+    footwear = _toStringList(season['footwear']);
     notifyListeners();
   }
 
@@ -31,7 +35,19 @@ class WeeklyPlanScreenViewModel extends ChangeNotifier {
   }
 
   bool get showClothingCard => selectedIndex != -1 && clothingFits.isNotEmpty;
+  bool get showRecommendedFabricsCard =>
+      selectedIndex != -1 && recommendedFabrics.isNotEmpty;
+  bool get showFootwearCard => selectedIndex != -1 && footwear.isNotEmpty;
   List<Map<String, dynamic>> heightRoutineList = [];
+  static const List<String> _weeklyDayIcons = [
+    AppAssets.dayMondayIcon,
+    AppAssets.dayTuesdayIcon,
+    AppAssets.dayWednesdayIcon,
+    AppAssets.dayThursdayIcon,
+    AppAssets.dayFridayIcon,
+    AppAssets.daySaturdayIcon,
+    AppAssets.daySundayIcon,
+  ];
 
   // int selectedIndex = -1; // ✔ tick state
   int expandedIndex = -1; // ⬇️ dropdown state
@@ -88,6 +104,7 @@ class WeeklyPlanScreenViewModel extends ChangeNotifier {
           'time': day,
           'activity': theme,
           'details': 'Style focus for $day: $theme',
+          'image': _weeklyDayIcons[heightRoutineList.length % _weeklyDayIcons.length],
         });
       }
     }

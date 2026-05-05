@@ -22,6 +22,13 @@ class WeeklyPlanScreen extends StatefulWidget {
 }
 
 class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
+  Widget _buildPlanIcon(String path) {
+    if (path.toLowerCase().endsWith('.svg')) {
+      return SvgPicture.asset(path, fit: BoxFit.scaleDown);
+    }
+    return Image.asset(path, fit: BoxFit.contain);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -110,13 +117,8 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
                                   isSelected: false,
                                   onTap: () {},
                                   child: Center(
-                                    child: SvgPicture.asset(
-                                      AppAssets.sunIcon,
-                                      colorFilter: const ColorFilter.mode(
-                                        AppColors.fireColor,
-                                        BlendMode.srcIn,
-                                      ),
-                                      fit: BoxFit.scaleDown,
+                                    child: _buildPlanIcon(
+                                      item['image']?.toString() ?? AppAssets.sunIcon,
                                     ),
                                   ),
                                 ),
@@ -249,6 +251,16 @@ class _WeeklyPlanScreenState extends State<WeeklyPlanScreen> {
               ButtonCard(
                 title: weeklyPlanScreenViewModel.selectedSeasonCardTitle,
                 listData: weeklyPlanScreenViewModel.clothingFits,
+              ),
+            if (weeklyPlanScreenViewModel.showRecommendedFabricsCard)
+              ButtonCard(
+                title: weeklyPlanScreenViewModel.titleData[1],
+                listData: weeklyPlanScreenViewModel.recommendedFabrics,
+              ),
+            if (weeklyPlanScreenViewModel.showFootwearCard)
+              ButtonCard(
+                title: weeklyPlanScreenViewModel.titleData[2],
+                listData: weeklyPlanScreenViewModel.footwear,
               ),
           ],
         ),

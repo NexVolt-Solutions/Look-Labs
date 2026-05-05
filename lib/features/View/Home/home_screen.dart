@@ -83,14 +83,25 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final homeViewModel = Provider.of<HomeViewModel>(context);
-    final overviewLoading =
-        homeViewModel.wellnessLoading && homeViewModel.wellness == null;
-    final overviewError =
-        homeViewModel.wellnessError != null && homeViewModel.wellness == null;
 
     return ListView(
       padding: context.paddingSymmetricR(horizontal: 20),
       clipBehavior: Clip.hardEdge,
+      children: [
+        _buildWellnessSection(context, homeViewModel),
+        _buildWeeklyProgressSection(context, homeViewModel),
+        _buildExplorePlansSection(context, homeViewModel),
+      ],
+    );
+  }
+
+  Widget _buildWellnessSection(BuildContext context, HomeViewModel homeViewModel) {
+    final overviewLoading =
+        homeViewModel.wellnessLoading && homeViewModel.wellness == null;
+    final overviewError =
+        homeViewModel.wellnessError != null && homeViewModel.wellness == null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         NormalText(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,27 +146,25 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           )
         else
-          SizedBox(
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 2.2,
-              ),
-              itemCount: homeViewModel.homeOverViewData.length,
-              itemBuilder: (context, index) {
-                final item = homeViewModel.homeOverViewData[index];
-                return GridData(
-                  title: item['title'],
-                  subTitle: item['subTitle'],
-                  iconUrl: item['iconUrl'],
-                );
-              },
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 2.2,
             ),
+            itemCount: homeViewModel.homeOverViewData.length,
+            itemBuilder: (context, index) {
+              final item = homeViewModel.homeOverViewData[index];
+              return GridData(
+                title: item['title'],
+                subTitle: item['subTitle'],
+                iconUrl: item['iconUrl'],
+              );
+            },
           ),
         SizedBox(height: context.sh(24)),
         Container(
@@ -178,13 +187,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Container(
             padding: context.paddingSymmetricR(horizontal: 12, vertical: 8),
-
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(context.radiusR(14)),
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF000000).withValues(alpha: 0.9),
-                  Color(0xFF000000).withValues(alpha: 0.7),
+                  const Color(0xFF000000).withValues(alpha: 0.9),
+                  const Color(0xFF000000).withValues(alpha: 0.7),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -202,6 +210,17 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         SizedBox(height: context.sh(24)),
+      ],
+    );
+  }
+
+  Widget _buildWeeklyProgressSection(
+    BuildContext context,
+    HomeViewModel homeViewModel,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         NormalText(
           crossAxisAlignment: CrossAxisAlignment.start,
           titleText: AppText.weeklyProgressScore,
@@ -298,7 +317,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-
                     children: [
                       Container(
                         decoration: BoxDecoration(
@@ -307,9 +325,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           gradient: LinearGradient(
                             colors: [
-                              Color(0xFFFFFFFF).withValues(alpha: 0.9),
-                              Color(0xffDBE6F2).withValues(alpha: 0.5),
-                              Color(0xFF8F9FAE).withValues(alpha: 0.3),
+                              const Color(0xFFFFFFFF).withValues(alpha: 0.9),
+                              const Color(0xffDBE6F2).withValues(alpha: 0.5),
+                              const Color(0xFF8F9FAE).withValues(alpha: 0.3),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -328,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         child: Container(
-                          margin: EdgeInsets.all(context.sw(3)), // Border width
+                          margin: EdgeInsets.all(context.sw(3)),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(
                               context.radiusR(14),
@@ -347,7 +365,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-
                       SizedBox(height: context.sh(8)),
                       Text(
                         item['title'],
@@ -372,6 +389,17 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
+      ],
+    );
+  }
+
+  Widget _buildExplorePlansSection(
+    BuildContext context,
+    HomeViewModel homeViewModel,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         NormalText(
           crossAxisAlignment: CrossAxisAlignment.start,
           titleText: 'Explore your plans',
@@ -402,7 +430,6 @@ class _HomeScreenState extends State<HomeScreen> {
         if (homeViewModel.domainsLoading && !homeViewModel.hasExploreDomains)
           SizedBox(
             height: context.sh(200),
-
             child: Center(
               child: SizedBox(
                 width: 28,
@@ -448,9 +475,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 isSelected: isEnabled,
                 onTap: isLoading
                     ? null
-                    : () async {
-                        await homeViewModel.onItemTap(index, context);
-                      },
+                    : () async => homeViewModel.onItemTap(index, context),
                 child: Stack(
                   children: [
                     Column(
@@ -462,9 +487,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Stack(
                               children: [
                                 ClipRRect(
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                    10,
-                                  ),
+                                  borderRadius: BorderRadiusGeometry.circular(10),
                                   child: _buildExploreImage(
                                     item['iconUrl'] as String?,
                                   ),
@@ -483,26 +506,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           gradient: LinearGradient(
                                             colors: [
-                                              Color(0xFFFFFFFF).withValues(alpha: 0),
-                                              Color(
-                                                0xFFDBE6F2,
-                                              ).withValues(alpha: 0.5),
-                                              Color(0xFF8b8c8c),
+                                              const Color(0xFFFFFFFF).withValues(alpha: 0),
+                                              const Color(0xFFDBE6F2).withValues(alpha: 0.5),
+                                              const Color(0xFF8b8c8c),
                                             ],
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Color(
-                                                0xFF123D65,
-                                              ).withValues(alpha: 0.15),
+                                              color: const Color(0xFF123D65).withValues(alpha: 0.15),
                                               offset: const Offset(0, 7),
                                               blurRadius: 17,
                                             ),
                                             BoxShadow(
-                                              color: AppColors.white
-                                                  .withValues(alpha: 0.18),
+                                              color: AppColors.white.withValues(alpha: 0.18),
                                               offset: const Offset(-5, -4),
                                               blurRadius: 58,
                                             ),
@@ -514,7 +532,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             borderRadius: BorderRadius.circular(
                                               context.radiusR(11),
                                             ),
-                                            color: Color(0xFF8b8c8c),
+                                            color: const Color(0xFF8b8c8c),
                                           ),
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(
