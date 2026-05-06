@@ -64,7 +64,8 @@ import 'package:looklabs/Features/ViewModel/recovery_path_screen_view_model.dart
 import 'package:looklabs/Features/ViewModel/review_scans_view_model.dart';
 import 'package:looklabs/Features/View/SplahScreen/splash_screen.dart';
 import 'package:looklabs/Features/View/StartScreen/start_screen.dart';
- 
+import 'package:looklabs/Features/View/Subscription%20Plan/subscription_plan_screen.dart';
+
 class Routes {
   static Route<dynamic> _route(RouteSettings settings, Widget child) {
     return MaterialPageRoute(settings: settings, builder: (_) => child);
@@ -86,7 +87,7 @@ class Routes {
         return _route(settings, GaolScreen());
       case RoutesName.OnBoardScreen:
         return _route(settings, OnBoardScreen());
-   
+
       case RoutesName.CardDetailsScreen:
         return _route(settings, CardDetailsScreen());
       case RoutesName.PurchaseScreen:
@@ -128,6 +129,12 @@ class Routes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => StartScreen(),
+        );
+
+      case RoutesName.SubscriptionPlanScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => SubscriptionPlanScreen(),
         );
       case RoutesName.QuestionScreen:
         return MaterialPageRoute(
@@ -262,7 +269,10 @@ class Routes {
         return _route(settings, DailyWorkoutRoutine(workoutData: workoutData));
       case RoutesName.WorkOutProgressScreen:
         final workoutData = _mapArgs(settings);
-        return _route(settings, WorkOutProgressScreen(workoutData: workoutData));
+        return _route(
+          settings,
+          WorkOutProgressScreen(workoutData: workoutData),
+        );
       case RoutesName.DietResultScreen:
         final dietData = _mapArgs(settings);
         return _route(settings, DietResultScreen(resultData: dietData));
@@ -359,7 +369,6 @@ class Routes {
           settings: settings,
           builder: (_) => AllTrackedFood(),
         );
-
       default:
         return MaterialPageRoute(
           settings: settings,

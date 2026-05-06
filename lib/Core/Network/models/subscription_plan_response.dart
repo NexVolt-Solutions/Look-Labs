@@ -24,10 +24,14 @@ class SubscriptionPlan {
   final String id;
   final String name;
   final String planCode;
+  final String? billingPeriod;
+
   /// Store product ID (Google Play / App Store) used for in_app_purchase.
   final String productId;
   final String? appleProductId;
   final String? googleProductId;
+  final String? googleBasePlanId;
+  final String? googleOfferId;
   final String? priceDisplay;
   final String? durationDisplay;
   final int? durationDays;
@@ -38,9 +42,12 @@ class SubscriptionPlan {
     this.id = '',
     this.name = '',
     this.planCode = '',
+    this.billingPeriod,
     this.productId = '',
     this.appleProductId,
     this.googleProductId,
+    this.googleBasePlanId,
+    this.googleOfferId,
     this.priceDisplay,
     this.durationDisplay,
     this.durationDays,
@@ -58,16 +65,37 @@ class SubscriptionPlan {
           '',
       planCode:
           json['plan_code']?.toString() ?? json['planCode']?.toString() ?? '',
+      billingPeriod:
+          json['billing_period']?.toString() ??
+          json['billingPeriod']?.toString(),
       productId:
           json['product_id']?.toString() ?? json['productId']?.toString() ?? '',
       appleProductId:
           json['apple_product_id']?.toString() ??
-          (json['products'] is Map ? json['products']['apple']?.toString() : null),
+          (json['products'] is Map
+              ? json['products']['apple']?.toString()
+              : null),
       googleProductId:
           json['google_product_id']?.toString() ??
-          (json['products'] is Map ? json['products']['google']?.toString() : null),
-      priceDisplay: json['price_display']?.toString() ?? json['priceDisplay']?.toString(),
-      durationDisplay: json['duration_display']?.toString() ?? json['durationDisplay']?.toString(),
+          (json['products'] is Map
+              ? json['products']['google']?.toString()
+              : null),
+      googleBasePlanId:
+          json['google_base_plan_id']?.toString() ??
+          json['googleBasePlanId']?.toString(),
+      googleOfferId:
+          json['google_offer_id']?.toString() ??
+          json['googleOfferId']?.toString(),
+      priceDisplay:
+          json['price_display']?.toString() ??
+          json['priceDisplay']?.toString() ??
+          (json['price'] == null || json['currency'] == null
+              ? null
+              : '${json['currency']} ${json['price']}'),
+      durationDisplay:
+          json['duration_display']?.toString() ??
+          json['durationDisplay']?.toString() ??
+          _durationFromBillingPeriod(json['billing_period']?.toString()),
       durationDays: json['duration_days'] is int
           ? json['duration_days'] as int
           : int.tryParse(json['duration_days']?.toString() ?? ''),
@@ -86,5 +114,21 @@ class SubscriptionPlan {
       return googleProductId!;
     }
     return productId;
+  }
+
+  static String? _durationFromBillingPeriod(String? billingPeriod) {
+    switch (billingPeriod?.toLowerCase()) {
+      case 'monthly':
+      case 'month':
+        return '/month';
+      case 'yearly':
+      case 'annual':
+      case 'year':
+        return '/year';
+      default:
+        return billingPeriod == null || billingPeriod.isEmpty
+            ? null
+            : '/$billingPeriod';
+    }
   }
 }

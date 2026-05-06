@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:looklabs/Core/Network/models/iap_request_response.dart';
 import 'package:looklabs/Repository/subscription_repository.dart';
 
@@ -43,9 +44,11 @@ class IapService {
 
   void _onPurchaseUpdates(List<PurchaseDetails> purchases) {
     for (final p in purchases) {
-      if (p.status == PurchaseStatus.purchased || p.status == PurchaseStatus.restored) {
+      if (p.status == PurchaseStatus.purchased ||
+          p.status == PurchaseStatus.restored) {
         // Validate with backend (caller may do this after purchase flow)
-        final selected = _pendingSelectedDomainsByProduct[p.productID] ?? const [];
+        final selected =
+            _pendingSelectedDomainsByProduct[p.productID] ?? const [];
         _validatePurchase(p, selectedDomainIds: selected);
         _pendingSelectedDomainsByProduct.remove(p.productID);
       } else if (p.status == PurchaseStatus.error) {
@@ -101,9 +104,27 @@ class IapService {
   Future<List<ProductDetails>> loadProducts(Set<String> productIds) async {
     if (!_initialized) await initialize();
     if (!_storeAvailable || productIds.isEmpty) return [];
+    debugPrint('[IAP] Query products: ${productIds.join(', ')}');
     final response = await _iap.queryProductDetails(productIds);
     if (response.notFoundIDs.isNotEmpty) {
       debugPrint('[IAP] Not found: ${response.notFoundIDs}');
+    }
+    for (final product in response.productDetails) {
+      if (product is GooglePlayProductDetails) {
+        final offerIndex = product.subscriptionIndex;
+        final offers = product.productDetails.subscriptionOfferDetails;
+        final offer =
+            offerIndex != null && offers != null && offerIndex < offers.length
+            ? offers[offerIndex]
+            : null;
+        debugPrint(
+          '[IAP] Found Google product=${product.id} price=${product.price} '
+          'basePlan=${offer?.basePlanId} offerId=${offer?.offerId} '
+          'offerToken=${product.offerToken == null ? "null" : "present"}',
+        );
+      } else {
+        debugPrint('[IAP] Found product=${product.id} price=${product.price}');
+      }
     }
     return response.productDetails;
   }
@@ -111,15 +132,31 @@ class IapService {
   /// Start purchase flow for [productId]. User completes in store. On success, receipt is validated with backend via stream.
   Future<bool> buySubscription(
     String productId, {
+    ProductDetails? productDetails,
+    String? googleOfferToken,
     List<String> selectedDomainIds = const [],
   }) async {
     if (!_initialized) await initialize();
     if (!_storeAvailable) return false;
-    final products = await loadProducts({productId});
-    if (products.isEmpty) return false;
-    _pendingSelectedDomainsByProduct[productId] = selectedDomainIds;
-    final product = products.first;
-    final purchaseParam = PurchaseParam(productDetails: product);
+    ProductDetails? product = productDetails;
+    if (product == null) {
+      final products = (await loadProducts({
+        productId,
+      })).where((p) => p.id == productId);
+      product = products.isEmpty ? null : products.first;
+    }
+    if (product == null) return false;
+    _pendingSelectedDomainsByProduct[product.id] = selectedDomainIds;
+    final purchaseParam = Platform.isAndroid
+        ? GooglePlayPurchaseParam(
+            productDetails: product,
+            offerToken: googleOfferToken,
+          )
+        : PurchaseParam(productDetails: product);
+    debugPrint(
+      '[IAP] Launch purchase product=${product.id} '
+      'androidOfferToken=${googleOfferToken == null ? "null" : "present"}',
+    );
     return _iap.buyNonConsumable(purchaseParam: purchaseParam);
   }
 
